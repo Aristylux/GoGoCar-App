@@ -2,23 +2,32 @@
 
 Android Application for GoGoCar
 
+## Table of Content
+
+- [GoGoCar-App](#gogocar-app)
+  - [Table of Content](#table-of-content)
+  - [App 1](#app-1)
+    - [App1 Functionnalities:](#app1-functionnalities)
+  - [App 2](#app-2)
+    - [App2 Functionnalities:](#app2-functionnalities)
+
 ## App 1
 
 App 1 is an app test for bluetooth 
 
-### Functionnalities:
+### App1 Functionnalities:
 
 * List bluetooth devices
 * Connect to bluetooth
 * Displays the data received by the smartphone
 
-[Description App1](./App1/README.md)
+[Description App1](./App1)
 
 ## App 2
 
 App 2 is an app test for bluetooth
 
-### Functionnalities:
+### App2 Functionnalities:
 
 * List bluetooth devices
 * Connect to bluetooth
