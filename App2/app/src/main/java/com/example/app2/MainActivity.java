@@ -174,16 +174,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendTheMessage(String message){
         //byte[] CR = 13;
-        BluetoothSocket bluetoothSocket = bluetoothConnection.getBluetoothSocket();
-        if (bluetoothSocket != null && bluetoothConnected){
-            if (bluetoothSocket.isConnected()){
-                Log.d(TAG_Debug, "Send");
-                String messageFinal = message + "\r";
-                dataCommunication.write(messageFinal.getBytes());
-                Toast.makeText(getApplicationContext(), "Message send: '" + message + "'.", Toast.LENGTH_SHORT).show();
+        if (bluetoothConnection != null) {
+            BluetoothSocket bluetoothSocket = bluetoothConnection.getBluetoothSocket();
+            if (bluetoothSocket != null && bluetoothConnected) {
+                if (bluetoothSocket.isConnected()) {
+                    Log.d(TAG_Debug, "Send");
+                    String messageFinal = message + "\r";
+                    dataCommunication.write(messageFinal.getBytes());
+                    Toast.makeText(getApplicationContext(), "Message send: '" + message + "'.", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "Please connect to bluetooth", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(getApplicationContext(), "Please connect to bluetooth", Toast.LENGTH_SHORT).show();
         }
     }
 
