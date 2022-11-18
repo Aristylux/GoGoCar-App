@@ -35,6 +35,8 @@ App 2 is an app test for bluetooth
 * Connect to bluetooth
 * Send data with a button.
 
+[Description App1](./App2)
+
 ## App 3
 
 App 2 is an app test for bluetooth
@@ -47,3 +49,5 @@ App 2 is an app test for bluetooth
 * Send data with a button **in user box**.
 
 App3 ~= App2 + App1
+
+[Description App1](./App3)
