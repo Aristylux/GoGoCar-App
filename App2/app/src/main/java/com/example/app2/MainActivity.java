@@ -41,13 +41,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         // -- find objects
         Button sendMessageButton = findViewById(R.id.button_send);
         spinner = findViewById(R.id.spinnerPairedDevice);
         deviceStatus = findViewById(R.id.device_status);
         connectButton = findViewById(R.id.button_connect);
-
 
         Set<BluetoothDevice> bluetoothDevice = getBluetoothPairedDevices();
         if (bluetoothDevice != null)
@@ -86,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     @SuppressLint("MissingPermission")
