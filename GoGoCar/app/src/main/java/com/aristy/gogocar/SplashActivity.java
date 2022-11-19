@@ -16,6 +16,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // This method will be executed once the timer is over
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 Intent i = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(i);
                 finish();
