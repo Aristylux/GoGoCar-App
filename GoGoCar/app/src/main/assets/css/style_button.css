@@ -1,0 +1,12 @@
+button {
+    height: 40px;
+    width: 100px;
+    border: 0px;
+    border-radius: 20px;
+    background-color: aquamarine;
+    transition: .5s;
+}
+
+button:hover {
+    background-color: beige;
+}
