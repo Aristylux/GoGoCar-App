@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <!-- Icons -->
+        <link rel="stylesheet" href="./ico/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+
         <link rel="stylesheet" href="css/stylesheet.css" />
         <link rel="stylesheet" href="css/style_button.css"/>
+        <link rel="stylesheet" href="css/style_navigation_bar.css"/>
     </head>
     <body>
         Hello world
@@ -13,6 +17,25 @@
 
         <button id="button_toast">Toast</button>
 
+
+        <nav class="nav">
+            <a href="#" class="nav__link">
+                <i class="fi fi-rr-home nav__icon active"></i>
+                <span class="nav__text">Home</span>
+            </a>
+            <a href="#" class="nav__link">
+                <i class="fi fi-rr-search nav__icon"></i>
+                <span class="nav__text">Drive</span>
+            </a>
+            <a href="#" class="nav__link">
+                <i class="fi fi-rr-car nav__icon"></i>
+                <span class="nav__text">Vehicles</span>
+            </a>
+            <a href="#" class="nav__link">
+                <i class="fi fi-rr-settings nav__icon"></i>
+                <span class="nav__text">Settings</span>
+            </a>
+        </nav>
     </body>
     <script src="js/androidInterface.js"></script>
 </html>
