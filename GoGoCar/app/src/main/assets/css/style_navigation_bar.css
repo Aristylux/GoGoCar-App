@@ -5,8 +5,13 @@
     height: 55px;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
     background-color: #FFFFFF;
+    /*
     display: flex;
     overflow-x: auto;
+    justify-content: center;
+    */
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
 }
 
 .nav__link {
@@ -16,6 +21,7 @@
     justify-content: center;
     flex-grow: 1;
     min-width: 50px;
+    /*    max-width: 120px; */
     overflow: hidden;
     white-space: nowrap;
     font-family: sans-serif;
@@ -24,11 +30,16 @@
     text-decoration: none;
 
     -webkit-tap-highlight-color: transparent;
+    transition: 0.1s ease-in-out;
+    /*
+    -webkit-tap-highlight-color: transparent;
     transition: background-color 0.1s ease-in-out;
+    */
 }
 
 .nav__link:active {
     background-color: #eeeeee;
+    border-radius: 30px;
 }
 
 .nav__link--active {

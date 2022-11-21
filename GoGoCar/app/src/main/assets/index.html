@@ -3,12 +3,24 @@
     <head>
         <!-- Icons -->
         <link rel="stylesheet" href="./ico/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+        <link rel="stylesheet" href="./ico/uicons-solid-rounded/css/uicons-solid-rounded.css" />
 
-        <link rel="stylesheet" href="css/stylesheet.css" />
-        <link rel="stylesheet" href="css/style_button.css"/>
-        <link rel="stylesheet" href="css/style_navigation_bar.css"/>
+        <link rel="stylesheet" href="./css/stylesheet.css" />
+        <link rel="stylesheet" href="./css/style_button.css"/>
+        <link rel="stylesheet" href="./css/style_navigation_bar.css"/>
     </head>
     <body>
+        
+        <!--
+        <div id="content">
+            <object type="text/html" data="./pages/home.html" ></object>
+        </div>
+        -->
+        <div id="screen">
+            <iframe id="content" src="./pages/home.html"></iframe>
+        </div>
+
+        <!--
         <section id="sec_home" class="section_screen">
             <h1>Home</h1>
 
@@ -30,26 +42,25 @@
         <section id="sec_settings" class="section_screen" hidden>
             <h1>Settings</h1>
         </section>
-
+        -->
         <nav class="nav">
-            <a id="nav_home" href="#" class="nav__link nav__link--active">
-                <i class="fi fi-rr-home nav__icon"></i>
+            <a id="nav_home" href="#" class="nav__link nav__link__ripple nav__link--active">
+                <i id="ico_home" class="nav__icon fi fi-sr-home"></i>
                 <span class="nav__text">Home</span>
             </a>
-            <a id="nav_drive" href="#" class="nav__link">
-                <i class="fi fi-rr-search nav__icon"></i>
+            <a id="nav_drive" href="#" class="nav__link nav__link__ripple">
+                <i id="ico_drive" class="nav__icon fi fi-rr-search"></i>
                 <span class="nav__text">Drive</span>
             </a>
-            <a id="nav_vehicles" href="#" class="nav__link">
-                <i class="fi fi-rr-car nav__icon"></i>
+            <a id="nav_vehicles" href="#" class="nav__link nav__link__ripple">
+                <i id="ico_vehicles" class="nav__icon fi fi-rr-car"></i>
                 <span class="nav__text">Vehicles</span>
             </a>
-            <a id="nav_settings" href="#" class="nav__link">
-                <i class="fi fi-rr-settings nav__icon"></i>
+            <a id="nav_settings" href="#" class="nav__link nav__link__ripple">
+                <i id="ico_settings" class="nav__icon fi fi-rr-settings"></i>
                 <span class="nav__text">Settings</span>
             </a>
         </nav>
     </body>
-    <script src="js/androidInterface.js"></script>
-    <script src="js/nav.js"></script>
+    <script src="./js/nav.js"></script>
 </html>

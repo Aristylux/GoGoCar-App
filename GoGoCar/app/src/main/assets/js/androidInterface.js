@@ -4,12 +4,12 @@ let button_change_color = document.getElementById("button_change_color");
 let button_reset_color = document.getElementById("button_reset_color");
 
 button_change_color.addEventListener('click', function () {
-    changeColorBackground('#BB86FCFF');
+    //changeColorBackground('#BB86FCFF');
     document.body.style.backgroundColor = '#BB86FCFF';
 });
 
 button_reset_color.addEventListener('click', function () {
-    changeColorBackground('#FFFFFF');
+    //changeColorBackground('#FFFFFF');
     document.body.style.backgroundColor = '#FFFFFF';
 });
 

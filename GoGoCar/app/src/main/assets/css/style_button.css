@@ -3,10 +3,10 @@ button {
     width: 100px;
     border: 0px;
     border-radius: 20px;
-    background-color: aquamarine;
-    transition: .5s;
+    background-color: #009578;
+    transition: 0.5s;
 }
 
-button:hover {
+button:active {
     background-color: beige;
 }

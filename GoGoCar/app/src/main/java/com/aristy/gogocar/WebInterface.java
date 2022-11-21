@@ -54,11 +54,6 @@ public class WebInterface {
 
         Window window = activity.getWindow();
         Log.d(TAG_Web, "changeBackground : window" + window);
-        // Clear FLAG_TRANSLUCENT_STATUS flag:
-        //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-        // Add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-        //window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         // Finally change the color
         //window.setStatusBarColor(ContextCompat.getColor(context, R.color.my_statusbar_color));
