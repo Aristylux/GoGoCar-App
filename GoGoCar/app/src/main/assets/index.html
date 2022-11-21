@@ -9,33 +9,47 @@
         <link rel="stylesheet" href="css/style_navigation_bar.css"/>
     </head>
     <body>
-        Hello world
+        <section id="sec_home" class="section_screen">
+            <h1>Home</h1>
 
-        <button id="button_change_color">Change Back</button>
+            <button id="button_change_color">Change Back</button>
+    
+            <button id="button_reset_color">Reset Back</button>
+    
+            <button id="button_toast">Toast</button>
+        </section>
 
-        <button id="button_reset_color">Reset Back</button>
+        <section id="sec_drive" class="section_screen" hidden>
+            <h1>Drive</h1>
+        </section>
 
-        <button id="button_toast">Toast</button>
+        <section id="sec_vehicles" class="section_screen" hidden>
+            <h1>Vehicles</h1>
+        </section>
 
+        <section id="sec_settings" class="section_screen" hidden>
+            <h1>Settings</h1>
+        </section>
 
         <nav class="nav">
-            <a href="#" class="nav__link">
-                <i class="fi fi-rr-home nav__icon active"></i>
+            <a id="nav_home" href="#" class="nav__link nav__link--active">
+                <i class="fi fi-rr-home nav__icon"></i>
                 <span class="nav__text">Home</span>
             </a>
-            <a href="#" class="nav__link">
+            <a id="nav_drive" href="#" class="nav__link">
                 <i class="fi fi-rr-search nav__icon"></i>
                 <span class="nav__text">Drive</span>
             </a>
-            <a href="#" class="nav__link">
+            <a id="nav_vehicles" href="#" class="nav__link">
                 <i class="fi fi-rr-car nav__icon"></i>
                 <span class="nav__text">Vehicles</span>
             </a>
-            <a href="#" class="nav__link">
+            <a id="nav_settings" href="#" class="nav__link">
                 <i class="fi fi-rr-settings nav__icon"></i>
                 <span class="nav__text">Settings</span>
             </a>
         </nav>
     </body>
     <script src="js/androidInterface.js"></script>
+    <script src="js/nav.js"></script>
 </html>
