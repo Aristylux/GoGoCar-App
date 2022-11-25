@@ -1,10 +1,172 @@
 <!DOCTYPE html>
 <html>
     <head>
+        
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
+        
         <link rel="stylesheet" href="../css/style_button.css"/>
+        <style>
+
+            #set_sec_pp {
+                position: fixed;
+                top: 0;
+                left: 101vw;
+                width: 100vw;
+                height: 100vh;
+                background-color: white;
+                /*display: none;*/
+                transition: 0.3s ease-in-out;
+                box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+            }
+
+            #set_sec_pp.active{
+                left: 0;
+            }
+
+            #title{
+                margin-top: 25px;
+            }
+
+            iframe {
+                width: 100%;
+                height: 100%;
+                border: 0;
+            }
+
+        </style>
+
     </head>
     <body>
         <h1>Settings</h1>
+
+        <div>
+            Full name
+
+            <!--user picture-->
+        </div>
+
+        <div>
+
+        
+            <button id="set_but_pp" class="settings_button">Change your profile picture</button>
+
+            <button id="set_but_sl" class="settings_button">Select language</button>
+
+            <button id="set_but_pi" class="settings_button">Personnal imformations</button>
+
+            <button id="set_but_jh" class="settings_button">Journey history</button>
+
+            <button id="set_but_bc" class="settings_button">My bank details</button>
+        
+        </div>
+
+        <div>
+
+        </div>
+
+        <section id="set_sec_pp">
+            <div id="title">
+                <button id="sec_but_re">return</button>
+                <h1>Title</h1>
+            </div>
+            
+            <!--Page name-->
+            <!--
+            <iframe id="content" src="./pages/settings_profile.html"></iframe>
+            -->
+            
+            <object id="content" type="text/html" data="./pages/settings_profile.html"></object>
+            
+            <!--
+            <embed id="content" type="text/html" src="./pages/settings_profile.html"></embed>
+            -->
+            
+        </section>
+
+        <!--
+        <section id="set_sec_sl" hidden>
+
+        </section>
+
+        <section id="set_sec_pi" hidden>
+
+        </section>
+
+        <section id="set_sec_jh" hidden>
+
+        </section>
+
+        <section id="set_sec_bc" hidden>
+
+        </section>
+        -->
+       
+
+        <script>
+            const setting_page_pp = document.getElementById("set_sec_pp");
+
+            setting_page_pp.addEventListener('touchstart', touchStart);
+            setting_page_pp.addEventListener('touchmove', touchMove);
+            setting_page_pp.addEventListener('touchend', touchEnd);
+
+            var startingX;
+
+            function touchStart(event) {
+                startingX = event.touches[0].clientX;
+                console.log("start " + startingX);
+                setting_page_pp.style.transition = '0s';
+            }
+
+            function touchMove(event) {
+                let touch = event.touches[0];
+                let change = touch.clientX - startingX;
+                console.log(".");
+                if(change < 0) {
+                    return;
+                }
+                setting_page_pp.style.left = change + 'px';
+                event.preventDefault();
+            }
+
+            function touchEnd(event) {
+                let change = event.changedTouches[0].clientX - startingX;
+                console.log("end " + change);
+                let threshold = screen.width / 3;
+                setting_page_pp.style.transition = '0.3s ease-in-out';
+                if(change < threshold){
+                    console.log("rest");
+                    setting_page_pp.style.left = '0px';
+                } else {
+                    console.log("leave");
+                    setting_page_pp.style.left = '101vw';
+                }
+            }
+        </script>
+
+        <script>
+            
+            const buttons = document.querySelectorAll(".settings_button");
+            console.log(buttons);
+            buttons.forEach((btn) => {
+                btn.addEventListener("click", function () {
+                    setting_page_pp.style.left = '0px';
+                });
+            });
+            
+            /*
+            const button_pp = document.getElementById("set_but_pp");
+            button_pp.addEventListener("click", function () {
+                setting_page_pp.style.left = '0px';
+            });
+            */
+            
+
+        
+            const button_return = document.getElementById("sec_but_re");
+            button_return.addEventListener("click", function () {
+                setting_page_pp.style.left = '101vw';
+            });
+        </script>
+
     </body>
 </html>

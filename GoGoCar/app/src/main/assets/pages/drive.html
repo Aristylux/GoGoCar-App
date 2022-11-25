@@ -6,5 +6,43 @@
     </head>
     <body>
         <h1>Drive</h1>
+
+        <script>
+
+            //data base vehicle 1
+            var vehicles = {
+                "owner":{
+                    "type":"company",
+                    "name":"ISEN Yncréa",
+                },
+                "name":"Peugeot 306",
+                "licence-plate":"TE-157-RE",
+                "picture":"none",
+                "gogocar-module": {
+                    "id":"#0-0001",
+                    "mac-address":"FF:FF:FF:FF:FF:FF",
+                },
+                "address":{
+                    "number":"35",
+                    "name":"",
+                    "city":"Toulon",
+                    "postal-code":"83000",
+                    "country":"FRANCE",
+
+                },
+                "coordinate": {
+                    "latitude":"43.121140",
+                    "longitude":"5.939126"
+                }
+            }
+
+            console.log(vehicles);
+
+            var dataJSON = JSON.stringify(vehicles);
+
+            console.log(dataJSON);
+
+        </script>
+
     </body>
 </html>
