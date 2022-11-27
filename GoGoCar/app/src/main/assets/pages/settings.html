@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        
+    <head>        
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
-        
         <link rel="stylesheet" href="../css/style_button.css"/>
         <style>
 
@@ -14,9 +12,10 @@
                 width: 100vw;
                 height: 100vh;
                 background-color: white;
-                /*display: none;*/
+                
                 transition: 0.3s ease-in-out;
                 box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+                display: none;
             }
 
             #set_sec_pp.active{
@@ -34,6 +33,8 @@
             }
 
         </style>
+
+        
 
     </head>
     <body>
@@ -149,7 +150,11 @@
             console.log(buttons);
             buttons.forEach((btn) => {
                 btn.addEventListener("click", function () {
-                    setting_page_pp.style.left = '0px';
+                    setting_page_pp.style.display = 'block';
+                    setTimeout(function () {
+                        setting_page_pp.style.left = '0px';
+			        }, 10);
+                    
                 });
             });
             

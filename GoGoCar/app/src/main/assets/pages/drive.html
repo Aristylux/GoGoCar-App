@@ -3,19 +3,50 @@
     <head>
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
         <link rel="stylesheet" href="../css/style_button.css"/>
+
+        <style>
+            ul {
+                padding: 0;
+                margin: 0;
+                list-style: none;
+            }
+
+            li {
+                background-color: aliceblue;
+                margin: 0 20px;
+                margin-bottom: 3px;
+                box-shadow: 0 2px 0 #0002;
+                border-style: solid;
+                border-radius: 25px;
+                border-color: #aca8a8;
+                border-width: 1px;
+                padding: 10px;
+            }
+
+            .vehicle_container:active {
+                background-color: aqua;
+            }
+        </style>
+
     </head>
     <body>
         <h1>Drive</h1>
 
-        <script>
+        <!-- Best final : use google maps -->
 
+        <!-- For the moment : -->
+        <ul id="vehicles_list">
+        </ul>
+        
+        <script>
+            // data base test //
             //data base vehicle 1
-            var vehicles = {
+            var vehicle_1 = {
                 "owner":{
                     "type":"company",
                     "name":"ISEN Yncréa",
                 },
-                "name":"Peugeot 306",
+                "name":"Nissan GT",
                 "licence-plate":"TE-157-RE",
                 "picture":"none",
                 "gogocar-module": {
@@ -24,11 +55,10 @@
                 },
                 "address":{
                     "number":"35",
-                    "name":"",
+                    "name":"Avenue champ de Mars",
                     "city":"Toulon",
                     "postal-code":"83000",
                     "country":"FRANCE",
-
                 },
                 "coordinate": {
                     "latitude":"43.121140",
@@ -36,13 +66,70 @@
                 }
             }
 
+            //data base vehicle 2
+            var vehicle_2 = {
+                "owner":{
+                    "type":"individual",
+                    "name":"Axel Mezade",
+                },
+                "name":"Peugeot 206",
+                "licence-plate":"TA-058-PM",
+                "picture":"none",
+                "gogocar-module": {
+                    "id":"#0-0002",
+                    "mac-address":"FF:FF:FF:FF:FF:FF",
+                },
+                "address":{
+                    "number":"1",
+                    "name":"Boulevard Jean Michel",
+                    "city":"Montpellier",
+                    "postal-code":"34000",
+                    "country":"FRANCE",
+                },
+                "coordinate": {
+                    "latitude":"43.121140",
+                    "longitude":"5.939126"
+                }
+            }
+
+            // Retrive databases from android
+
+            // result
+            var vehicles = [vehicle_1, vehicle_2];
+
             console.log(vehicles);
+            //var dataJSON = JSON.stringify(vehicles);
+            //console.log(dataJSON);
 
-            var dataJSON = JSON.stringify(vehicles);
+            // Set content
+            vehicles.forEach((vehicle) => {
+                addElement(vehicle);
+            });
 
-            console.log(dataJSON);
+            function addElement(vehicle){
+                console.log(vehicle.name);
+                console.log(vehicle.address.name);
+                let vehicle_info = [vehicle.name, vehicle.address.name];
+
+                const ul = document.getElementById("vehicles_list");
+                let li = document.createElement('li');
+                li.classList.add('vehicle_container');
+                vehicle_info.forEach((info) => {
+                    let div = document.createElement('div');
+                    div.appendChild(document.createTextNode(info));
+                    li.appendChild(div);
+                });
+                ul.appendChild(li);
+            }
+
+            const vehicles_container = document.querySelectorAll(".vehicle_container");
+            vehicles_container.forEach(function (container, index) {
+                container.addEventListener('click', (event) => {
+                    // Open popup 'book'
+                    console.log(index);
+                });
+            });
 
         </script>
-
     </body>
 </html>
