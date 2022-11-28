@@ -14,13 +14,24 @@ button_reset_color.addEventListener('click', function () {
 });
 
 button_toast.addEventListener('click', function () {
-    Android.showToast("yes");
+    if(androidConnected()) Android.showToast("Toast");
 });
 
-function changeColorBackground (color) {
-    Android.changeBackground(color);
+function changeColorBackground (_color) {
+    if(androidConnected()) Android.changeBackground(_color);
 }
 
-function dataReceived(value) {
-    document.body.style.backgroundColor = value;
+function dataReceived(_value) {
+    document.body.style.backgroundColor = _value;
+}
+
+// -----------
+
+function androidConnected(){
+    if(typeof Android === 'undefined'){
+        console.warn("Android undefined");
+        return false;
+    } else {
+        return true;
+    } 
 }

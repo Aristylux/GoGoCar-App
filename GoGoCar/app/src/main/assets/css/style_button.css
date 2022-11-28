@@ -5,8 +5,10 @@ button {
     border-radius: 20px;
     background-color: #009578;
     transition: 0.5s;
+    color: #fff;
 }
 
 button:active {
     background-color: beige;
+    color: black;
 }
