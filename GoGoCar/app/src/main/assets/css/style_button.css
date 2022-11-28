@@ -4,11 +4,27 @@ button {
     border: 0px;
     border-radius: 20px;
     background-color: #009578;
-    transition: 0.5s;
+    transition: 0.3s;
     color: #fff;
 }
 
 button:active {
     background-color: beige;
     color: black;
+}
+
+.border-button {
+    background-color: #fff;
+    border: 2px;
+    border-color: #009578;
+    border-style: solid;
+    color: #000;
+}
+
+.border-button:active {
+    background-color: #009578;
+    border: 2px;
+    border-color: #009578;
+    border-style: solid;
+    color: #fff;
 }

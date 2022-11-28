@@ -8,100 +8,6 @@
         <link rel="stylesheet" href="./css/stylesheet.css" />
         <link rel="stylesheet" href="./css/style_button.css"/>
         <link rel="stylesheet" href="./css/style_navigation_bar.css"/>
-
-        <!--popup.css-->
-        <style>
-
-        .popup {
-			width: 400px;
-			background-color: rgb(255, 236, 236);
-			border-radius: 6px;
-			position: absolute;
-			left: 50%;
-			text-align: center;
-			padding: 0 30px 30px;
-			color: #333;			
-		}
-
-        /* Animation popup init */
-		.popup {
-			top: 100%;
-			transform: translate(-50%, -50%);
-			opacity: 0%;
-			transition: transform 0.4s, top 0.4s, opacity 1s;
-		}
-		
-		/* Popup active */
-		.open-popup {
-			top: 50%;
-			opacity: 100%;
-			transform: translate(-50%, -50%);
-		}
-
-        .popup h1 {
-			font-size: 38px;
-			font-weight: 500;
-			margin: 30px 0 10px;
-		}
-
-        #popup_vehicle_buttons {
-            margin-top: 25px;
-            width: 100%;
-            display: grid;
-            grid-template-columns: 50% auto;
-            justify-items: center;
-        }
-
-        #popup_vehicle button {
-			width: 50%;
-        }
-        </style>
-
-        <!-- modif: button.css-->
-        <style>
-
-        .border-button {
-			background-color: #fff;
-            border: 2px;
-            border-color: #009578;
-            border-style: solid;
-            color: #000;
-        }
-
-        .border-button:active {
-			background-color: #009578;
-            border: 2px;
-            border-color: #009578;
-            border-style: solid;
-            color: #fff;
-        }
-
-        </style>
-
-        <!--modal.css-->
-        <style>
-        /* Background popup */
-		.modal {
-			height: 100%;
-			width: 100%;
-			position: fixed;
-			top: 0;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			background: #2223;
-			z-index: 2;
-			
-			visibility: hidden;
-			opacity: 0%;
-			transition: top 0.4s, opacity 0.4s;
-		}
-
-		.open-modal {
-			opacity: 100%;
-		}
-        </style>
-
     </head>
     <body>
         <section>
@@ -139,8 +45,9 @@
             -->
         
             <!-- Popups message -->
+            <!-- Popup message for book a vehicle -->
+            <!--
             <div id="modal_popup" class="modal" >
-                <!-- Popup message for book a vehicle -->
                 <div id="popup_vehicle" class="popup">
                     <h1 id="vehicle_name">Vehicle Name</h1>
                     <div id="popup_vehicle_information">
@@ -153,7 +60,7 @@
                     </div>
                 </div>
             </div>
-
+            -->
 
             <!-- Iframe slider screen -->
             <div>
@@ -181,75 +88,4 @@
         </section>
     </body>
     <script src="./js/nav.js"></script>
-
-    <!--popup.js-->
-    <script>
-        // Background
-        let modal = document.getElementById("modal_popup");
-
-        // Popups
-        let popup_vehicle = document.getElementById("popup_vehicle");
-        //let popup_vehicle = document.getElementById("popup_vehicle");
-
-        // Action popup (button)
-        let popup_vehicle_button_close = document.getElementById("but_pop_veh_close");
-        let popup_vehicle_button_book = document.getElementById("but_pop_veh_book");
-
-        // [[From android]]
-        function openPopupBook(_vehicle_name, _vehicle_position){
-            let vehicle_name = document.getElementById("vehicle_name");
-            let vehicle_position = document.getElementById("vehicle_position");
-
-            vehicle_name.innerText = _vehicle_name;
-            vehicle_position.innerText = _vehicle_position;
-
-            openPopup(popup_vehicle);
-        }
-
-        function openPopup(_popup){
-            console.log("open");
-			modal.style.visibility = 'visible';
-			modal.classList.add("open-modal");
-			_popup.classList.add("open-popup");
-        }
-
-        // Remove popup when cliked ouside
-        modal.addEventListener('click', function (event) {			
-			let clicked = false;
-			let targetClickedElement = event.target;
-			let i = 0;
-			do {
-				if(targetClickedElement == popup_vehicle){
-					console.log("clicked inside");
-					clicked = true;
-				}
-				targetClickedElement = targetClickedElement.parentNode;
-			} while(targetClickedElement);
-			if(clicked == false){ 
-				console.log("clicked ouside");
-				closePopup(popup_vehicle);
-			}
-		});
-
-        popup_vehicle_button_close.addEventListener('click', function () {
-			console.log("close");
-            closePopup(popup_vehicle);
-		});
-
-        popup_vehicle_button_book.addEventListener('click', function () {
-			console.log("book");
-            closePopup(popup_vehicle);
-            // Open new html (booking)
-		});
-
-        function closePopup(_popup){
-			modal.classList.remove("open-modal");
-			_popup.classList.remove("open-popup");
-			setTimeout(function () {
-				modal.style.visibility = 'hidden';
-			}, 350);
-		}
-
-    </script>
-
 </html>

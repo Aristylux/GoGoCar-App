@@ -1,138 +1,66 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" href="../ico/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+        <link rel="stylesheet" href="../ico/uicons-solid-rounded/css/uicons-solid-rounded.css" />
+        <link rel="stylesheet" href="../css/style_navigation_bar.css"/>
+
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
-        <link rel="stylesheet" href="../css/style_button.css"/>
+        <link rel="stylesheet" href="../css/style_button.css" />
 
-        <style>
-            ul {
-                padding: 0;
-                margin: 0;
-                list-style: none;
-            }
+        <link rel="stylesheet" href="../css/popup.css" />
+        <link rel="stylesheet" href="../css/modal.css" />
 
-            li {
-                background-color: aliceblue;
-                margin: 0 20px;
-                margin-bottom: 3px;
-                box-shadow: 0 2px 0 #0002;
-                border-style: solid;
-                border-radius: 25px;
-                border-color: #aca8a8;
-                border-width: 1px;
-                padding: 10px;
-            }
-
-            .vehicle_container:active {
-                background-color: aqua;
-            }
-        </style>
-
+        <link rel="stylesheet" href="../css/drive.css" />
     </head>
     <body>
-        <h1>Drive</h1>
+        <section id="page-content">
+            <h1>Drive</h1>
 
-        <!-- Best final : use google maps -->
+            <!-- Best final : use google maps -->
+            <!-- For the moment : -->
+            <ul id="vehicles_list"></ul>
 
-        <!-- For the moment : -->
-        <ul id="vehicles_list">
-        </ul>
-        
-        <script>
-            // data base test //
-            //data base vehicle 1
-            var vehicle_1 = {
-                "id":1,
-                "owner":{
-                    "type":"company",
-                    "name":"ISEN Yncréa",
-                },
-                "name":"Nissan GT",
-                "licence-plate":"TE-157-RE",
-                "picture":"none",
-                "gogocar-module": {
-                    "id":"#0-0001",
-                    "mac-address":"FF:FF:FF:FF:FF:FF",
-                },
-                "address":{
-                    "number":35,
-                    "name":"Avenue champ de Mars",
-                    "city":"Toulon",
-                    "postal-code":83000,
-                    "country":"FRANCE",
-                },
-                "coordinate": {
-                    "latitude":43.121140,
-                    "longitude":5.939126
-                }
-            }
+        </section>
 
-            //data base vehicle 2
-            var vehicle_2 = {
-                "id": 2,
-                "owner":{
-                    "type":"individual",
-                    "name":"Axel Mezade",
-                },
-                "name":"Peugeot 206",
-                "licence-plate":"TA-058-PM",
-                "picture":"none",
-                "gogocar-module": {
-                    "id":"#0-0002",
-                    "mac-address":"FF:FF:FF:FF:FF:FF",
-                },
-                "address":{
-                    "number":1,
-                    "name":"Boulevard Jean Michel",
-                    "city":"Montpellier",
-                    "postal-code":34000,
-                    "country":"FRANCE",
-                },
-                "coordinate": {
-                    "latitude":43.121140,
-                    "longitude":5.939126
-                }
-            }
+        <!-- Popups message -->
+        <div id="modal_popup" class="modal">
+            <!-- Popup message for book a vehicle -->
+            <div id="popup_vehicle" class="popup">
+                <h1 id="vehicle_name">Vehicle Name</h1>
+                <div id="popup_vehicle_information">
+                    <i id="ico_position" class="fi fi-rr-map-marker"></i>
+                    <span id="vehicle_position">Position</span>
+                </div>
+                <div id="popup_vehicle_buttons">
+                    <button id="but_pop_veh_book">Book</button>
+                    <button id="but_pop_veh_close" class="border-button">Close</button>
+                </div>
+            </div>
+        </div>
 
-            // Retrive databases from android
+        <nav id="navigation" class="nav">
+            <a id="nav_home" href="#" class="nav__link nav__link__ripple">
+                <i id="ico_home" class="nav__icon fi fi-rr-home"></i>
+                <span class="nav__text">Home</span>
+            </a>
+            <a id="nav_drive" href="#" class="nav__link nav__link__ripple nav__link--active">
+                <i id="ico_drive" class="nav__icon fi fi-sr-search"></i>
+                <span class="nav__text">Drive</span>
+            </a>
+            <a id="nav_vehicles" href="#" class="nav__link nav__link__ripple">
+                <i id="ico_vehicles" class="nav__icon fi fi-rr-car"></i>
+                <span class="nav__text">Vehicles</span>
+            </a>
+            <a id="nav_settings" href="#" class="nav__link nav__link__ripple">
+                <i id="ico_settings" class="nav__icon fi fi-rr-settings"></i>
+                <span class="nav__text">Settings</span>
+            </a>
+        </nav>
 
-            // result
-            var vehicles = [vehicle_1, vehicle_2];
-
-            console.log(vehicles);
-            //var dataJSON = JSON.stringify(vehicles);
-            //console.log(dataJSON);
-
-            // Set content
-            vehicles.forEach((vehicle) => {
-                addElement(vehicle);
-            });
-
-            function addElement(vehicle){
-                console.log(vehicle.name);
-                console.log(vehicle.address.name);
-                let vehicle_info = [vehicle.name, vehicle.address.name];
-
-                const ul = document.getElementById("vehicles_list");
-                let li = document.createElement('li');
-                li.classList.add('vehicle_container');
-                vehicle_info.forEach((info) => {
-                    let div = document.createElement('div');
-                    div.appendChild(document.createTextNode(info));
-                    li.appendChild(div);
-                });
-                ul.appendChild(li);
-            }
-
-            const vehicles_container = document.querySelectorAll(".vehicle_container");
-            vehicles_container.forEach(function (container, index) {
-                container.addEventListener('click', (event) => {
-                    // Open popup 'book'
-                    console.log(index);
-                    Android.openPopupBook(vehicles[index].id);
-                });
-            });
-
-        </script>
+        <script src="../js/androidInterface.js"></script>
+        <script src="../js/popup.js"></script>
+        <script src="../js/drive.js"></script>
+        <script src="../js/nav.js"></script>
     </body>
 </html>

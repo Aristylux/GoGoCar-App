@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import java.util.Arrays;
+
 public class WebInterface {
 
     Activity activity;
@@ -42,6 +44,7 @@ public class WebInterface {
         dataReceived();
     }
 
+    // Not used
     @JavascriptInterface
     public void changeBackground(String webColor){
         Log.d(TAG_Web, "changeBackground : " + webColor);
@@ -69,12 +72,26 @@ public class WebInterface {
     @JavascriptInterface
     public void openPopupBook(int _id_vehicle){
         Log.d(TAG_Web, "id vehicle: " + _id_vehicle);
-        if(_id_vehicle == 1)
-            androidToWeb("openPopupBook", "Nissan GT", "23 rue Charles Leclec");
-        else
-            androidToWeb("openPopupBook", "Peugeot 206", "Boulevard Michou");
+        Database.selectRow(_id_vehicle);
+        //Log.d(TAG_Web, "Table: " + Arrays.deepToString(Database.getTable()));
+        //Log.d(TAG_Web, "Table: " + Database.getVehicleName());
+        //Log.d(TAG_Web, "Table: " + Database.getVehiclePosition());
+
+        androidToWeb("openPopupBook", Database.getVehicleName(), Database.getVehiclePosition());
     }
 
+    @JavascriptInterface
+    public void changePage(String page){
+        webView.post(() -> webView.loadUrl("file:///android_asset/pages/" + page + ".html"));
+    }
+
+    @JavascriptInterface
+    public void requestDatabase(){
+        //Log.d(TAG_Web, "Table: " + Arrays.deepToString(Database.getTable()));
+        //webView.post(() -> webView.loadUrl("file:///android_asset/pages/drive.html"));
+        webView.post(() -> webView.loadUrl("javascript:" + "setDatabase" + "('" + Database.getNewTable() + "')"));
+        //androidToWeb("setDatabase", Arrays.deepToString(Database.getTable()));
+    }
 
     /** ---------------------------------- *
      *  -- Methods send data to webPage -- *

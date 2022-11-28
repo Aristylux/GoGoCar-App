@@ -1,17 +1,47 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" href="../ico/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+        <link rel="stylesheet" href="../ico/uicons-solid-rounded/css/uicons-solid-rounded.css" />
+        <link rel="stylesheet" href="../css/style_navigation_bar.css"/>
+
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
         <link rel="stylesheet" href="../css/style_button.css"/>
     </head>
     <body>
-        <h1>Home</h1>
+        <section id="page-content">
+            <h1>Home</h1>
 
-        <button id="button_change_color">Change Back</button>
-    
-        <button id="button_reset_color">Reset Back</button>
-    
-        <button id="button_toast">Toast</button>
-    </body>
-    <script src="../js/androidInterface.js"></script>
+            <button id="button_change_color">Change Back</button>
+        
+            <button id="button_reset_color">Reset Back</button>
+        
+            <button id="button_toast">Toast</button>
+        </section>
+
+        
+
+        <nav id="navigation" class="nav">
+            <a id="nav_home" href="#" class="nav__link nav__link__ripple nav__link--active">
+                <i id="ico_home" class="nav__icon fi fi-sr-home"></i>
+                <span class="nav__text">Home</span>
+            </a>
+            <a id="nav_drive" href="#" class="nav__link nav__link__ripple">
+                <i id="ico_drive" class="nav__icon fi fi-rr-search"></i>
+                <span class="nav__text">Drive</span>
+            </a>
+            <a id="nav_vehicles" href="#" class="nav__link nav__link__ripple">
+                <i id="ico_vehicles" class="nav__icon fi fi-rr-car"></i>
+                <span class="nav__text">Vehicles</span>
+            </a>
+            <a id="nav_settings" href="#" class="nav__link nav__link__ripple">
+                <i id="ico_settings" class="nav__icon fi fi-rr-settings"></i>
+                <span class="nav__text">Settings</span>
+            </a>
+        </nav>
+
+        <script src="../js/androidInterface.js"></script>
+        <script src="../js/home.js"></script>
+        <script src="../js/nav.js"></script>
+    </body>   
 </html>

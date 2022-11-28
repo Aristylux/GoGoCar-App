@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -30,10 +31,19 @@ public class MainActivity extends AppCompatActivity {
         // Enable javascript
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        // useful ?
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setAllowFileAccessFromFileURLs(true);
+        webSettings.setAllowContentAccess(true);
+
+        web.setWebChromeClient(new WebChromeClient());
 
         // Result state page
         web.setWebViewClient(new Callback());
-        web.loadUrl("file:///android_asset/index.html");
+        //web.loadUrl("file:///android_asset/index.html");
+        web.loadUrl("file:///android_asset/pages/home.html");
 
         // Interface
         web.addJavascriptInterface(new WebInterface(this, this, web), "Android");
