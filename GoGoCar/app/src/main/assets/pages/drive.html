@@ -42,6 +42,7 @@
             // data base test //
             //data base vehicle 1
             var vehicle_1 = {
+                "id":1,
                 "owner":{
                     "type":"company",
                     "name":"ISEN Yncréa",
@@ -54,20 +55,21 @@
                     "mac-address":"FF:FF:FF:FF:FF:FF",
                 },
                 "address":{
-                    "number":"35",
+                    "number":35,
                     "name":"Avenue champ de Mars",
                     "city":"Toulon",
-                    "postal-code":"83000",
+                    "postal-code":83000,
                     "country":"FRANCE",
                 },
                 "coordinate": {
-                    "latitude":"43.121140",
-                    "longitude":"5.939126"
+                    "latitude":43.121140,
+                    "longitude":5.939126
                 }
             }
 
             //data base vehicle 2
             var vehicle_2 = {
+                "id": 2,
                 "owner":{
                     "type":"individual",
                     "name":"Axel Mezade",
@@ -80,15 +82,15 @@
                     "mac-address":"FF:FF:FF:FF:FF:FF",
                 },
                 "address":{
-                    "number":"1",
+                    "number":1,
                     "name":"Boulevard Jean Michel",
                     "city":"Montpellier",
-                    "postal-code":"34000",
+                    "postal-code":34000,
                     "country":"FRANCE",
                 },
                 "coordinate": {
-                    "latitude":"43.121140",
-                    "longitude":"5.939126"
+                    "latitude":43.121140,
+                    "longitude":5.939126
                 }
             }
 
@@ -127,6 +129,7 @@
                 container.addEventListener('click', (event) => {
                     // Open popup 'book'
                     console.log(index);
+                    Android.openPopupBook(vehicles[index].id);
                 });
             });
 

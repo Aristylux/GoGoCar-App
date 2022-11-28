@@ -66,6 +66,16 @@ public class WebInterface {
         Log.d(TAG_Web, "changeBackground : color: " + "#" + Integer.toHexString(ContextCompat.getColor(context, R.color.my_statusbar_color)));
     }
 
+    @JavascriptInterface
+    public void openPopupBook(int _id_vehicle){
+        Log.d(TAG_Web, "id vehicle: " + _id_vehicle);
+        if(_id_vehicle == 1)
+            androidToWeb("openPopupBook", "Nissan GT", "23 rue Charles Leclec");
+        else
+            androidToWeb("openPopupBook", "Peugeot 206", "Boulevard Michou");
+    }
+
+
     /** ---------------------------------- *
      *  -- Methods send data to webPage -- *
      *  ---------------------------------- */
@@ -83,6 +93,10 @@ public class WebInterface {
 
     private void androidToWeb(String function, String data){
         webView.post(() -> webView.loadUrl("javascript:" + function + "('" + data + "')"));     //webView.loadUrl("javascript:dataReceived('red')");
+    }
+
+    private void androidToWeb(String function, String data1, String data2){
+        webView.post(() -> webView.loadUrl("javascript:" + function + "('" + data1 + "','" + data2 + "')"));     //webView.loadUrl("javascript:dataReceived('red')");
     }
 
 }
