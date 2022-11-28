@@ -2,9 +2,16 @@
 
 Android Application for GoGoCar
 
+## GoGoCar
+
+[Description GoGoCar](./GoGoCar)
+
+[HTML Code](./GoGoCar/app/src/main/assets/)
+
 ## Table of Content
 
 - [GoGoCar-App](#gogocar-app)
+  - [GoGoCar](#gogocar)
   - [Table of Content](#table-of-content)
   - [App 1](#app-1)
     - [App1 Functionnalities:](#app1-functionnalities)
@@ -39,7 +46,7 @@ App 2 is an app test for bluetooth
 
 ## App 3
 
-App 2 is an app test for bluetooth
+App 3 is an app test for bluetooth
 
 ### App3 Functionnalities:
 
@@ -51,3 +58,4 @@ App 2 is an app test for bluetooth
 App3 ~= App2 + App1
 
 [Description App3](./App3)
+
