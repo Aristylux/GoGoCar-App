@@ -43,7 +43,13 @@ public class MainActivity extends AppCompatActivity {
         // Result state page
         web.setWebViewClient(new Callback());
         //web.loadUrl("file:///android_asset/index.html");
-        web.loadUrl("file:///android_asset/pages/home.html");
+        
+        // Get user id
+
+        // if user id == null
+        web.loadUrl("file:///android_asset/login.html");
+        // else
+        //web.loadUrl("file:///android_asset/pages/home.html");
 
         // Interface
         web.addJavascriptInterface(new WebInterface(this, this, web), "Android");

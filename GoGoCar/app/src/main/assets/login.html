@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <link rel="stylesheet" href="./ico/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+
+    <!-- login.css -->
+    <style>
+
+        :root{
+            --primary-color: #4070f4;
+            --secondary-color: #265df2;
+        }
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+        }
+
+        .container {
+            position: relative;
+            max-width: 430px;
+            width: 100%;
+            background-color: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .container .forms {
+            display: flex;
+            align-items: center;
+            width: 200%;
+            height: 400px; /*login container height*/
+            transition:  height 0.2s ease;
+        }
+
+        
+
+        .container .form {
+            width: 50%;
+            padding: 30px;
+            background-color: #FFFFFF;
+            transition: margin-left 0.18s ease;
+        }
+
+        /* Transistions */
+        .container.active .login {
+            margin-left: -50%;
+            opacity: 0;
+            transition: margin-left 0.18s ease, opacity 0.15s ease;
+        }
+
+        .container.signup {
+            opacity: 0;
+            transition: opacity 0.09s ease;
+        }
+
+        .container.active .signup {
+            opacity: 1;
+            transition: opacity 0.2s ease;
+        }
+
+        .container.active .forms {
+            height: 540px;
+        }
+
+
+
+        /* Content */
+        .container .form h1 {
+            position: relative;
+            font-size: 1.6em;
+            font-weight: 600;
+        }
+
+        .container .form h1::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 30px;
+            background-color: var(--primary-color);
+            border-radius: 25px;
+        }
+
+        .form .input-field {
+            position: relative;
+            height: 50px;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .input-field input {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            padding: 0 35px;
+            font-size: 1em;
+            transition: all 0.2s ease;
+            
+            border: none;
+            outline: none;
+            border-bottom: 2px solid #ccc;
+            border-top: 2px solid transparent;
+
+        }
+
+        .input-field input:is(:focus, :valid) {
+            border-bottom-color: var(--primary-color);
+        }
+
+        .input-field i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+
+            color: #999;
+            font-size: 1em;
+
+            display: flex;
+            align-items: center;
+        }
+
+        .input-field input:is(:focus, :valid) ~ i {
+            color: var(--primary-color);
+        }
+
+        .input-field i.icon {
+            left: 0;
+        }
+
+        .input-field i.showHidePw {
+            right: 0;
+            padding: 10px;
+        }
+
+
+        /* Button */
+        .form .button {
+            margin-top: 30px;
+        }
+
+        .form .button input {
+            border: none;
+            color: #FFFFFF;
+            font-size: 1.1em;
+            font-weight: 600;
+            letter-spacing: 1px;
+            border-radius: 6px;
+            background-color: var(--primary-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .form .button input:active {
+            background-color: var(--secondary-color);
+        }
+
+
+        .login-signup {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .form .text {
+            font-size: 0.9em;
+        }
+
+        .form a.text {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        .login-signin {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+<body>
+    
+    <div class="container">
+        <div class="forms">
+            <div class="form login">
+                <h1>Login</h1>
+
+                <form id="login_form" action="#">
+                    <div class="input-field" >
+                        <input id="login_email" type="text" placeholder="Your email" required>
+                        <i class="fi fi-rr-envelope icon"></i>
+                    </div>
+                    <div class="input-field">
+                        <input id="login_password" type="password" class="password" placeholder="Your password" required>
+                        <i class="fi fi-rr-lock icon"></i>
+                        <i class="fi fi-rr-eye-crossed showHidePw"></i>
+                    </div>
+
+                    <div class="input-field button">
+                        <input id="but_login" type="button" value="Login">
+                    </div>
+                </form>
+
+                <div class="login-signup">
+                    <a href="#" class="text">Forgot password?</a>
+                    <a href="#" class="text signup-link">Sign up</a>
+                </div>
+
+            </div>
+
+            <!-- Registration form -->
+            <div class="form signup">
+                <h1>Registration</h1>
+
+                <form id="register_form" action="#">
+                    <div class="input-field" >
+                        <input type="text" placeholder="Your name" required>
+                        <i class="fi fi-rr-user icon"></i>
+                    </div>
+                    <div class="input-field" >
+                        <input type="text" placeholder="Email" required>
+                        <i class="fi fi-rr-envelope icon"></i>
+                    </div>
+                    <div class="input-field">
+                        <input type="password" class="password" placeholder="Password" required>
+                        <i class="fi fi-rr-lock icon"></i>
+                        <i class="fi fi-rr-eye-crossed showHidePw"></i>
+                    </div>
+                    <div class="input-field">
+                        <input type="password" class="password" placeholder="Confirm Password" required>
+                        <i class="fi fi-rr-lock icon"></i>
+                        <i class="fi fi-rr-eye-crossed showHidePw"></i>
+                    </div>
+
+                    <div class="input-field button">
+                        <input id="but_register" type="button" value="Register">
+                    </div>
+                </form>
+
+                <div class="login-signin">
+                    <a href="#" class="text signin-link">Sign in</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/androidInterface.js"></script>
+    <script>
+        const container = document.querySelector(".container"),
+            pwShowHide = document.querySelectorAll(".showHidePw"),
+            pwFields = document.querySelectorAll(".password");
+
+
+        // show/hide password
+        pwShowHide.forEach(eyeIcon => {
+            eyeIcon.addEventListener('click', function () {
+                pwFields.forEach(pwField => {
+                    if(pwField.type === "password"){
+                        pwField.type = "text";
+
+                        pwShowHide.forEach(icon => {
+                            icon.classList.replace("fi-rr-eye-crossed", "fi-rr-eye");
+                        })
+                    } else {
+                        pwField.type = "password";
+
+                        pwShowHide.forEach(icon => {
+                            icon.classList.replace("fi-rr-eye", "fi-rr-eye-crossed");
+                        })
+                    }
+                })
+            })
+        });
+
+
+        // Change sign method
+        const signUp = document.querySelector(".signup-link"),
+            signIn = document.querySelector(".signin-link");
+
+        signUp.addEventListener('click', function () {
+            container.classList.add("active");
+        });
+
+        signIn.addEventListener('click', function () {
+            container.classList.remove("active");
+        });
+
+        // -----------
+
+        const loginForm = document.getElementById("login_form");
+
+
+        const buttonLogin = document.getElementById("but_login");
+        // For Login
+        // If ok : Android change page
+        // If not ok : Android form error "email or password incorrect"
+        buttonLogin.addEventListener('click', function () {
+            // Collect data (email, password)
+            const email = loginForm.elements['login_email'].value;
+            const password = loginForm.elements['login_password'].value;
+
+            // Sent to android
+            if(androidConnected()) Android.AuthenticationLogin(email, password);
+        });
+
+        // ---------------
+
+        const registerForm = document.getElementById("register_form");
+        // For register: during typing
+        // verify mail adress doesn't exist into our database (ask Android)
+        // verify password are the same
+        registerForm.addEventListener('input', (event) => {
+            // Verify mail
+            const email = registerForm.elements['register_email'].value;
+
+            // Check strong password
+            const password = registerForm.elements['register_password'].value;
+            console.log(email);
+        });
+
+        // if clicked on button Register
+        const buttonRegister = document.getElementById("but_register");
+        // For register
+        // When all is ok : send data to Android (name, email, password)
+        buttonRegister.addEventListener('click', function () {
+
+        });
+    </script>
+</body>
+</html>

@@ -12,8 +12,6 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
-import java.util.Arrays;
-
 public class WebInterface {
 
     Activity activity;
@@ -30,6 +28,30 @@ public class WebInterface {
     /** ----------------------------- *
      *  -- Methods call by webPage -- *
      *  ----------------------------- */
+
+    @JavascriptInterface
+    public void AuthenticationLogin(String email, String password){
+        Log.d("Auth", "email: " + email + " | pw: " + password);
+
+        //Hash password
+
+        //Compare passwords
+
+        //if password ok and email too
+        // Go to home
+        webView.post(() -> webView.loadUrl("file:///android_asset/pages/home.html"));
+        //else
+        // Send error to the page
+    }
+
+    @JavascriptInterface
+    public void AuthenticationRegister(String fullName, String email, String phoneNumber, String password){
+        // Open database
+
+        // Save user into user table
+
+        // Save user for the application (user id)
+    }
 
     /* Show a toast from the web page */
     @JavascriptInterface

@@ -9,38 +9,25 @@ public class Database {
     private static final String[] vehicle_1 = {"1", "Nissan GT", "26 rue General de Gaulle"};
     private static final String[] vehicle_2 = {"2", "Peugeot 206", "18 Boulevard Jules Ferry"};
 
-    private static final JSONArray vehicle_1_json = convertJSON(vehicle_1);
-    private static final JSONArray vehicle_2_json = convertJSON(vehicle_2);
-
     private static final String[][] table_vehicle = {vehicle_1, vehicle_2};
+
+    private static final String table_vehicle_json = createBase(vehicle_1, vehicle_2);
 
     //private static final JSONArray[] table_vehicle = {vehicle_1_json, vehicle_2_json};
 
     private static int selectRow = 0;
 
-    private static JSONArray convertJSON(String[] table) {
-        JSONArray jsonArray = new JSONArray();
-        for (String strings : table) {
-            jsonArray.put(strings);
-        }
-        return jsonArray;
-    }
-
-    private static String createBase(){
+    private static String createBase(String[]... rows){
         JSONObject map;
         JSONArray array = new JSONArray();
         try {
-            map = new JSONObject();
-            map.put("id",1);
-            map.put("name", vehicle_1[1]);
-            map.put("address", vehicle_1[2]);
-            array.put(map);
-
-            map = new JSONObject();
-            map.put("id",2);
-            map.put("name", vehicle_2[1]);
-            map.put("address", vehicle_2[2]);
-            array.put(map);
+            for(String[] row : rows){
+                map = new JSONObject();
+                map.put("id", Integer.parseInt(row[0]));
+                map.put("name", row[1]);
+                map.put("address", row[2]);
+                array.put(map);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -57,7 +44,7 @@ public class Database {
     }
 */
     public static String getNewTable(){
-        return createBase();
+        return table_vehicle_json;
     }
 /*
     public static JSONArray getVehicle(){
