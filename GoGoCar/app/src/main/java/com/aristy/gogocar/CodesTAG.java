@@ -9,5 +9,6 @@ public class CodesTAG {
     static final String TAG_Error = TAG_Debug + "_E";
 
     static final String TAG_Web = app_name + "_W";
+    static final String TAG_Database = app_name + "_DB";
 
 }

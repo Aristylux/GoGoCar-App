@@ -1,9 +1,12 @@
 package com.aristy.gogocar;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
+import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
@@ -33,9 +36,12 @@ public class WebInterface {
     public void AuthenticationLogin(String email, String password){
         Log.d("Auth", "email: " + email + " | pw: " + password);
 
-        //Hash password
+        // Hash password
+        String hash = hashPassword(password);
 
-        //Compare passwords
+        // Get Hash form database
+
+        // Compare passwords
 
         //if password ok and email too
         // Go to home
@@ -48,9 +54,19 @@ public class WebInterface {
     public void AuthenticationRegister(String fullName, String email, String phoneNumber, String password){
         // Open database
 
-        // Save user into user table
+        // Hash password
+        String hash = hashPassword(password);
+
+        // Add user into user table
+
+        // retrieve user id
+        UserPreferences userdata = new UserPreferences();
+        userdata.setUserID("#0001");
 
         // Save user for the application (user id)
+        SharedPreferences.Editor editor = context.getSharedPreferences(UserPreferences.DATA, MODE_PRIVATE).edit();
+        editor.putString(UserPreferences.USER, userdata.getUserID());
+        editor.apply();
     }
 
     /* Show a toast from the web page */

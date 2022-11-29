@@ -1,11 +1,15 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_Database;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -43,13 +47,14 @@ public class MainActivity extends AppCompatActivity {
         // Result state page
         web.setWebViewClient(new Callback());
         //web.loadUrl("file:///android_asset/index.html");
-        
-        // Get user id
 
-        // if user id == null
-        web.loadUrl("file:///android_asset/login.html");
-        // else
-        //web.loadUrl("file:///android_asset/pages/home.html");
+        // Get user id
+        SharedPreferences userdata = getSharedPreferences(UserPreferences.DATA, MODE_PRIVATE);
+        String userID = userdata.getString(UserPreferences.USER, UserPreferences.ID);
+        if(userID == null)
+            web.loadUrl("file:///android_asset/login.html");
+        else
+            web.loadUrl("file:///android_asset/pages/home.html");
 
         // Interface
         web.addJavascriptInterface(new WebInterface(this, this, web), "Android");

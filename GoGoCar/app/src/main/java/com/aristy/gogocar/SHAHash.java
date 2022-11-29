@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class SHAHash {
 
-    public String hashPassword(String password) {
+    public static String hashPassword(String password) {
         //https://www.codeurjava.com/2016/12/hashage-md5-et-sha-256-en-java.html
         Log.d("SHA", "Start");
 
@@ -25,7 +25,7 @@ public class SHAHash {
         }
     }
 
-    private String convertHex(byte[] byteData){
+    private static String convertHex(byte[] byteData){
 
         StringBuilder hexString = new StringBuilder();
         for (byte byteDatum : byteData) {
