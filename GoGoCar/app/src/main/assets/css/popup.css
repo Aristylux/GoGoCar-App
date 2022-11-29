@@ -1,5 +1,5 @@
 .popup {
-    width: 300px;
+    width: 70vw ;
     background-color: rgb(255, 236, 236);
     border-radius: 15px;
     position: absolute;
@@ -14,7 +14,7 @@
     top: 100%;
     transform: translate(-50%, -50%);
     opacity: 0%;
-    transition: transform 0.4s, top 0.4s, opacity 1s;
+    transition: transform 0.4s, top 0.4s, opacity 0.4s;
 }
 
 /* Popup active */
