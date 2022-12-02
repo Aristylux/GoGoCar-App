@@ -151,6 +151,12 @@ public class WebInterface {
         webView.post(() -> webView.loadUrl("javascript:" + "success" + "('" + successCode + "')"));
     }
 
+    /** Settings.html */
+
+    @JavascriptInterface
+    public void requestUserName(){
+        androidToWeb("setUserName", "Axel");
+    }
 
     @JavascriptInterface
     public void logout(){

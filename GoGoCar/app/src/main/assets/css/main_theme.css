@@ -1,0 +1,9 @@
+:root {
+    --primary-color: rgb(255, 32, 32);
+
+    --background-color: #ffffff;
+
+    --touch-transistion: 0.3s;
+
+    --border-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+}
