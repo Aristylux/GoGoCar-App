@@ -8,19 +8,19 @@ public class UserPreferences extends Application {
 
     // USER : (ID)
     public static final String USER = "user";
-    public static String ID;
+    public static int ID;
 
     // Section PREFERENCE
     // Custom Theme : (Light, dark, system)
 
     // Storage
-    private String userID;
+    private int userID;
 
-    public String getUserID(){
+    public int getUserID(){
         return userID;
     }
 
-    public void setUserID(String userID){
+    public void setUserID(int userID){
         this.userID = userID;
     }
 }

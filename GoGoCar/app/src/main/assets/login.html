@@ -72,7 +72,7 @@
         }
 
         .container.active .forms {
-            height: 540px;
+            height: 600px;
         }
 
 
@@ -196,6 +196,8 @@
     
     <div class="container">
         <div class="forms">
+
+            <!-- Login form -->
             <div class="form login">
                 <h1>Login</h1>
 
@@ -228,20 +230,24 @@
 
                 <form id="register_form" action="#">
                     <div class="input-field" >
-                        <input type="text" placeholder="Your name" required>
+                        <input id="register_name" type="text" placeholder="Your name" required>
                         <i class="fi fi-rr-user icon"></i>
                     </div>
                     <div class="input-field" >
-                        <input type="text" placeholder="Email" required>
+                        <input id="register_email" type="email" placeholder="Email" required>
                         <i class="fi fi-rr-envelope icon"></i>
                     </div>
+                    <div class="input-field" >
+                        <input id="register_phonenumber" type="tel" placeholder="Phone number" required>
+                        <i class="fi fi-rr-phone-call icon"></i>
+                    </div>
                     <div class="input-field">
-                        <input type="password" class="password" placeholder="Password" required>
+                        <input id="register_password" type="password" class="password" placeholder="Password" required>
                         <i class="fi fi-rr-lock icon"></i>
                         <i class="fi fi-rr-eye-crossed showHidePw"></i>
                     </div>
                     <div class="input-field">
-                        <input type="password" class="password" placeholder="Confirm Password" required>
+                        <input id="register_password_confirmation" type="password" class="password" placeholder="Confirm Password" required>
                         <i class="fi fi-rr-lock icon"></i>
                         <i class="fi fi-rr-eye-crossed showHidePw"></i>
                     </div>
@@ -261,6 +267,10 @@
 
     <script src="./js/androidInterface.js"></script>
     <script>
+
+        console.log("Login init");
+        if(androidConnected()) Android.AuthenticationInit();
+
         const container = document.querySelector(".container"),
             pwShowHide = document.querySelectorAll(".showHidePw"),
             pwFields = document.querySelectorAll(".password");
@@ -318,28 +328,154 @@
             if(androidConnected()) Android.AuthenticationLogin(email, password);
         });
 
+        // Error callback
+        function errorAuthenticationLogin(){
+            console.error("Login failed");
+            if(androidConnected()) Android.showToast("Login error: incorrect");
+        }
+
         // ---------------
 
         const registerForm = document.getElementById("register_form");
+
+        const name_el = registerForm.elements['register_name'];
+        const email_el = registerForm.elements['register_email'];
+        const phone_el = registerForm.elements['register_phonenumber'];
+        const password_el = registerForm.elements['register_password'];
+        const password_c_el = registerForm.elements['register_password_confirmation'];
+
         // For register: during typing
-        // verify mail adress doesn't exist into our database (ask Android)
+        // verify email is in this format : xxxx@xxxx.xxx
         // verify password are the same
+        /*
         registerForm.addEventListener('input', (event) => {
-            // Verify mail
+            // Verify mail expression
             const email = registerForm.elements['register_email'].value;
 
             // Check strong password
             const password = registerForm.elements['register_password'].value;
             console.log(email);
         });
+        */
+
+        var email_correct = false, phone_correct = false;
+        const NAME_ERROR_CODE = 1, 
+            EMAIL_ERROR_CODE = 2,
+            PHONE_ERROR_CODE = 3,
+            PASSWORD_ERROR_CODE = 4;
+
+        const EMAIL_SUCCESS_CODE = 1,
+            PHONE_SUCCESS_CODE = 2;
+
+        // When user leave email input 
+        // Verify mail adress doesn't exist into our database (ask Android)
+        // Request email (if email already exist: error)
+        email_el.addEventListener('change', function () {
+            console.log("email change");
+
+            const email = email_el.value;
+
+            if(androidConnected()) Android.verifyEmail(email, EMAIL_SUCCESS_CODE, EMAIL_ERROR_CODE);
+        });
+
+        // When user leave phonenumber input 
+        // Verify phonenumber doesn't exist into our database (ask Android)
+        // Request phonenumber (if phonenumber already exist: error)
+        phone_el.addEventListener('change', function () {
+            console.log("phone number change");
+            // Format 06 XX XX XX XX
+
+            const phone = phone_el.value;
+
+            if(androidConnected()) Android.verifyPhone(phone, PHONE_SUCCESS_CODE, PHONE_ERROR_CODE);
+            
+        });
+
+        // Success callback
+        function success(code_success){
+            if (code_success == EMAIL_SUCCESS_CODE) {
+                // Email ok
+                email_correct = true;
+            } else {
+                // Phone ok
+                phone_correct = true;
+            }
+        }
+
+
 
         // if clicked on button Register
         const buttonRegister = document.getElementById("but_register");
         // For register
-        // When all is ok : send data to Android (name, email, password)
+        // When all is ok : send data to Android (name, email, phonenumber, password)
         buttonRegister.addEventListener('click', function () {
+            console.log("Register click");
+            let register_success = true;
 
+            const name = name_el.value,
+                email = email_el.value,
+                phone = phone_el.value,
+                password = password_el.value,
+                password_c = password_c_el.value;
+
+            // If name contain 2word (first name and last name)
+            if(!checkNames(name) || name == ''){
+                register_success = false;
+                errorAuthenticationRegistration(NAME_ERROR_CODE);
+            }
+
+            // If email_correct != true
+            if (!email_correct || email == ''){
+                register_success = false;
+                errorAuthenticationRegistration(EMAIL_ERROR_CODE);
+            }
+
+            // If phone_correct != true
+            if (!phone_correct || phone == ''){
+                register_success = false;
+                errorAuthenticationRegistration(PHONE_ERROR_CODE);
+            }
+
+            // If password != password_c
+            if(password.normalize() !== password_c.normalize() || password == ''){
+                register_success = false;
+                errorAuthenticationRegistration(PASSWORD_ERROR_CODE);
+            }
+
+            if(androidConnected() && register_success) Android.AuthenticationRegister(name, email, phone, password);
         });
+
+        function checkNames(names) {
+            console.log("check names: " + names);
+            // Verify names are 2
+            return true;
+        }
+
+        // Error callback
+        function errorAuthenticationRegistration(cause){
+            console.error("Register failed: " + cause);
+            switch (cause) {
+                case NAME_ERROR_CODE:
+                    if(androidConnected()) Android.showToast("Registration error: name incorrect");
+                    break;
+
+                case EMAIL_ERROR_CODE:
+                    if(androidConnected()) Android.showToast("Registration error: email incorrect");
+                    break;
+
+                case PHONE_ERROR_CODE:
+                    if(androidConnected()) Android.showToast("Registration error: phone incorrect");
+                    break;
+
+                case PASSWORD_ERROR_CODE:
+                    if(androidConnected()) Android.showToast("Registration error: password incorrect");
+                    break;
+            
+                default:
+                    if(androidConnected()) Android.showToast("Registration error: error unknown");
+                    break;
+            }
+        }
     </script>
 </body>
 </html>

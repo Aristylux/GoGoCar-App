@@ -1,6 +1,7 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
+import static com.aristy.gogocar.CodesTAG.TAG_Info;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -50,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Get user id
         SharedPreferences userdata = getSharedPreferences(UserPreferences.DATA, MODE_PRIVATE);
-        String userID = userdata.getString(UserPreferences.USER, UserPreferences.ID);
-        if(userID == null)
+        int userID = userdata.getInt(UserPreferences.USER, UserPreferences.ID);
+        if(userID == 0)
             web.loadUrl("file:///android_asset/login.html");
         else
             web.loadUrl("file:///android_asset/pages/home.html");

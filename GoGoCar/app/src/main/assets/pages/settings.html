@@ -5,6 +5,7 @@
         <link rel="stylesheet" href="../ico/uicons-solid-rounded/css/uicons-solid-rounded.css" />
         <link rel="stylesheet" href="../css/style_navigation_bar.css"/>
 
+        
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
         <link rel="stylesheet" href="../css/style_button.css"/>
         <style>
@@ -23,38 +24,121 @@
                 z-index: 2;
             }
 
-            #set_sec_pp.active{
+            #set_sec_pp.active {
                 left: 0;
             }
 
-            #title{
+            #title {
                 margin-top: 25px;
-            }
-
-            iframe {
-                width: 100%;
-                height: 100%;
-                border: 0;
             }
 
         </style>
 
-        
+        <style>
+
+            #page-content i {
+                position: absolute;
+                display: flex;
+                align-items: center;
+            }
+
+            #user_info {
+                margin-top: 20px;
+                display: grid;
+                grid-template-columns: 50% auto;
+                align-items: center;
+            }
+
+            .circle {
+                width: 52px;
+                height: 52px;
+                border-radius: 25px;
+                background: rgb(255, 32, 32);
+            }
+
+            .circle i {
+                padding: 10px;
+                color: white;
+                font-size: 2em;
+            }
+
+
+            /* Menu */
+            #menu_setting {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .settings_button {
+                padding: 15px;
+                text-decoration: none;
+                color: black;
+                transition: 0.3s;
+            }
+
+            .settings_button:active {
+                color: white;
+                background-color: red;
+            }
+
+            .settings_button span {
+                margin-left: 2em;
+            }
+
+            .settings_button i {
+                color: red;
+                
+            }
+            
+
+
+            .caution_button {
+                width: 200px;
+                background-color: rgb(255, 32, 32);
+                color: white;
+                font-weight: 600;
+            }
+        </style>
 
     </head>
     <body>
         <section id="page-content">
             <h1>Settings</h1>
 
-            <div>
-                Full name
-
+            <div id="user_info">
+                <div id="user_name">
+                    Full name
+                </div>
                 <!--user picture-->
+                <div id="user_picture" class="circle">
+                    <i class="fi fi-rr-portrait"></i>
+                </div>
             </div>
 
-            <div>
+            <div id="menu_setting">
 
-            
+                <a id="set_but_pp" href="#" class="settings_button">
+                    <i id="ico_pp" class="fi fi-rr-user"></i>
+                    <span class="button__text">Change your profile picture</span>
+                </a>
+                <a id="set_but_sl" href="#" class="settings_button">
+                    <i id="ico_sl" class="fi fi-rr-flag"></i>
+                    <span class="button__text">Select language</span>
+                </a>
+                <a id="set_but_pi" href="#" class="settings_button">
+                    <i id="ico_pi" class="fi fi-rr-info"></i>
+                    <span class="button__text">Personnal informations</span>
+                </a>
+                <a id="set_but_jh" href="#" class="settings_button">
+                    <i id="ico_jh" class="fi fi-rr-time-past"></i>
+                    <span class="button__text">Journey history</span>
+                </a>
+                <a id="set_but_bc" href="#" class="settings_button">
+                    <i id="ico_bc" class="fi fi-rr-credit-card"></i>
+                    <span class="button__text">My bank details</span>
+                </a>
+
+                <!--
                 <button id="set_but_pp" class="settings_button">Change your profile picture</button>
 
                 <button id="set_but_sl" class="settings_button">Select language</button>
@@ -64,11 +148,12 @@
                 <button id="set_but_jh" class="settings_button">Journey history</button>
 
                 <button id="set_but_bc" class="settings_button">My bank details</button>
-            
+            -->
             </div>
 
             <div>
-
+                <button id="delete_account_button" class="caution_button">Delete my account</button>
+                <button id="log_out_button" class="caution_button">Log out</button>
             </div>
 
         </section>
@@ -126,6 +211,7 @@
         <script src="../js/nav.js"></script>
 
         <script>
+            
             const setting_page_pp = document.getElementById("set_sec_pp");
 
             setting_page_pp.addEventListener('touchstart', touchStart);
@@ -164,6 +250,7 @@
                     setting_page_pp.style.left = '101vw';
                 }
             }
+            
         </script>
 
         <script>
@@ -187,12 +274,24 @@
             });
             */
             
-
-        
             const button_return = document.getElementById("sec_but_re");
             button_return.addEventListener("click", function () {
                 setting_page_pp.style.left = '101vw';
             });
+        </script>
+
+        <script>
+            // delete account:
+            // Open popup "Are you sure ?"
+
+            // Log out
+            const logOutButton = document.getElementById("log_out_button");
+
+            logOutButton.addEventListener('click', function () {
+                console.log("logout");
+                if(androidConnected()) Android.logout();
+            });
+
         </script>
 
     </body>
