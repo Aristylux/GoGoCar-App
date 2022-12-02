@@ -43,23 +43,31 @@
             }
 
             #user_info {
-                margin-top: 20px;
+                margin: 20px;
                 display: grid;
                 grid-template-columns: 50% auto;
                 align-items: center;
             }
 
+            #user_name {
+                text-align: end;
+                padding: 0 10px;
+            }
+
             .circle {
-                width: 52px;
-                height: 52px;
-                border-radius: 25px;
+                width: fit-content;
+                height: fit-content;
+                border-radius: 50%;
                 background: rgb(255, 32, 32);
+                box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
             }
 
             .circle i {
+                position: relative !important;
                 padding: 10px;
                 color: white;
-                font-size: 2em;
+                font-size: 4em;
+                text-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
             }
 
 
@@ -67,6 +75,7 @@
             #menu_setting {
                 display: flex;
                 flex-direction: column;
+                margin: 0 20px;
             }
 
             .settings_button {
@@ -111,7 +120,7 @@
                 </div>
                 <!--user picture-->
                 <div id="user_picture" class="circle">
-                    <i class="fi fi-rr-portrait"></i>
+                    <i class="fi fi-rr-user"></i>
                 </div>
             </div>
 
@@ -122,7 +131,7 @@
                     <span class="button__text">Change your profile picture</span>
                 </a>
                 <a id="set_but_sl" href="#" class="settings_button">
-                    <i id="ico_sl" class="fi fi-rr-flag"></i>
+                    <i id="ico_sl" class="fi fi-rr-flag"></i> <!--fi-rr-globe-->
                     <span class="button__text">Select language</span>
                 </a>
                 <a id="set_but_pi" href="#" class="settings_button">

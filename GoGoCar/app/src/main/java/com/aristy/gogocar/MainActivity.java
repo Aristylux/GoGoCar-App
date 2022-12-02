@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         web.setWebViewClient(new Callback());
         //web.loadUrl("file:///android_asset/index.html");
 
-        // Get user id
+        // Get user id (by default (unset) int=0, )
         SharedPreferences userdata = getSharedPreferences(UserPreferences.DATA, MODE_PRIVATE);
         int userID = userdata.getInt(UserPreferences.USER, UserPreferences.ID);
         if(userID == 0)
