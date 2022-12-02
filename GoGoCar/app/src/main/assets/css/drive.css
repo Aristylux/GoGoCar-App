@@ -4,7 +4,7 @@ ul {
 }
 
 li {
-    background-color: #FFFFFF;
+    background-color: var(--background-color);
     margin: 0 20px;
     margin-bottom: 10px;
     box-shadow: 0 2px 5px #0002;
