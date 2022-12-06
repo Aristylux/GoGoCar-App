@@ -1,10 +1,14 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_Database;
+
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -65,10 +69,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // If it found, delete it and return true.
         // If it is not found, return false.
-        if (cursor.moveToFirst())
-            return true;
-        else
-            return false;
+        boolean result = cursor.moveToFirst();
+
+        // Close both cursor and the database
+        cursor.close();
+        db.close();
+        return result;
     }
 
     public List<DBModelUser> getAllUsers(){
@@ -101,7 +107,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return returnList;
     }
-    
+
+    public DBModelUser getUserById(int ID){
+        String query = "SELECT * FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = " + ID;
+        return getUser(query);
+    }
+
+    public DBModelUser getUserByEmail(String email){
+        String query = "SELECT * FROM " + TABLE_USER + " WHERE " + COLUMN_USER_EMAIL + " = '" + email + "';";
+        return getUser(query);
+    }
+
+    public DBModelUser getUserByPhone(String phone){
+        String query = "SELECT * FROM " + TABLE_USER + " WHERE " + COLUMN_USER_PHONE_NUMBER + " = '" + phone + "';";
+        return getUser(query);
+    }
+
+    public DBModelUser getUser(String query){
+        // Get data from database
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        DBModelUser user = new DBModelUser();
+
+        if (cursor.moveToFirst()){
+            int user_id = cursor.getInt(0);
+            String userName = cursor.getString(1);
+            String userEmail = cursor.getString(2);
+            String userPhone = cursor.getString(3);
+            String userHash = cursor.getString(4);
+            user = new DBModelUser(user_id, userName, userEmail, userPhone, userHash);
+        }
+
+        // Close both cursor and the database
+        cursor.close();
+        db.close();
+        return user;
+    }
     
 }
 

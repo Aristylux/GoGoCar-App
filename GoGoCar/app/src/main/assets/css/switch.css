@@ -57,5 +57,5 @@
 }
 
 .switch_input:checked+.slider {
-    background-color: red;
+    background-color: var(--primary-color);
 }

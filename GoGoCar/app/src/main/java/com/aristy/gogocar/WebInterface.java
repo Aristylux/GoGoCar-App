@@ -8,6 +8,7 @@ import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Window;
@@ -15,6 +16,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import java.util.List;
@@ -24,12 +26,14 @@ public class WebInterface {
     Activity activity;
     Context context;
     WebView webView;
+    ConstraintLayout layout;
 
     // Constructor
-    WebInterface(Activity activity, Context context, WebView webView){
+    WebInterface(Activity activity, Context context, WebView webView, ConstraintLayout layout){
         this.activity = activity;
         this.context = context;
         this.webView = webView;
+        this.layout = layout;
     }
 
     /** ----------------------------- *
@@ -72,23 +76,37 @@ public class WebInterface {
             editor.apply();
 
             // Go to home
+            webView.setFitsSystemWindows(false);
             loadNewPage("home");
         }
     }
 
     private int verify(String email, String hash){
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
+
+        DBModelUser user = databaseHelper.getUserByEmail(email);
+        // if user exist
+        if(user.getPassword() != null){
+            // if password == hash
+            if(hash.equals(user.getPassword())){
+                // Ok
+                return user.getId();
+            }
+        }
+
+        /*
         List<DBModelUser> users = databaseHelper.getAllUsers();
         for (DBModelUser user : users){
             Log.d(TAG_Auth, "verify: email='" + email + "', hash='" + hash + "'");
             Log.d(TAG_Auth, "user: email='" + user.getEmail() + "', hash='" + user.getPassword() + "'");
             if(email.equals(user.getEmail())){
                 if (hash.equals(user.getPassword())){
-                    // Ok
-                    return user.getId();
+
                 }
             }
         }
+
+         */
         // Not ok
         return -1;
     }
@@ -114,47 +132,64 @@ public class WebInterface {
             return;
         }
 
-        /*
+
         // retrieve user id
+        DBModelUser user_refresh = databaseHelper.getUserByEmail(email);
         UserPreferences userdata = new UserPreferences();
-        userdata.setUserID("#0001");
+        userdata.setUserID(user_refresh.getId());
 
         // Save user for the application (user id)
         SharedPreferences.Editor editor = context.getSharedPreferences(UserPreferences.DATA, MODE_PRIVATE).edit();
-        editor.putString(UserPreferences.USER, userdata.getUserID());
+        editor.putInt(UserPreferences.USER, userdata.getUserID());
         editor.apply();
-         */
 
+        webView.setFitsSystemWindows(false);
         loadNewPage("home");
     }
 
     @JavascriptInterface
     public void verifyEmail(String email, int successCode, int errorCode){
-        Log.d(TAG_Auth, "verifyEmail: ");
         // Check in database if email exist
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        DBModelUser user = databaseHelper.getUserByEmail(email);
+        Log.d(TAG_Auth, "verifyEmail: " + user.toString());
 
         // If exist -> error
-
-        // else ok.
-        //androidToWeb("success", String.valueOf(successCode));
-        webView.post(() -> webView.loadUrl("javascript:" + "success" + "('" + successCode + "')"));
+        if (user.getEmail() == null) // not exist
+            androidToWeb("success", String.valueOf(successCode));
+        else
+            androidToWeb("errorAuthenticationRegistration", String.valueOf(errorCode));
     }
 
     @JavascriptInterface
     public void verifyPhone(String phone, int successCode, int errorCode){
-        Log.d(TAG_Auth, "verifyPhone: ");
-        // Check in database if phone exist
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        DBModelUser user = databaseHelper.getUserByPhone(phone);
+        Log.d(TAG_Auth, "verifyPhone: " + user.toString());
 
         // If exist -> error
+        if (user.getPhoneNumber() == null) // not exist
+            androidToWeb("success", String.valueOf(successCode));
+        else
+            androidToWeb("errorAuthenticationRegistration", String.valueOf(errorCode));
+    }
 
-        // else ok.
-        webView.post(() -> webView.loadUrl("javascript:" + "success" + "('" + successCode + "')"));
+    /** home.html */
+
+    @JavascriptInterface
+    public void requestDrive(){
+
+        //Intent enableBtIntent
+
+
+        androidToWeb("requestDriveCallback", "true");
     }
 
     /** Settings.html */
 
     @JavascriptInterface
     public void requestUserName(){
+        // Get user name
         androidToWeb("setUserName", "Axel");
     }
 
@@ -171,6 +206,8 @@ public class WebInterface {
     /* Show a toast from the web page */
     @JavascriptInterface
     public void showToast(String toast){
+        //layout.setPadding(layout.getPaddingLeft(), layout.getPaddingTop(), layout.getPaddingRight(), layout.getPaddingBottom());
+        //layout.setFitsSystemWindows(false);
         Toast.makeText(context, toast, Toast.LENGTH_SHORT).show();
     }
 

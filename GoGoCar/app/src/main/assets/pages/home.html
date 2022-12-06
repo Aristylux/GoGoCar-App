@@ -10,60 +10,8 @@
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
         <link rel="stylesheet" href="../css/style_button.css"/>
 
+        <link rel="stylesheet" href="../css/home.css" />
         <link rel="stylesheet" href="../css/switch.css" />
-
-        <style>
-            h2 {
-                margin-left: 20px;
-                padding: 5px 0 ;
-            }
-
-            #container {
-                background: var(--background-color);
-                margin: 0 20px 20px;
-                box-shadow: 0 2px 5px rgba(0,0,0, 0.2);
-                border-radius: 10px;
-                padding: 20px;
-
-                display: grid;
-                grid-template-rows: 1fr auto;
-                grid-gap: 10px;
-            }
-
-            ul {
-                padding: 0;
-                margin: 0;
-            }
-            
-            li {
-                padding: 5px;
-            }
-
-            #page-content i{
-                padding: 2px;
-                display: flex;
-                align-items: center;
-            }
-
-            .info {
-                display: grid;
-                grid-template-columns: auto auto 1fr;
-                align-items: center;
-                grid-gap: 5px;
-            }
-
-            #drive_vehicle {
-                display: grid;
-                grid-template-rows: auto auto 1fr;
-                grid-gap: 5px;
-            }
-
-            #drive_vehicle h3 {
-                text-align: center;
-            }
-
-        </style>
-
     </head>
     <body>
         <section id="page-content">
@@ -154,13 +102,16 @@
             });
 
             function requestDriveCallback(allowedToDrive){
-                if(allowedToDrive){
+
+                if(allowedToDrive === "true"){
                     // Open Popup : you can drive.
 
                     if(androidConnected()) Android.showToast("You can drive :-)");
                 } else {
                     // Open Popup : you cannot drive.
                     // You're not allowed to drive this car...
+
+                    switchElement.checked = false;
 
                     if(androidConnected()) Android.showToast("You cannot drive :-(");
                 }
