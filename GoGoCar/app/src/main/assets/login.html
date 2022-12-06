@@ -218,11 +218,11 @@
                 <h1>Login</h1>
 
                 <form id="login_form" action="#">
-                    <div class="input-field" >
+                    <div class="input-field input-listener">
                         <input id="login_email" type="email" placeholder="Your email" required>
                         <i class="fi fi-rr-envelope icon"></i>
                     </div>
-                    <div class="input-field">
+                    <div class="input-field input-listener">
                         <input id="login_password" type="password" class="password" placeholder="Your password" required>
                         <i class="fi fi-rr-lock icon"></i>
                         <i class="fi fi-rr-eye-crossed showHidePw"></i>
@@ -246,28 +246,28 @@
                 <h1>Registration</h1>
 
                 <form id="register_form" action="#">
-                    <div class="input-field" >
+                    <div class="input-field input-listener">
                         <input id="register_name" type="text" placeholder="Your name" required>
                         <i class="fi fi-rr-user icon"></i>
                         <small></small>
                     </div>
-                    <div class="input-field" >
+                    <div class="input-field input-listener">
                         <input id="register_email" type="email" placeholder="Email" required>
                         <i class="fi fi-rr-envelope icon"></i>
                         <small></small>
                     </div>
-                    <div class="input-field" >
+                    <div class="input-field input-listener">
                         <input id="register_phonenumber" type="tel" placeholder="Phone number" required>
                         <i class="fi fi-rr-phone-call icon"></i>
                         <small></small>
                     </div>
-                    <div class="input-field">
+                    <div class="input-field input-listener">
                         <input id="register_password" type="password" class="password" placeholder="Password" required>
                         <i class="fi fi-rr-lock icon"></i>
                         <i class="fi fi-rr-eye-crossed showHidePw"></i>
                         <small></small>
                     </div>
-                    <div class="input-field">
+                    <div class="input-field input-listener">
                         <input id="register_password_confirmation" type="password" class="password" placeholder="Confirm Password" required>
                         <i class="fi fi-rr-lock icon"></i>
                         <i class="fi fi-rr-eye-crossed showHidePw"></i>
@@ -304,13 +304,11 @@
                 pwFields.forEach(pwField => {
                     if(pwField.type === "password"){
                         pwField.type = "text";
-
                         pwShowHide.forEach(icon => {
                             icon.classList.replace("fi-rr-eye-crossed", "fi-rr-eye");
                         })
                     } else {
                         pwField.type = "password";
-
                         pwShowHide.forEach(icon => {
                             icon.classList.replace("fi-rr-eye", "fi-rr-eye-crossed");
                         })
@@ -374,40 +372,30 @@
         const password_el = registerForm.elements['register_password'];
         const password_c_el = registerForm.elements['register_password_confirmation'];
 
-
-        let formElements = document.querySelectorAll(".input-field");
-        console.log(formElements);
-        formElements.forEach((input, index) => {
-            input.addEventListener('input', (event) => {
-                input.classList.remove('error');
-            });
-        });
-
         // For register: during typing
-        // verify email is in this format : xxxx@xxxx.xxx
         // verify password are the same
-        /*
-        registerForm.addEventListener('input', (event) => {
-            // Verify mail expression
-            const email = registerForm.elements['register_email'].value;
-
-            const msg = email_el.parentNode.querySelector("small");
-            //msg.innerText = "";
-            //console.log(email_el.parentNode);
-            msg.classList.remove('error');
-
-            // Check strong password
-            const password = registerForm.elements['register_password'].value;
-            //console.log(email);
-        });
-        */
+        for(let i = 0; i < registerForm.elements.length; i++ ){
+            registerForm.elements[i].addEventListener('input', (event) => {
+                if(registerForm.elements[i].id !== password_c_el.id){
+                    registerForm.elements[i].parentNode.classList.remove('error');
+                } else {
+                    if(password_el.value.indexOf(password_c_el.value) != 0){
+                        errorAuthenticationRegistration(PASSWORD_ERROR_CODE);
+                    } else {
+                        registerForm.elements[i].parentNode.classList.remove('error');
+                    }
+                }
+            });
+        };
 
         var email_correct = false, phone_correct = false;
         const NAME_ERROR_CODE = 1, 
             EMAIL_ERROR_CODE = 2,
             EMAIL_ERROR_EXIST_CODE = 3,
             PHONE_ERROR_CODE = 4,
-            PASSWORD_ERROR_CODE = 5;
+            PHONE_ERROR_EXIST_CODE = 5,
+            PASSWORD_EMPTY_ERROR_CODE = 6,
+            PASSWORD_ERROR_CODE = 7;
 
         const EMAIL_SUCCESS_CODE = 1,
             PHONE_SUCCESS_CODE = 2;
@@ -423,9 +411,9 @@
 
             if(!emailRegex.test(email)){
                 errorAuthenticationRegistration(EMAIL_ERROR_CODE);
+            } else {
+                if(androidConnected()) Android.verifyEmail(email, EMAIL_SUCCESS_CODE, EMAIL_ERROR_EXIST_CODE);
             }
-
-            if(androidConnected()) Android.verifyEmail(email, EMAIL_SUCCESS_CODE, EMAIL_ERROR_EXIST_CODE);
         });
 
         // When user leave phonenumber input 
@@ -435,11 +423,16 @@
             console.log("phone number change");
             const phone = phone_el.value;
             // Format 06 XX XX XX XX
-
-            // if format ok, verify phone number
-
-            if(androidConnected()) Android.verifyPhone(phone, PHONE_SUCCESS_CODE, PHONE_ERROR_CODE);
             
+
+            if (!testPhoneNumberFormat(phone)){
+                errorAuthenticationRegistration(PHONE_ERROR_CODE);
+            } else {
+                // Update view with new format
+                formatPhone(phone_el);
+                // if format ok, verify phone number
+                if(androidConnected()) Android.verifyPhone(phone, PHONE_SUCCESS_CODE, PHONE_ERROR_EXIST_CODE);
+            }
         });
 
         // Success callback
@@ -453,6 +446,40 @@
             }
         }
 
+        function testPhoneNumberFormat(phonenumber){
+            phonenumber = phonenumber.replace(/ /g, '');
+
+            let regionCode = phonenumber.substring(0, 2);
+
+            if(!testRegionCode(regionCode))
+                return false;
+                        
+            if(phonenumber.length != 10)
+                return false;
+            
+            return true;
+        }
+
+        function testRegionCode(regionCode){
+            if(regionCode === "06")
+                return true;
+                
+            if(regionCode === "07")
+                return true;
+            return false;
+        }
+
+        function formatPhone(phonenumberElement){
+            let phone = phonenumberElement.value;
+            // delete all space: ' '
+            phone = phone.replace(/ /g, '');
+
+            // add format (add space every 2 digit)
+            phone = phone.replace(/(.{2})/g, "$1 ");
+
+
+            phonenumberElement.value = phone.substring(0, phone.length -1);
+        }
 
 
         // if clicked on button Register
@@ -488,7 +515,10 @@
             }
 
             // If password != password_c
-            if(password.normalize() !== password_c.normalize() || password == ''){
+            if(password == '' || password_c == ''){
+                register_success = false;
+                errorAuthenticationRegistration(PASSWORD_EMPTY_ERROR_CODE);
+            } else if (password.normalize() !== password_c.normalize()) {
                 register_success = false;
                 errorAuthenticationRegistration(PASSWORD_ERROR_CODE);
             }
@@ -517,29 +547,38 @@
                 case NAME_ERROR_CODE:
                     name_el.parentNode.querySelector("small").innerText = "First Name & Last Name needed";
                     name_el.parentNode.classList.add('error');
-                    //if(androidConnected()) Android.showToast("Registration error: name incorrect");
                     break;
 
                 case EMAIL_ERROR_CODE:
                     email_el.parentNode.querySelector("small").innerText = "email incorrect";
                     email_el.parentNode.classList.add('error');
-                    //if(androidConnected()) Android.showToast("Registration error: email incorrect");
                     break;
 
                 case EMAIL_ERROR_EXIST_CODE:
                     email_el.parentNode.querySelector("small").innerText = "email already used";
                     email_el.parentNode.classList.add('error');
-                    //if(androidConnected()) Android.showToast("Registration error: email already used");
                     break;
 
                 case PHONE_ERROR_CODE:
                     phone_el.parentNode.querySelector("small").innerText = "phone incorrect";
                     phone_el.parentNode.classList.add('error');
-                    //if(androidConnected()) Android.showToast("Registration error: phone incorrect");
                     break;
 
+                case PHONE_ERROR_EXIST_CODE:
+                    phone_el.parentNode.querySelector("small").innerText = "phone already used";
+                    phone_el.parentNode.classList.add('error');
+                    break;
+
+                case PASSWORD_EMPTY_ERROR_CODE:
+                    password_c_el.parentNode.querySelector("small").innerText = "password are empty";
+                    password_el.parentNode.classList.add('error');
+                    password_c_el.parentNode.classList.add('error');
+                    break;
+                    
                 case PASSWORD_ERROR_CODE:
-                    if(androidConnected()) Android.showToast("Registration error: password incorrect");
+                    password_c_el.parentNode.querySelector("small").innerText = "password are not identical";
+                    //password_el.parentNode.classList.add('error');
+                    password_c_el.parentNode.classList.add('error');
                     break;
             
                 default:
