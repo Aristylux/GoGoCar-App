@@ -1,11 +1,3 @@
-<style>
-    img {
-        border-radius: 1em;
-        box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
-    }
-</style>
-
-
 # Login:
 
 Expectation:
