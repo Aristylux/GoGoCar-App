@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="./css/main_theme.css" />
+    
+    <link rel="stylesheet" href="./ico/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+
+    <link rel="stylesheet" href="./css/login.css" />
+</head>
+<body>
+    
+    <div class="container">
+        <div class="forms">
+
+            <!-- Login form -->
+            <div class="form login">
+                <h1>Login</h1>
+
+                <form id="login_form" action="#">
+                    <div class="input-field input-listener">
+                        <input id="login_email" type="email" placeholder="Your email" required>
+                        <i class="fi fi-rr-envelope icon"></i>
+                    </div>
+                    <div class="input-field input-listener">
+                        <input id="login_password" type="password" class="password" placeholder="Your password" required>
+                        <i class="fi fi-rr-lock icon"></i>
+                        <i class="fi fi-rr-eye-crossed showHidePw"></i>
+                        <small></small>
+                    </div>
+
+                    <div class="input-field button">
+                        <input id="but_login" type="button" value="Login">
+                    </div>
+                </form>
+
+                <div class="login-signup">
+                    <a href="#" class="text">Forgot password?</a>
+                    <a href="#" class="text signup-link">Sign up</a>
+                </div>
+
+            </div>
+
+            <!-- Registration form -->
+            <div class="form signup">
+                <h1>Registration</h1>
+
+                <form id="register_form" action="#">
+                    <div class="input-field input-listener">
+                        <input id="register_name" type="text" placeholder="Your name" required>
+                        <i class="fi fi-rr-user icon"></i>
+                        <small></small>
+                    </div>
+                    <div class="input-field input-listener">
+                        <input id="register_email" type="email" placeholder="Email" required>
+                        <i class="fi fi-rr-envelope icon"></i>
+                        <small></small>
+                    </div>
+                    <div class="input-field input-listener">
+                        <input id="register_phonenumber" type="tel" placeholder="Phone number" required>
+                        <i class="fi fi-rr-phone-call icon"></i>
+                        <small></small>
+                    </div>
+                    <div class="input-field input-listener">
+                        <input id="register_password" type="password" class="password" placeholder="Password" required>
+                        <i class="fi fi-rr-lock icon"></i>
+                        <i class="fi fi-rr-eye-crossed showHidePw"></i>
+                        <small></small>
+                    </div>
+                    <div class="input-field input-listener">
+                        <input id="register_password_confirmation" type="password" class="password" placeholder="Confirm Password" required>
+                        <i class="fi fi-rr-lock icon"></i>
+                        <i class="fi fi-rr-eye-crossed showHidePw"></i>
+                        <small></small>
+                    </div>
+
+                    <div class="input-field button">
+                        <input id="but_register" type="button" value="Register">
+                    </div>
+                </form>
+
+                <div class="login-signin">
+                    <a href="#" class="text signin-link">Sign in</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/androidInterface.js"></script>
+    <script src="./js/login.js"></script>
+</body>
+</html>
