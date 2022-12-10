@@ -36,9 +36,11 @@ public class WebInterface {
         this.layout = layout;
     }
 
-    /** ----------------------------- *
-     *  -- Methods call by webPage -- *
-     *  ----------------------------- */
+    /* ----------------------------- *
+       -- Methods call by webPage -- *
+       ----------------------------- */
+
+    /** Login */
 
     // When Click on login button
     @JavascriptInterface
@@ -80,20 +82,6 @@ public class WebInterface {
                 return user.getId();
             }
         }
-
-        /*
-        List<DBModelUser> users = databaseHelper.getAllUsers();
-        for (DBModelUser user : users){
-            Log.d(TAG_Auth, "verify: email='" + email + "', hash='" + hash + "'");
-            Log.d(TAG_Auth, "user: email='" + user.getEmail() + "', hash='" + user.getPassword() + "'");
-            if(email.equals(user.getEmail())){
-                if (hash.equals(user.getPassword())){
-
-                }
-            }
-        }
-
-         */
         // Not ok
         return -1;
     }
