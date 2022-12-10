@@ -267,13 +267,14 @@
             }
 
             function touchMove(event) {
-                let touch = event.touches[0];
-                let change = touch.clientX - startingX;
+                let change = event.touches[0].clientX - startingX;
                 count++;
-                if(change < 0) {
+                // If move to right to left
+                if(change < 0)
                     return;
-                }
-                setting_page_pp.style.left = change + 'px';
+                
+                if(change > 50)
+                    setting_page_pp.style.left = change - 50 + 'px';
                 event.preventDefault();
             }
 
