@@ -40,19 +40,6 @@ public class WebInterface {
      *  -- Methods call by webPage -- *
      *  ----------------------------- */
 
-    // Test
-    @JavascriptInterface
-    public void AuthenticationInit(){
-        Log.d(TAG_Auth, "Auth init");
-        // Get list of users
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
-        List<DBModelUser> users = databaseHelper.getAllUsers();
-        Log.d(TAG_Auth, "database: fait.");
-        Log.d(TAG_Database, users.toString());
-
-        //databaseHelper.deleteUser(users.get(0));
-    }
-
     // When Click on login button
     @JavascriptInterface
     public void AuthenticationLogin(String email, String password){

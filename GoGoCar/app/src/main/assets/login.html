@@ -290,13 +290,9 @@
     <script src="./js/androidInterface.js"></script>
     <script>
 
-        console.log("Login init");
-        if(androidConnected()) Android.AuthenticationInit();
-
         const container = document.querySelector(".container"),
             pwShowHide = document.querySelectorAll(".showHidePw"),
             pwFields = document.querySelectorAll(".password");
-
 
         // show/hide password
         pwShowHide.forEach(eyeIcon => {
@@ -333,62 +329,38 @@
         // -----------
 
         const loginForm = document.getElementById("login_form");
+        const loginSubmitButton = document.getElementById("but_login");
 
-
-        const buttonLogin = document.getElementById("but_login");
+        const loginElementEmail = loginForm.elements['login_email'];
+        const loginElementPassword = loginForm.elements['login_password'];
 
         // For Login
         // If ok : Android change page
         // If not ok : Android form error "email or password incorrect"
-        buttonLogin.addEventListener('click', function () {
+        loginSubmitButton.addEventListener('click', function () {
             // Collect data (email, password)
-            const email = loginForm.elements['login_email'].value;
-            const password = loginForm.elements['login_password'].value;
+            const email = loginElementEmail.value;
+            const password = loginElementPassword.value;
 
             // Sent to android
             if(androidConnected()) Android.AuthenticationLogin(email, password);
         });
 
         loginForm.addEventListener('input', (event) => {
-            loginForm.elements['login_email'].parentNode.classList.remove('error');
-            loginForm.elements['login_password'].parentNode.classList.remove('error');
+            loginElementEmail.parentNode.classList.remove('error');
+            loginElementPassword.parentNode.classList.remove('error');
         });
 
         // Error callback
         function errorAuthenticationLogin(){
             console.error("Login failed");
-            loginForm.elements['login_password'].parentNode.querySelector("small").innerText = "email or password incorrect";
-            loginForm.elements['login_email'].parentNode.classList.add('error');
-            loginForm.elements['login_password'].parentNode.classList.add('error');
+            loginElementPassword.parentNode.querySelector("small").innerText = "Email or password incorrect";
+            loginElementPassword.parentNode.classList.add('error');
+            loginElementEmail.parentNode.classList.add('error');
         }
 
         // ---------------
 
-        const registerForm = document.getElementById("register_form");
-
-        const name_el = registerForm.elements['register_name'];
-        const email_el = registerForm.elements['register_email'];
-        const phone_el = registerForm.elements['register_phonenumber'];
-        const password_el = registerForm.elements['register_password'];
-        const password_c_el = registerForm.elements['register_password_confirmation'];
-
-        // For register: during typing
-        // verify password are the same
-        for(let i = 0; i < registerForm.elements.length; i++ ){
-            registerForm.elements[i].addEventListener('input', (event) => {
-                if(registerForm.elements[i].id !== password_c_el.id){
-                    registerForm.elements[i].parentNode.classList.remove('error');
-                } else {
-                    if(password_el.value.indexOf(password_c_el.value) != 0){
-                        errorAuthenticationRegistration(PASSWORD_ERROR_CODE);
-                    } else {
-                        registerForm.elements[i].parentNode.classList.remove('error');
-                    }
-                }
-            });
-        };
-
-        var email_correct = false, phone_correct = false;
         const NAME_ERROR_CODE = 1, 
             EMAIL_ERROR_CODE = 2,
             EMAIL_ERROR_EXIST_CODE = 3,
@@ -397,17 +369,63 @@
             PASSWORD_EMPTY_ERROR_CODE = 6,
             PASSWORD_ERROR_CODE = 7;
 
+        const error_messages = {
+            messages: [
+                "",
+                "First Name & Last Name needed",
+                "Email incorrect",
+                "Email already used",
+                "Phone incorrect",
+                "Phone already used",
+                "Password are empty",
+                "Password are not identical"
+            ],
+            getErrorText : function (errorCode){
+                return this.messages[errorCode];
+            }
+        }
+
         const EMAIL_SUCCESS_CODE = 1,
             PHONE_SUCCESS_CODE = 2;
+
+        let email_correct = false,
+            phone_correct = false;
+
+        const registerForm = document.getElementById("register_form");
+        const registerSubmitButton = document.getElementById("but_register");
+
+        const registerElementName = registerForm.elements['register_name'];
+        const registerElementEmail = registerForm.elements['register_email'];
+        const registerElementPhone = registerForm.elements['register_phonenumber'];
+        const registerElementPassword = registerForm.elements['register_password'];
+        const registerElementPasswordConf = registerForm.elements['register_password_confirmation'];
+
+        // For register: during typing
+        // verify password are the same
+        for(let i = 0; i < registerForm.elements.length; i++ ){
+            registerForm.elements[i].addEventListener('input', (event) => {
+                if(registerForm.elements[i].id !== registerElementPasswordConf.id){
+                    registerForm.elements[i].parentNode.classList.remove('error');
+                } else {
+                    if(registerElementPassword.value.indexOf(registerElementPasswordConf.value) != 0){
+                        errorAuthenticationRegistration(PASSWORD_ERROR_CODE);
+                    } else {
+                        registerForm.elements[i].parentNode.classList.remove('error');
+                    }
+                }
+            });
+        };
+
+        
 
         // When user leave email input 
         // Verify mail adress doesn't exist into our database (ask Android)
         // Request email (if email already exist: error)
-        email_el.addEventListener('change', function () {
+        registerElementEmail.addEventListener('change', function () {
             console.log("email change");
 
             const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            const email = email_el.value;
+            const email = registerElementEmail.value;
 
             if(!emailRegex.test(email)){
                 errorAuthenticationRegistration(EMAIL_ERROR_CODE);
@@ -419,82 +437,88 @@
         // When user leave phonenumber input 
         // Verify phonenumber doesn't exist into our database (ask Android)
         // Request phonenumber (if phonenumber already exist: error)
-        phone_el.addEventListener('change', function () {
+        registerElementPhone.addEventListener('change', function () {
             console.log("phone number change");
-            const phone = phone_el.value;
+            const phone = registerElementPhone.value;
             // Format 06 XX XX XX XX
-            
-
             if (!testPhoneNumberFormat(phone)){
                 errorAuthenticationRegistration(PHONE_ERROR_CODE);
             } else {
                 // Update view with new format
-                formatPhone(phone_el);
-                // if format ok, verify phone number
-                if(androidConnected()) Android.verifyPhone(phone, PHONE_SUCCESS_CODE, PHONE_ERROR_EXIST_CODE);
+                let formatedPhone = formatPhone(phone);
+                registerElementPhone.value = formatedPhone;
+                // Verify phone number doesn't exist into our database
+                if(androidConnected()) Android.verifyPhone(formatedPhone, PHONE_SUCCESS_CODE, PHONE_ERROR_EXIST_CODE);
             }
         });
 
-        // Success callback
+        // [ANDROID] Success callback
         function success(code_success){
             if (code_success == EMAIL_SUCCESS_CODE) {
                 // Email ok
                 email_correct = true;
-            } else {
+                return;
+            } 
+            if (code_success == PHONE_SUCCESS_CODE){
                 // Phone ok
                 phone_correct = true;
+                return;
             }
         }
 
+        // Detect if phone number is correct 
         function testPhoneNumberFormat(phonenumber){
             phonenumber = phonenumber.replace(/ /g, '');
 
+            // If region code is correct
             let regionCode = phonenumber.substring(0, 2);
-
             if(!testRegionCode(regionCode))
                 return false;
-                        
+            
+            // 0X12345678. lenght = 10
             if(phonenumber.length != 10)
                 return false;
             
             return true;
         }
 
+        // if regionCode is 06 or 07 it's ok
         function testRegionCode(regionCode){
             if(regionCode === "06")
                 return true;
-                
             if(regionCode === "07")
                 return true;
             return false;
         }
 
-        function formatPhone(phonenumberElement){
-            let phone = phonenumberElement.value;
+        /*
+         * formatPhone:
+         * Format phone number
+         * @retval phone number formatted 
+         */
+        function formatPhone(phone){
             // delete all space: ' '
             phone = phone.replace(/ /g, '');
 
             // add format (add space every 2 digit)
             phone = phone.replace(/(.{2})/g, "$1 ");
 
-
-            phonenumberElement.value = phone.substring(0, phone.length -1);
+            // Delete last char (space:' ') and return formated phone
+            return phone.substring(0, phone.length -1);
         }
 
 
         // if clicked on button Register
-        const buttonRegister = document.getElementById("but_register");
-        // For register
         // When all is ok : send data to Android (name, email, phonenumber, password)
-        buttonRegister.addEventListener('click', function () {
+        registerSubmitButton.addEventListener('click', function () {
             console.log("Register click");
             let register_success = true;
 
-            const name = name_el.value,
-                email = email_el.value,
-                phone = phone_el.value,
-                password = password_el.value,
-                password_c = password_c_el.value;
+            const name = registerElementName.value,
+                email = registerElementEmail.value,
+                phone = registerElementPhone.value,
+                password = registerElementPassword.value,
+                password_c = registerElementPasswordConf.value;
 
             // If name contain 2word (first name and last name)
             if(!checkNames(name) || name == ''){
@@ -526,14 +550,19 @@
             if(androidConnected() && register_success) Android.AuthenticationRegister(name, email, phone, password);
         });
 
-        function checkNames(names) {
-            console.log("check names: " + names);
+        function checkNames(fullName) {
+            console.log("check names: " + fullName);
+            // Extract names
+            let names = fullName.split(' ');
+
             // Verify names are 2
-            let array = names.split(' ');
-            if(array.length == 2)
-                return true;
-            else
+            if(names.length != 2)
                 return false;
+            
+            if(names[0] == '' || names[1] == '')
+                return false;
+
+            return true;
         }
 
         // Error callback
@@ -542,49 +571,46 @@
             if(typeof cause == 'string')
                 cause = parseInt(cause);
             
-            console.error("Register failed: " + cause);
+            console.info("Register failed: " + cause);
+            let selectElement;
             switch (cause) {
                 case NAME_ERROR_CODE:
-                    name_el.parentNode.querySelector("small").innerText = "First Name & Last Name needed";
-                    name_el.parentNode.classList.add('error');
+                    selectElement = registerElementName.parentNode;
                     break;
 
                 case EMAIL_ERROR_CODE:
-                    email_el.parentNode.querySelector("small").innerText = "email incorrect";
-                    email_el.parentNode.classList.add('error');
+                    selectElement = registerElementEmail.parentNode;
                     break;
 
                 case EMAIL_ERROR_EXIST_CODE:
-                    email_el.parentNode.querySelector("small").innerText = "email already used";
-                    email_el.parentNode.classList.add('error');
+                    selectElement = registerElementEmail.parentNode;
                     break;
 
                 case PHONE_ERROR_CODE:
-                    phone_el.parentNode.querySelector("small").innerText = "phone incorrect";
-                    phone_el.parentNode.classList.add('error');
+                    selectElement = registerElementPhone.parentNode;
                     break;
 
                 case PHONE_ERROR_EXIST_CODE:
-                    phone_el.parentNode.querySelector("small").innerText = "phone already used";
-                    phone_el.parentNode.classList.add('error');
+                    selectElement = registerElementPhone.parentNode;
                     break;
 
                 case PASSWORD_EMPTY_ERROR_CODE:
-                    password_c_el.parentNode.querySelector("small").innerText = "password are empty";
-                    password_el.parentNode.classList.add('error');
-                    password_c_el.parentNode.classList.add('error');
+                    registerElementPassword.parentNode.classList.add('error');
+                    selectElement = registerElementPasswordConf.parentNode;
                     break;
                     
                 case PASSWORD_ERROR_CODE:
-                    password_c_el.parentNode.querySelector("small").innerText = "password are not identical";
-                    //password_el.parentNode.classList.add('error');
-                    password_c_el.parentNode.classList.add('error');
+                    selectElement = registerElementPasswordConf.parentNode;
                     break;
             
                 default:
                     if(androidConnected()) Android.showToast("Registration error: error unknown");
                     break;
             }
+
+            selectElement.querySelector("small").innerText = error_messages.getErrorText(cause);
+            selectElement.classList.add('error');
+
         }
     </script>
 </body>
