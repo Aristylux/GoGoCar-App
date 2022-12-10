@@ -2,8 +2,8 @@ body {
     margin-top: 25px;
 }
 
-ul {
-    list-style: none;
+h1 {
+    text-align: center;
 }
 
 #page-content {
@@ -23,8 +23,4 @@ ul {
         /*transform:  rotateX(0);*/
         transform: translateY(0);
     }
-}
-
-h1 {
-    text-align: center;
 }
