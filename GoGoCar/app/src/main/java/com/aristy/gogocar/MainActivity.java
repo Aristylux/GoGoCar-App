@@ -1,5 +1,7 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_Database;
+import static com.aristy.gogocar.CodesTAG.TAG_Error;
 import static com.aristy.gogocar.CodesTAG.TAG_Info;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,7 +9,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,10 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 public class MainActivity extends AppCompatActivity {
 
     WebView web;
@@ -29,6 +34,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //------------
+        try {
+            ConnectionHelper connectionHelper = new ConnectionHelper();
+            Connection connect = connectionHelper.openConnection();
+            if (connect != null) {
+                String query = "SELECT * FROM users";
+
+                Statement st = connect.createStatement();
+                ResultSet rs = st.executeQuery(query);
+
+                while (rs.next()) {
+                    Log.d(TAG_Database, "User:id=" + rs.getInt(1) + ",name=" + rs.getString(2) + ", phone=" + rs.getString(3) + ".");
+                }
+
+                rs.close();
+                st.close();
+                connect.close();
+            } else {
+                Log.d(TAG_Error, "connect is null");
+            }
+        }catch (Exception exception){
+            Log.e(TAG_Error, "Error :" + exception);
+        }
+
+        //------------
 
         // find items
         web = findViewById(R.id.web_view);
