@@ -10,8 +10,6 @@ import java.sql.DriverManager;
 
 public class ConnectionHelper {
 
-    Connection connection;
-
     private String host;
     private final static String port = "5432";
     private String databaseName;
@@ -21,7 +19,7 @@ public class ConnectionHelper {
     public Connection openConnection() {
 
         host = "192.168.1.187";
-        databaseName = "test";
+        databaseName = "gogocar";
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);

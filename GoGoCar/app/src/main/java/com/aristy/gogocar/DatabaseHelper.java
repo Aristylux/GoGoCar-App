@@ -1,6 +1,7 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
+import static com.aristy.gogocar.CodesTAG.TAG_Error;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
@@ -10,8 +11,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,6 +149,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return user;
     }
+
+
+    public List<DBModelVehicle> getAllVehicles(){
+        List<DBModelVehicle> returnList = new ArrayList<>();
+
+        // Get data from database
+        try {
+            ConnectionHelper connectionHelper = new ConnectionHelper();
+            Connection connect = connectionHelper.openConnection();
+            if (connect != null) {
+                String query = "SELECT * FROM vehicles";
+
+                Statement st = connect.createStatement();
+                ResultSet rs = st.executeQuery(query);
+
+                while (rs.next()) {
+                    int vehicle_id = rs.getInt(1);
+                    String model = rs.getString(2);
+                    String licencePlate = rs.getString(3);
+                    String address = rs.getString(4);
+                    int idOwner = rs.getInt(5);
+                    boolean isAvailable = rs.getBoolean(6);
+                    boolean isBooked = rs.getBoolean(7);
+                    int idUser = rs.getInt(8);
+
+                    DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser);
+                    Log.d(TAG_Database, vehicle.toString());
+                    returnList.add(vehicle);
+                }
+
+                // Close both cursor and the database
+                rs.close();
+                st.close();
+                connect.close();
+            } else {
+                Log.d(TAG_Error, "connect is null");
+            }
+        }catch (Exception exception){
+            Log.e(TAG_Error, "Error :" + exception);
+        }
+        return returnList;
+    }
     
 }
 
@@ -167,6 +214,7 @@ class DBModelUser {
     public DBModelUser(){}
 
     // toString is necessary for printing the contents of a class object
+    @NonNull
     @Override
     public String toString() {
         return "DBModelUser{" +
@@ -232,19 +280,22 @@ class DBModelVehicle {
     private int idUser;
 
     // Constructor
-    public DBModelVehicle(int id, String model, String licencePlate, String address, int idOwner) {
+    public DBModelVehicle(int id, String model, String licencePlate, String address, int idOwner, boolean isAvailable, boolean isBooked, int idUser) {
         this.id = id;
         this.model = model;
         this.licencePlate = licencePlate;
         this.address = address;
         this.idOwner = idOwner;
+        this.isAvailable = isAvailable;
+        this.isBooked = isBooked;
+        this.idUser = idUser;
     }
 
     public DBModelVehicle() {
     }
 
     // toString is necessary for printing the contents of a class object
-
+    @NonNull
     @Override
     public String toString() {
         return "DBModelVehicle{" +
@@ -253,8 +304,12 @@ class DBModelVehicle {
                 ", licencePlate='" + licencePlate + '\'' +
                 ", address='" + address + '\'' +
                 ", idOwner=" + idOwner +
+                ", isAvailable=" + isAvailable +
+                ", isBooked=" + isBooked +
+                ", idUser=" + idUser +
                 '}';
     }
+
 
     // Getters and Setters
 
@@ -296,5 +351,29 @@ class DBModelVehicle {
 
     public void setIdOwner(int idOwner) {
         this.idOwner = idOwner;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    public boolean isBooked() {
+        return isBooked;
+    }
+
+    public void setBooked(boolean booked) {
+        isBooked = booked;
+    }
+
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 }
