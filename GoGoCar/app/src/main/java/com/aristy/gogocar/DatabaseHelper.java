@@ -14,8 +14,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -191,7 +195,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return returnList;
     }
-    
+
+    public DBModelVehicle getVehicleById(int ID){
+        String query = "SELECT * FROM vehicles WHERE id = " + ID;
+        return getVehicle(query);
+    }
+
+    public DBModelVehicle getVehicle(String query){
+        DBModelVehicle vehicle = new DBModelVehicle();
+
+        // Get data from database
+        ConnectionHelper connectionHelper = new ConnectionHelper();
+        Connection connect = connectionHelper.openConnection();
+
+        try {
+            Statement st = connect.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs.next()){
+                int vehicle_id = rs.getInt(1);
+                String model = rs.getString(2);
+                String licencePlate = rs.getString(3);
+                String address = rs.getString(4);
+                int idOwner = rs.getInt(5);
+                boolean isAvailable = rs.getBoolean(6);
+                boolean isBooked = rs.getBoolean(7);
+                int idUser = rs.getInt(8);
+
+                vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser);
+            }
+
+            rs.close();
+            st.close();
+            connect.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return vehicle;
+    }
+
 }
 
 class DBModelUser {
@@ -298,18 +342,22 @@ class DBModelVehicle {
     @NonNull
     @Override
     public String toString() {
-        return "DBModelVehicle{" +
-                "id=" + id +
-                ", model='" + model + '\'' +
-                ", licencePlate='" + licencePlate + '\'' +
-                ", address='" + address + '\'' +
-                ", idOwner=" + idOwner +
-                ", isAvailable=" + isAvailable +
-                ", isBooked=" + isBooked +
-                ", idUser=" + idUser +
-                '}';
-    }
+        JSONObject map = new JSONObject();
+        try {
+            map.put("id", id);
+            map.put("name", model);
+            map.put("licencePlate", licencePlate);
+            map.put("address", address);
+            map.put("idOwner", idOwner);
+            map.put("isAvailable", isAvailable);
+            map.put("isBooked", isBooked);
+            map.put("idUser", idUser);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
+        return map.toString();
+    }
 
     // Getters and Setters
 

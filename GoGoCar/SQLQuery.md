@@ -51,3 +51,9 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner) VALUES
     ('Peugeot 105', 'YZ-875-AZ', '14 rue des romarins 83000 TOULON', 1),
     ('Renault Mégane', 'PA-510-ND', '2 avenue Champ de Mars 83000 TOUON', 2);
 ```
+
+```sql
+INSERT INTO vehicles (model, licence_plate, address, id_owner) VALUES 
+    ('Nissan GT', 'BD-325-FE', '26 rue General de Gaulle', 3),
+    ('Peugeot 206', 'AM-871-DD', '18 Boulevard Jules Ferry', 3);
+```

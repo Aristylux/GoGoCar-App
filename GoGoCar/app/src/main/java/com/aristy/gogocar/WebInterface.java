@@ -221,12 +221,15 @@ public class WebInterface {
     @JavascriptInterface
     public void openPopupBook(int id_vehicle){
         Log.d(TAG_Web, "id vehicle: " + id_vehicle);
-        Database.selectRow(id_vehicle);
+        //Database.selectRow(id_vehicle);
         //Log.d(TAG_Web, "Table: " + Arrays.deepToString(Database.getTable()));
         //Log.d(TAG_Web, "Table: " + Database.getVehicleName());
         //Log.d(TAG_Web, "Table: " + Database.getVehiclePosition());
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        DBModelVehicle vehicle = databaseHelper.getVehicleById(id_vehicle);
 
-        androidToWeb("openPopupBook", Database.getVehicleName(), Database.getVehiclePosition());
+        //androidToWeb("openPopupBook", Database.getVehicleName(), Database.getVehiclePosition());
+        androidToWeb("openPopupBook", vehicle.getModel(), vehicle.getAddress());
     }
 
     @JavascriptInterface
@@ -238,8 +241,13 @@ public class WebInterface {
     public void requestDatabase(){
         //Log.d(TAG_Web, "Table: " + Arrays.deepToString(Database.getTable()));
         //webView.post(() -> webView.loadUrl("file:///android_asset/pages/drive.html"));
-        webView.post(() -> webView.loadUrl("javascript:" + "setDatabase" + "('" + Database.getNewTable() + "')"));
+        //webView.post(() -> webView.loadUrl("javascript:" + "setDatabase" + "('" + Database.getNewTable() + "')"));
         //androidToWeb("setDatabase", Arrays.deepToString(Database.getTable()));
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        List<DBModelVehicle> vehicles = databaseHelper.getAllVehicles();
+        Log.d(TAG_Database, "requestDatabase: " + vehicles.toString());
+        androidToWeb("setDatabase", vehicles.toString());
     }
 
     /** ---------------------------------- *

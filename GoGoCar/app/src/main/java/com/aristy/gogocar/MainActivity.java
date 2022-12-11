@@ -35,20 +35,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //------------
+
         try {
             ConnectionHelper connectionHelper = new ConnectionHelper();
             Connection connect = connectionHelper.openConnection();
+
             if (connect != null) {
                 String query = "SELECT * FROM users";
 
                 Statement st = connect.createStatement();
                 ResultSet rs = st.executeQuery(query);
-
+/*
                 while (rs.next()) {
                     Log.d(TAG_Database, "User:id=" + rs.getInt(1) + ",name=" + rs.getString(2) + ", phone=" + rs.getString(3) + ".");
                 }
-
+*/
                 rs.close();
                 st.close();
                 connect.close();
@@ -58,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception exception){
             Log.e(TAG_Error, "Error :" + exception);
         }
-
-        //------------
 
         // find items
         web = findViewById(R.id.web_view);

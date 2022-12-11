@@ -73,7 +73,7 @@
 // Request database
 if (androidConnected()) Android.requestDatabase();
 
-// Retrive databases from android (result)
+// [ANDROID CALLBACK] Retrive databases from android (result)
 function setDatabase(_table_vehicle) {
     var vehicles = JSON.parse(_table_vehicle);
 
