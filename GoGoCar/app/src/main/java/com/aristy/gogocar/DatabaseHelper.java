@@ -81,9 +81,9 @@ public class DatabaseHelper {
             // Close
             st.close();
         } catch (SQLException exception) {
+            Log.e(TAG_Database, "deleteUser: ", exception);
             exception.printStackTrace();
         }
-
         return result;
     }
 
@@ -162,10 +162,10 @@ public class DatabaseHelper {
 
             rs.close();
             st.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            Log.e(TAG_Database, "getUser: ", exception);
+            exception.printStackTrace();
         }
-
         return user;
     }
 
@@ -205,6 +205,7 @@ public class DatabaseHelper {
             }
         }catch (Exception exception){
             Log.e(TAG_Database, "getAllVehicles: " , exception);
+            exception.printStackTrace();
         }
         return returnList;
     }
@@ -232,14 +233,15 @@ public class DatabaseHelper {
                 int idUser = rs.getInt(8);
 
                 vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser);
+                Log.i(TAG_Database, vehicle.toString());
             }
 
             rs.close();
             st.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            Log.e(TAG_Database, "getVehicle: " , exception);
+            exception.printStackTrace();
         }
-
         return vehicle;
     }
 

@@ -170,8 +170,15 @@ public class WebInterface {
 
     @JavascriptInterface
     public void requestUserName(){
+        // Get user id
+        UserPreferences userPreferences = new UserPreferences(context);
+        int userID = userPreferences.getUserID();
+
         // Get user name
-        androidToWeb("setUserName", "Axel");
+        DatabaseHelper databaseHelper = new DatabaseHelper(connection);
+        DBModelUser user = databaseHelper.getUserById(userID);
+
+        androidToWeb("setUserName", user.getFullName());
     }
 
     @JavascriptInterface
@@ -227,14 +234,10 @@ public class WebInterface {
     @JavascriptInterface
     public void openPopupBook(int id_vehicle){
         Log.d(TAG_Web, "id vehicle: " + id_vehicle);
-        //Database.selectRow(id_vehicle);
-        //Log.d(TAG_Web, "Table: " + Arrays.deepToString(Database.getTable()));
-        //Log.d(TAG_Web, "Table: " + Database.getVehicleName());
-        //Log.d(TAG_Web, "Table: " + Database.getVehiclePosition());
+
         DatabaseHelper databaseHelper = new DatabaseHelper(connection);
         DBModelVehicle vehicle = databaseHelper.getVehicleById(id_vehicle);
 
-        //androidToWeb("openPopupBook", Database.getVehicleName(), Database.getVehiclePosition());
         androidToWeb("openPopupBook", vehicle.getModel(), vehicle.getAddress());
     }
 
@@ -245,14 +248,9 @@ public class WebInterface {
 
     @JavascriptInterface
     public void requestDatabase(){
-        //Log.d(TAG_Web, "Table: " + Arrays.deepToString(Database.getTable()));
-        //webView.post(() -> webView.loadUrl("file:///android_asset/pages/drive.html"));
-        //webView.post(() -> webView.loadUrl("javascript:" + "setDatabase" + "('" + Database.getNewTable() + "')"));
-        //androidToWeb("setDatabase", Arrays.deepToString(Database.getTable()));
-
         DatabaseHelper databaseHelper = new DatabaseHelper(connection);
         List<DBModelVehicle> vehicles = databaseHelper.getAllVehicles();
-        Log.d(TAG_Database, "requestDatabase: " + vehicles.toString());
+        Log.d(TAG_Web, "requestDatabase: " + vehicles.toString());
         androidToWeb("setDatabase", vehicles.toString());
     }
 
@@ -280,7 +278,7 @@ public class WebInterface {
     }
 
     private void androidToWeb(String function, String data1, String data2){
-        webView.post(() -> webView.loadUrl("javascript:" + function + "('" + data1 + "','" + data2 + "')"));     //webView.loadUrl("javascript:dataReceived('red')");
+        webView.post(() -> webView.loadUrl("javascript:" + function + "('" + data1 + "','" + data2 + "')"));
     }
 
 }

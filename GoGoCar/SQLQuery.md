@@ -12,6 +12,7 @@ This file save all big query for re-create GoGoCar database.
     - [User](#user)
     - [Vehicle](#vehicle)
 - [Insert](#insert)
+  - [User](#user-1)
   - [Vehicles](#vehicles)
 
 # Create
@@ -54,6 +55,16 @@ CREATE TABLE vehicles (
 
 
 # Insert
+
+## User
+
+password: 'admin'
+hash: `hash = hashPassword("admin");`
+
+```sql
+INSERT INTO users(name, email, phone, password) VALUES
+  ('Admin Admin', 'admin@admin.com', '06 05 04 03 02', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918');
+```
 
 ## Vehicles
 

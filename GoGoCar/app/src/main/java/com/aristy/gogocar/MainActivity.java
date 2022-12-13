@@ -1,5 +1,7 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_Auth;
+import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_Info;
 
@@ -49,10 +51,12 @@ public class MainActivity extends AppCompatActivity {
         // Result state page
         web.setWebViewClient(new Callback());
 
-        // Get user id (by default (unset) int=0, first element in database : 1)
-        SharedPreferences userdata = getSharedPreferences(UserPreferences.DATA, MODE_PRIVATE);
-        int userID = userdata.getInt(UserPreferences.USER, UserPreferences.ID);
-        Log.d(TAG_Info, "userID: " + userID);
+        // Get user id (by default (unset) int=0, first element in database by default: 1)
+        //SharedPreferences userdata = getSharedPreferences(UserPreferences.DATA, MODE_PRIVATE);
+        //int userID = userdata.getInt(UserPreferences.USER, UserPreferences.ID);
+        UserPreferences user = new UserPreferences(this);
+        int userID = user.getUserID();
+        Log.d(TAG_Auth, "userID: " + userID);
         //constraintLayout.setFitsSystemWindows(false);
         if(userID == 0) {
             constraintLayout.setFitsSystemWindows(true);
@@ -71,13 +75,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG_Debug, "onStart: open SQL Connection");
-
         try {
-            if (SQLConnection.isClosed())
+            // If the connection to the server is close, open it
+            if (SQLConnection.isClosed()) {
+                Log.d(TAG_Database, "onStart: open SQL Connection");
                 SQLConnection = connectionHelper.openConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            }
+        } catch (SQLException exception) {
+            Log.e(TAG_Database, "onStart: ERROR open SQL Connection", exception);
+            exception.printStackTrace();
         }
     }
 
@@ -85,22 +91,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(TAG_Debug, "onStop: close SQL connection");
         try {
+            // The user leave application, close connection to the server.
+            Log.d(TAG_Debug, "onStop: close SQL connection");
             SQLConnection.close();
         } catch (SQLException exception) {
             Log.e(TAG_Debug, "onStop: ERROR close SQL connection:" + exception);
             exception.printStackTrace();
         }
-
-        try {
-            Log.d(TAG_Debug, "SQL connection state:" + SQLConnection.isClosed());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
-
-
 
     public void setWindowVersion(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT <  Build.VERSION_CODES.LOLLIPOP) {
