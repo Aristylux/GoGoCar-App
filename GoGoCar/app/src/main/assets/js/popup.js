@@ -9,7 +9,7 @@ let popup_vehicle = document.getElementById("popup_vehicle");
 let popup_vehicle_button_close = document.getElementById("but_pop_veh_close");
 let popup_vehicle_button_book = document.getElementById("but_pop_veh_book");
 
-// [[From android]]
+// [ANDROID]
 function openPopupBook(_vehicle_name, _vehicle_position) {
     let vehicle_name = document.getElementById("vehicle_name");
     let vehicle_position = document.getElementById("vehicle_position");

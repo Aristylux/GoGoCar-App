@@ -248,7 +248,7 @@
         <script src="../js/androidInterface.js"></script>
         <script src="../js/nav.js"></script>
 
-        <!--tactile.js-->
+        <!--moving.js-->
         <script>
             
             const setting_page_pp = document.getElementById("moving-screen");
@@ -257,37 +257,57 @@
             setting_page_pp.addEventListener('touchmove', touchMove);
             setting_page_pp.addEventListener('touchend', touchEnd);
 
-            var startingX;
+            var startingX, count;
 
             function touchStart(event) {
                 startingX = event.touches[0].clientX;
-                console.log("start " + startingX);
+                //console.log("start " + startingX);
+                count = 0;
                 setting_page_pp.style.transition = '0s';
             }
 
             function touchMove(event) {
-                let touch = event.touches[0];
-                let change = touch.clientX - startingX;
-                console.log(".");
-                if(change < 0) {
+                let change = event.touches[0].clientX - startingX;
+                count++;
+                // If move to right to left
+                if(change < 0)
                     return;
-                }
-                setting_page_pp.style.left = change + 'px';
+                
+                if(change > 50)
+                    setting_page_pp.style.left = change - 50 + 'px';
                 event.preventDefault();
             }
 
             function touchEnd(event) {
-                let change = event.changedTouches[0].clientX - startingX;
-                console.log("end " + change);
-                let threshold = screen.width / 3;
+                let endedX = event.changedTouches[0].clientX;
+                let change = endedX - startingX;
+
                 setting_page_pp.style.transition = '0.3s ease-in-out';
-                if(change < threshold){
-                    console.log("rest");
+                if(determinateChange(startingX, endedX, change, count)){
+                    //console.log("rest");
                     setting_page_pp.style.left = '0px';
                 } else {
-                    console.log("leave");
+                    //console.log("leave");
                     setting_page_pp.style.left = '101vw';
                 }
+            }
+
+            function determinateChange(start, end, change, sample) {
+                let speed =  change / sample;
+                console.log("-> start=" + start + "px, end=" + end + "px, diff=" + change + "px, nbr=" + sample + ", speed=" + speed);
+                
+                if(speed > 10){
+                    console.log("speed")
+                    return false;
+                }
+
+                let threshold = screen.width / 2;
+                if(change < threshold){
+                    console.log("threshold");
+                    return true;
+                }
+                    
+                return false;
             }
             
         </script>

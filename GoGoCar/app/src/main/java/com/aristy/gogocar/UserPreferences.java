@@ -1,6 +1,8 @@
 package com.aristy.gogocar;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 public class UserPreferences extends Application {
     // Section DATA
@@ -15,6 +17,14 @@ public class UserPreferences extends Application {
 
     // Storage
     private int userID;
+
+    public UserPreferences (){
+
+    }
+    public UserPreferences (Context context){
+        SharedPreferences userdata = context.getSharedPreferences(UserPreferences.DATA, MODE_PRIVATE);
+        this.userID = userdata.getInt(UserPreferences.USER, UserPreferences.ID);
+    }
 
     public int getUserID(){
         return userID;
