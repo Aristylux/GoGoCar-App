@@ -59,12 +59,21 @@ public class UserPreferences extends Application {
 
 class UserSharedPreference {
 
-    // Section DATA
-    public static final String DATA = "data";
+    // Section DATA (file name)
+    public static final String DATA = "user";
 
     // USER : (ID)
-    public static final String USER = "user";
+    public static final String USER_ID = "id";
     public static int ID;
+
+    public static final String USER_NAME = "name";
+    public static String NAME;
+
+    public static final String USER_EMAIL = "email";
+    public static String EMAIL;
+
+    public static final String USER_PHONE = "phone";
+    public static String PHONE;
 
     // Section PREFERENCE
     // Custom Theme : (Light, dark, system)
@@ -76,29 +85,32 @@ class UserSharedPreference {
     }
 
     int readUserID(){
-        return userdata.getInt(USER, ID);
+        return userdata.getInt(USER_ID, ID);
     }
 
     public DBModelUser readUser() {
         DBModelUser user = new DBModelUser();
-        user.setId(userdata.getInt(USER, ID));
-        //user.setFullName();
-        //user.setEmail();
-        //user.setPhoneNumber();
+        user.setId(userdata.getInt(USER_ID, ID));
+        user.setFullName(userdata.getString(USER_NAME, NAME));
+        user.setEmail(userdata.getString(USER_EMAIL, EMAIL));
+        user.setPhoneNumber(userdata.getString(USER_PHONE, PHONE));
         return user;
     }
 
-    void writeUser(DBModelUser user){
-        SharedPreferences.Editor editor = userdata.edit();
-        editor.putInt(USER, user.getId());
-        editor.apply();
+    public void writeUser(DBModelUser user){
+        write(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber());
     }
 
-    void resetData(){
-        SharedPreferences.Editor editor = userdata.edit();
-        editor.putInt(USER, 0);
-        editor.apply();
+    public void resetData(){
+        write(0, null, null, null);
     }
 
-
+    private void write(int id, String name, String email, String phone){
+        SharedPreferences.Editor editor = userdata.edit();
+        editor.putInt(USER_ID, id);
+        editor.putString(USER_NAME, name);
+        editor.putString(USER_EMAIL, email);
+        editor.putString(USER_PHONE, phone);
+        editor.apply();
+    }
 }
