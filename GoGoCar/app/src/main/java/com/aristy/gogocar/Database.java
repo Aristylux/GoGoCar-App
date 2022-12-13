@@ -1,8 +1,14 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_Database;
+
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+// NO LONGER USED
 
 public class Database {
 
@@ -31,6 +37,7 @@ public class Database {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.d(TAG_Database, "createBase: " + array);
         return array.toString();
     }
 
