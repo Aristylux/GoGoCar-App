@@ -3,7 +3,6 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Error;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -35,9 +34,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_USER_PHONE_NUMBER = "phoneNumber";
     private static final String COLUMN_USER_PASSWORD = "password";
 
+    Connection connection;
+
     // Constructor
-    public DatabaseHelper(@Nullable Context context) {
+    public DatabaseHelper(@Nullable Context context, Connection connection) {
         super(context, DATABASE_NAME, null, 1);
+
+        this.connection = connection;
     }
 
     // This is called the first time a database is accessed. There should be code in here to create a new database
@@ -160,12 +163,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Get data from database
         try {
-            ConnectionHelper connectionHelper = new ConnectionHelper();
-            Connection connect = connectionHelper.openConnection();
-            if (connect != null) {
+            if (connection != null) {
                 String query = "SELECT * FROM vehicles";
 
-                Statement st = connect.createStatement();
+                Statement st = connection.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
                 while (rs.next()) {
@@ -186,7 +187,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 // Close both cursor and the database
                 rs.close();
                 st.close();
-                connect.close();
             } else {
                 Log.d(TAG_Error, "connect is null");
             }
@@ -204,12 +204,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public DBModelVehicle getVehicle(String query){
         DBModelVehicle vehicle = new DBModelVehicle();
 
-        // Get data from database
-        ConnectionHelper connectionHelper = new ConnectionHelper();
-        Connection connect = connectionHelper.openConnection();
-
         try {
-            Statement st = connect.createStatement();
+            Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(query);
 
             if (rs.next()){
@@ -227,8 +223,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             rs.close();
             st.close();
-            connect.close();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

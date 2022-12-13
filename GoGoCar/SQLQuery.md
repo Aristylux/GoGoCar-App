@@ -48,8 +48,8 @@ CREATE TABLE vehicles (
 
 ```sql
 INSERT INTO vehicles (model, licence_plate, address, id_owner) VALUES 
-    ('Peugeot 105', 'YZ-875-AZ', '14 rue des romarins 83000 TOULON', 1),
-    ('Renault Mégane', 'PA-510-ND', '2 avenue Champ de Mars 83000 TOUON', 2);
+    ('Peugeot 105', 'YZ-875-AZ', '14 rue des romarins', 1),
+    ('Renault Mégane', 'PA-510-ND', '2 avenue Champ de Mars', 2);
 ```
 
 ```sql

@@ -8,7 +8,6 @@ import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Window;
@@ -19,6 +18,7 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import java.sql.Connection;
 import java.util.List;
 
 public class WebInterface {
@@ -27,13 +27,17 @@ public class WebInterface {
     Context context;
     WebView webView;
     ConstraintLayout layout;
+    
+    Connection connection;
 
     // Constructor
-    WebInterface(Activity activity, Context context, WebView webView, ConstraintLayout layout){
+    WebInterface(Activity activity, Context context, WebView webView, ConstraintLayout layout, Connection connection){
         this.activity = activity;
         this.context = context;
         this.webView = webView;
         this.layout = layout;
+
+        this.connection = connection;
     }
 
     /* ----------------------------- *
@@ -71,7 +75,7 @@ public class WebInterface {
     }
 
     private int verify(String email, String hash){
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context, connection);
 
         DBModelUser user = databaseHelper.getUserByEmail(email);
         // if user exist
@@ -90,7 +94,7 @@ public class WebInterface {
     @JavascriptInterface
     public void AuthenticationRegister(String fullName, String email, String phoneNumber, String password){
         // Open database
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context, connection);
 
         // Hash password
         String hash = hashPassword(password);
@@ -125,7 +129,7 @@ public class WebInterface {
     @JavascriptInterface
     public void verifyEmail(String email, int successCode, int errorCode){
         // Check in database if email exist
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context, connection);
         DBModelUser user = databaseHelper.getUserByEmail(email);
         Log.d(TAG_Auth, "verifyEmail: " + user.toString());
 
@@ -138,7 +142,7 @@ public class WebInterface {
 
     @JavascriptInterface
     public void verifyPhone(String phone, int successCode, int errorCode){
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context, connection);
         DBModelUser user = databaseHelper.getUserByPhone(phone);
         Log.d(TAG_Auth, "verifyPhone: " + user.toString());
 
@@ -225,7 +229,7 @@ public class WebInterface {
         //Log.d(TAG_Web, "Table: " + Arrays.deepToString(Database.getTable()));
         //Log.d(TAG_Web, "Table: " + Database.getVehicleName());
         //Log.d(TAG_Web, "Table: " + Database.getVehiclePosition());
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context, connection);
         DBModelVehicle vehicle = databaseHelper.getVehicleById(id_vehicle);
 
         //androidToWeb("openPopupBook", Database.getVehicleName(), Database.getVehiclePosition());
@@ -244,7 +248,7 @@ public class WebInterface {
         //webView.post(() -> webView.loadUrl("javascript:" + "setDatabase" + "('" + Database.getNewTable() + "')"));
         //androidToWeb("setDatabase", Arrays.deepToString(Database.getTable()));
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context, connection);
         List<DBModelVehicle> vehicles = databaseHelper.getAllVehicles();
         Log.d(TAG_Database, "requestDatabase: " + vehicles.toString());
         androidToWeb("setDatabase", vehicles.toString());

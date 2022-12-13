@@ -209,3 +209,40 @@ postgres=# \l
 (4 rows)
 
 postgres=# 
+```
+
+# Server reboot
+
+Sometimes the server need to be reboot, then the database is no longer available.
+
+To repair that:
+
+```
+ssh ubuntu@192.168.1.187
+ubuntu@192.168.1.187's password: 
+Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-1021-raspi aarch64)
+```
+
+
+```
+ubuntu@ubuntu:~$ sudo docker images
+REPOSITORY   TAG       IMAGE ID       CREATED      SIZE
+postgres     latest    5eea76716a19   7 days ago   359MB
+```
+
+```
+ubuntu@ubuntu:~$ sudo docker ps 
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+ubuntu@ubuntu:~$ 
+```
+
+
+
+```
+ubuntu@ubuntu:~$ sudo docker restart postgres-0
+postgres-0
+ubuntu@ubuntu:~$ sudo docker ps 
+CONTAINER ID   IMAGE      COMMAND                  CREATED        STATUS         PORTS                                       NAMES
+8fe59819205b   postgres   "docker-entrypoint.s…"   44 hours ago   Up 5 seconds   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   postgres-0
+ubuntu@ubuntu:~$ 
+```

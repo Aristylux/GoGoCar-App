@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+// NO LONGER USED
+
 public class Database {
 
     private static final String[] vehicle_1 = {"1", "Nissan GT", "26 rue General de Gaulle"};
