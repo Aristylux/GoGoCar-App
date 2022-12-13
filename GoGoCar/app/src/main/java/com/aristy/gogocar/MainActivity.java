@@ -35,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d(TAG_Debug, "onCreate: ");
-
         connectionHelper = new ConnectionHelper();
         SQLConnection = connectionHelper.openConnection();
 
@@ -67,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         // For top bar and navigation bar
         setWindowVersion();
-        Log.d(TAG_Debug, "onCreate: end");
     }
 
     // First time, appear after onCreate
@@ -91,9 +88,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG_Debug, "onStop: close SQL connection");
         try {
             SQLConnection.close();
-        } catch (SQLException e) {
-            Log.e(TAG_Debug, "onStop: ERROR close SQL connection");
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            Log.e(TAG_Debug, "onStop: ERROR close SQL connection:" + exception);
+            exception.printStackTrace();
         }
 
         try {

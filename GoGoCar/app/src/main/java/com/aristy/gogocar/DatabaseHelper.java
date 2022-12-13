@@ -1,122 +1,128 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
-import static com.aristy.gogocar.CodesTAG.TAG_Error;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class DatabaseHelper {
 
-    private static final String DATABASE_NAME = "GoGoCar.db";
-
-    private static final String TABLE_USER = "user";
+    private static final String TABLE_USER = "users";
     private static final String COLUMN_USER_ID = "id";
     private static final String COLUMN_USER_NAME = "name";
     private static final String COLUMN_USER_EMAIL = "email";
     private static final String COLUMN_USER_PHONE_NUMBER = "phoneNumber";
     private static final String COLUMN_USER_PASSWORD = "password";
+    // id person (identity card table) (if null => not approved)
+
+    private static final String TABLE_VEHICLE = "vehicles";
+    private static final String COLUMN_VEHICLE_ID = "id";
+    private static final String COLUMN_VEHICLE_MODEL = "model";
+    private static final String COLUMN_VEHICLE_LICENCE_PLATE = "licence_plate";
+    private static final String COLUMN_VEHICLE_ADDRESS = "address";
+    private static final String COLUMN_VEHICLE_ID_OWNER = "id_owner";
+    private static final String COLUMN_VEHICLE_IS_AVAILABLE = "is_available";
+    private static final String COLUMN_VEHICLE_IS_BOOKED = "is_booked";
+    private static final String COLUMN_VEHICLE_ID_USER_BOOK = "id_user_book";
+    // id image
+    // id module (stm 32 table)
 
     Connection connection;
 
     // Constructor
-    public DatabaseHelper(@Nullable Context context, Connection connection) {
-        super(context, DATABASE_NAME, null, 1);
-
+    public DatabaseHelper( Connection connection) {
         this.connection = connection;
     }
 
-    // This is called the first time a database is accessed. There should be code in here to create a new database
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        String createTableUser = "CREATE TABLE " + TABLE_USER + " (" + COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_USER_NAME + " TEXT, " + COLUMN_USER_EMAIL + " TEXT, " + COLUMN_USER_PHONE_NUMBER + " TEXT, " + COLUMN_USER_PASSWORD + " TEXT)";
-
-        db.execSQL(createTableUser);
-    }
-
-    // This is called if the database version number change.
-    // It pretend previous users apps from breaking when you change the database design.
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
-    }
-
     public boolean addUser(DBModelUser userModel){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
+        String preparedQuery = "INSERT INTO " + TABLE_USER + "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + ") VALUES (?, ?, ?, ?)";
+        try {
+            PreparedStatement st = connection.prepareStatement(preparedQuery);
+            // i is '?' position
+            st.setString(1, userModel.getFullName());
+            st.setString(2, userModel.getEmail());
+            st.setString(3, userModel.getPhoneNumber());
+            st.setString(4, userModel.getPassword());
 
-        cv.put(COLUMN_USER_NAME, userModel.getFullName());
-        cv.put(COLUMN_USER_EMAIL, userModel.getEmail());
-        cv.put(COLUMN_USER_PHONE_NUMBER, userModel.getPhoneNumber());
-        cv.put(COLUMN_USER_PASSWORD, userModel.getPassword());
-
-        long result = db.insert(TABLE_USER, null, cv);
-        if(result == -1) return false;
-        else return true;
+            st.executeUpdate();
+            st.close();
+            return true;
+        } catch (SQLException exception) {
+            Log.e(TAG_Database, "addUser: ", exception);
+            exception.printStackTrace();
+            return false;
+        }
     }
 
     public boolean deleteUser(DBModelUser userModel){
         // Find user in the database.
         String query = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = " + userModel.getId();
 
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
+        boolean result = false;
+        try {
+            Statement st = connection.createStatement();
 
-        // If it found, delete it and return true.
-        // If it is not found, return false.
-        boolean result = cursor.moveToFirst();
+            // If it found, delete it and return true.
+            // If it is not found, return false.
+            result = st.execute(query);
 
-        // Close both cursor and the database
-        cursor.close();
-        db.close();
+            // Close
+            st.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
         return result;
     }
 
     public List<DBModelUser> getAllUsers(){
         List<DBModelUser> returnList = new ArrayList<>();
 
-        // Get data from database
         String query = "SELECT * FROM " + TABLE_USER;
 
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
+        // Get data from database
+        try {
+            if (connection != null) {
+                Statement st = connection.createStatement();
+                ResultSet rs = st.executeQuery(query);
 
-        // else: Failure. do not add anything to the list
-        if (cursor.moveToFirst()){
-            // Loop through the cursor (result set) and create new user objects. Put them into the return list.
-            do {
-                int userID = cursor.getInt(0);
-                String userName = cursor.getString(1);
-                String userEmail = cursor.getString(2);
-                String userPhone = cursor.getString(3);
-                String userHash = cursor.getString(4);
+                while (rs.next()) {
+                    // Loop through the cursor (result set) and create new user objects. Put them into the return list.
+                    int userID = rs.getInt(1);
+                    String userName = rs.getString(2);
+                    String userEmail = rs.getString(3);
+                    String userPhone = rs.getString(4);
+                    String userHash = rs.getString(5);
+                    //int userIdentityID = rs.getInt(6);
 
-                DBModelUser user = new DBModelUser(userID, userName, userEmail, userPhone, userHash);
-                returnList.add(user);
+                    DBModelUser user = new DBModelUser(userID, userName, userEmail, userPhone, userHash);
+                    Log.i(TAG_Database, user.toString());
+                    returnList.add(user);
+                }
 
-            } while (cursor.moveToNext());
+                // Close both result and the statement
+                rs.close();
+                st.close();
+            } else {
+                // else: Failure. do not add anything to the list
+                Log.e(TAG_Database, "connect is null");
+            }
+        }catch (Exception exception){
+            Log.e(TAG_Database, "getAllUsers: ", exception);
         }
 
-        // Close both cursor and the database
-        cursor.close();
-        db.close();
         return returnList;
     }
 
@@ -136,27 +142,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public DBModelUser getUser(String query){
-        // Get data from database
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-
         DBModelUser user = new DBModelUser();
 
-        if (cursor.moveToFirst()){
-            int user_id = cursor.getInt(0);
-            String userName = cursor.getString(1);
-            String userEmail = cursor.getString(2);
-            String userPhone = cursor.getString(3);
-            String userHash = cursor.getString(4);
-            user = new DBModelUser(user_id, userName, userEmail, userPhone, userHash);
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs.next()){
+                int user_id = rs.getInt(1);
+                String name = rs.getString(2);
+                String email = rs.getString(3);
+                String phone = rs.getString(4);
+                String hash = rs.getString(5);
+                //int identity_id = rs.getInt(6);
+
+                user = new DBModelUser(user_id, name, email, phone, hash);
+                Log.i(TAG_Database, "getUser: " + user);
+            }
+
+            rs.close();
+            st.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        // Close both cursor and the database
-        cursor.close();
-        db.close();
         return user;
     }
 
+    /** Vehicles */
 
     public List<DBModelVehicle> getAllVehicles(){
         List<DBModelVehicle> returnList = new ArrayList<>();
@@ -164,7 +177,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Get data from database
         try {
             if (connection != null) {
-                String query = "SELECT * FROM vehicles";
+                String query = "SELECT * FROM " + TABLE_VEHICLE;
 
                 Statement st = connection.createStatement();
                 ResultSet rs = st.executeQuery(query);
@@ -180,7 +193,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     int idUser = rs.getInt(8);
 
                     DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser);
-                    Log.d(TAG_Database, vehicle.toString());
+                    Log.i(TAG_Database, vehicle.toString());
                     returnList.add(vehicle);
                 }
 
@@ -188,16 +201,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 rs.close();
                 st.close();
             } else {
-                Log.d(TAG_Error, "connect is null");
+                Log.e(TAG_Database, "connect is null");
             }
         }catch (Exception exception){
-            Log.e(TAG_Error, "Error :" + exception);
+            Log.e(TAG_Database, "getAllVehicles: " , exception);
         }
         return returnList;
     }
 
     public DBModelVehicle getVehicleById(int ID){
-        String query = "SELECT * FROM vehicles WHERE id = " + ID;
+        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE + " + COLUMN_VEHICLE_ID + " = " + ID;
         return getVehicle(query);
     }
 

@@ -26,6 +26,17 @@ CREATE DATABASE gogocar WITH ENCODING = 'UTF-8';
 
 ### User
 
+```sql
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, 
+    name VARCHAR(40) NOT NULL,
+    email VARCHAR(40) UNIQUE NOT NULL,
+    phone VARCHAR(14) UNIQUE NOT NULL,
+    password VARCHAR(65) UNIQUE NOT NULL,
+    id_identity INTEGER UNIQUE
+    );
+```
+
 ### Vehicle
 
 ```sql
