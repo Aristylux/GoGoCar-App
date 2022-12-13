@@ -32,7 +32,7 @@ public class ConnectionHelper {
             connection = DriverManager.getConnection(jdbcURL, userName, password);
             Log.d(TAG_Database, "ConnectionClass: Connected");
         } catch (Exception exception) {
-            Log.d(TAG_Database, exception.toString());
+            Log.e(TAG_Database, "openConnection: ", exception);
             exception.printStackTrace();
         }
 

@@ -49,16 +49,22 @@ public class DatabaseHelper {
     public boolean addUser(DBModelUser userModel){
         String preparedQuery = "INSERT INTO " + TABLE_USER + "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + ") VALUES (?, ?, ?, ?)";
         try {
-            PreparedStatement st = connection.prepareStatement(preparedQuery);
-            // i is '?' position
-            st.setString(1, userModel.getFullName());
-            st.setString(2, userModel.getEmail());
-            st.setString(3, userModel.getPhoneNumber());
-            st.setString(4, userModel.getPassword());
+            if (connection != null) {
+                PreparedStatement st = connection.prepareStatement(preparedQuery);
+                // i is '?' position
+                st.setString(1, userModel.getFullName());
+                st.setString(2, userModel.getEmail());
+                st.setString(3, userModel.getPhoneNumber());
+                st.setString(4, userModel.getPassword());
 
-            st.executeUpdate();
-            st.close();
-            return true;
+                st.executeUpdate();
+                st.close();
+                return true;
+            } else {
+                // else: Failure. do not add anything to the list
+                Log.e(TAG_Database, "addUser: connect is null");
+                return false;
+            }
         } catch (SQLException exception) {
             Log.e(TAG_Database, "addUser: ", exception);
             exception.printStackTrace();
@@ -72,14 +78,19 @@ public class DatabaseHelper {
 
         boolean result = false;
         try {
-            Statement st = connection.createStatement();
+            if (connection != null) {
+                Statement st = connection.createStatement();
 
-            // If it found, delete it and return true.
-            // If it is not found, return false.
-            result = st.execute(query);
+                // If it found, delete it and return true.
+                // If it is not found, return false.
+                result = st.execute(query);
 
-            // Close
-            st.close();
+                // Close
+                st.close();
+            } else {
+                // else: Failure. do not add anything to the list
+                Log.e(TAG_Database, "deleteUser: connect is null");
+            }
         } catch (SQLException exception) {
             Log.e(TAG_Database, "deleteUser: ", exception);
             exception.printStackTrace();
@@ -117,7 +128,7 @@ public class DatabaseHelper {
                 st.close();
             } else {
                 // else: Failure. do not add anything to the list
-                Log.e(TAG_Database, "connect is null");
+                Log.e(TAG_Database, "getAllUsers: is null");
             }
         }catch (Exception exception){
             Log.e(TAG_Database, "getAllUsers: ", exception);
@@ -145,23 +156,28 @@ public class DatabaseHelper {
         DBModelUser user = new DBModelUser();
 
         try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            if (connection != null) {
+                Statement st = connection.createStatement();
+                ResultSet rs = st.executeQuery(query);
 
-            if (rs.next()){
-                int user_id = rs.getInt(1);
-                String name = rs.getString(2);
-                String email = rs.getString(3);
-                String phone = rs.getString(4);
-                String hash = rs.getString(5);
-                //int identity_id = rs.getInt(6);
+                if (rs.next()) {
+                    int user_id = rs.getInt(1);
+                    String name = rs.getString(2);
+                    String email = rs.getString(3);
+                    String phone = rs.getString(4);
+                    String hash = rs.getString(5);
+                    //int identity_id = rs.getInt(6);
 
-                user = new DBModelUser(user_id, name, email, phone, hash);
-                Log.i(TAG_Database, "getUser: " + user);
+                    user = new DBModelUser(user_id, name, email, phone, hash);
+                    Log.i(TAG_Database, "getUser: " + user);
+                }
+
+                rs.close();
+                st.close();
+            } else {
+                // else: Failure. do not add anything to the list
+                Log.e(TAG_Database, "getUser: connect is null");
             }
-
-            rs.close();
-            st.close();
         } catch (SQLException exception) {
             Log.e(TAG_Database, "getUser: ", exception);
             exception.printStackTrace();
@@ -201,7 +217,7 @@ public class DatabaseHelper {
                 rs.close();
                 st.close();
             } else {
-                Log.e(TAG_Database, "connect is null");
+                Log.e(TAG_Database, "getAllVehicles: connect is null");
             }
         }catch (Exception exception){
             Log.e(TAG_Database, "getAllVehicles: " , exception);
@@ -219,6 +235,11 @@ public class DatabaseHelper {
         DBModelVehicle vehicle = new DBModelVehicle();
 
         try {
+            if (connection == null) {
+                Log.e(TAG_Database, "getVehicle: connect is null");
+                return vehicle;
+            }
+
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(query);
 
