@@ -50,7 +50,7 @@ public class WebInterface {
     @JavascriptInterface
     public void AuthenticationLogin(String email, String password){
         // Hash password
-        String hash = hashPassword(password);
+        String hash = hashPassword(password, SHAHash.DOMAIN);
 
         // Verify user exist for this email and password
         DBModelUser user = verify(email, hash);
@@ -105,7 +105,7 @@ public class WebInterface {
         DatabaseHelper databaseHelper = new DatabaseHelper(connection);
 
         // Hash password
-        String hash = hashPassword(password);
+        String hash = hashPassword(password, SHAHash.DOMAIN);
         Log.d(TAG_Web, "pw= \"" + password + "\", hash= \"" + hash + "\"");
 
         // Create user
