@@ -179,6 +179,20 @@ public class WebInterface {
     }
 
     @JavascriptInterface
+    public void deleteUser() {
+        // Get user
+        UserSharedPreference userdata = new UserSharedPreference(context);
+        DBModelUser user = userdata.readUser();
+
+        // Remove user from database
+        DatabaseHelper databaseHelper = new DatabaseHelper(connection);
+        boolean success = databaseHelper.deleteUser(user);
+
+        // Logout
+        if (success) logout();
+    }
+
+    @JavascriptInterface
     public void logout(){
         // Reset user to default
         UserSharedPreference userdata = new UserSharedPreference(context);
