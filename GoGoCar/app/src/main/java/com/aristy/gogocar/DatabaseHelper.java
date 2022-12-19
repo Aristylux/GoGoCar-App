@@ -72,18 +72,17 @@ public class DatabaseHelper {
         }
     }
 
-    public boolean deleteUser(DBModelUser userModel){
+    public void deleteUser(DBModelUser userModel){
         // Find user in the database.
         String query = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = " + userModel.getId();
 
-        boolean result = false;
         try {
             if (connection != null) {
                 Statement st = connection.createStatement();
 
                 // If it found, delete it and return true.
                 // If it is not found, return false.
-                result = st.execute(query);
+                st.execute(query);
 
                 // Close
                 st.close();
@@ -95,7 +94,6 @@ public class DatabaseHelper {
             Log.e(TAG_Database, "deleteUser: ", exception);
             exception.printStackTrace();
         }
-        return result;
     }
 
     public List<DBModelUser> getAllUsers(){

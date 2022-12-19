@@ -179,17 +179,19 @@ public class WebInterface {
     }
 
     @JavascriptInterface
-    public void deleteUser() {
+    public void deleteUserAccount() {
         // Get user
         UserSharedPreference userdata = new UserSharedPreference(context);
         DBModelUser user = userdata.readUser();
 
+        Log.d(TAG_Web, "deleteUserAccount: user=" + user);
+
         // Remove user from database
         DatabaseHelper databaseHelper = new DatabaseHelper(connection);
-        boolean success = databaseHelper.deleteUser(user);
+        databaseHelper.deleteUser(user);
 
         // Logout
-        if (success) logout();
+        logout();
     }
 
     @JavascriptInterface

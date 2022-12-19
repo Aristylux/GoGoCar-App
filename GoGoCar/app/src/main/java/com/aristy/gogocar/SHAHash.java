@@ -20,7 +20,7 @@ public class SHAHash {
         MessageDigest sha;
         byte[] byteData;
         try {
-            sha = MessageDigest.getInstance("SHA3-512");    // len : 128
+            sha = MessageDigest.getInstance("SHA-512"); //SHA3-512 is not working
             byteData = sha.digest(pw.getBytes(StandardCharsets.UTF_8));
             return convertHex(byteData);
         } catch (NoSuchAlgorithmException e) {
