@@ -171,6 +171,15 @@ public class WebInterface {
         androidToWeb("requestDriveCallback", "true");
     }
 
+    // ** vehicles **
+
+    @JavascriptInterface
+    public void requestUserVehicles(){
+        DatabaseHelper databaseHelper = new DatabaseHelper(connection);
+        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userPreferences.getUserID());
+        androidToWeb("setDatabase", vehicles.toString());
+    }
+
     /** Settings.html */
 
     @JavascriptInterface

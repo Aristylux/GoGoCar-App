@@ -150,7 +150,7 @@ public class DatabaseHelper {
         return getUser(query);
     }
 
-    public DBModelUser getUser(String query){
+    private DBModelUser getUser(String query){
         DBModelUser user = new DBModelUser();
 
         try {
@@ -183,16 +183,29 @@ public class DatabaseHelper {
         return user;
     }
 
-    /** Vehicles */
+    /* Vehicles */
 
     public List<DBModelVehicle> getAllVehicles(){
+        String query = "SELECT * FROM " + TABLE_VEHICLE;
+        return getVehicles(query);
+    }
+
+    public List<DBModelVehicle> getVehiclesByUser(int idUser){
+        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID_OWNER + " = " + idUser;
+        return getVehicles(query);
+    }
+
+    public DBModelVehicle getVehicleById(int ID){
+        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID + " = " + ID;
+        return getVehicle(query);
+    }
+
+    private List<DBModelVehicle> getVehicles(String query){
         List<DBModelVehicle> returnList = new ArrayList<>();
 
         // Get data from database
         try {
             if (connection != null) {
-                String query = "SELECT * FROM " + TABLE_VEHICLE;
-
                 Statement st = connection.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -224,12 +237,7 @@ public class DatabaseHelper {
         return returnList;
     }
 
-    public DBModelVehicle getVehicleById(int ID){
-        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE + " + COLUMN_VEHICLE_ID + " = " + ID;
-        return getVehicle(query);
-    }
-
-    public DBModelVehicle getVehicle(String query){
+    private DBModelVehicle getVehicle(String query){
         DBModelVehicle vehicle = new DBModelVehicle();
 
         try {
