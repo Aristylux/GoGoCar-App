@@ -23,7 +23,7 @@ public class DatabaseHelper {
     private static final String COLUMN_USER_ID = "id";
     private static final String COLUMN_USER_NAME = "name";
     private static final String COLUMN_USER_EMAIL = "email";
-    private static final String COLUMN_USER_PHONE_NUMBER = "phoneNumber";
+    private static final String COLUMN_USER_PHONE_NUMBER = "phone";
     private static final String COLUMN_USER_PASSWORD = "password";
     // id person (identity card table) (if null => not approved)
 

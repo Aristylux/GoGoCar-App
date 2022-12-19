@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         // If the connection to the server is close, open it
-        if (connectionValid()) {
+        if (!connectionValid()) {
             Log.d(TAG_Database, "onStart: open SQL Connection");
             SQLConnection = connectionHelper.openConnection();
         } else {
@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean connectionValid(){
         try {
+            Log.d(TAG_Database, "connectionValid: SQLConnection=" + SQLConnection + ", close?=" + SQLConnection.isClosed());
             if (SQLConnection != null)
                 return !SQLConnection.isClosed();
             else

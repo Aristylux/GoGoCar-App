@@ -16,11 +16,11 @@ import java.sql.DriverManager;
  */
 public class ConnectionHelper {
 
-    private final static String host = "192.168.1.187";
+    private final static String host = "129.151.251.242";
     private final static String port = "5432";
     private final static String databaseName = "gogocar";
     private final static String userName = "postgres";
-    private final static String password = "password";
+    private final static String password = "7-tFap0&u6<ds_52gz0&-Lm";
 
     public Connection openConnection() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();

@@ -129,6 +129,9 @@ for (let i = 0; i < registerForm.elements.length; i++) {
     });
 }
 
+// When user leave name input
+// delete if exist last ' '
+
 // When user leave email input
 // Verify mail adress doesn't exist into our database (ask Android)
 // Request email (if email already exist: error)
