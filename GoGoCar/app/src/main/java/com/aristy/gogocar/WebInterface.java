@@ -14,9 +14,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentTransaction;
 
 import java.sql.Connection;
 import java.util.List;
@@ -26,7 +24,6 @@ public class WebInterface {
     Activity activity;
     Context context;
     WebView webView;
-    ConstraintLayout layout;
     
     Connection connection;
     UserPreferences userPreferences;
@@ -34,11 +31,10 @@ public class WebInterface {
     Handler fragmentHandler;
 
     // Constructor
-    WebInterface(Activity activity, Context context, WebView webView, ConstraintLayout layout, Connection connection, UserPreferences userPreferences, Handler fragmentHandler){
+    WebInterface(Activity activity, Context context, WebView webView, Connection connection, UserPreferences userPreferences, Handler fragmentHandler){
         this.activity = activity;
         this.context = context;
         this.webView = webView;
-        this.layout = layout;
 
         this.connection = connection;
         this.userPreferences = userPreferences;
