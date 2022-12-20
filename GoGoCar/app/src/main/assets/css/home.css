@@ -1,6 +1,16 @@
 h2 {
-    margin-left: 20px;
     padding: 5px 0;
+}
+
+#welcome {
+    color: white;
+    margin-left: 25px;
+    margin-bottom: 25px;
+}
+
+.title_container {
+    color: white;
+    margin-left: 25px;
 }
 
 #container {
@@ -45,4 +55,16 @@ li {
 
 #drive_vehicle h3 {
     text-align: center;
+}
+
+.back {
+    background-color: var(--primary-color);
+    position: fixed;
+
+    margin-top: calc(var(--margin-top-topbar) * -1);
+    height: 200px;
+    width: 100vw;
+    z-index: -1;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
 }

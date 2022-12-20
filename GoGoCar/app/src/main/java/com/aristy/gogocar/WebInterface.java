@@ -1,15 +1,12 @@
 package com.aristy.gogocar;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
-import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
@@ -30,15 +27,17 @@ public class WebInterface {
     ConstraintLayout layout;
     
     Connection connection;
+    UserPreferences userPreferences;
 
     // Constructor
-    WebInterface(Activity activity, Context context, WebView webView, ConstraintLayout layout, Connection connection){
+    WebInterface(Activity activity, Context context, WebView webView, ConstraintLayout layout, Connection connection, UserPreferences userPreferences){
         this.activity = activity;
         this.context = context;
         this.webView = webView;
         this.layout = layout;
 
         this.connection = connection;
+        this.userPreferences = userPreferences;
     }
 
     /* ----------------------------- *
@@ -51,24 +50,24 @@ public class WebInterface {
     @JavascriptInterface
     public void AuthenticationLogin(String email, String password){
         // Hash password
-        String hash = hashPassword(password);
+        String hash = hashPassword(password, SHAHash.DOMAIN);
 
-        // Compare passwords
-        int success = verify(email, hash);
+        // Verify user exist for this email and password
+        DBModelUser user = verify(email, hash);
 
-        //if password and email are different
-        if (success == -1) {
+        // If user doesn't exist
+        if (user == null) {
             Log.e(TAG_Web, "AuthenticationLogin: no this user in our database");
             // Send error to the page
             androidToWeb("errorAuthenticationLogin");
         } else {
-            // Save user in app
-            UserPreferences userdata = new UserPreferences();
-            userdata.setUserID(success);
 
-            SharedPreferences.Editor editor = context.getSharedPreferences(UserPreferences.DATA, MODE_PRIVATE).edit();
-            editor.putInt(UserPreferences.USER, userdata.getUserID());
-            editor.apply();
+            // Set user in app
+            userPreferences.setUser(user);
+
+            //
+            UserSharedPreference userdata = new UserSharedPreference(context);
+            userdata.writeUser(user);
 
             // Go to home
             webView.setFitsSystemWindows(false);
@@ -76,20 +75,27 @@ public class WebInterface {
         }
     }
 
-    private int verify(String email, String hash){
+    /**
+     * Verify if user exist
+     * @param email     user email enter in login
+     * @param hash      user password hash
+     * @return user if success,<br>
+     *         null if not.
+     */
+    private DBModelUser verify(String email, String hash){
         DatabaseHelper databaseHelper = new DatabaseHelper(connection);
 
         DBModelUser user = databaseHelper.getUserByEmail(email);
         // if user exist
         if(user.getPassword() != null){
-            // if password == hash
+            // Compare passwords, if hash_password == hash
             if(hash.equals(user.getPassword())){
                 // Ok
-                return user.getId();
+                return user;
             }
         }
-        // Not ok
-        return -1;
+        // If password and email are different: Not ok
+        return null;
     }
 
     // When Click on register button
@@ -99,7 +105,7 @@ public class WebInterface {
         DatabaseHelper databaseHelper = new DatabaseHelper(connection);
 
         // Hash password
-        String hash = hashPassword(password);
+        String hash = hashPassword(password, SHAHash.DOMAIN);
         Log.d(TAG_Web, "pw= \"" + password + "\", hash= \"" + hash + "\"");
 
         // Create user
@@ -113,16 +119,15 @@ public class WebInterface {
             return;
         }
 
-
-        // retrieve user id
+        // Retrieve user id
         DBModelUser user_refresh = databaseHelper.getUserByEmail(email);
-        UserPreferences userdata = new UserPreferences();
-        userdata.setUserID(user_refresh.getId());
+
+        // Set user in app
+        userPreferences.setUser(user_refresh);
 
         // Save user for the application (user id)
-        SharedPreferences.Editor editor = context.getSharedPreferences(UserPreferences.DATA, MODE_PRIVATE).edit();
-        editor.putInt(UserPreferences.USER, userdata.getUserID());
-        editor.apply();
+        UserSharedPreference userdata = new UserSharedPreference(context);
+        userdata.writeUser(user_refresh);
 
         webView.setFitsSystemWindows(false);
         loadNewPage("home");
@@ -166,36 +171,51 @@ public class WebInterface {
         androidToWeb("requestDriveCallback", "true");
     }
 
+    // ** vehicles **
+
+    @JavascriptInterface
+    public void requestUserVehicles(){
+        DatabaseHelper databaseHelper = new DatabaseHelper(connection);
+        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userPreferences.getUserID());
+        androidToWeb("setDatabase", vehicles.toString());
+    }
+
     /** Settings.html */
 
     @JavascriptInterface
     public void requestUserName(){
-        // Get user id
-        UserPreferences userPreferences = new UserPreferences(context);
-        int userID = userPreferences.getUserID();
+        androidToWeb("setUserName", userPreferences.getUserName());
+    }
 
-        // Get user name
+    @JavascriptInterface
+    public void deleteUserAccount() {
+        // Get user
+        UserSharedPreference userdata = new UserSharedPreference(context);
+        DBModelUser user = userdata.readUser();
+
+        Log.d(TAG_Web, "deleteUserAccount: user=" + user);
+
+        // Remove user from database
         DatabaseHelper databaseHelper = new DatabaseHelper(connection);
-        DBModelUser user = databaseHelper.getUserById(userID);
+        databaseHelper.deleteUser(user);
 
-        androidToWeb("setUserName", user.getFullName());
+        // Logout
+        logout();
     }
 
     @JavascriptInterface
     public void logout(){
-        // logout
-        SharedPreferences.Editor editor = context.getSharedPreferences(UserPreferences.DATA, MODE_PRIVATE).edit();
-        editor.putString(UserPreferences.USER, null);
-        editor.apply();
+        // Reset user to default
+        UserSharedPreference userdata = new UserSharedPreference(context);
+        userdata.resetData();
 
+        // Load page of login
         webView.post(() -> webView.loadUrl("file:///android_asset/login.html"));
     }
 
     /* Show a toast from the web page */
     @JavascriptInterface
     public void showToast(String toast){
-        //layout.setPadding(layout.getPaddingLeft(), layout.getPaddingTop(), layout.getPaddingRight(), layout.getPaddingBottom());
-        //layout.setFitsSystemWindows(false);
         Toast.makeText(context, toast, Toast.LENGTH_SHORT).show();
     }
 

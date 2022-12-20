@@ -7,8 +7,6 @@
 client@user:~$ ssh ubuntu@192.168.1.187
 ```
 
-password:hU6fe52Dy
-
 ## Install Docker
 
 ```bash
