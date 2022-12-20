@@ -4,12 +4,17 @@ import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -24,21 +29,25 @@ import java.sql.SQLException;
 
 public class MainActivity extends AppCompatActivity {
 
-    WebView web;
+    //WebView web;
     ConnectionHelper connectionHelper;
     Connection SQLConnection;
+
+    UserPreferences userPreferences;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
 
         // Connect to database (do it in other thread)
         connectionHelper = new ConnectionHelper();
         SQLConnection = connectionHelper.openConnection();
 
+
+        /*
         // find items
         web = findViewById(R.id.web_view);
         ConstraintLayout constraintLayout = findViewById(R.id.layout);
@@ -49,29 +58,42 @@ public class MainActivity extends AppCompatActivity {
 
         // Result state page
         web.setWebViewClient(new Callback());
+         */
 
         // Get user id (by default (unset) int=0, first element in database by default: 1)
         UserSharedPreference userdata = new UserSharedPreference(this);
         int userID = userdata.readUserID();
         Log.d(TAG_Auth, "userID: " + userID);
 
-        UserPreferences userPreferences = new UserPreferences();
+        userPreferences = new UserPreferences();
         //constraintLayout.setFitsSystemWindows(false);
+
+
+        Fragment selectedFragment;
+
 
         // If user if is equal to 0, the user is not logged
         if(userID == 0) {
-            constraintLayout.setFitsSystemWindows(true);
-            web.loadUrl("file:///android_asset/login.html");
+            //constraintLayout.setFitsSystemWindows(true);
+            //web.loadUrl("file:///android_asset/login.html");
+            selectedFragment = new FragmentLogin(SQLConnection, userPreferences, fragmentHandler);
         } else {
+            selectedFragment = new FragmentApp(SQLConnection, userPreferences, fragmentHandler);
             // Load page
-            web.loadUrl("file:///android_asset/pages/home.html");
+            //web.loadUrl("file:///android_asset/pages/home.html");
 
             // Retrieve user from data in app
             DBModelUser user = userdata.readUser();
             userPreferences.setUser(user);
         }
+
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, selectedFragment);
+        fragmentTransaction.commit();
+
         // Interface
-        web.addJavascriptInterface(new WebInterface(this, this, web, constraintLayout, SQLConnection, userPreferences), "Android");
+        //web.addJavascriptInterface(new WebInterface(this, this, web, constraintLayout, SQLConnection, userPreferences), "Android");
 
         // For top bar and navigation bar
         setWindowVersion();
@@ -133,6 +155,25 @@ public class MainActivity extends AppCompatActivity {
         winParams.flags &= ~bits;
         win.setAttributes(winParams);
     }
+
+    Handler fragmentHandler = new Handler(new Handler.Callback() {
+
+        @Override
+        public boolean handleMessage(@NonNull Message message) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();;
+            switch (message.what){
+                case 1:
+                    fragmentTransaction.replace(R.id.fragment_container, new FragmentApp(SQLConnection, userPreferences, fragmentHandler));
+                    fragmentTransaction.commit();
+                    break;
+                case 2:
+                    fragmentTransaction.replace(R.id.fragment_container, new FragmentLogin(SQLConnection, userPreferences, fragmentHandler));
+                    fragmentTransaction.commit();
+                    break;
+            }
+            return true;
+        }
+    });
 
     //open in app
     public static class Callback extends WebViewClient {

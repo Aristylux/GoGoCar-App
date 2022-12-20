@@ -7,6 +7,7 @@ import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.sql.Connection;
 import java.util.List;
@@ -29,8 +31,10 @@ public class WebInterface {
     Connection connection;
     UserPreferences userPreferences;
 
+    Handler fragmentHandler;
+
     // Constructor
-    WebInterface(Activity activity, Context context, WebView webView, ConstraintLayout layout, Connection connection, UserPreferences userPreferences){
+    WebInterface(Activity activity, Context context, WebView webView, ConstraintLayout layout, Connection connection, UserPreferences userPreferences, Handler fragmentHandler){
         this.activity = activity;
         this.context = context;
         this.webView = webView;
@@ -38,6 +42,8 @@ public class WebInterface {
 
         this.connection = connection;
         this.userPreferences = userPreferences;
+
+        this.fragmentHandler = fragmentHandler;
     }
 
     /* ----------------------------- *
@@ -70,8 +76,9 @@ public class WebInterface {
             userdata.writeUser(user);
 
             // Go to home
-            webView.setFitsSystemWindows(false);
-            loadNewPage("home");
+            //webView.setFitsSystemWindows(false);
+            //loadNewPage("home");
+            fragmentHandler.obtainMessage(1).sendToTarget();
         }
     }
 
@@ -129,8 +136,9 @@ public class WebInterface {
         UserSharedPreference userdata = new UserSharedPreference(context);
         userdata.writeUser(user_refresh);
 
-        webView.setFitsSystemWindows(false);
-        loadNewPage("home");
+        //webView.setFitsSystemWindows(false);
+        //loadNewPage("home");
+        fragmentHandler.obtainMessage(1).sendToTarget();
     }
 
     @JavascriptInterface
@@ -210,7 +218,8 @@ public class WebInterface {
         userdata.resetData();
 
         // Load page of login
-        webView.post(() -> webView.loadUrl("file:///android_asset/login.html"));
+        //webView.post(() -> webView.loadUrl("file:///android_asset/login.html"));
+        fragmentHandler.obtainMessage(2).sendToTarget();
     }
 
     /* Show a toast from the web page */
