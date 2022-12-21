@@ -3,13 +3,9 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
-import static com.aristy.gogocar.CodesTAG.TAG_Info;
-import static com.aristy.gogocar.CodesTAG.TAG_Web;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -23,7 +19,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -49,9 +44,6 @@ public class MainActivity extends AppCompatActivity {
         connectionHelper = new ConnectionHelper();
         SQLConnection = connectionHelper.openConnection();
 
-        //ConstraintLayout constraintLayout = findViewById(R.id.layout);
-
-
         /*
         // find items
         web = findViewById(R.id.web_view);
@@ -76,13 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         // If user if is equal to 0, the user is not logged
         if(userID == 0) {
-            //constraintLayout.setFitsSystemWindows(true);
             //web.loadUrl("file:///android_asset/login.html");
-            //Window window = getWindow();
-            //Log.d(TAG_Web, "changeBackground : window" + window);
-
-            // Finally change the color
-            //window.setStatusBarColor(ContextCompat.getColor(this, R.color.transparent));
             selectedFragment = new FragmentLogin(MainActivity.this, SQLConnection, userPreferences, fragmentHandler);
         } else {
             selectedFragment = new FragmentApp(SQLConnection, userPreferences, fragmentHandler);
@@ -168,9 +154,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean handleMessage(@NonNull Message message) {
-            //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-            //setWindowFlag(MainActivity.this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             switch (message.what){
                 case 1:
