@@ -2,6 +2,12 @@
 
 https://jdbc.postgresql.org/documentation
 
+[Oracle Cloud Tutorial](./Oracle_Cloud.md)
+
+[SQL Queries](./SQLQuery.md)
+
+[Doc](./Doc.md)
+
 # Login:
 
 Expectation:
