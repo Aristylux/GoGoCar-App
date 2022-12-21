@@ -80,10 +80,9 @@ public class MainActivity extends AppCompatActivity {
             userPreferences.setUser(user);
         }
 
-
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.from_left, R.anim.to_right);
         fragmentTransaction.replace(R.id.fragment_container, selectedFragment);
-        fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right);
         fragmentTransaction.commit();
 
         // Interface
@@ -155,17 +154,18 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean handleMessage(@NonNull Message message) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
             switch (message.what){
                 case 1:
+                    fragmentTransaction.setCustomAnimations(R.anim.from_right, R.anim.to_left);
                     fragmentTransaction.replace(R.id.fragment_container, new FragmentApp(SQLConnection, userPreferences, fragmentHandler));
-                    fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right);
                     fragmentTransaction.commit();
                     // Set color background
                     getWindow().setStatusBarColor((Integer) message.obj);  // = 0
                     break;
                 case 2:
+                    fragmentTransaction.setCustomAnimations(R.anim.from_left, R.anim.to_right);
                     fragmentTransaction.replace(R.id.fragment_container, new FragmentLogin(MainActivity.this, SQLConnection, userPreferences, fragmentHandler));
-                    fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right);
                     fragmentTransaction.commit();
                     break;
                 case 3:
