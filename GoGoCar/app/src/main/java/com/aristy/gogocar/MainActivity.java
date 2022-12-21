@@ -38,24 +38,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
+        
         // Connect to database (do it in other thread)
         connectionHelper = new ConnectionHelper();
         SQLConnection = connectionHelper.openConnection();
-
-        /*
-        // find items
-        web = findViewById(R.id.web_view);
-
-
-        // Enable javascript
-        WebSettings webSettings = web.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-
-        // Result state page
-        web.setWebViewClient(new Callback());
-         */
 
         // Get user id (by default (unset) int=0, first element in database by default: 1)
         UserSharedPreference userdata = new UserSharedPreference(this);
@@ -176,22 +162,4 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     });
-
-    //open in app
-    public static class Callback extends WebViewClient {
-        @Override
-        public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-            return false;
-        }
-
-        public void onPageFinished(WebView view, String url){
-            //Here you want to use .loadUrl again
-            //on the webView object and pass in
-            //"javascript:<your javaScript function"
-            //Set<BluetoothDevice> bluetoothDevice = getBluetoothPairedDevices();
-            //error here when bt is not activated
-            //populateSpinner(bluetoothDevice);
-        }
-
-    }
 }
