@@ -1,5 +1,6 @@
 # Database Postgres Server Docker
 
+**Note:** This Tutorial is a demonstration for a local server
 
 ## Connect to your server
 
@@ -78,17 +79,16 @@ postgres     latest    5eea76716a19   5 days ago   359MB
 ubuntu@ubuntu:~$ sudo docker run --name postgres-0 -e POSTGRES_PASSWORD=password -d -p 5432:5432 postgres
 ```
 
---name *instance name*
+`--name [instance name]`
 
--e POSTGRES_PASSWORD=*password*
+`-e POSTGRES_PASSWORD=[password]`
 
--p *port*, default: 5432:5432
+`-p [port:port]`, default: 5432:5432
 
--d *postgres version*
+`-d [postgres version]`
 
-result:
 
-Container ID:
+**Result:** Container ID:
 ```
 8fe59819205bb2bbdd6a620784726b6f71bc38199aef37605a39e0c2f3552811
 ```
@@ -100,6 +100,12 @@ ubuntu@ubuntu:~$ sudo docker ps
 CONTAINER ID   IMAGE      COMMAND                  CREATED         STATUS         PORTS                                       NAMES
 8fe59819205b   postgres   "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   postgres-0
 ```
+
+**Note:** Our server and database are operational 😄
+
+# Operation on our database
+
+This part is optional.
 
 ## Move into our docker container
 
@@ -121,7 +127,7 @@ Type "help" for help.
 postgres=# 
 ```
 
-use -U for set username
+**Note:** use `-U` for set username.
 
 ## List users
 
@@ -136,8 +142,6 @@ postgres=#
 ```
 
 **Note:** postgres is super user.
-
-
 
 ## Create database
 
@@ -185,11 +189,11 @@ Type "help" for help.
 postgres=# 
 ```
 
--h ***host***
+`-h [host]`
 
--p ***port***
+`-p [port]`
 
--U ***user***
+`-U [user]`
 
 ## Check database list
 
@@ -215,12 +219,15 @@ Sometimes the server need to be reboot, then the database is no longer available
 
 To repair that:
 
+## Connect to our server in ssh
+
 ```
 ssh ubuntu@192.168.1.187
 ubuntu@192.168.1.187's password: 
 Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-1021-raspi aarch64)
 ```
 
+## Verify our docker image
 
 ```
 ubuntu@ubuntu:~$ sudo docker images
@@ -228,13 +235,15 @@ REPOSITORY   TAG       IMAGE ID       CREATED      SIZE
 postgres     latest    5eea76716a19   7 days ago   359MB
 ```
 
+## Verify running container
+
 ```
 ubuntu@ubuntu:~$ sudo docker ps 
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 ubuntu@ubuntu:~$ 
 ```
 
-
+## Restart container 
 
 ```
 ubuntu@ubuntu:~$ sudo docker restart postgres-0
@@ -244,3 +253,7 @@ CONTAINER ID   IMAGE      COMMAND                  CREATED        STATUS        
 8fe59819205b   postgres   "docker-entrypoint.s…"   44 hours ago   Up 5 seconds   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   postgres-0
 ubuntu@ubuntu:~$ 
 ```
+
+**Note:** the database is now available.
+
+**Note:** We can use `--restart always` (but not tested for the moment)
