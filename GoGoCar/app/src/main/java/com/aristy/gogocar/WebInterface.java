@@ -70,8 +70,8 @@ public class WebInterface {
             userdata.writeUser(user);
 
             // Go to home
-            long colorSigned = 0;
-            fragmentHandler.obtainMessage(1, (int) colorSigned).sendToTarget();
+            fragmentHandler.obtainMessage(1).sendToTarget();
+            fragmentHandler.obtainMessage(3, (int) HexColor.TRANSPARENT).sendToTarget();
         }
     }
 

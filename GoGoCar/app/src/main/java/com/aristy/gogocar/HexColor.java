@@ -6,6 +6,8 @@ import android.util.Log;
 
 public class HexColor {
 
+    public static final long TRANSPARENT = 0;
+
     String color;
 
     HexColor(String color){

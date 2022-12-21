@@ -135,8 +135,6 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTransaction.setCustomAnimations(R.anim.from_right, R.anim.to_left);
                     fragmentTransaction.replace(R.id.fragment_container, new FragmentApp(SQLConnection, userPreferences, fragmentHandler));
                     fragmentTransaction.commit();
-                    // Set color background
-                    getWindow().setStatusBarColor((Integer) message.obj);  // = 0
                     break;
                 case 2:
                     fragmentTransaction.setCustomAnimations(R.anim.from_left, R.anim.to_right);
