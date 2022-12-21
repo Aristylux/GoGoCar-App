@@ -3,30 +3,34 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
+import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class MainActivity extends AppCompatActivity {
 
-    WebView web;
     ConnectionHelper connectionHelper;
     Connection SQLConnection;
+
+    UserPreferences userPreferences;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -38,39 +42,26 @@ public class MainActivity extends AppCompatActivity {
         connectionHelper = new ConnectionHelper();
         SQLConnection = connectionHelper.openConnection();
 
-        // find items
-        web = findViewById(R.id.web_view);
-        ConstraintLayout constraintLayout = findViewById(R.id.layout);
-
-        // Enable javascript
-        WebSettings webSettings = web.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-
-        // Result state page
-        web.setWebViewClient(new Callback());
-
         // Get user id (by default (unset) int=0, first element in database by default: 1)
         UserSharedPreference userdata = new UserSharedPreference(this);
         int userID = userdata.readUserID();
         Log.d(TAG_Auth, "userID: " + userID);
 
-        UserPreferences userPreferences = new UserPreferences();
-        //constraintLayout.setFitsSystemWindows(false);
+        userPreferences = new UserPreferences();
 
+        Fragment selectedFragment;
         // If user if is equal to 0, the user is not logged
         if(userID == 0) {
-            constraintLayout.setFitsSystemWindows(true);
-            web.loadUrl("file:///android_asset/login.html");
+            selectedFragment = new FragmentLogin(SQLConnection, userPreferences, fragmentHandler);
         } else {
-            // Load page
-            web.loadUrl("file:///android_asset/pages/home.html");
+            selectedFragment = new FragmentApp(SQLConnection, userPreferences, fragmentHandler);
 
             // Retrieve user from data in app
             DBModelUser user = userdata.readUser();
             userPreferences.setUser(user);
         }
-        // Interface
-        web.addJavascriptInterface(new WebInterface(this, this, web, constraintLayout, SQLConnection, userPreferences), "Android");
+        
+        setFragment(selectedFragment, R.anim.from_left, R.anim.to_right);
 
         // For top bar and navigation bar
         setWindowVersion();
@@ -133,21 +124,30 @@ public class MainActivity extends AppCompatActivity {
         win.setAttributes(winParams);
     }
 
-    //open in app
-    public static class Callback extends WebViewClient {
-        @Override
-        public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-            return false;
-        }
-
-        public void onPageFinished(WebView view, String url){
-            //Here you want to use .loadUrl again
-            //on the webView object and pass in
-            //"javascript:<your javaScript function"
-            //Set<BluetoothDevice> bluetoothDevice = getBluetoothPairedDevices();
-            //error here when bt is not activated
-            //populateSpinner(bluetoothDevice);
-        }
-
+    public void setFragment(Fragment fragment, int anim_enter, int anim_exit){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(anim_enter, anim_exit);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.commit();
     }
+
+    Handler fragmentHandler = new Handler(new Handler.Callback() {
+
+        @Override
+        public boolean handleMessage(@NonNull Message message) {
+            switch (message.what){
+                case GOTO_HOME_FRAGMENT:
+                    setFragment(new FragmentApp(SQLConnection, userPreferences, fragmentHandler), R.anim.from_right, R.anim.to_left);
+                    break;
+                case GOTO_LOGIN_FRAGMENT:
+                    setFragment(new FragmentLogin(SQLConnection, userPreferences, fragmentHandler), R.anim.from_left, R.anim.to_right);
+                    break;
+                case STATUS_BAR_COLOR:
+                    // Set color background
+                    getWindow().setStatusBarColor((Integer) message.obj);
+                    break;
+            }
+            return true;
+        }
+    });
 }
