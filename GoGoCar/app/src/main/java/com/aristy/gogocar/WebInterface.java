@@ -9,12 +9,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
-
-import androidx.core.content.ContextCompat;
 
 import java.sql.Connection;
 import java.util.List;
@@ -74,7 +71,8 @@ public class WebInterface {
             // Go to home
             //webView.setFitsSystemWindows(false);
             //loadNewPage("home");
-            fragmentHandler.obtainMessage(1).sendToTarget();
+            long colorSigned = 0;
+            fragmentHandler.obtainMessage(1, (int) colorSigned).sendToTarget();
         }
     }
 
@@ -231,7 +229,7 @@ public class WebInterface {
         dataReceived();
     }
 
-    // Not used
+
     @JavascriptInterface
     public void changeBackground(String webColor){
         Log.d(TAG_Web, "changeBackground : " + webColor);
@@ -242,18 +240,8 @@ public class WebInterface {
         //String colorAndroid = convertWebColor(webColor);²
         //long colorSigned = hexToSignedDec(colorAndroid);
 
-        Window window = activity.getWindow();
-        Log.d(TAG_Web, "changeBackground : window" + window);
-
-        // Finally change the color
-        //window.setStatusBarColor(ContextCompat.getColor(context, R.color.my_statusbar_color));
-        window.setStatusBarColor((int) colorSigned);
-
-        Log.d(TAG_Web, "changeBackground : color: " + ContextCompat.getColor(context, R.color.my_statusbar_color));
-        Log.d(TAG_Web, "changeBackground : color: " + Integer.toHexString(ContextCompat.getColor(context, R.color.my_statusbar_color)));
-        Log.d(TAG_Web, "changeBackground : color: " + ContextCompat.getColor(context, R.color.white));
-        Log.d(TAG_Web, "changeBackground : color: " + Integer.toHexString(ContextCompat.getColor(context, R.color.white)));
-        Log.d(TAG_Web, "changeBackground : color: " + "#" + Integer.toHexString(ContextCompat.getColor(context, R.color.my_statusbar_color)));
+        // Request to change the color
+        fragmentHandler.obtainMessage(3, (int) colorSigned).sendToTarget();
     }
 
     @JavascriptInterface

@@ -1,3 +1,7 @@
+if (androidConnected()) Android.changeBackground("#4070f4FF");
+
+console.log(window.getComputedStyle(document.getElementsByTagName("body")[0], null).getPropertyValue("background-color"));
+
 const container = document.querySelector(".container"),
     pwShowHide = document.querySelectorAll(".showHidePw"),
     pwFields = document.querySelectorAll(".password");

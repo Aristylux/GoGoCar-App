@@ -3,10 +3,13 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
+import static com.aristy.gogocar.CodesTAG.TAG_Info;
+import static com.aristy.gogocar.CodesTAG.TAG_Web;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -46,11 +49,13 @@ public class MainActivity extends AppCompatActivity {
         connectionHelper = new ConnectionHelper();
         SQLConnection = connectionHelper.openConnection();
 
+        //ConstraintLayout constraintLayout = findViewById(R.id.layout);
+
 
         /*
         // find items
         web = findViewById(R.id.web_view);
-        ConstraintLayout constraintLayout = findViewById(R.id.layout);
+
 
         // Enable javascript
         WebSettings webSettings = web.getSettings();
@@ -66,17 +71,19 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG_Auth, "userID: " + userID);
 
         userPreferences = new UserPreferences();
-        //constraintLayout.setFitsSystemWindows(false);
-
 
         Fragment selectedFragment;
-
 
         // If user if is equal to 0, the user is not logged
         if(userID == 0) {
             //constraintLayout.setFitsSystemWindows(true);
             //web.loadUrl("file:///android_asset/login.html");
-            selectedFragment = new FragmentLogin(SQLConnection, userPreferences, fragmentHandler);
+            //Window window = getWindow();
+            //Log.d(TAG_Web, "changeBackground : window" + window);
+
+            // Finally change the color
+            //window.setStatusBarColor(ContextCompat.getColor(this, R.color.transparent));
+            selectedFragment = new FragmentLogin(MainActivity.this, SQLConnection, userPreferences, fragmentHandler);
         } else {
             selectedFragment = new FragmentApp(SQLConnection, userPreferences, fragmentHandler);
             // Load page
@@ -90,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, selectedFragment);
+        fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right);
         fragmentTransaction.commit();
 
         // Interface
@@ -160,15 +168,26 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean handleMessage(@NonNull Message message) {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();;
+            //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+            //setWindowFlag(MainActivity.this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             switch (message.what){
                 case 1:
                     fragmentTransaction.replace(R.id.fragment_container, new FragmentApp(SQLConnection, userPreferences, fragmentHandler));
+                    fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right);
                     fragmentTransaction.commit();
+                    // Set color background
+                    getWindow().setStatusBarColor((Integer) message.obj);  // = 0
                     break;
                 case 2:
-                    fragmentTransaction.replace(R.id.fragment_container, new FragmentLogin(SQLConnection, userPreferences, fragmentHandler));
+                    fragmentTransaction.replace(R.id.fragment_container, new FragmentLogin(MainActivity.this, SQLConnection, userPreferences, fragmentHandler));
+                    fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right);
                     fragmentTransaction.commit();
+                    break;
+                case 3:
+                    // Set color background
+                    getWindow().setStatusBarColor((Integer) message.obj);
                     break;
             }
             return true;

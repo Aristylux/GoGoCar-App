@@ -6,16 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    tools:context=".MainActivity">
-
-    <!--
-    <WebView
-        android:id="@+id/web_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:overScrollMode="never"
-        android:fitsSystemWindows="false"/>
-    -->
+    tools:context=".MainActivity"
+    android:windowLightStatusBar="true">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
@@ -25,6 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_app" />
+        tools:layout="@layout/fragment_app"
+        android:windowLightStatusBar="true"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

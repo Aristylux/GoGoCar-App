@@ -1,12 +1,19 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_Web;
+
+import android.app.Activity;
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -20,11 +27,13 @@ import java.sql.Connection;
  */
 public class FragmentLogin extends Fragment {
 
+    Activity activity;
     Connection SQLConnection;
     UserPreferences userPreferences;
     Handler fragmentHandler;
 
-    public FragmentLogin(Connection SQLConnection, UserPreferences userPreferences, Handler fragmentHandler){
+    public FragmentLogin(Activity activity, Connection SQLConnection, UserPreferences userPreferences, Handler fragmentHandler){
+        this.activity = activity;
         this.SQLConnection = SQLConnection;
         this.userPreferences = userPreferences;
         this.fragmentHandler = fragmentHandler;
@@ -41,7 +50,7 @@ public class FragmentLogin extends Fragment {
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, fragmentHandler), "Android");
+        web.addJavascriptInterface(new WebInterface(activity, getContext(), web, SQLConnection, userPreferences, fragmentHandler), "Android");
 
         return view;
     }
