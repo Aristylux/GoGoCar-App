@@ -15,19 +15,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class MainActivity extends AppCompatActivity {
 
-    //WebView web;
     ConnectionHelper connectionHelper;
     Connection SQLConnection;
 
@@ -38,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         // Connect to database (do it in other thread)
         connectionHelper = new ConnectionHelper();
         SQLConnection = connectionHelper.openConnection();
@@ -51,15 +47,11 @@ public class MainActivity extends AppCompatActivity {
         userPreferences = new UserPreferences();
 
         Fragment selectedFragment;
-
         // If user if is equal to 0, the user is not logged
         if(userID == 0) {
-            //web.loadUrl("file:///android_asset/login.html");
-            selectedFragment = new FragmentLogin(MainActivity.this, SQLConnection, userPreferences, fragmentHandler);
+            selectedFragment = new FragmentLogin(SQLConnection, userPreferences, fragmentHandler);
         } else {
             selectedFragment = new FragmentApp(SQLConnection, userPreferences, fragmentHandler);
-            // Load page
-            //web.loadUrl("file:///android_asset/pages/home.html");
 
             // Retrieve user from data in app
             DBModelUser user = userdata.readUser();
@@ -70,9 +62,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.setCustomAnimations(R.anim.from_left, R.anim.to_right);
         fragmentTransaction.replace(R.id.fragment_container, selectedFragment);
         fragmentTransaction.commit();
-
-        // Interface
-        //web.addJavascriptInterface(new WebInterface(this, this, web, constraintLayout, SQLConnection, userPreferences), "Android");
 
         // For top bar and navigation bar
         setWindowVersion();
@@ -151,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 2:
                     fragmentTransaction.setCustomAnimations(R.anim.from_left, R.anim.to_right);
-                    fragmentTransaction.replace(R.id.fragment_container, new FragmentLogin(MainActivity.this, SQLConnection, userPreferences, fragmentHandler));
+                    fragmentTransaction.replace(R.id.fragment_container, new FragmentLogin(SQLConnection, userPreferences, fragmentHandler));
                     fragmentTransaction.commit();
                     break;
                 case 3:

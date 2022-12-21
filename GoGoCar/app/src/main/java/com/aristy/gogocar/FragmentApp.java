@@ -1,5 +1,6 @@
 package com.aristy.gogocar;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -32,12 +33,13 @@ public class FragmentApp extends Fragment {
         this.fragmentHandler = fragmentHandler;
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_app, container, false);
 
-        // find items
+        // Find items
         WebView web = view.findViewById(R.id.web_view);
         web.loadUrl("file:///android_asset/pages/home.html");
 

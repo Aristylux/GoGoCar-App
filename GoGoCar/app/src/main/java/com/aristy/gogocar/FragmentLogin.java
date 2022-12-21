@@ -1,5 +1,6 @@
 package com.aristy.gogocar;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -22,30 +23,31 @@ import java.sql.Connection;
  */
 public class FragmentLogin extends Fragment {
 
-    Activity activity;
     Connection SQLConnection;
     UserPreferences userPreferences;
     Handler fragmentHandler;
 
-    public FragmentLogin(Activity activity, Connection SQLConnection, UserPreferences userPreferences, Handler fragmentHandler){
-        this.activity = activity;
+    public FragmentLogin(Connection SQLConnection, UserPreferences userPreferences, Handler fragmentHandler){
         this.SQLConnection = SQLConnection;
         this.userPreferences = userPreferences;
         this.fragmentHandler = fragmentHandler;
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
+        // Find items
         WebView web = view.findViewById(R.id.web_view);
         web.loadUrl("file:///android_asset/login.html");
 
+        // Enable javascript
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        web.addJavascriptInterface(new WebInterface(activity, getContext(), web, SQLConnection, userPreferences, fragmentHandler), "Android");
+        web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, fragmentHandler), "Android");
 
         return view;
     }
