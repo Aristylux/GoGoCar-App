@@ -3,18 +3,18 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
+import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
-import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 
 import java.sql.Connection;
 import java.util.List;
@@ -24,29 +24,33 @@ public class WebInterface {
     Activity activity;
     Context context;
     WebView webView;
-    ConstraintLayout layout;
     
     Connection connection;
     UserPreferences userPreferences;
 
+    Handler fragmentHandler;
+
     // Constructor
-    WebInterface(Activity activity, Context context, WebView webView, ConstraintLayout layout, Connection connection, UserPreferences userPreferences){
+    WebInterface(Activity activity, Context context, WebView webView, Connection connection, UserPreferences userPreferences, Handler fragmentHandler){
         this.activity = activity;
         this.context = context;
         this.webView = webView;
-        this.layout = layout;
 
         this.connection = connection;
         this.userPreferences = userPreferences;
+
+        this.fragmentHandler = fragmentHandler;
     }
 
-    /* ----------------------------- *
-       -- Methods call by webPage -- *
-       ----------------------------- */
+    /*  ---------------------------------- *
+     *  --          login.html          -- *
+     *  ---------------------------------- */
 
-    /** Login */
-
-    // When Click on login button
+    /**
+     * When Click on login button
+     * @param email     input user email
+     * @param password  input user password
+     */
     @JavascriptInterface
     public void AuthenticationLogin(String email, String password){
         // Hash password
@@ -61,17 +65,16 @@ public class WebInterface {
             // Send error to the page
             androidToWeb("errorAuthenticationLogin");
         } else {
-
             // Set user in app
             userPreferences.setUser(user);
 
-            //
+            // Save user for the application (user id)
             UserSharedPreference userdata = new UserSharedPreference(context);
             userdata.writeUser(user);
 
             // Go to home
-            webView.setFitsSystemWindows(false);
-            loadNewPage("home");
+            fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
+            fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) HexColor.TRANSPARENT).sendToTarget();
         }
     }
 
@@ -98,7 +101,13 @@ public class WebInterface {
         return null;
     }
 
-    // When Click on register button
+    /**
+     * When Click on register button
+     * @param fullName      input name
+     * @param email         input email
+     * @param phoneNumber   input phone number
+     * @param password      input password
+     */
     @JavascriptInterface
     public void AuthenticationRegister(String fullName, String email, String phoneNumber, String password){
         // Open database
@@ -129,8 +138,9 @@ public class WebInterface {
         UserSharedPreference userdata = new UserSharedPreference(context);
         userdata.writeUser(user_refresh);
 
-        webView.setFitsSystemWindows(false);
-        loadNewPage("home");
+        // Load home page
+        fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
+        fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) HexColor.TRANSPARENT).sendToTarget();
     }
 
     @JavascriptInterface
@@ -160,7 +170,9 @@ public class WebInterface {
             androidToWeb("errorAuthenticationRegistration", String.valueOf(errorCode));
     }
 
-    /** home.html */
+    /*  ---------------------------------- *
+     *  --           home.html          -- *
+     *  ---------------------------------- */
 
     @JavascriptInterface
     public void requestDrive(){
@@ -171,7 +183,10 @@ public class WebInterface {
         androidToWeb("requestDriveCallback", "true");
     }
 
-    // ** vehicles **
+
+    /*  ---------------------------------- *
+     *  --        vehicles.html         -- *
+     *  ---------------------------------- */
 
     @JavascriptInterface
     public void requestUserVehicles(){
@@ -180,7 +195,10 @@ public class WebInterface {
         androidToWeb("setDatabase", vehicles.toString());
     }
 
-    /** Settings.html */
+
+    /*  ---------------------------------- *
+     *  --        settings.html         -- *
+     *  ---------------------------------- */
 
     @JavascriptInterface
     public void requestUserName(){
@@ -210,45 +228,20 @@ public class WebInterface {
         userdata.resetData();
 
         // Load page of login
-        webView.post(() -> webView.loadUrl("file:///android_asset/login.html"));
+        fragmentHandler.obtainMessage(GOTO_LOGIN_FRAGMENT).sendToTarget();
     }
 
-    /* Show a toast from the web page */
-    @JavascriptInterface
-    public void showToast(String toast){
-        Toast.makeText(context, toast, Toast.LENGTH_SHORT).show();
-    }
-
-    @JavascriptInterface
-    public void sendData(String action){
-        Toast.makeText(context, action, Toast.LENGTH_SHORT).show();
-
-        dataReceived();
-    }
-
-    // Not used
     @JavascriptInterface
     public void changeBackground(String webColor){
         Log.d(TAG_Web, "changeBackground : " + webColor);
 
+        // Convert Color
         HexColor hexColor = new HexColor(webColor);
         hexColor.convertToAndroidColor();
         long colorSigned = hexColor.getDecSigned();
-        //String colorAndroid = convertWebColor(webColor);²
-        //long colorSigned = hexToSignedDec(colorAndroid);
 
-        Window window = activity.getWindow();
-        Log.d(TAG_Web, "changeBackground : window" + window);
-
-        // Finally change the color
-        //window.setStatusBarColor(ContextCompat.getColor(context, R.color.my_statusbar_color));
-        window.setStatusBarColor((int) colorSigned);
-
-        Log.d(TAG_Web, "changeBackground : color: " + ContextCompat.getColor(context, R.color.my_statusbar_color));
-        Log.d(TAG_Web, "changeBackground : color: " + Integer.toHexString(ContextCompat.getColor(context, R.color.my_statusbar_color)));
-        Log.d(TAG_Web, "changeBackground : color: " + ContextCompat.getColor(context, R.color.white));
-        Log.d(TAG_Web, "changeBackground : color: " + Integer.toHexString(ContextCompat.getColor(context, R.color.white)));
-        Log.d(TAG_Web, "changeBackground : color: " + "#" + Integer.toHexString(ContextCompat.getColor(context, R.color.my_statusbar_color)));
+        // Request to change the color
+        fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) colorSigned).sendToTarget();
     }
 
     @JavascriptInterface
@@ -261,10 +254,7 @@ public class WebInterface {
         androidToWeb("openPopupBook", vehicle.getModel(), vehicle.getAddress());
     }
 
-    @JavascriptInterface
-    public void changePage(String page){
-        loadNewPage(page);
-    }
+
 
     @JavascriptInterface
     public void requestDatabase(){
@@ -274,7 +264,16 @@ public class WebInterface {
         androidToWeb("setDatabase", vehicles.toString());
     }
 
-    /** ---------------------------------- *
+    /*  ---------------------------------- *
+     *  --          Navigation          -- *
+     *  ---------------------------------- */
+
+    @JavascriptInterface
+    public void changePage(String page){
+        loadNewPage(page);
+    }
+
+    /*  ---------------------------------- *
      *  -- Methods send data to webPage -- *
      *  ---------------------------------- */
 
@@ -282,9 +281,26 @@ public class WebInterface {
         androidToWeb("dataReceived", "red");
     }
 
-    /** ---------------- *
+    /**
+     *  Show a toast from the web page
+     */
+    @JavascriptInterface
+    public void showToast(String toast){
+        Toast.makeText(context, toast, Toast.LENGTH_SHORT).show();
+    }
+
+    @JavascriptInterface
+    public void sendData(String action){
+        Toast.makeText(context, action, Toast.LENGTH_SHORT).show();
+
+        dataReceived();
+    }
+
+    /*  ---------------- *
      *  -- Interfaces -- *
      *  ---------------- */
+
+
     private void loadNewPage(String page){
         webView.post(() -> webView.loadUrl("file:///android_asset/pages/" + page + ".html"));
     }
