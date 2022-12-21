@@ -3,6 +3,9 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
+import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.app.Activity;
@@ -70,8 +73,8 @@ public class WebInterface {
             userdata.writeUser(user);
 
             // Go to home
-            fragmentHandler.obtainMessage(1).sendToTarget();
-            fragmentHandler.obtainMessage(3, (int) HexColor.TRANSPARENT).sendToTarget();
+            fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
+            fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) HexColor.TRANSPARENT).sendToTarget();
         }
     }
 
@@ -136,7 +139,8 @@ public class WebInterface {
         userdata.writeUser(user_refresh);
 
         // Load home page
-        fragmentHandler.obtainMessage(1).sendToTarget();
+        fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
+        fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) HexColor.TRANSPARENT).sendToTarget();
     }
 
     @JavascriptInterface
@@ -224,8 +228,7 @@ public class WebInterface {
         userdata.resetData();
 
         // Load page of login
-        //webView.post(() -> webView.loadUrl("file:///android_asset/login.html"));
-        fragmentHandler.obtainMessage(2).sendToTarget();
+        fragmentHandler.obtainMessage(GOTO_LOGIN_FRAGMENT).sendToTarget();
     }
 
     @JavascriptInterface
@@ -238,7 +241,7 @@ public class WebInterface {
         long colorSigned = hexColor.getDecSigned();
 
         // Request to change the color
-        fragmentHandler.obtainMessage(3, (int) colorSigned).sendToTarget();
+        fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) colorSigned).sendToTarget();
     }
 
     @JavascriptInterface

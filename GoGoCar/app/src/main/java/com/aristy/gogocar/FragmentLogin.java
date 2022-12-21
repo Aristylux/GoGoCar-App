@@ -1,7 +1,6 @@
 package com.aristy.gogocar;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;

@@ -3,6 +3,9 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
+import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -57,11 +60,8 @@ public class MainActivity extends AppCompatActivity {
             DBModelUser user = userdata.readUser();
             userPreferences.setUser(user);
         }
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.from_left, R.anim.to_right);
-        fragmentTransaction.replace(R.id.fragment_container, selectedFragment);
-        fragmentTransaction.commit();
+        
+        setFragment(selectedFragment, R.anim.from_left, R.anim.to_right);
 
         // For top bar and navigation bar
         setWindowVersion();
@@ -124,24 +124,25 @@ public class MainActivity extends AppCompatActivity {
         win.setAttributes(winParams);
     }
 
+    public void setFragment(Fragment fragment, int anim_enter, int anim_exit){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(anim_enter, anim_exit);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.commit();
+    }
+
     Handler fragmentHandler = new Handler(new Handler.Callback() {
 
         @Override
         public boolean handleMessage(@NonNull Message message) {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-
             switch (message.what){
-                case 1:
-                    fragmentTransaction.setCustomAnimations(R.anim.from_right, R.anim.to_left);
-                    fragmentTransaction.replace(R.id.fragment_container, new FragmentApp(SQLConnection, userPreferences, fragmentHandler));
-                    fragmentTransaction.commit();
+                case GOTO_HOME_FRAGMENT:
+                    setFragment(new FragmentApp(SQLConnection, userPreferences, fragmentHandler), R.anim.from_right, R.anim.to_left);
                     break;
-                case 2:
-                    fragmentTransaction.setCustomAnimations(R.anim.from_left, R.anim.to_right);
-                    fragmentTransaction.replace(R.id.fragment_container, new FragmentLogin(SQLConnection, userPreferences, fragmentHandler));
-                    fragmentTransaction.commit();
+                case GOTO_LOGIN_FRAGMENT:
+                    setFragment(new FragmentLogin(SQLConnection, userPreferences, fragmentHandler), R.anim.from_left, R.anim.to_right);
                     break;
-                case 3:
+                case STATUS_BAR_COLOR:
                     // Set color background
                     getWindow().setStatusBarColor((Integer) message.obj);
                     break;
