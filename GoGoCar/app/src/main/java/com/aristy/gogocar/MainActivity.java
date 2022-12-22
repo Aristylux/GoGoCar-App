@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
 
     ConnectionHelper connectionHelper;
     Connection SQLConnection;
-
     UserPreferences userPreferences;
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -113,9 +112,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 */
+    // Close connection before destroy app
     @Override
     protected void onDestroy() {
-
         try {
             // The user leave application, close connection to the server.
             if (connectionValid()) {
@@ -131,8 +130,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-
-
+    // Window settings
     public void setWindowVersion(){
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
