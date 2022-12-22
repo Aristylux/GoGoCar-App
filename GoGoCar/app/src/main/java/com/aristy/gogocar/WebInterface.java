@@ -89,8 +89,6 @@ public class WebInterface {
      *         null if not.
      */
     private DBModelUser verify(String email, String hash){
-        //DatabaseHelper databaseHelper = new DatabaseHelper(connection);
-
         DBModelUser user = databaseHelper.getUserByEmail(email);
         // if user exist
         if(user.getPassword() != null){
@@ -113,9 +111,6 @@ public class WebInterface {
      */
     @JavascriptInterface
     public void AuthenticationRegister(String fullName, String email, String phoneNumber, String password){
-        // Open database
-        //DatabaseHelper databaseHelper = new DatabaseHelper(connection);
-
         // Hash password
         String hash = hashPassword(password, SHAHash.DOMAIN);
         Log.d(TAG_Web, "pw= \"" + password + "\", hash= \"" + hash + "\"");
@@ -149,7 +144,6 @@ public class WebInterface {
     @JavascriptInterface
     public void verifyEmail(String email, int successCode, int errorCode){
         // Check in database if email exist
-        //DatabaseHelper databaseHelper = new DatabaseHelper(connection);
         DBModelUser user = databaseHelper.getUserByEmail(email);
         Log.d(TAG_Auth, "verifyEmail: " + user.toString());
 
@@ -162,7 +156,6 @@ public class WebInterface {
 
     @JavascriptInterface
     public void verifyPhone(String phone, int successCode, int errorCode){
-        //DatabaseHelper databaseHelper = new DatabaseHelper(connection);
         DBModelUser user = databaseHelper.getUserByPhone(phone);
         Log.d(TAG_Auth, "verifyPhone: " + user.toString());
 
@@ -217,7 +210,6 @@ public class WebInterface {
         Log.d(TAG_Web, "deleteUserAccount: user=" + user);
 
         // Remove user from database
-        //DatabaseHelper databaseHelper = new DatabaseHelper(connection);
         databaseHelper.deleteUser(user);
 
         // Logout
@@ -251,17 +243,14 @@ public class WebInterface {
     public void openPopupBook(int id_vehicle){
         Log.d(TAG_Web, "id vehicle: " + id_vehicle);
 
-        //DatabaseHelper databaseHelper = new DatabaseHelper(connection);
         DBModelVehicle vehicle = databaseHelper.getVehicleById(id_vehicle);
 
         androidToWeb("openPopupBook", vehicle.getModel(), vehicle.getAddress());
     }
 
 
-
     @JavascriptInterface
     public void requestDatabase(){
-        //DatabaseHelper databaseHelper = new DatabaseHelper(connection);
         List<DBModelVehicle> vehicles = databaseHelper.getAllVehicles();
         Log.d(TAG_Web, "requestDatabase: " + vehicles.toString());
         androidToWeb("setDatabase", vehicles.toString());
