@@ -2,11 +2,11 @@
 
 https://jdbc.postgresql.org/documentation
 
-[Oracle Cloud Tutorial](./Oracle_Cloud.md)
+[Oracle Cloud Tutorial](./DOC_Oracle_Cloud.md)
 
-[SQL Queries](./SQLQuery.md)
+[SQL Queries](./DOC_SQL.md)
 
-[Doc](./Doc.md)
+[Doc docker](./DOC_Docker.md)
 
 # Login:
 
