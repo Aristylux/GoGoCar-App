@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         setWindowVersion();
     }
 
+    /*
     // First time, appear after onCreate
     @Override
     protected void onStart() {
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG_Database, "onStart: ERROR open SQL Connection: invalid");
         }
     }
-
+    */
     public boolean connectionValid(){
         try {
             Log.d(TAG_Database, "connectionValid: SQLConnection=" + SQLConnection + ", close?=" + SQLConnection.isClosed());
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
-
+/*
     // Quit app without kill process
     @Override
     protected void onStop() {
@@ -111,6 +112,26 @@ public class MainActivity extends AppCompatActivity {
             exception.printStackTrace();
         }
     }
+*/
+    @Override
+    protected void onDestroy() {
+
+        try {
+            // The user leave application, close connection to the server.
+            if (connectionValid()) {
+                Log.d(TAG_Debug, "onStop: close SQL connection");
+                SQLConnection.close();
+            } else {
+                Log.e(TAG_Debug, "onStop: ERROR close SQL connection: invalid");
+            }
+        } catch (SQLException exception) {
+            Log.e(TAG_Debug, "onStop: ERROR close SQL connection: ", exception);
+            exception.printStackTrace();
+        }
+        super.onDestroy();
+    }
+
+
 
     public void setWindowVersion(){
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
