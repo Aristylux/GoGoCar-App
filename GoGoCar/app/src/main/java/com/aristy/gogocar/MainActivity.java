@@ -43,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Get user id (by default (unset) int=0, first element in database by default: 1)
         UserSharedPreference userdata = new UserSharedPreference(this);
-        int userID = userdata.readUserID();
+        //int userID = userdata.readUserID();
+        int userID = getIntent().getIntExtra("USER_ID", 0);
         Log.d(TAG_Auth, "userID: " + userID);
 
         userPreferences = new UserPreferences();

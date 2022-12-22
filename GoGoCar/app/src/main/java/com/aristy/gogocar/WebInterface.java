@@ -24,8 +24,7 @@ public class WebInterface {
     Activity activity;
     Context context;
     WebView webView;
-    
-    Connection connection;
+
     UserPreferences userPreferences;
 
     Handler fragmentHandler;
@@ -38,7 +37,6 @@ public class WebInterface {
         this.context = context;
         this.webView = webView;
 
-        this.connection = connection;
         this.databaseHelper = new DatabaseHelper(connection);
         this.userPreferences = userPreferences;
 
