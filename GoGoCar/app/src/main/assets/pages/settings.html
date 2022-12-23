@@ -265,6 +265,43 @@
             }
         </style>
 
+        <style>
+            #set_sec_pp_content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 0 20px;
+            }
+
+            #set_sec_pp .circle {
+                margin: 20px;
+            }
+
+            #set_sec_pp .circle i {
+                font-size: 6em;
+            }
+
+            #set_sec_pp span {
+                font-size: 1.3em;
+                font-weight: 600;
+            }
+
+            #set_sec_pp .button-container {
+                position: fixed;
+                bottom: 10px;
+
+                display: grid;
+                grid-auto-columns: auto;
+                grid-gap: 20px;
+            }
+
+            #set_sec_pp .button-container button {
+                width: 150px;
+                font-weight: 600;
+            }
+
+        </style>
+
     </head>
     <body>
         <section id="page-content">
@@ -319,7 +356,16 @@
             
             <!--Page name-->
             <section id="set_sec_pp" class="section_moving" hidden>
-                Content profile picture
+                <div id="set_sec_pp_content">
+                    <div class="circle">
+                        <i class="fi fi-rr-user"></i>
+                    </div>
+                    <span>Look strait foward without sunglasses, and nobody next to you</span>
+                    <div class="button-container">
+                        <button id="take_picture_button">Take a picture</button>
+                        <button id="choose_picture_button" class="border-button">Choose a picture</button>
+                    </div>
+                </div>
             </section>
 
             <section id="set_sec_sl" class="section_moving" hidden>
