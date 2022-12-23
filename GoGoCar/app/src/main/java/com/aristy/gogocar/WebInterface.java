@@ -191,6 +191,15 @@ public class WebInterface {
         androidToWeb("setUserName", userPreferences.getUserName());
     }
 
+    // ---- Personal information container ----
+
+    @JavascriptInterface
+    public void requestPersonalInformation() {
+        androidToWeb("setUserInformation", userPreferences.toString());
+    }
+
+    // ----
+
     @JavascriptInterface
     public void deleteUserAccount() {
         // Get user
@@ -212,6 +221,8 @@ public class WebInterface {
         // Load page of login
         fragmentHandler.obtainMessage(GOTO_LOGIN_FRAGMENT).sendToTarget();
     }
+
+    // -----
 
     @JavascriptInterface
     public void changeBackground(String webColor){
