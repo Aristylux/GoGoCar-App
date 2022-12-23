@@ -27,7 +27,6 @@ import java.sql.SQLException;
 
 public class MainActivity extends AppCompatActivity {
 
-    ConnectionHelper connectionHelper;
     Connection SQLConnection;
     UserPreferences userPreferences;
 
@@ -38,8 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Connect to database (do it in other thread)
-        connectionHelper = new ConnectionHelper();
-        SQLConnection = connectionHelper.openConnection();
+        ConnectionHelper connectionHelper = new ConnectionHelper();
+        SQLConnection = connectionHelper.getConnection();
+
 
         // Get user id (by default (unset) int=0, first element in database by default: 1)
         UserSharedPreference userdata = new UserSharedPreference(this);
