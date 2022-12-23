@@ -10,6 +10,9 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class UserPreferences extends Application implements Parcelable {
 
     // Storage
@@ -42,6 +45,21 @@ public class UserPreferences extends Application implements Parcelable {
             return new UserPreferences[size];
         }
     };
+
+    @NonNull
+    @Override
+    public String toString() {
+        JSONObject map = new JSONObject();
+        try {
+            map.put("id", userID);
+            map.put("name", userName);
+            map.put("email", userEmail);
+            map.put("phone", userPhone);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return map.toString();
+    }
 
     public void setUser(DBModelUser user){
         this.userID = user.getId();
