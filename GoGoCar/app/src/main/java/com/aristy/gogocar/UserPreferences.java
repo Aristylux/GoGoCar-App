@@ -14,7 +14,10 @@ public class UserPreferences extends Application {
     private String userEmail;
     private String userPhone;
 
-    public UserPreferences (){
+    private Context context;
+    
+    public UserPreferences(Context context){
+        this.context = context;
     }
 
     public void setUser(DBModelUser user){
@@ -23,7 +26,34 @@ public class UserPreferences extends Application {
         this.userEmail = user.getEmail();
         this.userPhone = user.getPhoneNumber();
     }
+    
+    public DBModelUser getUser(){
+        DBModelUser user = new DBModelUser();
+        user.setId(this.userID);
+        user.setFullName(this.userName);
+        user.setEmail(this.userEmail);
+        user.setPhoneNumber(this.userPhone);
+        return user;
+    }
 
+    public DBModelUser readUserInShared(){
+        UserSharedPreference userSharedPreference = new UserSharedPreference(context);
+        return userSharedPreference.readUser();
+    }
+    
+    public void writeUserInShared(){
+        UserSharedPreference userSharedPreference = new UserSharedPreference(context);
+        userSharedPreference.writeUser(getUser());
+    }
+    
+    public void resetUserInShared(){
+        UserSharedPreference userSharedPreference = new UserSharedPreference(context);
+        userSharedPreference.resetData();
+    }
+    
+    
+    // Setters & Getters 
+    
     public int getUserID(){
         return userID;
     }
@@ -60,27 +90,27 @@ public class UserPreferences extends Application {
 class UserSharedPreference {
 
     // Section DATA (file name)
-    public static final String DATA = "user";
+    private static final String DATA = "user";
 
     // USER : (ID)
-    public static final String USER_ID = "id";
-    public static int ID;
+    private static final String USER_ID = "id";
+    private int ID;
 
-    public static final String USER_NAME = "name";
-    public static String NAME;
+    private static final String USER_NAME = "name";
+    private String NAME;
 
-    public static final String USER_EMAIL = "email";
-    public static String EMAIL;
+    private static final String USER_EMAIL = "email";
+    private String EMAIL;
 
-    public static final String USER_PHONE = "phone";
-    public static String PHONE;
+    private static final String USER_PHONE = "phone";
+    private String PHONE;
 
     // Section PREFERENCE
     // Custom Theme : (Light, dark, system)
 
-    SharedPreferences userdata;
+    private static SharedPreferences userdata;
 
-    UserSharedPreference (Context context){
+    public UserSharedPreference (Context context){
         userdata = context.getSharedPreferences(DATA, MODE_PRIVATE);
     }
 
