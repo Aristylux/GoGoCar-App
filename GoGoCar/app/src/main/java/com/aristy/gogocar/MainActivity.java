@@ -41,14 +41,17 @@ public class MainActivity extends AppCompatActivity {
         connectionHelper.openConnection();
         SQLConnection = connectionHelper.getConnection();
 
+        // ----
 
         // Get user id (by default (unset) int=0, first element in database by default: 1)
-        //UserSharedPreference userdata = new UserSharedPreference(this);
-        //int userID = userdata.readUserID();
         int userID = getIntent().getIntExtra("USER_ID", 0);
         Log.d(TAG_Auth, "userID: " + userID);
 
         userPreferences = new UserPreferences(MainActivity.this);
+        // Retrieve user from data in app
+        userPreferences.readUser();
+
+        // ----
 
         Fragment selectedFragment;
         // If user if is equal to 0, the user is not logged
@@ -56,13 +59,9 @@ public class MainActivity extends AppCompatActivity {
             selectedFragment = new FragmentLogin(SQLConnection, userPreferences, fragmentHandler);
         } else {
             selectedFragment = new FragmentApp(SQLConnection, userPreferences, fragmentHandler);
-
-            // Retrieve user from data in app
-            //DBModelUser user = userdata.readUser();
-            DBModelUser user = userPreferences.readUserInShared();
-            userPreferences.setUser(user);
         }
-        
+
+        // Set Fragment
         setFragment(selectedFragment, R.anim.from_left, R.anim.to_right);
 
         // For top bar and navigation bar

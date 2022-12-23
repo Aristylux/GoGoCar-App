@@ -31,15 +31,12 @@ public class SplashActivity extends AppCompatActivity {
         }, 1100);
 
         // Operations
-        // Connect to database (do it in other thread)
-        //ConnectionHelper connectionHelper = new ConnectionHelper();
-        //connectionHelper.openConnection();
-
 
         UserPreferences userPreferences = new UserPreferences(SplashActivity.this);
-        //int userID = userPreferences.readUserID();
-        DBModelUser user = userPreferences.readUserInShared();
-        int userID = user.getId();
+        userPreferences.readUser();
+        int userID = userPreferences.getUserID();
+
+        // Send user
         intent.putExtra("USER_ID", userID);
 
         //https://stackoverflow.com/questions/2139134/how-to-send-an-object-from-one-android-activity-to-another-using-intents

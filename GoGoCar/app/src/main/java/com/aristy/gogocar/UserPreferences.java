@@ -14,10 +14,10 @@ public class UserPreferences extends Application {
     private String userEmail;
     private String userPhone;
 
-    private Context context;
+    UserSharedPreference userSharedPreference;
     
     public UserPreferences(Context context){
-        this.context = context;
+        this.userSharedPreference = new UserSharedPreference(context);
     }
 
     public void setUser(DBModelUser user){
@@ -25,29 +25,34 @@ public class UserPreferences extends Application {
         this.userName = user.getFullName();
         this.userEmail = user.getEmail();
         this.userPhone = user.getPhoneNumber();
+        writeUserInShared();
     }
     
     public DBModelUser getUser(){
         DBModelUser user = new DBModelUser();
-        user.setId(this.userID);
-        user.setFullName(this.userName);
-        user.setEmail(this.userEmail);
-        user.setPhoneNumber(this.userPhone);
+        user.setId(userID);
+        user.setFullName(userName);
+        user.setEmail(userEmail);
+        user.setPhoneNumber(userPhone);
         return user;
     }
 
-    public DBModelUser readUserInShared(){
-        UserSharedPreference userSharedPreference = new UserSharedPreference(context);
-        return userSharedPreference.readUser();
+    public void readUser(){
+        DBModelUser user = userSharedPreference.readUser();
+        this.userID = user.getId();
+        this.userName = user.getFullName();
+        this.userEmail = user.getEmail();
+        this.userPhone = user.getPhoneNumber();
     }
     
-    public void writeUserInShared(){
-        UserSharedPreference userSharedPreference = new UserSharedPreference(context);
+    private void writeUserInShared(){
         userSharedPreference.writeUser(getUser());
     }
-    
-    public void resetUserInShared(){
-        UserSharedPreference userSharedPreference = new UserSharedPreference(context);
+
+    /**
+     * Delete user in shared preferences
+     */
+    public void resetUser(){
         userSharedPreference.resetData();
     }
     
@@ -112,10 +117,6 @@ class UserSharedPreference {
 
     public UserSharedPreference (Context context){
         userdata = context.getSharedPreferences(DATA, MODE_PRIVATE);
-    }
-
-    int readUserID(){
-        return userdata.getInt(USER_ID, ID);
     }
 
     public DBModelUser readUser() {
