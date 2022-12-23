@@ -5,8 +5,12 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class UserPreferences extends Application {
+import androidx.annotation.NonNull;
+
+public class UserPreferences extends Application implements Parcelable {
 
     // Storage
     private int userID;
@@ -19,6 +23,25 @@ public class UserPreferences extends Application {
     public UserPreferences(Context context){
         this.userSharedPreference = new UserSharedPreference(context);
     }
+
+    protected UserPreferences(Parcel in) {
+        userID = in.readInt();
+        userName = in.readString();
+        userEmail = in.readString();
+        userPhone = in.readString();
+    }
+
+    public static final Creator<UserPreferences> CREATOR = new Creator<UserPreferences>() {
+        @Override
+        public UserPreferences createFromParcel(Parcel in) {
+            return new UserPreferences(in);
+        }
+
+        @Override
+        public UserPreferences[] newArray(int size) {
+            return new UserPreferences[size];
+        }
+    };
 
     public void setUser(DBModelUser user){
         this.userID = user.getId();
@@ -89,6 +112,19 @@ public class UserPreferences extends Application {
 
     public void setUserPhone(String userPhone) {
         this.userPhone = userPhone;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeInt(userID);
+        parcel.writeString(userName);
+        parcel.writeString(userEmail);
+        parcel.writeString(userPhone);
     }
 }
 

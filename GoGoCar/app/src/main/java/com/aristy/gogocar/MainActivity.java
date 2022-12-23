@@ -3,6 +3,7 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
+import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
@@ -14,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,13 +45,21 @@ public class MainActivity extends AppCompatActivity {
 
         // ----
 
+        Intent intent = getIntent();
+
         // Get user id (by default (unset) int=0, first element in database by default: 1)
-        int userID = getIntent().getIntExtra("USER_ID", 0);
+        int userID = intent.getIntExtra("USER_ID", 0);
         Log.d(TAG_Auth, "userID: " + userID);
 
-        userPreferences = new UserPreferences(MainActivity.this);
+        boolean isLogged = intent.getBooleanExtra("IS_USER_LOGGED", false);
+        Log.d(TAG_SPLASH, "onCreate: isLogged=" + isLogged);
+
+        userPreferences = intent.getParcelableExtra("USER");
+        Log.d(TAG_SPLASH, "onCreate: user " + userPreferences.toString());
+
+        //userPreferences = new UserPreferences(MainActivity.this);
         // Retrieve user from data in app
-        userPreferences.readUser();
+        //userPreferences.readUser();
 
         // ----
 
