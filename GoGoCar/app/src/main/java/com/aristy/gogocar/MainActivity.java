@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,6 +27,7 @@ import android.view.WindowManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.FutureTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,32 +46,20 @@ public class MainActivity extends AppCompatActivity {
         SQLConnection = connectionHelper.getConnection();
 
         // ----
-
         Intent intent = getIntent();
 
-        // Get user id (by default (unset) int=0, first element in database by default: 1)
-        int userID = intent.getIntExtra("USER_ID", 0);
-        Log.d(TAG_Auth, "userID: " + userID);
-
         boolean isLogged = intent.getBooleanExtra("IS_USER_LOGGED", false);
-        Log.d(TAG_SPLASH, "onCreate: isLogged=" + isLogged);
-
         userPreferences = intent.getParcelableExtra("USER");
+        Log.d(TAG_SPLASH, "onCreate: isLogged=" + isLogged);
         Log.d(TAG_SPLASH, "onCreate: user " + userPreferences.toString());
-
-        //userPreferences = new UserPreferences(MainActivity.this);
-        // Retrieve user from data in app
-        //userPreferences.readUser();
-
         // ----
 
         Fragment selectedFragment;
-        // If user if is equal to 0, the user is not logged
-        if(userID == 0) {
+        // If the user is not logged
+        if(!isLogged)
             selectedFragment = new FragmentLogin(SQLConnection, userPreferences, fragmentHandler);
-        } else {
+        else
             selectedFragment = new FragmentApp(SQLConnection, userPreferences, fragmentHandler);
-        }
 
         // Set Fragment
         setFragment(selectedFragment, R.anim.from_left, R.anim.to_right);

@@ -33,14 +33,14 @@ public class SplashActivity extends AppCompatActivity {
         // Operations
 
         UserPreferences userPreferences = new UserPreferences(SplashActivity.this);
+        // Retrieve user from data in app
         userPreferences.readUser();
+        // Get user id (by default (unset) int=0, first element in database by default: 1)
         int userID = userPreferences.getUserID();
         boolean isLogged = userID != 0;
 
         // Send user
-        intent.putExtra("USER_ID", userID);
         intent.putExtra("IS_USER_LOGGED", isLogged);
-
         intent.putExtra("USER", userPreferences);
 
         //https://stackoverflow.com/questions/2139134/how-to-send-an-object-from-one-android-activity-to-another-using-intents
