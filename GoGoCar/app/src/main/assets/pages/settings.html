@@ -166,7 +166,6 @@
                 margin-top: 10px;
             }
 
-
             .form-group {
                 margin-top: 10px;
             }
@@ -183,7 +182,6 @@
                 box-sizing: border-box;
                 background-color: #f6f8fa;
 
-
                 padding: 5px 12px;
                 font-size: 14px;
                 line-height: 20px;
@@ -197,8 +195,6 @@
                 transition: 80ms cubic-bezier(0.33, 1, 0.68, 1);
                 transition-property: all;
                 transition-property: color,background-color,box-shadow,border-color;
-
-
             }
 
             .form-group .form-control:focus {
@@ -389,6 +385,11 @@
                 let endedX = event.changedTouches[0].clientX;
                 let change = endedX - startingX;
 
+                // If user move is < to 20px, ignore
+                if (change < 20) {
+                    return;
+                }
+
                 setting_page_pp.style.transition = '0.3s ease-in-out';
                 if(determinateChange(startingX, endedX, change, count)){
                     //console.log("rest");
@@ -401,16 +402,16 @@
 
             function determinateChange(start, end, change, sample) {
                 let speed =  change / sample;
-                console.log("-> start=" + start + "px, end=" + end + "px, diff=" + change + "px, nbr=" + sample + ", speed=" + speed);
+                //console.log("-> start=" + start + "px, end=" + end + "px, diff=" + change + "px, nbr=" + sample + ", speed=" + speed);
                 
                 if(speed > 10){
-                    console.log("speed")
+                    //console.log("speed")
                     return false;
                 }
 
                 let threshold = screen.width / 2;
                 if(change < threshold){
-                    console.log("threshold");
+                    //console.log("threshold");
                     return true;
                 }
                     
