@@ -215,6 +215,56 @@
 
         </style>
 
+        <style>
+            #set_sec_jh ul {
+                padding: 0;
+                margin: 0;
+                margin: 0 20px;
+                margin-top: 10px;
+            }
+
+            #set_sec_jh li {
+                background-color: var(--background-color);
+                margin-bottom: 10px;
+                box-shadow: 0 2px 5px #0002;
+                border-radius: 15px;
+                padding: 15px;
+                transition: 0.3s;
+
+                display: grid;
+                grid-template-columns: 1fr auto;
+            }
+
+            #set_sec_jh i {
+                display: flex;
+                align-items: center;
+                font-size: 1.6em;
+            }
+
+            #set_sec_jh .date {
+                font-weight: 600;
+            }
+
+            #set_sec_jh .journey {
+                display: grid;
+                grid-template-columns: max-content max-content auto;
+                grid-column-gap: 10px;
+                align-items: center;
+            }
+
+            #set_sec_jh .stat {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-column-gap: 20px;
+                align-items: center;
+
+                text-align: center;
+                color: #242927;
+                font-weight: 600;
+                font-size: 1.3em;
+            }
+        </style>
+
     </head>
     <body>
         <section id="page-content">
@@ -301,7 +351,36 @@
             </section>
     
             <section id="set_sec_jh" class="section_moving" hidden>
-                Content journey history
+                <ul id="journey_history_list">
+                    <li>
+                        <div class="detail">
+                            <div class="date">22 November 2022</div>
+                            <div class="journey">
+                                <span>Montpellier</span>
+                                <i id="ico_arrow" class="fi fi-rr-arrow-small-right"></i>
+                                <span>Paris</span>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <span class="distance">300km</span>
+                            <span class="price">70€</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="detail">
+                            <div class="date">24 December 2022</div>
+                            <div class="journey">
+                                <span>Norh Pole</span>
+                                <i id="ico_arrow" class="fi fi-rr-arrow-small-right"></i>
+                                <span>Toulon</span>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <span class="distance">2800.3km</span>
+                            <span class="price">999.99€</span>
+                        </div>
+                    </li>
+                </ul>
             </section>
             
             <section id="set_sec_bc" class="section_moving" hidden>
