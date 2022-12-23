@@ -261,7 +261,7 @@
                 text-align: center;
                 color: #242927;
                 font-weight: 600;
-                font-size: 1em;
+                font-size: 1.1em;
             }
         </style>
 
@@ -370,7 +370,7 @@
                         <div class="detail">
                             <div class="date">24 December 2022</div>
                             <div class="journey">
-                                <span>Norh Pole</span>
+                                <span>North Pole</span>
                                 <i id="ico_arrow" class="fi fi-rr-arrow-small-right"></i>
                                 <span>Toulon</span>
                             </div>
@@ -464,12 +464,13 @@
                 let endedX = event.changedTouches[0].clientX;
                 let change = endedX - startingX;
 
+                setting_page_pp.style.transition = '0.3s ease-in-out';
+
                 // If user move is < to 20px, ignore
                 if (change < 20) {
                     return;
                 }
 
-                setting_page_pp.style.transition = '0.3s ease-in-out';
                 if(determinateChange(startingX, endedX, change, count)){
                     //console.log("rest");
                     setting_page_pp.style.left = '0px';
