@@ -14,7 +14,7 @@ import java.sql.DriverManager;
  *     Establish connection to database
  * </p>
  */
-public class ConnectionHelper {
+public class ConnectionHelper{
 
     private final static String host = "129.151.251.242";
     private final static String port = "5432";
@@ -22,11 +22,16 @@ public class ConnectionHelper {
     private final static String userName = "postgres";
     private final static String password = "7-tFap0&u6<ds_52gz0&-Lm";
 
-    public Connection openConnection() {
+    private Connection connection;
+
+    protected ConnectionHelper() {
+        this.connection = null;
+    }
+
+    public void openConnection() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        Connection connection = null;
         String jdbcURL = "jdbc:postgresql://" + host + ":" + port + "/" + databaseName;
         Log.d(TAG_Database, "ConnectionClass: " + jdbcURL);
         try {
@@ -37,7 +42,9 @@ public class ConnectionHelper {
             Log.e(TAG_Database, "ConnectionClass: ", exception);
             exception.printStackTrace();
         }
+    }
 
-        return connection;
+    public Connection getConnection() {
+        return this.connection;
     }
 }

@@ -42,7 +42,7 @@ public class DatabaseHelper {
     Connection connection;
 
     // Constructor
-    public DatabaseHelper( Connection connection) {
+    public DatabaseHelper(Connection connection) {
         this.connection = connection;
     }
 
