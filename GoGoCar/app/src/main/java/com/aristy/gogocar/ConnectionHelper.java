@@ -1,6 +1,11 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
+import static com.aristy.gogocar.Security.ADMIN_NAME;
+import static com.aristy.gogocar.Security.ADMIN_PASSWORD;
+import static com.aristy.gogocar.Security.DATABASE_NAME;
+import static com.aristy.gogocar.Security.IP_SERVER;
+import static com.aristy.gogocar.Security.PORT;
 
 import android.os.StrictMode;
 import android.util.Log;
@@ -16,11 +21,11 @@ import java.sql.DriverManager;
  */
 public class ConnectionHelper{
 
-    private final static String host = "129.151.251.242";
-    private final static String port = "5432";
-    private final static String databaseName = "gogocar";
-    private final static String userName = "postgres";
-    private final static String password = "7-tFap0&u6<ds_52gz0&-Lm";
+    private final static String host = IP_SERVER;
+    private final static String port = PORT;
+    private final static String databaseName = DATABASE_NAME;
+    private final static String userName = ADMIN_NAME;
+    private final static String password = ADMIN_PASSWORD;
 
     private Connection connection;
 
