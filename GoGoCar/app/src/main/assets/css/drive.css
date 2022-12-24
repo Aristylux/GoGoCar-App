@@ -1,6 +1,7 @@
 ul {
     padding: 0;
     margin: 0;
+    margin-top: 20px;
 }
 
 li {
@@ -14,5 +15,5 @@ li {
 }
 
 .vehicle_container:active {
-    background-color: #009577a1;
+    background-color: var(--primary-color);
 }
