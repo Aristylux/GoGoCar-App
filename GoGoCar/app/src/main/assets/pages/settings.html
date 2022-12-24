@@ -13,6 +13,8 @@
         <link rel="stylesheet" href="../css/popup.css" />
         <link rel="stylesheet" href="../css/modal.css" />
         
+        <link rel="stylesheet" href="../ico/uicons-brands/css/uicons-brands.css" />
+
         <!--moving.css-->
         <style>
 
@@ -338,6 +340,60 @@
 
         </style>
 
+        <style>
+            #set_sec_bc ul {
+                padding: 0;
+                margin: 0;
+                margin: 0 20px;
+                margin-top: 10px;
+            }
+
+            #set_sec_bc li {
+                box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+                border-radius: 20px;
+            }
+
+            #set_sec_bc .card {
+                background-color:#c1b9ff;
+
+                /*texture bug (freeze)*/
+                /*
+                background-image: url("../img/01.-Royal-Heath.jpg");
+                background-size: cover;
+                */
+
+                width: 400px;
+                max-width: 100%;
+                height: 200px;
+                box-sizing: border-box;
+                border-radius: 20px;
+
+                display: grid;
+                grid-template-rows: auto max-content max-content;
+                grid-row-gap: 10px;
+
+                padding: 10px 30px 30px 30px;
+                box-shadow: inset 1px 1px 10px #ffffff;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            }
+
+            #set_sec_bc .card i {
+                color: #242927;
+                font-size: 4em;
+            }
+
+            #set_sec_bc .card .numbers {
+                font-size: 1em;
+                font-family: 'Space Mono';
+            }
+
+            #set_sec_bc .card .name {
+                
+                font-size: 1em;
+                font-weight: 600;
+            }
+        </style>
+
     </head>
     <body>
         <section id="page-content">
@@ -423,7 +479,7 @@
                 </ul>
             </section>
     
-            <section id="set_sec_pi" class="section_moving" hidden>              
+            <section id="set_sec_pi" class="section_moving" hidden>
                 <h2>Profile</h2>
                 <form id="form-pi">
                     <div class="form-group">
@@ -481,7 +537,21 @@
             </section>
             
             <section id="set_sec_bc" class="section_moving" hidden>
-                Content bank details
+                <ul>
+                    <li>
+                        <div class="card">
+                            <div class="brand">
+                                <i class="fi fi-brands-visa"></i>
+                            </div>
+                            <div class="numbers">
+                                <span>1234 1567 1901 1425</span>
+                            </div>
+                            <div class="name">
+                                <span>Isen</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </section>
             
         </section>
