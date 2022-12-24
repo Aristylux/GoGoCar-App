@@ -3,6 +3,7 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
+import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
@@ -14,6 +15,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,10 +27,10 @@ import android.view.WindowManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.FutureTask;
 
 public class MainActivity extends AppCompatActivity {
 
-    ConnectionHelper connectionHelper;
     Connection SQLConnection;
     UserPreferences userPreferences;
 
@@ -38,29 +41,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Connect to database (do it in other thread)
-        connectionHelper = new ConnectionHelper();
-        SQLConnection = connectionHelper.openConnection();
+        ConnectionHelper connectionHelper = new ConnectionHelper();
+        connectionHelper.openConnection();
+        SQLConnection = connectionHelper.getConnection();
 
-        // Get user id (by default (unset) int=0, first element in database by default: 1)
-        UserSharedPreference userdata = new UserSharedPreference(this);
-        //int userID = userdata.readUserID();
-        int userID = getIntent().getIntExtra("USER_ID", 0);
-        Log.d(TAG_Auth, "userID: " + userID);
+        // ----
+        Intent intent = getIntent();
 
-        userPreferences = new UserPreferences();
+        boolean isLogged = intent.getBooleanExtra("IS_USER_LOGGED", false);
+        userPreferences = intent.getParcelableExtra("USER");
+        Log.d(TAG_SPLASH, "onCreate: isLogged=" + isLogged);
+        Log.d(TAG_SPLASH, "onCreate: user " + userPreferences.toString());
+        // ----
 
         Fragment selectedFragment;
-        // If user if is equal to 0, the user is not logged
-        if(userID == 0) {
+        // If the user is not logged
+        if(!isLogged)
             selectedFragment = new FragmentLogin(SQLConnection, userPreferences, fragmentHandler);
-        } else {
+        else
             selectedFragment = new FragmentApp(SQLConnection, userPreferences, fragmentHandler);
 
-            // Retrieve user from data in app
-            DBModelUser user = userdata.readUser();
-            userPreferences.setUser(user);
-        }
-        
+        // Set Fragment
         setFragment(selectedFragment, R.anim.from_left, R.anim.to_right);
 
         // For top bar and navigation bar

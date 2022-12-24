@@ -10,6 +10,89 @@
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
         <link rel="stylesheet" href="../css/style_button.css"/>
         
+        <style>
+            ul {
+                padding: 0;
+                margin: 0;
+                margin-top: 20px;
+            }
+
+            li {
+                background-color: var(--background-color);
+                margin: 0 20px;
+                margin-bottom: 10px;
+                box-shadow: 0 2px 5px #0002;
+                border-radius: 15px;
+                padding: 15px;
+                transition: 0.3s;
+            }
+
+            .vehicle_container:active {
+                background-color: var(--primary-color);
+            }
+        </style>
+
+        <style>
+
+        #no_vehicles {
+            color: #ddd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: auto;
+            margin-top: 29%;
+            font-size: 2em;
+            font-weight: 600;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        #no_vehicles i {
+            font-size: 3em;
+        }
+
+        </style>
+
+        <style>
+
+        a {
+            text-decoration: none;
+        }
+
+        .button_bottom {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            margin: 5%;
+            margin-bottom: 20%;
+
+            animation: transitionIn 0.5s;
+        }
+
+        #add_vehicle_button {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            font-weight: 600;
+
+            border-radius: 25px;
+            padding: 5px 0;
+            padding-right: 10px;
+
+            display: inline-grid;
+            grid-template-columns: max-content max-content;
+            column-gap: 5px;
+
+            align-items: center;
+
+        }
+
+        #add_vehicle_button i {
+            display: flex;
+            align-items: center;
+            font-size: 2.4em;
+        }
+
+        </style>
+
     </head>
     <body>
         <section id="page-content">
@@ -17,7 +100,19 @@
 
             <ul id="vehicles_list"></ul>
 
+            <div id="no_vehicles">
+                <i class="fi fi-sr-search"></i>
+                <span>No vehicles</span>
+            </div>
+
         </section>
+
+        <div class="button_bottom">
+            <a id="add_vehicle_button" href="#" class="icon__button">
+                <i class="fi fi-sr-plus-small"></i>
+                <span class="nav__text">Add</span>
+            </a>
+        </div>
 
         <nav id="navigation" class="nav">
             <a id="nav_home" href="#" class="nav__link nav__link__ripple">
@@ -48,15 +143,21 @@
             // [ANDROID CALLBACK] Retrive databases from android (result)
             function setDatabase(_table_vehicle) {
                 var vehicles = JSON.parse(_table_vehicle);
+
+                console.log(vehicles.length);
             
-                vehicles.forEach((vehicle) => {
-                    addElement(vehicle);
-                });
+                if (vehicles.length != 0){
+                    document.getElementById("no_vehicles").style.display = 'none';
+
+                    vehicles.forEach((vehicle) => {
+                        addElement(vehicle);
+                    });
+                }
             }
 
             // Add element to ul list
             function addElement(vehicle) {
-                let vehicle_info = [vehicle.name, vehicle.address];
+                let vehicle_info = [vehicle.name, vehicle.address, vehicle.licencePlate];
             
                 // Create Container
                 let li = document.createElement("li");

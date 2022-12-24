@@ -12,4 +12,5 @@ public class CodesTAG {
     static final String TAG_Database = app_name + "_DB";
     static final String TAG_Auth = app_name + "_A";
     static final String TAG_SPLASH = app_name + "_S";
+    static final String TAG_THREAD = app_name + "_T";
 }

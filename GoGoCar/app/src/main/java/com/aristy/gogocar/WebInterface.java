@@ -66,12 +66,8 @@ public class WebInterface {
             // Send error to the page
             androidToWeb("errorAuthenticationLogin");
         } else {
-            // Set user in app
+            // Set user in app & Save user for the application (user id)
             userPreferences.setUser(user);
-
-            // Save user for the application (user id)
-            UserSharedPreference userdata = new UserSharedPreference(context);
-            userdata.writeUser(user);
 
             // Go to home
             fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
@@ -127,12 +123,8 @@ public class WebInterface {
         // Retrieve user id
         DBModelUser user_refresh = databaseHelper.getUserByEmail(email);
 
-        // Set user in app
+        // Set user in app & Save user for the application (user id)
         userPreferences.setUser(user_refresh);
-
-        // Save user for the application (user id)
-        UserSharedPreference userdata = new UserSharedPreference(context);
-        userdata.writeUser(user_refresh);
 
         // Load home page
         fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
@@ -199,12 +191,19 @@ public class WebInterface {
         androidToWeb("setUserName", userPreferences.getUserName());
     }
 
+    // ---- Personal information container ----
+
+    @JavascriptInterface
+    public void requestPersonalInformation() {
+        androidToWeb("setUserInformation", userPreferences.toString());
+    }
+
+    // ----
+
     @JavascriptInterface
     public void deleteUserAccount() {
         // Get user
-        UserSharedPreference userdata = new UserSharedPreference(context);
-        DBModelUser user = userdata.readUser();
-
+        DBModelUser user = userPreferences.getUser();
         Log.d(TAG_Web, "deleteUserAccount: user=" + user);
 
         // Remove user from database
@@ -217,12 +216,13 @@ public class WebInterface {
     @JavascriptInterface
     public void logout(){
         // Reset user to default
-        UserSharedPreference userdata = new UserSharedPreference(context);
-        userdata.resetData();
+        userPreferences.resetUser();
 
         // Load page of login
         fragmentHandler.obtainMessage(GOTO_LOGIN_FRAGMENT).sendToTarget();
     }
+
+    // -----
 
     @JavascriptInterface
     public void changeBackground(String webColor){
