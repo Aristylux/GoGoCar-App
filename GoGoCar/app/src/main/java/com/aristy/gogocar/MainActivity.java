@@ -1,6 +1,6 @@
 package com.aristy.gogocar;
 
-import static com.aristy.gogocar.CodesTAG.TAG_Auth;
+import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
@@ -8,15 +8,28 @@ import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,9 +40,17 @@ import android.view.WindowManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.concurrent.FutureTask;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final int REQUEST_ACCESS_COARSE_LOCATION = 1;
+
+    public static final int REQUEST_SCAN_BLUETOOTH = 12;
+    public static final int REQUEST_BLUETOOTH_CONNECT = 13;
+
+    public static final int REQUEST_ENABLE_BLUETOOTH = 11;
+
+    BluetoothAdapter bluetoothAdapter;
 
     Connection SQLConnection;
     UserPreferences userPreferences;
@@ -66,22 +87,122 @@ public class MainActivity extends AppCompatActivity {
 
         // For top bar and navigation bar
         setWindowVersion();
-    }
 
-    /*
-    // First time, appear after onCreate
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // If the connection to the server is close, open it
-        if (!connectionValid()) {
-            Log.d(TAG_Database, "onStart: open SQL Connection");
-            SQLConnection = connectionHelper.openConnection();
-        } else {
-            Log.e(TAG_Database, "onStart: ERROR open SQL Connection: invalid");
+        // -----
+
+        // Get bluetooth adapter
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        checkPermission(Manifest.permission.BLUETOOTH_SCAN, REQUEST_SCAN_BLUETOOTH);
+        checkPermission(Manifest.permission.BLUETOOTH_CONNECT, REQUEST_BLUETOOTH_CONNECT);
+
+        // Check bluetooth state
+        checkBluetoothState();
+
+        // Register a dedicated receiver for some Bluetooth actions
+        registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
+        registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED));
+        registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
+
+        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()){
+            bluetoothAdapter.startDiscovery();
         }
     }
-    */
+
+    @SuppressLint("MissingPermission")
+    void checkBluetoothState(){
+        if(bluetoothAdapter == null){
+            Log.d(TAG_BT, "Bluetooth not supported.");
+        } else {
+            if (bluetoothAdapter.isEnabled()){
+                if (bluetoothAdapter.isDiscovering()){
+                    Log.d(TAG_BT, "checkBluetoothState: discovering in progress");
+                } else {
+                    Log.d(TAG_BT, "checkBluetoothState: Bluetooth is enabled");
+                }
+            } else {
+
+                ActivityResultLauncher<Intent> activityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        Log.d(TAG_BT, "onActivityResult: " + result.getData());
+                    }
+                });
+
+                // Create intent
+                Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                //startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
+
+                // Launch activity to get result
+                activityResult.launch(enableIntent);
+
+            }
+        }
+    }
+
+    public void checkPermission(String permission, int requestCode){
+        // Checking if permission is not granted
+        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] {permission}, requestCode);
+        } else {
+            Log.d(TAG_BT, "checkPermission: permission already granted.");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode){
+            case REQUEST_ACCESS_COARSE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Log.d(TAG_BT, "onRequestPermissionsResult: allowed");
+                } else {
+                    Log.d(TAG_BT, "onRequestPermissionsResult: forbidden");
+                }
+                break;
+            case REQUEST_ENABLE_BLUETOOTH:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Log.d(TAG_BT, "onRequestPermissionsResult: allowed");
+                } else {
+                    Log.d(TAG_BT, "onRequestPermissionsResult: forbidden");
+                }
+                break;
+        }
+
+    }
+
+    private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
+        @SuppressLint("MissingPermission")
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                Log.d(TAG_BT, "onReceive: " + device.getName() + ", " + device.getAddress());
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                Log.d(TAG_BT, "onReceive: scanning bluetooth devices");
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                Log.d(TAG_BT, "onReceive: scanning in progress ...");
+            }
+        }
+    };
+
+    /*
+        // First time, appear after onCreate
+        @Override
+        protected void onStart() {
+            super.onStart();
+            // If the connection to the server is close, open it
+            if (!connectionValid()) {
+                Log.d(TAG_Database, "onStart: open SQL Connection");
+                SQLConnection = connectionHelper.openConnection();
+            } else {
+                Log.e(TAG_Database, "onStart: ERROR open SQL Connection: invalid");
+            }
+        }
+        */
     public boolean connectionValid(){
         try {
             Log.d(TAG_Database, "connectionValid: SQLConnection=" + SQLConnection + ", close?=" + SQLConnection.isClosed());
