@@ -164,6 +164,9 @@ public class WebInterface {
     public void requestDrive(){
 
         //Intent enableBtIntent
+        fragmentHandler.obtainMessage(8).sendToTarget();
+
+        Log.d(TAG_Web, "requestDrive: ");
 
 
         androidToWeb("requestDriveCallback", "true");
