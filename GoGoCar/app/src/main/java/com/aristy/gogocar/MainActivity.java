@@ -11,7 +11,6 @@ import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     Connection SQLConnection;
     UserPreferences userPreferences;
 
-    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,19 +91,59 @@ public class MainActivity extends AppCompatActivity {
         // Get bluetooth adapter
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        checkPermission(Manifest.permission.BLUETOOTH_SCAN, REQUEST_SCAN_BLUETOOTH);
-        checkPermission(Manifest.permission.BLUETOOTH_CONNECT, REQUEST_BLUETOOTH_CONNECT);
+        checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, REQUEST_ACCESS_COARSE_LOCATION);
+        //checkPermission(Manifest.permission.BLUETOOTH_SCAN, REQUEST_SCAN_BLUETOOTH);
+        //checkPermission(Manifest.permission.BLUETOOTH_CONNECT, REQUEST_BLUETOOTH_CONNECT);
 
         // Check bluetooth state
         checkBluetoothState();
 
+        // Check permission on start
+        checkCoarseLocationPermission();
+
+
+        new Handler().postDelayed(() -> {
+            if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()){
+                // Check if coarse location must be asked
+                if (checkCoarseLocationPermission()){
+                    Log.d(TAG_BT, "onCreate: start discovering");
+                    bluetoothAdapter.startDiscovery();
+                }
+
+            } else {
+                checkBluetoothState();
+            }
+        }, 1100);
+        
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG_BT, "onResume: registerReceiver");
         // Register a dedicated receiver for some Bluetooth actions
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED));
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
 
-        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()){
-            bluetoothAdapter.startDiscovery();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG_BT, "onPause: unregisterReceiver");
+        unregisterReceiver(devicesFoundReceiver);
+    }
+
+    private boolean checkCoarseLocationPermission() {
+        // Checking if permission is not granted
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED){
+            Log.d(TAG_BT, "checkPermission: ask permission: " + Manifest.permission.ACCESS_COARSE_LOCATION);
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_ACCESS_COARSE_LOCATION);
+            return false;
+        } else {
+            Log.d(TAG_BT, "checkPermission: permission already granted.");
+            return true;
         }
     }
 
@@ -125,7 +163,9 @@ public class MainActivity extends AppCompatActivity {
                 ActivityResultLauncher<Intent> activityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        Log.d(TAG_BT, "onActivityResult: " + result.getData());
+                        Log.d(TAG_BT, "onActivityResult: " + result.getData() + "," + result.getResultCode() + ", " + result);
+                        // if(requestCade == REQUEST_ENABLE_BLUETOOTH){
+                        checkBluetoothState();
                     }
                 });
 
@@ -143,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
     public void checkPermission(String permission, int requestCode){
         // Checking if permission is not granted
         if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED){
+            Log.d(TAG_BT, "checkPermission: ask permission: " + permission);
             ActivityCompat.requestPermissions(MainActivity.this, new String[] {permission}, requestCode);
         } else {
             Log.d(TAG_BT, "checkPermission: permission already granted.");
@@ -161,13 +202,14 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG_BT, "onRequestPermissionsResult: forbidden");
                 }
                 break;
+                /*
             case REQUEST_ENABLE_BLUETOOTH:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     Log.d(TAG_BT, "onRequestPermissionsResult: allowed");
                 } else {
                     Log.d(TAG_BT, "onRequestPermissionsResult: forbidden");
                 }
-                break;
+                break;*/
         }
 
     }
@@ -176,7 +218,9 @@ public class MainActivity extends AppCompatActivity {
         @SuppressLint("MissingPermission")
         @Override
         public void onReceive(Context context, Intent intent) {
+
             String action = intent.getAction();
+            Log.d(TAG_BT, "onReceive: devicesFoundReceiver: " + action);
 
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
