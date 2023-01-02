@@ -23,13 +23,16 @@ import androidx.fragment.app.FragmentTransaction;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -174,18 +177,40 @@ public class MainActivity extends AppCompatActivity {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         boolean isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (!isLocationEnabled) {
-            ActivityResultLauncher<Intent> activityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    Log.d(TAG_BT, "onActivityResult location: " + result.getData() + "," + result.getResultCode() + ", " + result);
-                }
-            });
 
-            // Create intent
-            Intent enableIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 
-            // Launch activity to get result
-            activityResult.launch(enableIntent);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, final int id) {
+                            /*
+                            ActivityResultLauncher<Intent> activityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                                @Override
+                                public void onActivityResult(ActivityResult result) {
+                                    Log.d(TAG_BT, "onActivityResult location: " + result.getData() + "," + result.getResultCode() + ", " + result);
+                                }
+                            });
+
+                            // Create intent
+                            Intent enableIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            //Intent enableIntent = new Intent(LocationS);
+
+                            // Launch activity to get result
+                            activityResult.launch(enableIntent);
+                            */
+                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, final int id) {
+                            dialog.cancel();
+                        }
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
+
         } else {
             Log.d(TAG_BT, "checkLocationState: location is enabled");
         }
