@@ -172,14 +172,19 @@ public class WebInterface {
         if (!checkPermission(activity, ACCESS_COARSE_LOCATION_PERMISSION, REQUEST_ACCESS_COARSE_LOCATION)){
             // re-init operation
             Toast.makeText(context, "ask.", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         // Check if elements are activated
-        if(!isBluetoothEnabled())
+        if(!isBluetoothEnabled()){
             Toast.makeText(context, "Please enable bluetooth.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        if(!isLocationEnabled(context))
+        if(!isLocationEnabled(context)) {
             Toast.makeText(context, "Please enable location.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         //Intent enableBtIntent
         fragmentHandler.obtainMessage(8).sendToTarget();
