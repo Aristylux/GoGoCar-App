@@ -6,6 +6,11 @@ import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
+import static com.aristy.gogocar.PermissionHelper.ACCESS_COARSE_LOCATION_PERMISSION;
+import static com.aristy.gogocar.PermissionHelper.REQUEST_ACCESS_COARSE_LOCATION;
+import static com.aristy.gogocar.PermissionHelper.checkPermission;
+import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
+import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.app.Activity;
@@ -162,11 +167,24 @@ public class WebInterface {
 
     @JavascriptInterface
     public void requestDrive(){
+        Log.d(TAG_Web, "requestDrive: ");
+        // Check if coarse location must be asked
+        if (!checkPermission(activity, ACCESS_COARSE_LOCATION_PERMISSION, REQUEST_ACCESS_COARSE_LOCATION)){
+            // re-init operation
+            Toast.makeText(context, "ask.", Toast.LENGTH_SHORT).show();
+        }
+
+        // Check if elements are activated
+        if(!isBluetoothEnabled())
+            Toast.makeText(context, "Please enable bluetooth.", Toast.LENGTH_SHORT).show();
+
+        if(!isLocationEnabled(context))
+            Toast.makeText(context, "Please enable location.", Toast.LENGTH_SHORT).show();
 
         //Intent enableBtIntent
         fragmentHandler.obtainMessage(8).sendToTarget();
 
-        Log.d(TAG_Web, "requestDrive: ");
+
 
 
         androidToWeb("requestDriveCallback", "true");
