@@ -7,6 +7,7 @@ import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
+import static com.aristy.gogocar.PermissionHelper.REQUEST_ACCESS_COARSE_LOCATION;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -19,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -140,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == PermissionHelper.REQUEST_ACCESS_COARSE_LOCATION) {
+        if (requestCode == REQUEST_ACCESS_COARSE_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG_BT, "onRequestPermissionsResult: allowed " + permissions[0]);
             } else {
@@ -148,6 +150,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    private boolean checkCoarseLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_ACCESS_COARSE_LOCATION);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /*private final*/ BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
@@ -272,12 +283,16 @@ public class MainActivity extends AppCompatActivity {
                     getWindow().setStatusBarColor((Integer) message.obj);
                     break;
                 case 8:
-                    Log.d(TAG_BT, "onCreate: start discovering");
-                    boolean result = bluetoothAdapter.startDiscovery();
-                    if (result)
-                        Log.d(TAG_BT, "handleMessage: isDiscovering: " + bluetoothAdapter.isDiscovering());
-                    else
-                        Log.d(TAG_BT, "handleMessage: isDiscovering error");
+                    if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
+                        Log.d(TAG_BT, "onCreate: start discovering");
+                        if (checkCoarseLocationPermission()) {
+                            boolean result = bluetoothAdapter.startDiscovery();
+                            if (result)
+                                Log.d(TAG_BT, "handleMessage: isDiscovering: " + bluetoothAdapter.isDiscovering());
+                            else
+                                Log.d(TAG_BT, "handleMessage: isDiscovering error");
+                        }
+                    }
                     break;
             }
             return true;

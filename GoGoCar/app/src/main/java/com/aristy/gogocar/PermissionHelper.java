@@ -33,6 +33,22 @@ public class PermissionHelper {
         }
     }
 
+    static public boolean checkPermission(Activity activity){
+        // Checking if permission is not granted
+
+        if ((ContextCompat.checkSelfPermission(activity.getBaseContext() ,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                && (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+            Log.d(TAG_BT, "checkPermission: ask permission");
+            ActivityCompat.requestPermissions(activity, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            return false;
+        } else {
+            Log.d(TAG_BT, "checkPermission: permission already granted.");
+            return true;
+        }
+    }
+
     /**
      * @return true if bluetooth is enabled <br>
      * false if disabled or error
