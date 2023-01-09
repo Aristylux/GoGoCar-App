@@ -5,6 +5,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -27,6 +28,16 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_ACCESS_COARSE_LOCATION = 1, REQUEST_BLUETOOTH_SCAN = 2;
 
+    private static final String[] BLE_PERMISSIONS = new String[]{
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    private static final String[] ANDROID_12_BLE_PERMISSIONS = new String[]{
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.BLUETOOTH_CONNECT
+    };
 
 
     BluetoothAdapter bluetoothAdapter;
@@ -36,16 +47,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Get bluetooth adapter
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_SCAN}, REQUEST_BLUETOOTH_SCAN);
 
+        // Get bluetooth adapter
+
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         // Check bluetooth state
         checkBluetoothState();
 
-        checkBluetoothScanPermission();
+        //checkBluetoothScanPermission();
+
+        checkPermission();
 
         // Check Location permission on start
         //checkCoarseLocationPermission();
+        //requestBlePermissions(REQUEST_ACCESS_COARSE_LOCATION);
+        //requestBlePermissions(REQUEST_BLUETOOTH_SCAN);
+
 
         // Test:
         if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
@@ -55,19 +73,23 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("TAG_BT", "onCreate: result on discovery: " + result);
             }
         }
+    }
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-                    Log.e("TAG_BT", "run: permission error");
-                    return;
-                }
-                boolean result = bluetoothAdapter.startDiscovery();
-                Log.d("TAG_BT", "onCreate: result on discovery: " + result);
-            }
-        }, 5000);
 
+    public void checkPermission() {
+        Log.d("TAG_BT", "checkPermission: ");
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        }
+    }
+
+    public void requestBlePermissions(int requestCode) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            ActivityCompat.requestPermissions(MainActivity.this, ANDROID_12_BLE_PERMISSIONS, requestCode);
+        else
+            ActivityCompat.requestPermissions(MainActivity.this, BLE_PERMISSIONS, requestCode);
     }
 
     @Override
@@ -79,10 +101,12 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(devicesFoundReceiver);
+        bluetoothAdapter.cancelDiscovery();
     }
 
     private boolean checkCoarseLocationPermission() {
@@ -149,13 +173,13 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == REQUEST_ACCESS_COARSE_LOCATION) {
+        //if (requestCode == REQUEST_ACCESS_COARSE_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d("TAG_BT", "onRequestPermissionsResult: allowed " + permissions[0]);
             } else {
                 Log.d("TAG_BT", "onRequestPermissionsResult: forbidden");
             }
-        }
+        //}
     }
 
     private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
