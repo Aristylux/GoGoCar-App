@@ -165,24 +165,37 @@ public class MainActivity extends AppCompatActivity {
         //}
     }
 
+    // Used for broadcast receiver (to avoid multi call problems)
+    String lastMacAddress = null;
+
     // Show action found
     private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
         @SuppressLint("MissingPermission")
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.d("TAG_BT", "onReceive: action: " + action);
 
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                // Get actual mac address
+                String macAddress = device.getAddress();
+
+                // If the mac address of the new device is the same as before quit
+                if(macAddress.equals(lastMacAddress))
+                    return;
+
+                // Store new mac address
+                lastMacAddress = macAddress;
+
                 /*
                 if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                     Log.e("TAG_BT", "onReceive: permission error : BLUETOOTH_CONNECT");
                     return;
                 }*/
-                Log.d("TAG_BT", "onReceive: " + device.getName() + ", " + device.getAddress());
+                Log.d("TAG_BT", "onReceive: " + device.getName() + ", " + macAddress);
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                Log.d("TAG_BT", "onReceive: scanning bluetooth devices");
+                Log.d("TAG_BT", "onReceive: scanning bluetooth devices, FINISHED");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 Log.d("TAG_BT", "onReceive: scanning in progress ...");
             }
