@@ -23,6 +23,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_ACCESS_COARSE_LOCATION = 1;
@@ -170,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Show action found
     private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.R)
         @SuppressLint("MissingPermission")
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -177,6 +183,9 @@ public class MainActivity extends AppCompatActivity {
 
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                // If the name is null, this is not a good device
+                if (device.getName() == null) return;
 
                 // Get actual mac address
                 String macAddress = device.getAddress();
@@ -194,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }*/
                 Log.d("TAG_BT", "onReceive: " + device.getName() + ", " + macAddress);
+                Log.d("TAG_BT", "onReceive: device: " + deviceToString(device));
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 Log.d("TAG_BT", "onReceive: scanning bluetooth devices, FINISHED");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
@@ -202,5 +212,24 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    @SuppressLint("MissingPermission")
+    String deviceToString(BluetoothDevice device){
+        JSONObject map = new JSONObject();
+        try {
+            map.put("name", device.getName());
+            map.put("address", device.getAddress());
+            map.put("alias", device.getAlias());
+            map.put("btClass", device.getBluetoothClass());
+            map.put("bondState", device.getBondState());
+            map.put("type", device.getType());
+            map.put("uuids", device.getUuids());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return map.toString();
+    }
 
 }
