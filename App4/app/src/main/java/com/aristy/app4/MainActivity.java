@@ -21,12 +21,11 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int REQUEST_ACCESS_COARSE_LOCATION = 1, REQUEST_BLUETOOTH_SCAN = 2;
+    public static final int REQUEST_ACCESS_COARSE_LOCATION = 1;
 
     private static final String[] BLE_PERMISSIONS = new String[]{
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -118,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d("TAG_BT", "Bluetooth not supported.");
         } else {
             if (bluetoothAdapter.isEnabled()) {
-
                 // Don't do this
                 /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
                     Log.e("TAG_BT", "checkBluetoothState: permission error");
@@ -142,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
 
                 // Create intent
                 Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+
+                // Deprecated
                 //startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
 
                 // Launch activity to get result
@@ -157,20 +157,36 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         //if (requestCode == REQUEST_ACCESS_COARSE_LOCATION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("TAG_BT", "onRequestPermissionsResult: allowed " + permissions[0]);
-            } else {
-                Log.d("TAG_BT", "onRequestPermissionsResult: forbidden " + permissions[0]);
-            }
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.d("TAG_BT", "onRequestPermissionsResult: allowed " + permissions[0]);
+        } else {
+            Log.d("TAG_BT", "onRequestPermissionsResult: forbidden " + permissions[0]);
+        }
         //}
     }
 
     // Show action found
     private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
+        @SuppressLint("MissingPermission")
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Log.d("TAG_BT", "onReceive: action: " + action);
+
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                /*
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    Log.e("TAG_BT", "onReceive: permission error : BLUETOOTH_CONNECT");
+                    return;
+                }*/
+                Log.d("TAG_BT", "onReceive: " + device.getName() + ", " + device.getAddress());
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                Log.d("TAG_BT", "onReceive: scanning bluetooth devices");
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                Log.d("TAG_BT", "onReceive: scanning in progress ...");
+            }
+
         }
     };
 
