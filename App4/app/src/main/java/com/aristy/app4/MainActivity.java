@@ -47,23 +47,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_SCAN}, REQUEST_BLUETOOTH_SCAN);
-
         // Get bluetooth adapter
-
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
         // Check bluetooth state
         checkBluetoothState();
-
-        //checkBluetoothScanPermission();
 
         checkPermission();
 
         // Check Location permission on start
         //checkCoarseLocationPermission();
-        //requestBlePermissions(REQUEST_ACCESS_COARSE_LOCATION);
-        //requestBlePermissions(REQUEST_BLUETOOTH_SCAN);
-
 
         // Test:
         if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
@@ -95,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        Log.d("TAG_BT", "onResume: ");
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED));
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
@@ -105,26 +98,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("TAG_BT", "onPause: ");
         unregisterReceiver(devicesFoundReceiver);
         bluetoothAdapter.cancelDiscovery();
     }
 
     private boolean checkCoarseLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_ACCESS_COARSE_LOCATION);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private boolean checkBluetoothScanPermission(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_SCAN}, REQUEST_BLUETOOTH_SCAN);
-            }
             return false;
         } else {
             return true;
@@ -138,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             if (bluetoothAdapter.isEnabled()) {
 
+                // Don't do this
                 /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
                     Log.e("TAG_BT", "checkBluetoothState: permission error");
                     return;
@@ -169,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Show when permission return a result
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -177,16 +160,16 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d("TAG_BT", "onRequestPermissionsResult: allowed " + permissions[0]);
             } else {
-                Log.d("TAG_BT", "onRequestPermissionsResult: forbidden");
+                Log.d("TAG_BT", "onRequestPermissionsResult: forbidden " + permissions[0]);
             }
         //}
     }
 
+    // Show action found
     private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-
             Log.d("TAG_BT", "onReceive: action: " + action);
         }
     };
