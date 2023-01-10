@@ -11,6 +11,8 @@ import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import static com.aristy.gogocar.PermissionHelper.REQUEST_ACCESS_COARSE_LOCATION;
 import static com.aristy.gogocar.PermissionHelper.checkCoarseLocationPermission;
+import static com.aristy.gogocar.SHAHash.DOMAIN;
+import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -155,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
 
     String lastMacAddress = null;
 
+    String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
+
+
     private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
         @SuppressLint("MissingPermission")
         @Override
@@ -177,10 +182,25 @@ public class MainActivity extends AppCompatActivity {
                 lastMacAddress = macAddress;
 
                 Log.d(TAG_BT, "onReceive: " + device.getName() + ", " + device.getAddress());
+
+                // Hash address like a password
+                String hash = hashPassword(macAddress, DOMAIN);
+
+                // Actual device has the same mac address than our module for that car
+                if (hash.equals(hashMacAddressModule)){
+                    Log.d(TAG_BT, "onReceive: connection.");
+
+                    // Stop discovery
+                    bluetoothAdapter.cancelDiscovery();
+
+                    // Connection with the device
+
+                }
+
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices FINISHED");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                Log.d(TAG_BT, "onReceive: scanning in progress ...");
+                Log.d(TAG_BT, "onReceive: scanning bluetooth devices STARTED");
             }
         }
     };
