@@ -54,3 +54,39 @@ void checkBluetoothState(){
 
 > Use `ActivityResultLauncher<>()` instead of `startActivityForResult()` because this is deprecated
 
+# SDL save (bug connection)
+
+```java
+// Quit app without kill process
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            // The user leave application, close connection to the server.
+            if (connectionValid()) {
+                Log.d(TAG_Debug, "onStop: close SQL connection");
+                SQLConnection.close();
+            } else {
+                Log.e(TAG_Debug, "onStop: ERROR close SQL connection: invalid");
+            }
+        } catch (SQLException exception) {
+            Log.e(TAG_Debug, "onStop: ERROR close SQL connection: ", exception);
+            exception.printStackTrace();
+        }
+    }
+```
+
+```java
+// First time, appear after onCreate
+        @Override
+        protected void onStart() {
+            super.onStart();
+            // If the connection to the server is close, open it
+            if (!connectionValid()) {
+                Log.d(TAG_Database, "onStart: open SQL Connection");
+                SQLConnection = connectionHelper.openConnection();
+            } else {
+                Log.e(TAG_Database, "onStart: ERROR open SQL Connection: invalid");
+            }
+        }
+```

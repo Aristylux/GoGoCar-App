@@ -1,9 +1,9 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
-import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
+import static com.aristy.gogocar.ConnectionHelper.connectionValid;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
@@ -117,58 +117,12 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(devicesFoundReceiver);
     }
 
-    /*
-        // First time, appear after onCreate
-        @Override
-        protected void onStart() {
-            super.onStart();
-            // If the connection to the server is close, open it
-            if (!connectionValid()) {
-                Log.d(TAG_Database, "onStart: open SQL Connection");
-                SQLConnection = connectionHelper.openConnection();
-            } else {
-                Log.e(TAG_Database, "onStart: ERROR open SQL Connection: invalid");
-            }
-        }
-        */
-    public boolean connectionValid(){
-        try {
-            Log.d(TAG_Database, "connectionValid: SQLConnection=" + SQLConnection + ", close?=" + SQLConnection.isClosed());
-            if (SQLConnection != null)
-                return !SQLConnection.isClosed();
-            else
-                return false;
-        } catch (SQLException exception) {
-            Log.e(TAG_Database, "connectValid: ", exception);
-            exception.printStackTrace();
-            return false;
-        }
-    }
-/*
-    // Quit app without kill process
-    @Override
-    protected void onStop() {
-        super.onStop();
-        try {
-            // The user leave application, close connection to the server.
-            if (connectionValid()) {
-                Log.d(TAG_Debug, "onStop: close SQL connection");
-                SQLConnection.close();
-            } else {
-                Log.e(TAG_Debug, "onStop: ERROR close SQL connection: invalid");
-            }
-        } catch (SQLException exception) {
-            Log.e(TAG_Debug, "onStop: ERROR close SQL connection: ", exception);
-            exception.printStackTrace();
-        }
-    }
-*/
     // Close connection before destroy app
     @Override
     protected void onDestroy() {
         try {
             // The user leave application, close connection to the server.
-            if (connectionValid()) {
+            if (connectionValid(SQLConnection)) {
                 Log.d(TAG_Debug, "onStop: close SQL connection");
                 SQLConnection.close();
             } else {
@@ -181,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    // ---- Permission ----
+    // ---- PERMISSION ----
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -251,7 +205,6 @@ public class MainActivity extends AppCompatActivity {
                     // Launch activity to get result
                     activityResult.launch(enableIntent);
                     break;
-
             }
             return true;
         }
@@ -272,6 +225,12 @@ public class MainActivity extends AppCompatActivity {
 
     // ---- FRAGMENTS ----
 
+    /**
+     * Move to old fragment from new fragment
+     * @param fragment      new fragment
+     * @param anim_enter    animation in
+     * @param anim_exit     animation out
+     */
     public void setFragment(Fragment fragment, int anim_enter, int anim_exit){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(anim_enter, anim_exit);
@@ -295,23 +254,6 @@ public class MainActivity extends AppCompatActivity {
                     // Set color background
                     getWindow().setStatusBarColor((Integer) message.obj);
                     break;
-/*
-                case 8:
-                    if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
-                        if (checkCoarseLocationPermission(MainActivity.this)) {
-                            boolean result = bluetoothAdapter.startDiscovery();
-                            if (result) Log.d(TAG_BT, "handleMessage: isDiscovering: " + bluetoothAdapter.isDiscovering());
-                            else Log.e(TAG_BT, "handleMessage: isDiscovering error");
-                        }
-                    }
-                    break;
-                case 9:
-                    // Create intent
-                    Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-
-                    // Launch activity to get result
-                    activityResult.launch(enableIntent);
-                    break;*/
             }
             return true;
         }
