@@ -3,9 +3,16 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
+import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
+import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
+import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
+import static com.aristy.gogocar.PermissionHelper.checkPermission;
+import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
+import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.app.Activity;
@@ -28,19 +35,22 @@ public class WebInterface {
     UserPreferences userPreferences;
 
     Handler fragmentHandler;
+    Handler bluetoothHandler;
 
     DatabaseHelper databaseHelper;
 
     // Constructor
-    WebInterface(Activity activity, Context context, WebView webView, Connection connection, UserPreferences userPreferences, Handler fragmentHandler){
+    WebInterface(Activity activity, Context context, WebView webView, Connection connection, UserPreferences userPreferences, Handler [] handlers){
         this.activity = activity;
         this.context = context;
         this.webView = webView;
 
         this.databaseHelper = new DatabaseHelper(connection);
         this.userPreferences = userPreferences;
+        this.userPreferences.setContext(context);   // Update context
 
-        this.fragmentHandler = fragmentHandler;
+        this.fragmentHandler = handlers[FRAGMENT_HANDLER_POS];
+        this.bluetoothHandler = handlers[BLUETOOTH_HANDLER_POS];
     }
 
     /*  ---------------------------------- *
@@ -87,10 +97,7 @@ public class WebInterface {
         // if user exist
         if(user.getPassword() != null){
             // Compare passwords, if hash_password == hash
-            if(hash.equals(user.getPassword())){
-                // Ok
-                return user;
-            }
+            if(hash.equals(user.getPassword())) return user;    // Ok
         }
         // If password and email are different: Not ok
         return null;
@@ -162,8 +169,33 @@ public class WebInterface {
 
     @JavascriptInterface
     public void requestDrive(){
+        Log.d(TAG_Web, "requestDrive: ");
+        // Check if coarse location must be asked
+        if (!checkPermission(activity)){
+            // re-init operation
+            Toast.makeText(context, "ask.", Toast.LENGTH_SHORT).show();
+            androidToWeb("requestDriveCallback", "false");
+            return;
+        }
+
+        // Check if elements are activated
+        if(!isBluetoothEnabled()){
+            Toast.makeText(context, "Please enable bluetooth.", Toast.LENGTH_SHORT).show();
+            bluetoothHandler.obtainMessage(BT_REQUEST_ENABLE).sendToTarget();
+            androidToWeb("requestDriveCallback", "false");
+            return;
+        }
+
+        if(!isLocationEnabled(context)) {
+            Toast.makeText(context, "Please enable location.", Toast.LENGTH_SHORT).show();
+            androidToWeb("requestDriveCallback", "false");
+            return;
+        }
 
         //Intent enableBtIntent
+        bluetoothHandler.obtainMessage(BT_STATE_DISCOVERING).sendToTarget();
+
+
 
 
         androidToWeb("requestDriveCallback", "true");
@@ -216,6 +248,7 @@ public class WebInterface {
     @JavascriptInterface
     public void logout(){
         // Reset user to default
+
         userPreferences.resetUser();
 
         // Load page of login

@@ -25,12 +25,12 @@ public class FragmentApp extends Fragment {
 
     Connection SQLConnection;
     UserPreferences userPreferences;
-    Handler fragmentHandler;
+    Handler [] handlers;
 
-    public FragmentApp(Connection SQLConnection, UserPreferences userPreferences, Handler fragmentHandler){
+    public FragmentApp(Connection SQLConnection, UserPreferences userPreferences, Handler [] handlers){
         this.SQLConnection = SQLConnection;
         this.userPreferences = userPreferences;
-        this.fragmentHandler = fragmentHandler;
+        this.handlers = handlers;
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -50,7 +50,7 @@ public class FragmentApp extends Fragment {
         // Result state page
         web.setWebViewClient(new Callback());
 
-        web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, fragmentHandler), "Android");
+        web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, handlers), "Android");
 
         return view;
     }

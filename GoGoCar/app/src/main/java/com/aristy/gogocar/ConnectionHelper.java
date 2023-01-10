@@ -12,6 +12,7 @@ import android.util.Log;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * ConnectionHelper:
@@ -51,5 +52,21 @@ public class ConnectionHelper{
 
     public Connection getConnection() {
         return this.connection;
+    }
+
+    public static boolean connectionValid(Connection connection){
+        try {
+            if (connection != null) {
+                Log.d(TAG_Database, "connectionValid: SQLConnection=" + connection + ", close?=" + connection.isClosed());
+                return !connection.isClosed();
+            } else {
+                Log.d(TAG_Database, "connectionValid: SQLConnection=" + null);
+                return false;
+            }
+        } catch (SQLException exception) {
+            Log.e(TAG_Database, "connectionValid: ", exception);
+            exception.printStackTrace();
+            return false;
+        }
     }
 }
