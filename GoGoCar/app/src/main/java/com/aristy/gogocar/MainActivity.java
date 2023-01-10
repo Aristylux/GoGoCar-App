@@ -8,6 +8,7 @@ import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import static com.aristy.gogocar.PermissionHelper.REQUEST_ACCESS_COARSE_LOCATION;
+import static com.aristy.gogocar.PermissionHelper.checkCoarseLocationPermission;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     Connection SQLConnection;
     UserPreferences userPreferences;
 
+    ActivityResultLauncher<Intent> activityResult;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +90,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Get bluetooth adapter
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        activityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), resultCallback);
     }
+
+    ActivityResultCallback<ActivityResult> resultCallback = result -> {
+        Log.d(TAG_BT, "onActivityResult: " + result.getData() + "," + result.getResultCode() + ", " + result);
+        // if(requestCade == REQUEST_ENABLE_BLUETOOTH){
+    };
+
+    // ---- LIFE APP ----
 
     @Override
     protected void onResume() {
@@ -105,80 +116,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG_BT, "onPause: unregisterReceiver");
         unregisterReceiver(devicesFoundReceiver);
     }
-
-    @SuppressLint("MissingPermission")
-    void checkBluetoothState(){
-        if(bluetoothAdapter == null){
-            Log.d(TAG_BT, "Bluetooth not supported.");
-        } else {
-            if (bluetoothAdapter.isEnabled()){
-                if (bluetoothAdapter.isDiscovering()){
-                    Log.d(TAG_BT, "checkBluetoothState: discovering in progress");
-                } else {
-                    Log.d(TAG_BT, "checkBluetoothState: Bluetooth is enabled");
-                }
-            } else {
-
-                ActivityResultLauncher<Intent> activityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), resultCallback);
-
-                // Create intent
-                Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-
-                // Launch activity to get result
-                activityResult.launch(enableIntent);
-            }
-        }
-    }
-
-    ActivityResultCallback<ActivityResult> resultCallback = new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            Log.d(TAG_BT, "onActivityResult: " + result.getData() + "," + result.getResultCode() + ", " + result);
-            // if(requestCade == REQUEST_ENABLE_BLUETOOTH){
-        }
-    };
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == REQUEST_ACCESS_COARSE_LOCATION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG_BT, "onRequestPermissionsResult: allowed " + permissions[0]);
-            } else {
-                Log.d(TAG_BT, "onRequestPermissionsResult: forbidden");
-            }
-        }
-
-    }
-
-    private boolean checkCoarseLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_ACCESS_COARSE_LOCATION);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /*private final*/ BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
-        @SuppressLint("MissingPermission")
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String action = intent.getAction();
-            Log.d(TAG_BT, "onReceive: devicesFoundReceiver: " + action);
-
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                Log.d(TAG_BT, "onReceive: " + device.getName() + ", " + device.getAddress());
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                Log.d(TAG_BT, "onReceive: scanning bluetooth devices");
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                Log.d(TAG_BT, "onReceive: scanning in progress ...");
-            }
-        }
-    };
 
     /*
         // First time, appear after onCreate
@@ -244,7 +181,57 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    // Window settings
+    // ---- Permission ----
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_ACCESS_COARSE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG_BT, "onRequestPermissionsResult: allowed " + permissions[0]);
+            } else {
+                Log.d(TAG_BT, "onRequestPermissionsResult: forbidden " + permissions[0]);
+            }
+        }
+
+    }
+
+    // ---- BLUETOOTH ----
+
+    String lastMacAddress = null;
+
+    private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
+        @SuppressLint("MissingPermission")
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                // If the name is null, this is not a good device
+                if (device.getName() == null) return;
+
+                // Get actual mac address
+                String macAddress = device.getAddress();
+
+                // If the mac address of the new device is the same as before quit
+                if(macAddress.equals(lastMacAddress)) return;
+
+                // Store new mac address
+                lastMacAddress = macAddress;
+
+                Log.d(TAG_BT, "onReceive: " + device.getName() + ", " + device.getAddress());
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                Log.d(TAG_BT, "onReceive: scanning bluetooth devices FINISHED");
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                Log.d(TAG_BT, "onReceive: scanning in progress ...");
+            }
+        }
+    };
+
+    // ---- WINDOW settings ----
     public void setWindowVersion(){
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -284,15 +271,19 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 8:
                     if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
-                        Log.d(TAG_BT, "onCreate: start discovering");
-                        if (checkCoarseLocationPermission()) {
+                        if (checkCoarseLocationPermission(MainActivity.this)) {
                             boolean result = bluetoothAdapter.startDiscovery();
-                            if (result)
-                                Log.d(TAG_BT, "handleMessage: isDiscovering: " + bluetoothAdapter.isDiscovering());
-                            else
-                                Log.d(TAG_BT, "handleMessage: isDiscovering error");
+                            if (result) Log.d(TAG_BT, "handleMessage: isDiscovering: " + bluetoothAdapter.isDiscovering());
+                            else Log.e(TAG_BT, "handleMessage: isDiscovering error");
                         }
                     }
+                    break;
+                case 9:
+                    // Create intent
+                    Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+
+                    // Launch activity to get result
+                    activityResult.launch(enableIntent);
                     break;
             }
             return true;

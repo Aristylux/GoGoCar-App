@@ -36,8 +36,8 @@ public class PermissionHelper {
     static public boolean checkPermission(Activity activity){
         // Checking if permission is not granted
 
-        if ((ContextCompat.checkSelfPermission(activity.getBaseContext() ,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                && (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+        if ((ContextCompat.checkSelfPermission(activity.getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                && (ContextCompat.checkSelfPermission(activity.getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
             Log.d(TAG_BT, "checkPermission: ask permission");
             ActivityCompat.requestPermissions(activity, new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -66,6 +66,15 @@ public class PermissionHelper {
 
     static void askCoarseLocationPermission(Activity activity){
         ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_ACCESS_COARSE_LOCATION);
+    }
+
+    public static boolean checkCoarseLocationPermission(Activity activity) {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_ACCESS_COARSE_LOCATION);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**

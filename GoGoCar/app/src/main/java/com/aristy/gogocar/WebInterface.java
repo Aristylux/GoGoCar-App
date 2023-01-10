@@ -14,12 +14,21 @@ import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.sql.Connection;
 import java.util.List;
@@ -179,6 +188,7 @@ public class WebInterface {
         // Check if elements are activated
         if(!isBluetoothEnabled()){
             Toast.makeText(context, "Please enable bluetooth.", Toast.LENGTH_SHORT).show();
+            fragmentHandler.obtainMessage(9).sendToTarget();
             androidToWeb("requestDriveCallback", "false");
             return;
         }
