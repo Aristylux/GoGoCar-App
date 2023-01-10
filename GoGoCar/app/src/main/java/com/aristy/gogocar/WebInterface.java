@@ -4,6 +4,8 @@ import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
+import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
@@ -33,7 +35,7 @@ public class WebInterface {
     UserPreferences userPreferences;
 
     Handler fragmentHandler;
-    //Handler bluetoothHandler;
+    Handler bluetoothHandler;
 
     DatabaseHelper databaseHelper;
 
@@ -48,7 +50,7 @@ public class WebInterface {
         this.userPreferences.setContext(context);   // Update context
 
         this.fragmentHandler = handlers[FRAGMENT_HANDLER_POS];
-        //this.bluetoothHandler = handlers[BLUETOOTH_HANDLER_POS];
+        this.bluetoothHandler = handlers[BLUETOOTH_HANDLER_POS];
     }
 
     /*  ---------------------------------- *
@@ -179,7 +181,7 @@ public class WebInterface {
         // Check if elements are activated
         if(!isBluetoothEnabled()){
             Toast.makeText(context, "Please enable bluetooth.", Toast.LENGTH_SHORT).show();
-            fragmentHandler.obtainMessage(9).sendToTarget();
+            bluetoothHandler.obtainMessage(BT_REQUEST_ENABLE).sendToTarget();
             androidToWeb("requestDriveCallback", "false");
             return;
         }
@@ -191,7 +193,7 @@ public class WebInterface {
         }
 
         //Intent enableBtIntent
-        fragmentHandler.obtainMessage(8).sendToTarget();
+        bluetoothHandler.obtainMessage(BT_STATE_DISCOVERING).sendToTarget();
 
 
 

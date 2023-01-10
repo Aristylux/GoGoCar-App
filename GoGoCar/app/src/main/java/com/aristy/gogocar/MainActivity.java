@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityResultLauncher<Intent> activityResult;
 
+    Handler [] handlers;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,12 +71,14 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG_SPLASH, "onCreate: user " + userPreferences.toString());
         // ----
 
+        handlers = new Handler[]{fragmentHandler, bluetoothHandler};
+
         Fragment selectedFragment;
         // If the user is not logged
         if(!isLogged)
-            selectedFragment = new FragmentLogin(SQLConnection, userPreferences, new Handler[]{fragmentHandler});
+            selectedFragment = new FragmentLogin(SQLConnection, userPreferences, handlers);
         else
-            selectedFragment = new FragmentApp(SQLConnection, userPreferences, new Handler[]{fragmentHandler});
+            selectedFragment = new FragmentApp(SQLConnection, userPreferences, handlers);
 
         // Set Fragment
         setFragment(selectedFragment, R.anim.from_left, R.anim.to_right);
@@ -282,16 +286,16 @@ public class MainActivity extends AppCompatActivity {
         public boolean handleMessage(@NonNull Message message) {
             switch (message.what){
                 case GOTO_HOME_FRAGMENT:
-                    setFragment(new FragmentApp(SQLConnection, userPreferences, new Handler[]{fragmentHandler}), R.anim.from_right, R.anim.to_left);
+                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers), R.anim.from_right, R.anim.to_left);
                     break;
                 case GOTO_LOGIN_FRAGMENT:
-                    setFragment(new FragmentLogin(SQLConnection, userPreferences, new Handler[]{fragmentHandler}), R.anim.from_left, R.anim.to_right);
+                    setFragment(new FragmentLogin(SQLConnection, userPreferences, handlers), R.anim.from_left, R.anim.to_right);
                     break;
                 case STATUS_BAR_COLOR:
                     // Set color background
                     getWindow().setStatusBarColor((Integer) message.obj);
                     break;
-
+/*
                 case 8:
                     if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
                         if (checkCoarseLocationPermission(MainActivity.this)) {
@@ -307,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // Launch activity to get result
                     activityResult.launch(enableIntent);
-                    break;
+                    break;*/
             }
             return true;
         }
