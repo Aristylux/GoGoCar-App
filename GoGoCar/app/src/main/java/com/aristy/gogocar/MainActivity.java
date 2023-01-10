@@ -4,6 +4,8 @@ import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
+import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
@@ -16,24 +18,18 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -76,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
         Fragment selectedFragment;
         // If the user is not logged
         if(!isLogged)
-            selectedFragment = new FragmentLogin(SQLConnection, userPreferences, fragmentHandler);
+            selectedFragment = new FragmentLogin(SQLConnection, userPreferences, new Handler[]{fragmentHandler});
         else
-            selectedFragment = new FragmentApp(SQLConnection, userPreferences, fragmentHandler);
+            selectedFragment = new FragmentApp(SQLConnection, userPreferences, new Handler[]{fragmentHandler});
 
         // Set Fragment
         setFragment(selectedFragment, R.anim.from_left, R.anim.to_right);
@@ -231,6 +227,32 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    Handler bluetoothHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message message) {
+            switch (message.what) {
+                case BT_STATE_DISCOVERING:
+                    if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
+                        if (checkCoarseLocationPermission(MainActivity.this)) {
+                            boolean result = bluetoothAdapter.startDiscovery();
+                            if (result) Log.d(TAG_BT, "handleMessage: isDiscovering: " + bluetoothAdapter.isDiscovering());
+                            else Log.e(TAG_BT, "handleMessage: isDiscovering error");
+                        }
+                    }
+                    break;
+                case BT_REQUEST_ENABLE:
+                    // Create intent
+                    Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+
+                    // Launch activity to get result
+                    activityResult.launch(enableIntent);
+                    break;
+
+            }
+            return true;
+        }
+    });
+
     // ---- WINDOW settings ----
     public void setWindowVersion(){
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
@@ -260,15 +282,16 @@ public class MainActivity extends AppCompatActivity {
         public boolean handleMessage(@NonNull Message message) {
             switch (message.what){
                 case GOTO_HOME_FRAGMENT:
-                    setFragment(new FragmentApp(SQLConnection, userPreferences, fragmentHandler), R.anim.from_right, R.anim.to_left);
+                    setFragment(new FragmentApp(SQLConnection, userPreferences, new Handler[]{fragmentHandler}), R.anim.from_right, R.anim.to_left);
                     break;
                 case GOTO_LOGIN_FRAGMENT:
-                    setFragment(new FragmentLogin(SQLConnection, userPreferences, fragmentHandler), R.anim.from_left, R.anim.to_right);
+                    setFragment(new FragmentLogin(SQLConnection, userPreferences, new Handler[]{fragmentHandler}), R.anim.from_left, R.anim.to_right);
                     break;
                 case STATUS_BAR_COLOR:
                     // Set color background
                     getWindow().setStatusBarColor((Integer) message.obj);
                     break;
+
                 case 8:
                     if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
                         if (checkCoarseLocationPermission(MainActivity.this)) {

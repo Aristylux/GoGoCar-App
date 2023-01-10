@@ -27,10 +27,10 @@ public class FragmentApp extends Fragment {
     UserPreferences userPreferences;
     Handler fragmentHandler;
 
-    public FragmentApp(Connection SQLConnection, UserPreferences userPreferences, Handler fragmentHandler){
+    public FragmentApp(Connection SQLConnection, UserPreferences userPreferences, Handler [] fragmentHandler){
         this.SQLConnection = SQLConnection;
         this.userPreferences = userPreferences;
-        this.fragmentHandler = fragmentHandler;
+        this.fragmentHandler = fragmentHandler[0];
     }
 
     @SuppressLint("SetJavaScriptEnabled")

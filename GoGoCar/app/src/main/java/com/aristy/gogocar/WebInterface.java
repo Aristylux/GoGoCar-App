@@ -81,7 +81,7 @@ public class WebInterface {
             androidToWeb("errorAuthenticationLogin");
         } else {
             // Set user in app & Save user for the application (user id)
-            userPreferences.setUser(user);
+            userPreferences.setUser(context, user);
 
             // Go to home
             fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
@@ -255,7 +255,8 @@ public class WebInterface {
     @JavascriptInterface
     public void logout(){
         // Reset user to default
-        userPreferences.resetUser();
+
+        userPreferences.resetUser(context);
 
         // Load page of login
         fragmentHandler.obtainMessage(GOTO_LOGIN_FRAGMENT).sendToTarget();

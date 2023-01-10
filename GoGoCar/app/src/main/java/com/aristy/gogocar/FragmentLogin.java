@@ -26,10 +26,10 @@ public class FragmentLogin extends Fragment {
     UserPreferences userPreferences;
     Handler fragmentHandler;
 
-    public FragmentLogin(Connection SQLConnection, UserPreferences userPreferences, Handler fragmentHandler){
+    public FragmentLogin(Connection SQLConnection, UserPreferences userPreferences, Handler [] fragmentHandler){
         this.SQLConnection = SQLConnection;
         this.userPreferences = userPreferences;
-        this.fragmentHandler = fragmentHandler;
+        this.fragmentHandler = fragmentHandler[0];
     }
 
     @SuppressLint("SetJavaScriptEnabled")
