@@ -22,8 +22,10 @@ public class UserPreferences extends Application implements Parcelable {
     private String userPhone;
 
     UserSharedPreference userSharedPreference;
+    Context context;
     
     public UserPreferences(Context context){
+        this.context = context;
         this.userSharedPreference = new UserSharedPreference(context);
     }
 
@@ -61,20 +63,18 @@ public class UserPreferences extends Application implements Parcelable {
         return map.toString();
     }
 
+    // update context
+    public void setContext(Context context) {
+        this.context = context;
+        this.userSharedPreference = new UserSharedPreference(context);
+    }
+
     public void setUser(DBModelUser user){
         this.userID = user.getId();
         this.userName = user.getFullName();
         this.userEmail = user.getEmail();
         this.userPhone = user.getPhoneNumber();
         writeUserInShared();
-    }
-
-    public void setUser(Context context, DBModelUser user){
-        this.userID = user.getId();
-        this.userName = user.getFullName();
-        this.userEmail = user.getEmail();
-        this.userPhone = user.getPhoneNumber();
-        writeUserInShared(context);
     }
     
     public DBModelUser getUser(){
@@ -98,21 +98,11 @@ public class UserPreferences extends Application implements Parcelable {
         userSharedPreference.writeUser(getUser());
     }
 
-    private void writeUserInShared(Context context){
-        UserSharedPreference user = new UserSharedPreference(context);
-        user.writeUser(getUser());
-    }
-
     /**
      * Delete user in shared preferences
      */
     public void resetUser(){
         userSharedPreference.resetData();
-    }
-
-    public void resetUser(Context context){
-        UserSharedPreference user = new UserSharedPreference(context);
-        user.resetData();
     }
     
     // Setters & Getters 

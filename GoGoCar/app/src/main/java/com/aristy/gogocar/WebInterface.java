@@ -3,6 +3,8 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
+import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
+import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
@@ -43,9 +45,10 @@ public class WebInterface {
 
         this.databaseHelper = new DatabaseHelper(connection);
         this.userPreferences = userPreferences;
+        this.userPreferences.setContext(context);   // Update context
 
-        this.fragmentHandler = handlers[0];
-        //this.bluetoothHandler = handlers[1];
+        this.fragmentHandler = handlers[FRAGMENT_HANDLER_POS];
+        //this.bluetoothHandler = handlers[BLUETOOTH_HANDLER_POS];
     }
 
     /*  ---------------------------------- *
@@ -72,7 +75,7 @@ public class WebInterface {
             androidToWeb("errorAuthenticationLogin");
         } else {
             // Set user in app & Save user for the application (user id)
-            userPreferences.setUser(context, user);
+            userPreferences.setUser(user);
 
             // Go to home
             fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
@@ -244,7 +247,7 @@ public class WebInterface {
     public void logout(){
         // Reset user to default
 
-        userPreferences.resetUser(context);
+        userPreferences.resetUser();
 
         // Load page of login
         fragmentHandler.obtainMessage(GOTO_LOGIN_FRAGMENT).sendToTarget();

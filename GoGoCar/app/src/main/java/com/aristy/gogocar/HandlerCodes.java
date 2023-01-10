@@ -2,6 +2,10 @@ package com.aristy.gogocar;
 
 public class HandlerCodes {
 
+    // Handler positions
+    public static final int FRAGMENT_HANDLER_POS = 0;
+    public static final int BLUETOOTH_HANDLER_POS = 1;
+
     // Fragments codes
     public static final int GOTO_HOME_FRAGMENT = 1;
     public static final int GOTO_LOGIN_FRAGMENT = 2;
