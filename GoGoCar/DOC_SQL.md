@@ -11,9 +11,11 @@ This file save all big query for re-create GoGoCar database.
   - [Create tables](#create-tables)
     - [User](#user)
     - [Vehicle](#vehicle)
+    - [Modules gogocar](#modules-gogocar)
 - [Insert](#insert)
   - [User](#user-1)
   - [Vehicles](#vehicles)
+  - [Modules gogocar](#modules-gogocar-1)
 
 # Create
 
@@ -33,7 +35,7 @@ CREATE TABLE users (
     name VARCHAR(40) NOT NULL,
     email VARCHAR(40) UNIQUE NOT NULL,
     phone VARCHAR(14) UNIQUE NOT NULL,
-    password VARCHAR(65) UNIQUE NOT NULL,
+    password VARCHAR(129) UNIQUE NOT NULL,
     id_identity INTEGER UNIQUE
     );
 ```
@@ -53,6 +55,15 @@ CREATE TABLE vehicles (
     );
 ```
 
+### Modules gogocar
+
+```sql
+CREATE TABLE modules (
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    name VARCHAR(10) UNIQUE NOT NULL,
+    mac_address VARCHAR(129) UNIQUE NOT NULL
+    );
+```
 
 # Insert
 
@@ -78,4 +89,11 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner) VALUES
 INSERT INTO vehicles (model, licence_plate, address, id_owner) VALUES 
     ('Nissan GT', 'BD-325-FE', '26 rue General de Gaulle', 3),
     ('Peugeot 206', 'AM-871-DD', '18 Boulevard Jules Ferry', 3);
+```
+
+## Modules gogocar
+
+```sql
+INSERT INTO modules (name, mac_address) VALUES
+    ('01-01-0001', 'e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9');
 ```
