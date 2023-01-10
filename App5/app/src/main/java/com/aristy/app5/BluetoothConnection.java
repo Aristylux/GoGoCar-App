@@ -43,7 +43,6 @@ public class BluetoothConnection extends Thread {
         Message message = Message.obtain();
         try {
             Log.d(TAG_BT_CON, "Connected to " + bluetoothSocket.getRemoteDevice().getName());
-            //bluetoothSocket.getRemoteDevice().setPin(passkey.getBytes());
             bluetoothSocket.connect();
             message.what = BT_STATE_CONNECTED;
         } catch (IOException exception) {
