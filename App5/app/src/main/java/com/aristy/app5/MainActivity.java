@@ -8,6 +8,8 @@ import static com.aristy.app5.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.app5.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
 import static com.aristy.app5.SHAHash.DOMAIN;
 import static com.aristy.app5.SHAHash.hashPassword;
+import static com.aristy.app5.Security.encrypt;
+import static com.aristy.app5.Security.getPinKey;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -35,6 +37,11 @@ import android.os.Message;
 import android.util.Log;
 
 import java.io.IOException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+
+import javax.crypto.KeyGenerator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -176,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)){
                 Log.d(TAG_BT, "onReceive: ACTION_PAIRING_REQUEST");
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                //device.setPin(pinKey.getBytes());
+                device.setPin(getPinKey().getBytes());
             }
         }
     };
