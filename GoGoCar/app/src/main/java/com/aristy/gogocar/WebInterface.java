@@ -6,29 +6,18 @@ import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
-import static com.aristy.gogocar.PermissionHelper.ACCESS_COARSE_LOCATION_PERMISSION;
-import static com.aristy.gogocar.PermissionHelper.REQUEST_ACCESS_COARSE_LOCATION;
 import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import java.sql.Connection;
 import java.util.List;
@@ -42,11 +31,12 @@ public class WebInterface {
     UserPreferences userPreferences;
 
     Handler fragmentHandler;
+    //Handler bluetoothHandler;
 
     DatabaseHelper databaseHelper;
 
     // Constructor
-    WebInterface(Activity activity, Context context, WebView webView, Connection connection, UserPreferences userPreferences, Handler fragmentHandler){
+    WebInterface(Activity activity, Context context, WebView webView, Connection connection, UserPreferences userPreferences, Handler [] handlers){
         this.activity = activity;
         this.context = context;
         this.webView = webView;
@@ -54,7 +44,8 @@ public class WebInterface {
         this.databaseHelper = new DatabaseHelper(connection);
         this.userPreferences = userPreferences;
 
-        this.fragmentHandler = fragmentHandler;
+        this.fragmentHandler = handlers[0];
+        //this.bluetoothHandler = handlers[1];
     }
 
     /*  ---------------------------------- *
@@ -101,10 +92,7 @@ public class WebInterface {
         // if user exist
         if(user.getPassword() != null){
             // Compare passwords, if hash_password == hash
-            if(hash.equals(user.getPassword())){
-                // Ok
-                return user;
-            }
+            if(hash.equals(user.getPassword())) return user;    // Ok
         }
         // If password and email are different: Not ok
         return null;
