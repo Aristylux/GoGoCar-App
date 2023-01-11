@@ -13,4 +13,5 @@ public class CodesTAG {
     static final String TAG_SPLASH = app_name + "_S";
     static final String TAG_THREAD = app_name + "_T";
     static final String TAG_BT = app_name + "_BT";
+    static final String TAG_BT_CON = "app5_BT_Connection";
 }
