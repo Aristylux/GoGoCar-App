@@ -79,7 +79,7 @@ App 4 is an app test for bluetooth
 
 * Scan bluetooth devices in search
 
-[Code Java App4](./App4/app/src/main/java/com/example/app4/)
+[Code Java App4](./App4/app/src/main/java/com/aristy/app4/)
 
 ## App 5
 
@@ -90,4 +90,4 @@ App 5 is an app test for bluetooth
 * Scan bluetooth devices in search
 * Connect to the selected device
 
-[Code Java App5](./App5/app/src/main/java/com/example/app5/)
+[Code Java App5](./App5/app/src/main/java/com/aristy/app5)
