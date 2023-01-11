@@ -15,7 +15,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.UUID;
 
-public class BluetoothConnection extends Thread{
+public class BluetoothConnection extends Thread {
 
     private static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private BluetoothSocket bluetoothSocket = null;
@@ -66,8 +66,8 @@ public class BluetoothConnection extends Thread{
     }
 
     public void connectionEstablished(){
-        //bluetoothCommunication = new BluetoothCommunication(bluetoothConnection, bluetoothHandler);
-        //bluetoothCommunication.start();
+        BluetoothCommunication bluetoothCommunication = new BluetoothCommunication(BluetoothConnection.this, handler);
+        bluetoothCommunication.start();
         //sendToBluetooth("$P\n");//inform paired succeed
     }
 
