@@ -61,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
 
     Handler [] handlers;
 
+    Fragment selectedFragment;
+    FragmentApp fragmentApp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,12 +85,13 @@ public class MainActivity extends AppCompatActivity {
 
         handlers = new Handler[]{fragmentHandler, bluetoothHandler};
 
-        Fragment selectedFragment;
         // If the user is not logged
         if(!isLogged)
             selectedFragment = new FragmentLogin(SQLConnection, userPreferences, handlers);
-        else
-            selectedFragment = new FragmentApp(SQLConnection, userPreferences, handlers);
+        else {
+            fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers);
+            selectedFragment = fragmentApp;
+        }
 
         // Set Fragment
         setFragment(selectedFragment, R.anim.from_left, R.anim.to_right);
@@ -262,6 +266,12 @@ public class MainActivity extends AppCompatActivity {
                 case BT_STATE_DISCONNECTED:
                     Log.v(TAG_BT, "BT_STATE_DISCONNECTED");
                     bluetoothConnection.connectionFinished();
+                    break;
+                case 10:
+                    Log.d(TAG_BT, "BT_STATE_MESSAGE_RECEIVED: " + message.obj);
+                    Bundle args = new Bundle();
+                    args.putString("message", message.obj.toString());
+                    fragmentApp.putArguments(args);
                     break;
             }
             return true;

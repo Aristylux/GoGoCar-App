@@ -27,6 +27,8 @@ public class FragmentApp extends Fragment {
     UserPreferences userPreferences;
     Handler [] handlers;
 
+    WebView web;
+
     public FragmentApp(Connection SQLConnection, UserPreferences userPreferences, Handler [] handlers){
         this.SQLConnection = SQLConnection;
         this.userPreferences = userPreferences;
@@ -40,7 +42,7 @@ public class FragmentApp extends Fragment {
         View view = inflater.inflate(R.layout.fragment_app, container, false);
 
         // Find items
-        WebView web = view.findViewById(R.id.web_view);
+        web = view.findViewById(R.id.web_view);
         web.loadUrl("file:///android_asset/pages/home.html");
 
         // Enable javascript
@@ -70,6 +72,11 @@ public class FragmentApp extends Fragment {
             //error here when bt is not activated
             //populateSpinner(bluetoothDevice);
         }
-
     }
+
+    public void putArguments(Bundle args){
+        String message = args.getString("message");
+        web.post(() -> web.loadUrl("javascript:" + "functionTest" + "('" + message + "')"));
+    }
+    
 }

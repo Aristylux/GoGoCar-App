@@ -71,6 +71,7 @@ public class BluetoothConnection extends Thread {
     public void connectionEstablished(){
         BluetoothCommunication bluetoothCommunication = new BluetoothCommunication(BluetoothConnection.this, handler);
         bluetoothCommunication.start();
+        handler.obtainMessage(10, "line").sendToTarget();
         //sendToBluetooth("$P\n");//inform paired succeed
     }
 
@@ -78,13 +79,14 @@ public class BluetoothConnection extends Thread {
         Log.e(TAG_BT_CON, "connectionFailed: ");
     }
 
-    String line = "";
+    private String line = "";
     public void messageReceived(String message){
         // Message management
         for (int i = 0; i < message.length(); i++){
             line += message.charAt(i);
             if(message.charAt(i) == '\n') {
-                Log.d("app5_DES", "line: " + line);
+                //Log.d("app5_DES", "line: " + line);
+                handler.obtainMessage(10, line).sendToTarget();
                 line = "";
             }
         }
