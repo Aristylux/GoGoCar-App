@@ -18,6 +18,7 @@ import static com.aristy.gogocar.PermissionHelper.REQUEST_ACCESS_COARSE_LOCATION
 import static com.aristy.gogocar.PermissionHelper.checkCoarseLocationPermission;
 import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
+import static com.aristy.gogocar.Security.getPinKey;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG_BT, "onResume: registerReceiver");
         // Register a dedicated receiver for some Bluetooth actions
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
+        registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST));
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED));
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
     }
@@ -215,6 +217,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices FINISHED");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices STARTED");
+            } else if (BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)){
+                Log.d(TAG_BT, "onReceive: ACTION_PAIRING_REQUEST");
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                device.setPin(getPinKey().getBytes());
             }
         }
     };
@@ -259,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     });
-    
+
     // ---- WINDOW settings ----
     public void setWindowVersion(){
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
