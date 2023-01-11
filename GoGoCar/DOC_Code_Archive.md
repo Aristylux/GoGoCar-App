@@ -1,6 +1,3 @@
-# 
-
-
 # Ask enable bluetooth
 
 ```java
