@@ -1,11 +1,16 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
+import static com.aristy.gogocar.CodesTAG.TAG_BT_CON;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.ConnectionHelper.connectionValid;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
@@ -46,6 +51,7 @@ import java.sql.SQLException;
 public class MainActivity extends AppCompatActivity {
 
     BluetoothAdapter bluetoothAdapter;
+    BluetoothConnection bluetoothConnection;
 
     Connection SQLConnection;
     UserPreferences userPreferences;
@@ -117,6 +123,12 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         Log.d(TAG_BT, "onPause: unregisterReceiver");
         unregisterReceiver(devicesFoundReceiver);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        bluetoothConnection.closeConnection();
     }
 
     // Close connection before destroy app
@@ -193,8 +205,10 @@ public class MainActivity extends AppCompatActivity {
                     // Stop discovery
                     bluetoothAdapter.cancelDiscovery();
 
-                    // Connection with the device
-
+                    // Connection with the device : Open connection
+                    Log.d(TAG_BT_CON, "openConnection: ");
+                    bluetoothConnection = new BluetoothConnection(device, bluetoothHandler);
+                    bluetoothConnection.start();
                 }
 
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
@@ -225,11 +239,27 @@ public class MainActivity extends AppCompatActivity {
                     // Launch activity to get result
                     activityResult.launch(enableIntent);
                     break;
+                case BT_STATE_CONNECTED:
+                    Log.v(TAG_BT, "BT_STATE_CONNECTED");
+                    bluetoothConnection.connectionEstablished();
+                    break;
+                case BT_STATE_CONNECTION_FAILED:
+                    Log.v(TAG_BT, "BT_STATE_CONNECTION_FAILED");
+                    bluetoothConnection.connectionFailed();
+                    break;
+                case BT_STATE_MESSAGE_RECEIVED:
+                    //Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
+                    bluetoothConnection.messageReceived((String) message.obj);
+                    break;
+                case BT_STATE_DISCONNECTED:
+                    Log.v(TAG_BT, "BT_STATE_DISCONNECTED");
+                    bluetoothConnection.connectionFinished();
+                    break;
             }
             return true;
         }
     });
-
+    
     // ---- WINDOW settings ----
     public void setWindowVersion(){
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
