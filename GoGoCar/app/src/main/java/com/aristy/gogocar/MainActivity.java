@@ -130,7 +130,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        bluetoothConnection.closeConnection();
+        Log.d(TAG_BT, "onStop: closeConnection");
+        if (bluetoothConnection.getBluetoothSocket() != null)
+            bluetoothConnection.closeConnection();
     }
 
     // Close connection before destroy app
@@ -139,13 +141,13 @@ public class MainActivity extends AppCompatActivity {
         try {
             // The user leave application, close connection to the server.
             if (connectionValid(SQLConnection)) {
-                Log.d(TAG_Debug, "onStop: close SQL connection");
+                Log.d(TAG_Debug, "onDestroy: close SQL connection");
                 SQLConnection.close();
             } else {
-                Log.e(TAG_Debug, "onStop: ERROR close SQL connection: invalid");
+                Log.e(TAG_Debug, "onDestroy: ERROR close SQL connection: invalid");
             }
         } catch (SQLException exception) {
-            Log.e(TAG_Debug, "onStop: ERROR close SQL connection: ", exception);
+            Log.e(TAG_Debug, "onDestroy: ERROR close SQL connection: ", exception);
             exception.printStackTrace();
         }
         super.onDestroy();

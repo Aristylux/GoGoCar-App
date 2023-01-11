@@ -13,18 +13,21 @@ import android.os.Message;
 import android.util.Log;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class BluetoothConnection extends Thread {
 
     private static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private BluetoothSocket bluetoothSocket = null;
+    BluetoothDevice bluetoothDevice;
     public Handler handler;
 
 
     @SuppressLint("MissingPermission")
     public BluetoothConnection (BluetoothDevice bluetoothDevice, Handler handler){
         this.handler = handler;
+        this.bluetoothDevice = bluetoothDevice;
         try {
             Log.d(TAG_BT_CON, "BluetoothConnection: Creating socket, my uuid : " + myUUID);
             bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(myUUID);
@@ -77,7 +80,6 @@ public class BluetoothConnection extends Thread {
 
     String line = "";
     public void messageReceived(String message){
-
         // Message management
         for (int i = 0; i < message.length(); i++){
             line += message.charAt(i);
@@ -89,7 +91,15 @@ public class BluetoothConnection extends Thread {
     }
 
     public void connectionFinished(){
-        Log.d(TAG_BT, "connectionFinished: ");
+        Log.d(TAG_BT_CON, "connectionFinished: ");
+        // unpair device
+        try {
+            String methodName = "removeBond";
+            Method method = bluetoothDevice.getClass().getMethod(methodName, (Class[]) null);
+            method.invoke(bluetoothDevice, (Object[]) null);
+        } catch (Exception exception) {
+            Log.e(TAG_BT_CON, "connectionFinished", exception);
+        }
     }
 
 
