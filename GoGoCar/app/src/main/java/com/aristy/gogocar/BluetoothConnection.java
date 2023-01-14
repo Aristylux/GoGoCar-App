@@ -20,7 +20,6 @@ public class BluetoothConnection extends Thread {
 
     private static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private BluetoothSocket bluetoothSocket = null;
-    BluetoothDevice bluetoothDevice;
     public Handler handler;
 
     private boolean isConnecting;
@@ -29,14 +28,21 @@ public class BluetoothConnection extends Thread {
     private String function;
 
 
+    /**
+     * Constructor, set default, prepare to be connected
+     */
     public BluetoothConnection (){
         this.isConnecting = false;
     }
 
+    /**
+     * Open connection with the device
+     * @param bluetoothDevice device
+     * @param handler for call
+     */
     @SuppressLint("MissingPermission")
     public void openConnection(BluetoothDevice bluetoothDevice, Handler handler){
         this.handler = handler;
-        this.bluetoothDevice = bluetoothDevice;
         try {
             Log.d(TAG_BT_CON, "BluetoothConnection: Creating socket, my uuid : " + myUUID);
             bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(myUUID);
@@ -66,6 +72,9 @@ public class BluetoothConnection extends Thread {
         handler.sendMessage(message);
     }
 
+    /**
+     * Close connection with device
+     */
     public void closeConnection(){
         if (bluetoothSocket != null && bluetoothSocket.isConnected()){
             try {
@@ -92,7 +101,16 @@ public class BluetoothConnection extends Thread {
         Log.e(TAG_BT_CON, "connectionFailed: ");
     }
 
+    /**
+     * When a message is received: <br>
+     * Extract the specifications <br>
+     *  - Code <br>
+     *  - Message <br>
+     * Find the best function to result
+     * @param message message to extract
+     */
     public void messageReceived(String message){
+        // TODO
         // Message management
 
         // Extract code
@@ -112,25 +130,20 @@ public class BluetoothConnection extends Thread {
         return this.message;
     }
 
+    /**
+     * When the connection is finished,<br>
+     * Unpair the device
+     */
     public void connectionFinished(){
         Log.d(TAG_BT_CON, "connectionFinished: ");
         // unpair device
         try {
             String methodName = "removeBond";
-            Method method = bluetoothDevice.getClass().getMethod(methodName, (Class[]) null);
-            method.invoke(bluetoothDevice, (Object[]) null);
+            Method method = bluetoothSocket.getRemoteDevice().getClass().getMethod(methodName, (Class[]) null);
+            method.invoke(bluetoothSocket.getRemoteDevice(), (Object[]) null);
         } catch (Exception exception) {
             Log.e(TAG_BT_CON, "connectionFinished", exception);
         }
-    }
-
-
-
-    /**
-     * Set the connection is not established
-     */
-    public void beReady(){
-        this.isConnecting = false;
     }
 
     /**

@@ -49,7 +49,7 @@ public class BluetoothCommunication extends Thread {
                     line.append(ch);
                     // the char is an end of line, send to handler and clear line for a new line
                     if(ch == '\n') {
-                        handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, tempMessage).sendToTarget();
+                        handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, line).sendToTarget();
                         //line = "";
                     }
                 }
