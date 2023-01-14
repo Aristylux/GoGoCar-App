@@ -1,7 +1,6 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
-import static com.aristy.gogocar.CodesTAG.TAG_BT_CON;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.ConnectionHelper.connectionValid;
@@ -22,6 +21,7 @@ import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 import static com.aristy.gogocar.Security.getPinKey;
 import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
+import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_REQUEST_CAR_NOT_FOUND;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
 
 import androidx.activity.result.ActivityResult;
@@ -179,9 +179,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ---- BLUETOOTH ----
-
     String lastMacAddress = null;
 
+    // Get into database
     String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
 
 
@@ -213,19 +213,22 @@ public class MainActivity extends AppCompatActivity {
 
                 // Actual device has the same mac address than our module for that car
                 if (hash.equals(hashMacAddressModule)){
-                    Log.d(TAG_BT, "onReceive: connection.");
+                    Log.d(TAG_BT, "onReceive: openConnection.");
+                    bluetoothConnection.isConnecting(true);
 
                     // Stop discovery
                     bluetoothAdapter.cancelDiscovery();
 
                     // Connection with the device : Open connection
-                    Log.d(TAG_BT_CON, "openConnection: ");
-                    bluetoothConnection = new BluetoothConnection(device, bluetoothHandler);
+                    bluetoothConnection.openConnection(device, bluetoothHandler);
                     bluetoothConnection.start();
                 }
 
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices FINISHED");
+                // If a connection is not in progress, we don't find the car, prevent user.
+                if(!bluetoothConnection.isConnecting())
+                    sendDataToFragment(DRIVING_REQUEST, DRIVING_REQUEST_CAR_NOT_FOUND);
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices STARTED");
             } else if (BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)){
@@ -244,7 +247,10 @@ public class MainActivity extends AppCompatActivity {
                     if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
                         if (checkCoarseLocationPermission(MainActivity.this)) {
                             boolean result = bluetoothAdapter.startDiscovery();
-                            if (result) Log.d(TAG_BT, "handleMessage: isDiscovering: " + bluetoothAdapter.isDiscovering());
+                            if (result) {
+                                Log.d(TAG_BT, "handleMessage: isDiscovering: " + bluetoothAdapter.isDiscovering());
+                                bluetoothConnection = new BluetoothConnection();
+                            }
                             else Log.e(TAG_BT, "handleMessage: isDiscovering error");
                         }
                     }

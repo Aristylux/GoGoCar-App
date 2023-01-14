@@ -23,12 +23,18 @@ public class BluetoothConnection extends Thread {
     BluetoothDevice bluetoothDevice;
     public Handler handler;
 
+    private boolean isConnecting;
 
     private String message;
     private String function;
 
+
+    public BluetoothConnection (){
+        this.isConnecting = false;
+    }
+
     @SuppressLint("MissingPermission")
-    public BluetoothConnection (BluetoothDevice bluetoothDevice, Handler handler){
+    public void openConnection(BluetoothDevice bluetoothDevice, Handler handler){
         this.handler = handler;
         this.bluetoothDevice = bluetoothDevice;
         try {
@@ -118,5 +124,28 @@ public class BluetoothConnection extends Thread {
         }
     }
 
+
+
+    /**
+     * Set the connection is not established
+     */
+    public void beReady(){
+        this.isConnecting = false;
+    }
+
+    /**
+     * @return true if the app has a connection in progress <br>
+     * false else
+     */
+    public boolean isConnecting(){
+        return this.isConnecting;
+    }
+
+    /**
+     * @param isConnecting set the connection
+     */
+    public void isConnecting(boolean isConnecting){
+        this.isConnecting = isConnecting;
+    }
 
 }
