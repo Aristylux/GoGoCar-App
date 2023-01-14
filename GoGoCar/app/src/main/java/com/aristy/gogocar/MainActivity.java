@@ -5,6 +5,8 @@ import static com.aristy.gogocar.CodesTAG.TAG_BT_CON;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.ConnectionHelper.connectionValid;
+import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_NAME;
+import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_PARAMS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
@@ -265,7 +267,8 @@ public class MainActivity extends AppCompatActivity {
                     bluetoothConnection.messageReceived((String) message.obj);
                     // TODO (test)
                     Bundle args = new Bundle();
-                    args.putString("message", message.obj.toString());
+                    args.putString(ARG_FUNCTION_NAME, bluetoothConnection.getMessageFunction());
+                    args.putString(ARG_FUNCTION_PARAMS, bluetoothConnection.getMessageParams());
                     fragmentApp.putArguments(args);
                     break;
                 case BT_STATE_DISCONNECTED:

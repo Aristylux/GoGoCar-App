@@ -24,6 +24,9 @@ public class BluetoothConnection extends Thread {
     public Handler handler;
 
 
+    private String message;
+    private String function;
+
     @SuppressLint("MissingPermission")
     public BluetoothConnection (BluetoothDevice bluetoothDevice, Handler handler){
         this.handler = handler;
@@ -85,8 +88,18 @@ public class BluetoothConnection extends Thread {
         // Extract code
 
         // Extract message
+        this.message = message;
 
         // Action
+        this.function = "functionTest";
+    }
+
+    public String getMessageFunction(){
+        return this.function;
+    }
+
+    public String getMessageParams(){
+        return this.message;
     }
 
     public void connectionFinished(){

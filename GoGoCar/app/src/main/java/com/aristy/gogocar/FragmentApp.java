@@ -23,6 +23,9 @@ import java.sql.Connection;
  */
 public class FragmentApp extends Fragment {
 
+    public final static String ARG_FUNCTION_NAME = "func_name";
+    public final static String ARG_FUNCTION_PARAMS = "func_param";
+
     Connection SQLConnection;
     UserPreferences userPreferences;
     Handler [] handlers;
@@ -75,8 +78,9 @@ public class FragmentApp extends Fragment {
     }
 
     public void putArguments(Bundle args){
-        String message = args.getString("message");
-        web.post(() -> web.loadUrl("javascript:" + "functionTest" + "('" + message + "')"));
+        String functionName = args.getString(ARG_FUNCTION_NAME);
+        String params = args.getString(ARG_FUNCTION_PARAMS);
+        web.post(() -> web.loadUrl("javascript:" + functionName + "('" + params + "')"));
     }
     
 }
