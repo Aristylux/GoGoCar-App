@@ -71,11 +71,15 @@ public class BluetoothConnection extends Thread {
         }
     }
 
+
+    /**
+     * Start bluetooth communication
+     */
     public void connectionEstablished(){
         BluetoothCommunication bluetoothCommunication = new BluetoothCommunication(BluetoothConnection.this, handler);
         bluetoothCommunication.start();
-        handler.obtainMessage(10, "line").sendToTarget();
-        //sendToBluetooth("$P\n");//inform paired succeed
+
+        //sendToBluetooth("$P\n");//inform paired succeed to module
     }
 
     public void connectionFailed(){

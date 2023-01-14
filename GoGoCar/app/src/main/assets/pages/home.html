@@ -98,11 +98,6 @@
             }
 
 
-            function functionTest(message){
-                console.log("message: " + message);
-            }
-
-
             // Get all car booked for the user
 
             let switchElement = document.getElementById('switch');
@@ -121,6 +116,7 @@
                 }
             });
 
+            // [ANDROID CALLBACk]
             function requestDriveCallback(allowedToDrive){
 
                 if(allowedToDrive === "true"){

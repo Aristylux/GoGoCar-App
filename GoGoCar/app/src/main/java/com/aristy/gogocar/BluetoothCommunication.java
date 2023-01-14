@@ -1,6 +1,5 @@
 package com.aristy.gogocar;
 
-import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_COM;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;

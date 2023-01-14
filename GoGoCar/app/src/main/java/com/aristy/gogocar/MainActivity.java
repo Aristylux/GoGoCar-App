@@ -21,6 +21,8 @@ import static com.aristy.gogocar.PermissionHelper.checkCoarseLocationPermission;
 import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 import static com.aristy.gogocar.Security.getPinKey;
+import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
+import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -257,6 +259,8 @@ public class MainActivity extends AppCompatActivity {
                 case BT_STATE_CONNECTED:
                     Log.v(TAG_BT, "BT_STATE_CONNECTED");
                     bluetoothConnection.connectionEstablished();
+                    //Send pairing success and connection established
+                    sendDataToFragment(DRIVING_REQUEST, TRUE);
                     break;
                 case BT_STATE_CONNECTION_FAILED:
                     Log.v(TAG_BT, "BT_STATE_CONNECTION_FAILED");
@@ -266,10 +270,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
                     bluetoothConnection.messageReceived((String) message.obj);
                     // TODO (test)
-                    Bundle args = new Bundle();
-                    args.putString(ARG_FUNCTION_NAME, bluetoothConnection.getMessageFunction());
-                    args.putString(ARG_FUNCTION_PARAMS, bluetoothConnection.getMessageParams());
-                    fragmentApp.putArguments(args);
+                    sendDataToFragment(bluetoothConnection.getMessageFunction(), bluetoothConnection.getMessageParams());
                     break;
                 case BT_STATE_DISCONNECTED:
                     Log.v(TAG_BT, "BT_STATE_DISCONNECTED");
@@ -306,6 +307,17 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.setCustomAnimations(anim_enter, anim_exit);
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
+    }
+
+    /**
+     * @param function function name to call in web
+     * @param params parameters in that function
+     */
+    public void sendDataToFragment(String function, String params){
+        Bundle args = new Bundle();
+        args.putString(ARG_FUNCTION_NAME, function);
+        args.putString(ARG_FUNCTION_PARAMS, params);
+        fragmentApp.putArguments(args);
     }
 
     Handler fragmentHandler = new Handler(new Handler.Callback() {

@@ -14,6 +14,7 @@ import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
 import static com.aristy.gogocar.SHAHash.hashPassword;
+import static com.aristy.gogocar.WebInterface.Boolean.FALSE;
 
 import android.app.Activity;
 import android.content.Context;
@@ -174,7 +175,7 @@ public class WebInterface {
         if (!checkPermission(activity)){
             // re-init operation
             Toast.makeText(context, "ask.", Toast.LENGTH_SHORT).show();
-            androidToWeb("requestDriveCallback", "false");
+            androidToWeb("requestDriveCallback", FALSE);
             return;
         }
 
@@ -182,23 +183,18 @@ public class WebInterface {
         if(!isBluetoothEnabled()){
             Toast.makeText(context, "Please enable bluetooth.", Toast.LENGTH_SHORT).show();
             bluetoothHandler.obtainMessage(BT_REQUEST_ENABLE).sendToTarget();
-            androidToWeb("requestDriveCallback", "false");
+            androidToWeb("requestDriveCallback", FALSE);
             return;
         }
 
         if(!isLocationEnabled(context)) {
             Toast.makeText(context, "Please enable location.", Toast.LENGTH_SHORT).show();
-            androidToWeb("requestDriveCallback", "false");
+            androidToWeb("requestDriveCallback", FALSE);
             return;
         }
 
         //Intent enableBtIntent
         bluetoothHandler.obtainMessage(BT_STATE_DISCOVERING).sendToTarget();
-
-
-
-
-        androidToWeb("requestDriveCallback", "true");
     }
 
 
@@ -338,6 +334,19 @@ public class WebInterface {
 
     private void androidToWeb(String function, String data1, String data2){
         webView.post(() -> webView.loadUrl("javascript:" + function + "('" + data1 + "','" + data2 + "')"));
+    }
+
+
+    /**
+     * List all function available to call in web.
+     */
+    static class FunctionNames {
+        public static final String DRIVING_REQUEST = "requestDriveCallback";
+    }
+
+    static class Boolean {
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
     }
 
 }
