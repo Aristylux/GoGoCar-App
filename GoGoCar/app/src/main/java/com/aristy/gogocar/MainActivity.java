@@ -135,8 +135,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Log.d(TAG_BT, "onStop: closeConnection");
-        if (bluetoothConnection.getBluetoothSocket() != null)
-            bluetoothConnection.closeConnection();
+        if (bluetoothConnection != null)
+            if (bluetoothConnection.getBluetoothSocket() != null)
+                bluetoothConnection.closeConnection();
     }
 
     // Close connection before destroy app
