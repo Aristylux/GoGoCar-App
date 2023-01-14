@@ -98,8 +98,6 @@
             }
 
 
-
-
             // Get all car booked for the user
 
             let switchElement = document.getElementById('switch');
@@ -118,6 +116,11 @@
                 }
             });
 
+            // [ANDROID CALLBACK]
+            /*
+             *
+             * allowedToDrive 'true', 'error_code'
+             */
             function requestDriveCallback(allowedToDrive){
 
                 if(allowedToDrive === "true"){
@@ -125,12 +128,26 @@
 
                     if(androidConnected()) Android.showToast("You can drive :-)");
                 } else {
+                    switchElement.checked = false;
+                    console.log(typeof allowedToDrive);
+                    console.log(allowedToDrive);
+                    if (typeof allowedToDrive == "string") allowedToDrive = parseInt(allowedToDrive);
+                    console.log(allowedToDrive);
+
+                    switch (allowedToDrive) {
+                        case 4:
+                            if(androidConnected()) Android.showToast("You cannot drive, car not found.");
+                            break;
+                    
+                        default:
+                            break;
+                    }
                     // Open Popup : you cannot drive.
                     // You're not allowed to drive this car...
 
-                    switchElement.checked = false;
+                    
 
-                    if(androidConnected()) Android.showToast("You cannot drive :-(");
+                    //if(androidConnected()) Android.showToast("You cannot drive :-(");
                 }
             }
 

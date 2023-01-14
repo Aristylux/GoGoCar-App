@@ -14,6 +14,7 @@ import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
 import static com.aristy.gogocar.SHAHash.hashPassword;
+import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
 
 import android.app.Activity;
 import android.content.Context;
@@ -174,7 +175,7 @@ public class WebInterface {
         if (!checkPermission(activity)){
             // re-init operation
             Toast.makeText(context, "ask.", Toast.LENGTH_SHORT).show();
-            androidToWeb("requestDriveCallback", "false");
+            androidToWeb(DRIVING_REQUEST, ErrorCodes.DRIVING_REQUEST_PERMISSION_ERROR);
             return;
         }
 
@@ -182,23 +183,18 @@ public class WebInterface {
         if(!isBluetoothEnabled()){
             Toast.makeText(context, "Please enable bluetooth.", Toast.LENGTH_SHORT).show();
             bluetoothHandler.obtainMessage(BT_REQUEST_ENABLE).sendToTarget();
-            androidToWeb("requestDriveCallback", "false");
+            androidToWeb(DRIVING_REQUEST, ErrorCodes.DRIVING_REQUEST_BLUETOOTH_DISABLED);
             return;
         }
 
         if(!isLocationEnabled(context)) {
             Toast.makeText(context, "Please enable location.", Toast.LENGTH_SHORT).show();
-            androidToWeb("requestDriveCallback", "false");
+            androidToWeb(DRIVING_REQUEST, ErrorCodes.DRIVING_REQUEST_LOCALISATION_DISABLE);
             return;
         }
 
         //Intent enableBtIntent
         bluetoothHandler.obtainMessage(BT_STATE_DISCOVERING).sendToTarget();
-
-
-
-
-        androidToWeb("requestDriveCallback", "true");
     }
 
 
@@ -328,16 +324,36 @@ public class WebInterface {
         webView.post(() -> webView.loadUrl("file:///android_asset/pages/" + page + ".html"));
     }
 
-    private void androidToWeb(String function){
-        androidToWeb(function, "");
+    private void androidToWeb(String functionName, String... data){
+        StringBuilder builder = new StringBuilder();
+        if(data.length != 0) {
+            builder.append(data[0]);
+            for (int i = 1; i < data.length ; i++){
+                builder.append("','");
+                builder.append(data[i]);
+            }
+        }
+
+        webView.post(() -> webView.loadUrl("javascript:" + functionName + "('" + builder + "')"));
     }
 
-    private void androidToWeb(String function, String data){
-        webView.post(() -> webView.loadUrl("javascript:" + function + "('" + data + "')"));     //webView.loadUrl("javascript:dataReceived('red')");
+    /**
+     * List all function available to call in web.
+     */
+    static class FunctionNames {
+        public static final String DRIVING_REQUEST = "requestDriveCallback";
     }
 
-    private void androidToWeb(String function, String data1, String data2){
-        webView.post(() -> webView.loadUrl("javascript:" + function + "('" + data1 + "','" + data2 + "')"));
+    static class ErrorCodes {
+        public static final String DRIVING_REQUEST_PERMISSION_ERROR = "1";
+        public static final String DRIVING_REQUEST_BLUETOOTH_DISABLED = "2";
+        public static final String DRIVING_REQUEST_LOCALISATION_DISABLE = "3";
+        public static final String DRIVING_REQUEST_CAR_NOT_FOUND = "4";
+    }
+
+    static class Boolean {
+        public static final String TRUE = "true";
+        //public static final String FALSE = "false";
     }
 
 }

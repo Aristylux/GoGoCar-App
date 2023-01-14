@@ -23,9 +23,14 @@ import java.sql.Connection;
  */
 public class FragmentApp extends Fragment {
 
+    public final static String ARG_FUNCTION_NAME = "func_name";
+    public final static String ARG_FUNCTION_PARAMS = "func_param";
+
     Connection SQLConnection;
     UserPreferences userPreferences;
     Handler [] handlers;
+
+    WebView web;
 
     public FragmentApp(Connection SQLConnection, UserPreferences userPreferences, Handler [] handlers){
         this.SQLConnection = SQLConnection;
@@ -40,7 +45,7 @@ public class FragmentApp extends Fragment {
         View view = inflater.inflate(R.layout.fragment_app, container, false);
 
         // Find items
-        WebView web = view.findViewById(R.id.web_view);
+        web = view.findViewById(R.id.web_view);
         web.loadUrl("file:///android_asset/pages/home.html");
 
         // Enable javascript
@@ -70,6 +75,12 @@ public class FragmentApp extends Fragment {
             //error here when bt is not activated
             //populateSpinner(bluetoothDevice);
         }
-
     }
+
+    public void putArguments(Bundle args){
+        String functionName = args.getString(ARG_FUNCTION_NAME);
+        String params = args.getString(ARG_FUNCTION_PARAMS);
+        web.post(() -> web.loadUrl("javascript:" + functionName + "('" + params + "')"));
+    }
+    
 }

@@ -4,8 +4,14 @@ import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.ConnectionHelper.connectionValid;
+import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_NAME;
+import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_PARAMS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
@@ -13,6 +19,10 @@ import static com.aristy.gogocar.PermissionHelper.REQUEST_ACCESS_COARSE_LOCATION
 import static com.aristy.gogocar.PermissionHelper.checkCoarseLocationPermission;
 import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
+import static com.aristy.gogocar.Security.getPinKey;
+import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
+import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_REQUEST_CAR_NOT_FOUND;
+import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -46,6 +56,7 @@ import java.sql.SQLException;
 public class MainActivity extends AppCompatActivity {
 
     BluetoothAdapter bluetoothAdapter;
+    BluetoothConnection bluetoothConnection;
 
     Connection SQLConnection;
     UserPreferences userPreferences;
@@ -53,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> activityResult;
 
     Handler [] handlers;
+
+    Fragment selectedFragment;
+    FragmentApp fragmentApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +89,13 @@ public class MainActivity extends AppCompatActivity {
 
         handlers = new Handler[]{fragmentHandler, bluetoothHandler};
 
-        Fragment selectedFragment;
         // If the user is not logged
         if(!isLogged)
             selectedFragment = new FragmentLogin(SQLConnection, userPreferences, handlers);
-        else
-            selectedFragment = new FragmentApp(SQLConnection, userPreferences, handlers);
+        else {
+            fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers);
+            selectedFragment = fragmentApp;
+        }
 
         // Set Fragment
         setFragment(selectedFragment, R.anim.from_left, R.anim.to_right);
@@ -108,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG_BT, "onResume: registerReceiver");
         // Register a dedicated receiver for some Bluetooth actions
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
+        registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST));
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED));
         registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
     }
@@ -119,19 +135,28 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(devicesFoundReceiver);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG_BT, "onStop: closeConnection");
+        if (bluetoothConnection != null)
+            if (bluetoothConnection.getBluetoothSocket() != null)
+                bluetoothConnection.closeConnection();
+    }
+
     // Close connection before destroy app
     @Override
     protected void onDestroy() {
         try {
             // The user leave application, close connection to the server.
             if (connectionValid(SQLConnection)) {
-                Log.d(TAG_Debug, "onStop: close SQL connection");
+                Log.d(TAG_Debug, "onDestroy: close SQL connection");
                 SQLConnection.close();
             } else {
-                Log.e(TAG_Debug, "onStop: ERROR close SQL connection: invalid");
+                Log.e(TAG_Debug, "onDestroy: ERROR close SQL connection: invalid");
             }
         } catch (SQLException exception) {
-            Log.e(TAG_Debug, "onStop: ERROR close SQL connection: ", exception);
+            Log.e(TAG_Debug, "onDestroy: ERROR close SQL connection: ", exception);
             exception.printStackTrace();
         }
         super.onDestroy();
@@ -154,9 +179,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ---- BLUETOOTH ----
-
     String lastMacAddress = null;
 
+    // Get into database
     String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
 
 
@@ -188,19 +213,28 @@ public class MainActivity extends AppCompatActivity {
 
                 // Actual device has the same mac address than our module for that car
                 if (hash.equals(hashMacAddressModule)){
-                    Log.d(TAG_BT, "onReceive: connection.");
+                    Log.d(TAG_BT, "onReceive: openConnection.");
+                    bluetoothConnection.isConnecting(true);
 
                     // Stop discovery
                     bluetoothAdapter.cancelDiscovery();
 
-                    // Connection with the device
-
+                    // Connection with the device : Open connection
+                    bluetoothConnection.openConnection(device, bluetoothHandler);
+                    bluetoothConnection.start();
                 }
 
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices FINISHED");
+                // If a connection is not in progress, we don't find the car, prevent user.
+                if(!bluetoothConnection.isConnecting())
+                    sendDataToFragment(DRIVING_REQUEST, DRIVING_REQUEST_CAR_NOT_FOUND);
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices STARTED");
+            } else if (BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)){
+                Log.d(TAG_BT, "onReceive: ACTION_PAIRING_REQUEST");
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                device.setPin(getPinKey().getBytes());
             }
         }
     };
@@ -213,7 +247,10 @@ public class MainActivity extends AppCompatActivity {
                     if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
                         if (checkCoarseLocationPermission(MainActivity.this)) {
                             boolean result = bluetoothAdapter.startDiscovery();
-                            if (result) Log.d(TAG_BT, "handleMessage: isDiscovering: " + bluetoothAdapter.isDiscovering());
+                            if (result) {
+                                Log.d(TAG_BT, "handleMessage: isDiscovering: " + bluetoothAdapter.isDiscovering());
+                                bluetoothConnection = new BluetoothConnection();
+                            }
                             else Log.e(TAG_BT, "handleMessage: isDiscovering error");
                         }
                     }
@@ -224,6 +261,26 @@ public class MainActivity extends AppCompatActivity {
 
                     // Launch activity to get result
                     activityResult.launch(enableIntent);
+                    break;
+                case BT_STATE_CONNECTED:
+                    Log.v(TAG_BT, "BT_STATE_CONNECTED");
+                    bluetoothConnection.connectionEstablished();
+                    //Send pairing success and connection established
+                    sendDataToFragment(DRIVING_REQUEST, TRUE);
+                    break;
+                case BT_STATE_CONNECTION_FAILED:
+                    Log.v(TAG_BT, "BT_STATE_CONNECTION_FAILED");
+                    bluetoothConnection.connectionFailed();
+                    break;
+                case BT_STATE_MESSAGE_RECEIVED:
+                    Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
+                    bluetoothConnection.messageReceived((String) message.obj);
+                    // TODO (test)
+                    sendDataToFragment(bluetoothConnection.getMessageFunction(), bluetoothConnection.getMessageParams());
+                    break;
+                case BT_STATE_DISCONNECTED:
+                    Log.v(TAG_BT, "BT_STATE_DISCONNECTED");
+                    bluetoothConnection.connectionFinished();
                     break;
             }
             return true;
@@ -256,6 +313,17 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.setCustomAnimations(anim_enter, anim_exit);
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
+    }
+
+    /**
+     * @param function function name to call in web
+     * @param params parameters in that function
+     */
+    public void sendDataToFragment(String function, String params){
+        Bundle args = new Bundle();
+        args.putString(ARG_FUNCTION_NAME, function);
+        args.putString(ARG_FUNCTION_PARAMS, params);
+        fragmentApp.putArguments(args);
     }
 
     Handler fragmentHandler = new Handler(new Handler.Callback() {
