@@ -261,18 +261,16 @@ public class MainActivity extends AppCompatActivity {
                     bluetoothConnection.connectionFailed();
                     break;
                 case BT_STATE_MESSAGE_RECEIVED:
-                    //Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
+                    Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
                     bluetoothConnection.messageReceived((String) message.obj);
+                    // TODO (test)
+                    Bundle args = new Bundle();
+                    args.putString("message", message.obj.toString());
+                    fragmentApp.putArguments(args);
                     break;
                 case BT_STATE_DISCONNECTED:
                     Log.v(TAG_BT, "BT_STATE_DISCONNECTED");
                     bluetoothConnection.connectionFinished();
-                    break;
-                case 10:
-                    Log.d(TAG_BT, "BT_STATE_MESSAGE_RECEIVED: " + message.obj);
-                    Bundle args = new Bundle();
-                    args.putString("message", message.obj.toString());
-                    fragmentApp.putArguments(args);
                     break;
             }
             return true;

@@ -1,5 +1,6 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_COM;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
@@ -43,15 +44,23 @@ public class BluetoothCommunication extends Thread {
             try {
                 bytes = inputStream.read(buffer);
                 String tempMessage = new String(buffer,0, bytes);
-                handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, tempMessage).sendToTarget();
+                // TODO (test)
+                StringBuilder line = new StringBuilder();
+                for (char ch : tempMessage.toCharArray()){
+                    line.append(ch);
+                    // the char is an end of line, send to handler and clear line for a new line
+                    if(ch == '\n') {
+                        handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, tempMessage).sendToTarget();
+                        //line = "";
+                    }
+                }
             } catch (IOException exception) {
                 exception.printStackTrace();
                 Log.e(TAG_BT_COM, "BluetoothCommunication.run: BT disconnect from decide end. : ", exception);
                 try {
                     // Disconnect properly
-                    if (bluetoothSocket != null && bluetoothSocket.isConnected()){
+                    if (bluetoothSocket != null && bluetoothSocket.isConnected())
                         bluetoothSocket.close();
-                    }
                     handler.obtainMessage(BT_STATE_DISCONNECTED).sendToTarget();
                 } catch (IOException ioException){
                     ioException.printStackTrace();
@@ -65,7 +74,7 @@ public class BluetoothCommunication extends Thread {
     /**
      * write to the output stream <br>
      * (in the bluetooth line) <br>
-     * String word = "blabla";
+     * String word = "hello world";
      * use: class.write(word.getBytes());
      * @param bytes data
      */

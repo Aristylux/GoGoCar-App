@@ -79,17 +79,14 @@ public class BluetoothConnection extends Thread {
         Log.e(TAG_BT_CON, "connectionFailed: ");
     }
 
-    private String line = "";
     public void messageReceived(String message){
         // Message management
-        for (int i = 0; i < message.length(); i++){
-            line += message.charAt(i);
-            if(message.charAt(i) == '\n') {
-                //Log.d("app5_DES", "line: " + line);
-                handler.obtainMessage(10, line).sendToTarget();
-                line = "";
-            }
-        }
+
+        // Extract code
+
+        // Extract message
+
+        // Action
     }
 
     public void connectionFinished(){
