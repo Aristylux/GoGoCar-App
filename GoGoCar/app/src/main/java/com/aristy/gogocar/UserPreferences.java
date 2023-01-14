@@ -22,8 +22,10 @@ public class UserPreferences extends Application implements Parcelable {
     private String userPhone;
 
     UserSharedPreference userSharedPreference;
+    Context context;
     
     public UserPreferences(Context context){
+        this.context = context;
         this.userSharedPreference = new UserSharedPreference(context);
     }
 
@@ -61,6 +63,12 @@ public class UserPreferences extends Application implements Parcelable {
         return map.toString();
     }
 
+    // update context
+    public void setContext(Context context) {
+        this.context = context;
+        this.userSharedPreference = new UserSharedPreference(context);
+    }
+
     public void setUser(DBModelUser user){
         this.userID = user.getId();
         this.userName = user.getFullName();
@@ -96,7 +104,6 @@ public class UserPreferences extends Application implements Parcelable {
     public void resetUser(){
         userSharedPreference.resetData();
     }
-    
     
     // Setters & Getters 
     

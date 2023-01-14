@@ -20,11 +20,11 @@ Android Application for GoGoCar
   - [GoGoCar](#gogocar)
   - [Table of Content](#table-of-content)
   - [App 1](#app-1)
-    - [App1 Functionnalities:](#app1-functionnalities)
   - [App 2](#app-2)
-    - [App2 Functionnalities:](#app2-functionnalities)
   - [App 3](#app-3)
-    - [App3 Functionnalities:](#app3-functionnalities)
+  - [App 4](#app-4)
+  - [App 5](#app-5)
+
 
 ## App 1
 
@@ -38,6 +38,8 @@ App 1 is an app test for bluetooth
 
 [Description App1](./App1)
 
+[Code Java App1](./App1/app/src/main/java/com/example/app1/)
+
 ## App 2
 
 App 2 is an app test for bluetooth
@@ -49,6 +51,8 @@ App 2 is an app test for bluetooth
 * Send data with a button.
 
 [Description App2](./App2)
+
+[Code Java App2](./App2/app/src/main/java/com/example/app2/)
 
 ## App 3
 
@@ -65,3 +69,25 @@ App3 ~= App2 + App1
 
 [Description App3](./App3)
 
+[Code Java App3](./App3/app/src/main/java/com/example/app3/)
+
+## App 4
+
+App 4 is an app test for bluetooth
+
+### App4 Functionnalities:
+
+* Scan bluetooth devices in search
+
+[Code Java App4](./App4/app/src/main/java/com/aristy/app4/)
+
+## App 5
+
+App 5 is an app test for bluetooth
+
+### App5 Functionnalities:
+
+* Scan bluetooth devices in search
+* Connect to the selected device
+
+[Code Java App5](./App5/app/src/main/java/com/aristy/app5)
