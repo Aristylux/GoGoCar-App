@@ -278,7 +278,7 @@ public class WebInterface {
 
     @JavascriptInterface
     public void requestDatabase(){
-        List<DBModelVehicle> vehicles = databaseHelper.getAllVehicles();
+        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userPreferences.getUserID());
         Log.d(TAG_Web, "requestDatabase: " + vehicles.toString());
         androidToWeb("setDatabase", vehicles.toString());
     }

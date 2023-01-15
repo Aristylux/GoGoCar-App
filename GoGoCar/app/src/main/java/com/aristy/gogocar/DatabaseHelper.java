@@ -185,21 +185,45 @@ public class DatabaseHelper {
 
     /* Vehicles */
 
+    /**
+     * @return List of all vehicles
+     */
     public List<DBModelVehicle> getAllVehicles(){
         String query = "SELECT * FROM " + TABLE_VEHICLE;
         return getVehicles(query);
     }
 
-    public List<DBModelVehicle> getVehiclesByUser(int idUser){
-        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID_OWNER + " = " + idUser;
+    /**
+     * @param IDUser actual user
+     * @return List of vehicles which are not owned by the user and available.
+     */
+    public List<DBModelVehicle> getVehiclesAvailable(int IDUser) {
+        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_IS_AVAILABLE + " = true AND " + COLUMN_VEHICLE_ID_OWNER + " != " + IDUser;
         return getVehicles(query);
     }
 
+    /**
+     * @param IDUser actual user
+     * @return List of all vehicles owned by the user
+     */
+    public List<DBModelVehicle> getVehiclesByUser(int IDUser){
+        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID_OWNER + " = " + IDUser;
+        return getVehicles(query);
+    }
+
+    /**
+     * @param ID id vehicle
+     * @return return vehicle matching id
+     */
     public DBModelVehicle getVehicleById(int ID){
         String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID + " = " + ID;
         return getVehicle(query);
     }
 
+    /**
+     * @param query sql query
+     * @return list of vehicles
+     */
     private List<DBModelVehicle> getVehicles(String query){
         List<DBModelVehicle> returnList = new ArrayList<>();
 
