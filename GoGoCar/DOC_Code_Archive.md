@@ -87,3 +87,28 @@ void checkBluetoothState(){
             }
         }
 ```
+
+# Sql prepared query
+
+```java
+String preparedQuery = "INSERT INTO " + TABLE_USER +
+                "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + ") VALUES (?, ?, ?, ?)";
+    // Add user in database.
+    PreparedStatement st = connection.prepareStatement(preparedQuery);
+    // i is '?' position
+    st.setString(1, userModel.getFullName());
+    st.setString(2, userModel.getEmail());
+    st.setString(3, userModel.getPhoneNumber());
+    st.setString(4, userModel.getPassword());
+
+    // Execute query
+    st.executeUpdate();
+
+    // Close
+    st.close();
+```
+
+```java
+
+
+```
