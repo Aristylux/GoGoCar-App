@@ -235,10 +235,11 @@ public class WebInterface {
         Log.d(TAG_Web, "deleteUserAccount: user=" + user);
 
         // Remove user from database
-        databaseHelper.deleteUser(user);
+        boolean isDeleted = databaseHelper.deleteUser(user);
 
         // Logout
-        logout();
+        if (isDeleted) logout();
+        else Log.d(TAG_Web, "deleteUserAccount: error");
     }
 
     @JavascriptInterface

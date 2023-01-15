@@ -52,25 +52,33 @@ public class DatabaseHelper {
      *  ---------------------------------- */
 
 
+    /**
+     * @param userModel user with name, phone, ...
+     * @return the success:<br>
+     *         - true  - if success<br>
+     *         - false - if not connection or exception
+     */
     public boolean addUser(DBModelUser userModel){
-        String preparedQuery = "INSERT INTO " + TABLE_USER + "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + ") VALUES (?, ?, ?, ?)";
-        try {
-            if (connection != null) {
-                PreparedStatement st = connection.prepareStatement(preparedQuery);
-                // i is '?' position
-                st.setString(1, userModel.getFullName());
-                st.setString(2, userModel.getEmail());
-                st.setString(3, userModel.getPhoneNumber());
-                st.setString(4, userModel.getPassword());
+        // Test if the connection is ok
+        if (connection == null) {
+            // Failure. do not add anything to the list
+            Log.e(TAG_Database, "addUser: connect is null");
+            return false;
+        }
 
-                st.executeUpdate();
-                st.close();
-                return true;
-            } else {
-                // else: Failure. do not add anything to the list
-                Log.e(TAG_Database, "addUser: connect is null");
-                return false;
-            }
+        String query = "INSERT INTO " + TABLE_USER +
+                "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + ") " +
+                "VALUES ('" + userModel.getFullName() + "','" + userModel.getEmail() + "','" + userModel.getPhoneNumber() + "','" + userModel.getPassword() + "')";
+
+        // Add user in database.
+        try {
+            // Execute query
+            Statement st = connection.createStatement();
+            boolean result = st.execute(query);
+
+            // Close
+            st.close();
+            return result;
         } catch (SQLException exception) {
             Log.e(TAG_Database, "addUser: ", exception);
             exception.printStackTrace();
@@ -78,27 +86,35 @@ public class DatabaseHelper {
         }
     }
 
-    public void deleteUser(DBModelUser userModel){
-        // Find user in the database.
+
+    /**
+     * @param userModel user to delete
+     * @return the success
+     */
+    public boolean deleteUser(DBModelUser userModel){
+        // Test if the connection is ok
+        if (connection == null) {
+            //Failure. do not add anything to the list
+            Log.e(TAG_Database, "deleteUser: connect is null");
+            return false;
+        }
+
         String query = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = " + userModel.getId();
 
+        // Find user in the database.
         try {
-            if (connection != null) {
-                Statement st = connection.createStatement();
+            // If it found, delete it and return true.
+            // If it is not found, return false.
+            Statement st = connection.createStatement();
+            boolean result = st.execute(query);
 
-                // If it found, delete it and return true.
-                // If it is not found, return false.
-                st.execute(query);
-
-                // Close
-                st.close();
-            } else {
-                // else: Failure. do not add anything to the list
-                Log.e(TAG_Database, "deleteUser: connect is null");
-            }
+            // Close
+            st.close();
+            return result;
         } catch (SQLException exception) {
             Log.e(TAG_Database, "deleteUser: ", exception);
             exception.printStackTrace();
+            return false;
         }
     }
 
@@ -141,21 +157,37 @@ public class DatabaseHelper {
         return returnList;
     }
 
+    /**
+     * @param ID user id
+     * @return the user that matches this ID
+     */
     public DBModelUser getUserById(int ID){
         String query = "SELECT * FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = " + ID;
         return getUser(query);
     }
 
+    /**
+     * @param email user email
+     * @return the user that matches this email
+     */
     public DBModelUser getUserByEmail(String email){
         String query = "SELECT * FROM " + TABLE_USER + " WHERE " + COLUMN_USER_EMAIL + " = '" + email + "';";
         return getUser(query);
     }
 
+    /**
+     * @param phone user phone
+     * @return the user that matches this phone
+     */
     public DBModelUser getUserByPhone(String phone){
         String query = "SELECT * FROM " + TABLE_USER + " WHERE " + COLUMN_USER_PHONE_NUMBER + " = '" + phone + "';";
         return getUser(query);
     }
 
+    /**
+     * @param query query to execute
+     * @return one user (the first row result)
+     */
     private DBModelUser getUser(String query){
         DBModelUser user = new DBModelUser();
 
