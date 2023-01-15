@@ -7,8 +7,10 @@ import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
+import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
@@ -28,6 +30,10 @@ import java.sql.Connection;
 import java.util.List;
 
 public class WebInterface {
+
+    public static final String HOME = "file:///android_asset/pages/home.html";
+    public static final String VEHICLE = "file:///android_asset/pages/vehicles.html";
+    public static final String ADD_VEHICLE = "file:///android_asset/pages/add_vehicle.html";
 
     Activity activity;
     Context context;
@@ -212,6 +218,7 @@ public class WebInterface {
     @JavascriptInterface
     public void requestAddVehicle(){
         Log.d(TAG_Web, "requestAddVehicle: tte ");
+        fragmentHandler.obtainMessage(GOTO_ADD_VEHICLE_FRAGMENT).sendToTarget();
     }
 
 
@@ -297,6 +304,13 @@ public class WebInterface {
     public void changePage(String page){
         loadNewPage(page);
     }
+
+
+    @JavascriptInterface
+    public void requestReturnToHome(){
+        fragmentHandler.obtainMessage(GOTO_VEHICLE_FRAGMENT).sendToTarget();
+    }
+
 
     /*  ---------------------------------- *
      *  -- Methods send data to webPage -- *

@@ -12,17 +12,22 @@ import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
+import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import static com.aristy.gogocar.PermissionHelper.REQUEST_ACCESS_COARSE_LOCATION;
 import static com.aristy.gogocar.PermissionHelper.checkCoarseLocationPermission;
 import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 import static com.aristy.gogocar.Security.getPinKey;
+import static com.aristy.gogocar.WebInterface.ADD_VEHICLE;
 import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
 import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_REQUEST_CAR_NOT_FOUND;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
+import static com.aristy.gogocar.WebInterface.HOME;
+import static com.aristy.gogocar.WebInterface.VEHICLE;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -93,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         if(!isLogged)
             selectedFragment = new FragmentLogin(SQLConnection, userPreferences, handlers);
         else {
-            fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers);
+            fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, HOME);
             selectedFragment = fragmentApp;
         }
 
@@ -332,11 +337,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean handleMessage(@NonNull Message message) {
             switch (message.what){
-                case GOTO_HOME_FRAGMENT:
-                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers), R.anim.from_right, R.anim.to_left);
-                    break;
                 case GOTO_LOGIN_FRAGMENT:
                     setFragment(new FragmentLogin(SQLConnection, userPreferences, handlers), R.anim.from_left, R.anim.to_right);
+                    break;
+                case GOTO_HOME_FRAGMENT:
+                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, HOME), R.anim.from_right, R.anim.to_left);
+                    break;
+                case GOTO_ADD_VEHICLE_FRAGMENT:
+                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, ADD_VEHICLE), R.anim.from_right, /*R.anim.to_left*/ 0);
+                    break;
+                case GOTO_VEHICLE_FRAGMENT:
+                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, VEHICLE), R.anim.from_left /*TODO change*/, R.anim.to_right);
                     break;
                 case STATUS_BAR_COLOR:
                     // Set color background
