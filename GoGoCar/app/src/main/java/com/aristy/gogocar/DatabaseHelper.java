@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -46,60 +45,17 @@ public class DatabaseHelper {
         this.connection = connection;
     }
 
-
-    /*  ---------------------------------- *
-     *  --             USER             -- *
-     *  ---------------------------------- */
-
-
     /**
-     * @param userModel user with name, phone, ...
-     * @return the success:<br>
-     *         - true  - if success<br>
-     *         - false - if not connection or exception
+     * @param query query to execute
+     * @return success
      */
-    public boolean addUser(DBModelUser userModel){
+    private boolean executeQuery(String query){
         // Test if the connection is ok
         if (connection == null) {
             // Failure. do not add anything to the list
-            Log.e(TAG_Database, "addUser: connect is null");
+            Log.e(TAG_Database, "executeQuery: connect is null");
             return false;
         }
-
-        String query = "INSERT INTO " + TABLE_USER +
-                "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + ") " +
-                "VALUES ('" + userModel.getFullName() + "','" + userModel.getEmail() + "','" + userModel.getPhoneNumber() + "','" + userModel.getPassword() + "')";
-
-        // Add user in database.
-        try {
-            // Execute query
-            Statement st = connection.createStatement();
-            boolean result = st.execute(query);
-
-            // Close
-            st.close();
-            return result;
-        } catch (SQLException exception) {
-            Log.e(TAG_Database, "addUser: ", exception);
-            exception.printStackTrace();
-            return false;
-        }
-    }
-
-
-    /**
-     * @param userModel user to delete
-     * @return the success
-     */
-    public boolean deleteUser(DBModelUser userModel){
-        // Test if the connection is ok
-        if (connection == null) {
-            //Failure. do not add anything to the list
-            Log.e(TAG_Database, "deleteUser: connect is null");
-            return false;
-        }
-
-        String query = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = " + userModel.getId();
 
         // Find user in the database.
         try {
@@ -112,10 +68,36 @@ public class DatabaseHelper {
             st.close();
             return result;
         } catch (SQLException exception) {
-            Log.e(TAG_Database, "deleteUser: ", exception);
+            Log.e(TAG_Database, "executeQuery: ", exception);
             exception.printStackTrace();
             return false;
         }
+    }
+
+    /*  ---------------------------------- *
+     *  --             USER             -- *
+     *  ---------------------------------- */
+    
+    /**
+     * @param userModel user with name, phone, ...
+     * @return the success:<br>
+     *         - true  - if success<br>
+     *         - false - if not connection or exception
+     */
+    public boolean addUser(DBModelUser userModel){
+        String query = "INSERT INTO " + TABLE_USER +
+                "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + ") " +
+                "VALUES ('" + userModel.getFullName() + "','" + userModel.getEmail() + "','" + userModel.getPhoneNumber() + "','" + userModel.getPassword() + "')";
+        return executeQuery(query);
+    }
+
+    /**
+     * @param userModel user to delete
+     * @return the success
+     */
+    public boolean deleteUser(DBModelUser userModel){
+        String query = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = " + userModel.getId();
+        return executeQuery(query);
     }
 
     public List<DBModelUser> getAllUsers(){
