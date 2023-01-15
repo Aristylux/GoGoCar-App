@@ -77,7 +77,7 @@ public class DatabaseHelper {
     /*  ---------------------------------- *
      *  --             USER             -- *
      *  ---------------------------------- */
-    
+
     /**
      * @param userModel user with name, phone, ...
      * @return the success:<br>
@@ -285,10 +285,6 @@ public class DatabaseHelper {
             Log.e(TAG_Database, "getAllVehicles: " , exception);
             exception.printStackTrace();
         }
-
-        // If nothing is returned, create null vehicle object to avoid overflow
-        if (returnList.isEmpty())
-            returnList.add(new DBModelVehicle());
 
         return returnList;
     }

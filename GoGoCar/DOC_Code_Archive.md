@@ -121,3 +121,16 @@ boolean result = st.execute(query);
 // Close
 st.close();
 ```
+
+
+# sql error
+
+
+```java
+/*
+        // If nothing is returned, create null vehicle object to avoid overflow
+        if (returnList.isEmpty())
+            returnList.add(new DBModelVehicle());
+        */
+
+```
