@@ -46,6 +46,12 @@ public class DatabaseHelper {
         this.connection = connection;
     }
 
+
+    /*  ---------------------------------- *
+     *  --             USER             -- *
+     *  ---------------------------------- */
+
+
     public boolean addUser(DBModelUser userModel){
         String preparedQuery = "INSERT INTO " + TABLE_USER + "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + ") VALUES (?, ?, ?, ?)";
         try {
@@ -183,7 +189,9 @@ public class DatabaseHelper {
         return user;
     }
 
-    /* Vehicles */
+    /*  ---------------------------------- *
+     *  --            VEHICLES          -- *
+     *  ---------------------------------- */
 
     /**
      * @return List of all vehicles
@@ -217,7 +225,7 @@ public class DatabaseHelper {
      */
     public DBModelVehicle getVehicleById(int ID){
         String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID + " = " + ID;
-        return getVehicle(query);
+        return getVehicles(query).get(0);
     }
 
     /**
@@ -229,51 +237,18 @@ public class DatabaseHelper {
 
         // Get data from database
         try {
-            if (connection != null) {
-                Statement st = connection.createStatement();
-                ResultSet rs = st.executeQuery(query);
-
-                while (rs.next()) {
-                    int vehicle_id = rs.getInt(1);
-                    String model = rs.getString(2);
-                    String licencePlate = rs.getString(3);
-                    String address = rs.getString(4);
-                    int idOwner = rs.getInt(5);
-                    boolean isAvailable = rs.getBoolean(6);
-                    boolean isBooked = rs.getBoolean(7);
-                    int idUser = rs.getInt(8);
-
-                    DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser);
-                    Log.i(TAG_Database, vehicle.toString());
-                    returnList.add(vehicle);
-                }
-
-                // Close both cursor and the database
-                rs.close();
-                st.close();
-            } else {
-                Log.e(TAG_Database, "getAllVehicles: connect is null");
-            }
-        }catch (Exception exception){
-            Log.e(TAG_Database, "getAllVehicles: " , exception);
-            exception.printStackTrace();
-        }
-        return returnList;
-    }
-
-    private DBModelVehicle getVehicle(String query){
-        DBModelVehicle vehicle = new DBModelVehicle();
-
-        try {
             if (connection == null) {
                 Log.e(TAG_Database, "getVehicle: connect is null");
-                return vehicle;
+                return returnList;
             }
 
+            // Execute query
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(query);
 
-            if (rs.next()){
+            // For each row returned
+            while (rs.next()) {
+                // Get values
                 int vehicle_id = rs.getInt(1);
                 String model = rs.getString(2);
                 String licencePlate = rs.getString(3);
@@ -283,19 +258,21 @@ public class DatabaseHelper {
                 boolean isBooked = rs.getBoolean(7);
                 int idUser = rs.getInt(8);
 
-                vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser);
-                Log.i(TAG_Database, vehicle.toString());
+                // Create object and add it to the list
+                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser);
+                Log.d(TAG_Database, "getAllVehicles: " + vehicle);
+                returnList.add(vehicle);
             }
 
+            // Close both cursor and the database
             rs.close();
             st.close();
-        } catch (SQLException exception) {
-            Log.e(TAG_Database, "getVehicle: " , exception);
+        }catch (Exception exception){
+            Log.e(TAG_Database, "getAllVehicles: " , exception);
             exception.printStackTrace();
         }
-        return vehicle;
+        return returnList;
     }
-
 }
 
 class DBModelUser {
