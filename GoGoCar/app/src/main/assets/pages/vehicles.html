@@ -35,7 +35,7 @@
         <style>
 
         #no_vehicles {
-            color: #ddd;
+            color: #e0e0e0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -43,7 +43,7 @@
             margin-top: 29%;
             font-size: 2em;
             font-weight: 600;
-            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+            /*text-shadow: 1px 5px 10px rgba(0, 0, 0, 0.2);*/
         }
 
         #no_vehicles i {
@@ -74,8 +74,7 @@
             font-weight: 600;
 
             border-radius: 25px;
-            padding: 5px 0;
-            padding-right: 10px;
+            padding: 5px;
 
             display: inline-grid;
             grid-template-columns: max-content max-content;
@@ -89,6 +88,10 @@
             display: flex;
             align-items: center;
             font-size: 2.4em;
+        }
+
+        #add_vehicle_button span {
+            padding: 0 10px;
         }
 
         </style>
@@ -170,6 +173,14 @@
                 const ul = document.getElementById("vehicles_list");
                 ul.appendChild(li);
             }
+
+
+            const addVehicleButton = document.getElementById("add_vehicle_button");
+            addVehicleButton.addEventListener("click", (event) => {
+                // Open new window for add new vehicle
+                console.log("add vehicle");
+                if (androidConnected()) Android.requestAddVehicle();
+            });
 
         </script>
 

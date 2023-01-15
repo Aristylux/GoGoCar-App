@@ -209,6 +209,11 @@ public class WebInterface {
         androidToWeb("setDatabase", vehicles.toString());
     }
 
+    @JavascriptInterface
+    public void requestAddVehicle(){
+        Log.d(TAG_Web, "requestAddVehicle: tte ");
+    }
+
 
     /*  ---------------------------------- *
      *  --        settings.html         -- *
