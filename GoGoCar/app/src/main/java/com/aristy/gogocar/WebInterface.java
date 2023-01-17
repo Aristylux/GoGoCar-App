@@ -216,9 +216,43 @@ public class WebInterface {
     }
 
     @JavascriptInterface
-    public void requestAddVehicle(){
+    public void requestOpenAddVehicle(){
         Log.d(TAG_Web, "requestAddVehicle: tte ");
         fragmentHandler.obtainMessage(GOTO_ADD_VEHICLE_FRAGMENT).sendToTarget();
+    }
+
+    @JavascriptInterface
+    public void requestAddVehicle(String model, String licencePlate, String address, String moduleCode, boolean isAvailable){
+        // Check if the model exist
+        //Toast.makeText(context, "error model doesn't exist", Toast.LENGTH_SHORT).show();
+        //androidToWeb("addVehicleResult", "1");  // Error code 1
+
+        // Check if the module code is correct
+        //Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
+        //androidToWeb("addVehicleResult", "2");  // Error code 2
+
+        // Success: add vehicle & quit page
+        // Create vehicle
+        //-1, model, licencePlate, address, userPreferences.getUserID(), isAvailable, null, null
+        DBModelVehicle vehicle = new DBModelVehicle();
+        vehicle.setModel(model);
+        vehicle.setLicencePlate(licencePlate);
+        vehicle.setAddress(address);
+        vehicle.setIdOwner(userPreferences.getUserID());
+        vehicle.setAvailable(isAvailable);
+        vehicle.setBooked(false);
+
+        // Add user into user table
+        boolean success = databaseHelper.addVehicle(vehicle);
+        Log.d(TAG_Database, "success=" + success);
+        if (!success) {
+            Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
+            androidToWeb("addVehicleResult", "3");  // Error code 3
+            return;
+        }
+
+        // Return top vehicle fragment
+        fragmentHandler.obtainMessage(GOTO_VEHICLE_FRAGMENT).sendToTarget();
     }
 
 

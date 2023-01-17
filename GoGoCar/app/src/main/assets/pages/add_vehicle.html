@@ -208,15 +208,10 @@
             });
 
             //[ANDROID CALLBACK]
+            // Fail
+            // Stay in the current page
             function addVehicleResult(code) {
-                if(code == "1"){
-                    // SUCCESS
-                    // Quit page
-                    if(androidConnected()) Android.requestReturnToHome();
-                } else {
-                    // Fail
-                    // Stay in the current page
-                }
+                console.log("code:" + code);
             }
         </script>
     </body>

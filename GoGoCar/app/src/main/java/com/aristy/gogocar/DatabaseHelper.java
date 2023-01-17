@@ -62,11 +62,11 @@ public class DatabaseHelper {
             // If it found, delete it and return true.
             // If it is not found, return false.
             Statement st = connection.createStatement();
-            boolean result = st.execute(query);
+            /*boolean result = */st.execute(query);
 
             // Close
             st.close();
-            return result;
+            return true;
         } catch (SQLException exception) {
             Log.e(TAG_Database, "executeQuery: ", exception);
             exception.printStackTrace();
