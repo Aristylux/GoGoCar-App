@@ -208,6 +208,20 @@ public class DatabaseHelper {
      *  ---------------------------------- */
 
     /**
+     * add a vehicle into the database
+     * @param modelVehicle the vehicle
+     * @return the success:<br>
+     *         - true  - if success<br>
+     *         - false - if not connection or exception
+     */
+    public boolean addVehicle(DBModelVehicle modelVehicle){
+        String query = "INSERT INTO " + TABLE_VEHICLE +
+                "( " + COLUMN_VEHICLE_MODEL + "," + COLUMN_VEHICLE_LICENCE_PLATE + "," + COLUMN_VEHICLE_ADDRESS + "," + COLUMN_VEHICLE_ID_OWNER + "," + COLUMN_VEHICLE_IS_AVAILABLE + ") " +
+                "VALUES ('" + modelVehicle.getModel() + "','" + modelVehicle.getLicencePlate() + "','" + modelVehicle.getAddress() + "','" + modelVehicle.getIdOwner() + "','" + modelVehicle.isAvailable() + "')";
+        return executeQuery(query);
+    }
+
+    /**
      * @return List of all vehicles
      */
     public List<DBModelVehicle> getAllVehicles(){

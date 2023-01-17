@@ -46,7 +46,7 @@ public class FragmentApp extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_app, container, false);
 
-        // Find items
+        // Find items & set url page
         web = view.findViewById(R.id.web_view);
         web.loadUrl(link);
 
