@@ -139,48 +139,46 @@
         </div>
 
         <section>
-            <form id="form-pi">
+            <form id="form-add-vehicle">
                 <div class="form-group">
                     <dt>Model</dt>
                     <dd>
-                        <input id="pi_user_profile_name" class="form-control" type="text" name="" >
+                        <input id="vehicle_model" class="form-control" type="text" name="" >
                     </dd>
                 </div>
                 <div class="form-group">
                     <dt>Licence plate</dt>
                     <dd>
-                        <input id="pi_user_email" class="form-control" type="text" name="" >
+                        <input id="vehicle_licence_plate" class="form-control" type="text" name="" >
                     </dd>
                 </div>
                 <div class="form-group">
                     <dt>Address</dt>
                     <dd>
-                        <input id="pi_user_phone_numbre" class="form-control" type="text" name="" >
+                        <input id="vehicle_address" class="form-control" type="text" name="" >
                     </dd>
                 </div>
                 <div class="form-group">
                     <dt>Module Mi Carro Es Tu Carro Code</dt>
                     <dd>
-                        <input id="pi_user_phone_numbre" class="form-control" type="text" name="" >
+                        <input id="vehicle_module_code" class="form-control" type="text" name="" >
                         <p class="note">You can find the code in the module.</p>
                     </dd>
                 </div>
-
                 <div class="form-group switch-container">
-                        <div id="switch_container">
-                            <label class="switch">
-                                <input id="switch" type="checkbox" class="switch_input"  >
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div>
-                            <dt>Activate the search of the vehicle</dt>
-                            <p class="note">You can modify that everytime you want.</p>
-                        </div>
+                    <div id="switch_container">
+                        <label class="switch">
+                            <input id="switch" type="checkbox" class="switch_input"  >
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div>
+                        <dt>Activate the search of the vehicle</dt>
+                        <p class="note">You can modify that everytime you want.</p>
+                    </div>
                 </div>
-
                 <div class="form-group button">
-                    <button>Add Vehicle</button>
+                    <button id="add_vehicle_button">Add Vehicle</button>
                 </div>
             </form>
         </section>
@@ -189,9 +187,37 @@
 
         <script>
             const button_return = document.getElementById("button_return");
-            button_return.addEventListener("click", function () {
+            button_return.addEventListener('click', function () {
                 if(androidConnected()) Android.requestReturnToHome();
             });
+
+            const add_vehicle_button = document.getElementById("add_vehicle_button");
+            add_vehicle_button.addEventListener('click', function() {
+                // Get values
+                const formVehicle = document.getElementById("form-add-vehicle");
+                const formVhModel = formVehicle.elements["vehicle_model"].value;
+                const formVhLicencePlate = formVehicle.elements["vehicle_licence_plate"].value;
+                const formVhAddress = formVehicle.elements["vehicle_address"].value;
+                const formVhModuleCode = formVehicle.elements["vehicle_module_code"].value;
+                const formVhIsAvailable = formVehicle.elements["switch"].checked;
+                
+                console.log("vehicle: " + formVhModel + ", " + formVhLicencePlate + ", " + formVhAddress + ", " + formVhModuleCode + ", " + formVhIsAvailable);
+
+                // Sent to android
+                if(androidConnected()) Android.requestAddVehicle(formVhModel, formVhLicencePlate, formVhAddress, formVhModuleCode, formVhIsAvailable);
+            });
+
+            //[ANDROID CALLBACK]
+            function addVehicleResult(code) {
+                if(code == "1"){
+                    // SUCCESS
+                    // Quit page
+                    if(androidConnected()) Android.requestReturnToHome();
+                } else {
+                    // Fail
+                    // Stay in the current page
+                }
+            }
         </script>
     </body>
 </html>
