@@ -34,19 +34,19 @@ public class HexColor {
 
         // Convert Decimal (for binary)
         long dec = Long.parseLong(formattedHex, 16);
-        Log.d(TAG_Web, "dec : " + dec);
+        //Log.d(TAG_Web, "dec : " + dec);
 
         // Convert Binary
         String bin = Long.toBinaryString(dec);
-        Log.d(TAG_Web, "bin : " + bin );
+        //Log.d(TAG_Web, "bin : " + bin );
 
         // Swipe Bits
         String binSwipe = swipeBits(bin);
-        Log.d(TAG_Web, "bin : " + binSwipe);
+        //Log.d(TAG_Web, "bin : " + binSwipe);
 
         // Convert to Dec
         long decConvert = Long.parseLong(binSwipe, 2);
-        Log.d(TAG_Web, "dec : " + (decConvert + 1) * -1);
+        //Log.d(TAG_Web, "dec : " + (decConvert + 1) * -1);
         return (decConvert + 1) * -1;
     }
 

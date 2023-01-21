@@ -233,7 +233,6 @@ public class WebInterface {
 
         // Success: add vehicle & quit page
         // Create vehicle
-        //-1, model, licencePlate, address, userPreferences.getUserID(), isAvailable, null, null
         DBModelVehicle vehicle = new DBModelVehicle();
         vehicle.setModel(model);
         vehicle.setLicencePlate(licencePlate);
