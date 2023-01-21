@@ -7,9 +7,11 @@ public class HandlerCodes {
     public static final int BLUETOOTH_HANDLER_POS = 1;
 
     // Fragments codes
-    public static final int GOTO_HOME_FRAGMENT = 1;
-    public static final int GOTO_LOGIN_FRAGMENT = 2;
-    public static final int STATUS_BAR_COLOR = 3;
+    public static final int GOTO_LOGIN_FRAGMENT = 1;
+    public static final int GOTO_HOME_FRAGMENT = 2;
+    public static final int GOTO_VEHICLE_FRAGMENT = 3;
+    public static final int GOTO_ADD_VEHICLE_FRAGMENT = 13;
+    public static final int STATUS_BAR_COLOR = 20;
 
     // Bluetooth codes
     public static final int BT_STATE_DISCOVERING = 1;

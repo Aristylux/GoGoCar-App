@@ -29,13 +29,15 @@ public class FragmentApp extends Fragment {
     Connection SQLConnection;
     UserPreferences userPreferences;
     Handler [] handlers;
+    String link;
 
     WebView web;
 
-    public FragmentApp(Connection SQLConnection, UserPreferences userPreferences, Handler [] handlers){
+    public FragmentApp(Connection SQLConnection, UserPreferences userPreferences, Handler [] handlers, String link){
         this.SQLConnection = SQLConnection;
         this.userPreferences = userPreferences;
         this.handlers = handlers;
+        this.link = link;
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -44,9 +46,9 @@ public class FragmentApp extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_app, container, false);
 
-        // Find items
+        // Find items & set url page
         web = view.findViewById(R.id.web_view);
-        web.loadUrl("file:///android_asset/pages/home.html");
+        web.loadUrl(link);
 
         // Enable javascript
         WebSettings webSettings = web.getSettings();

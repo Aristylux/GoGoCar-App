@@ -7,8 +7,10 @@ import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
+import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
@@ -28,6 +30,10 @@ import java.sql.Connection;
 import java.util.List;
 
 public class WebInterface {
+
+    public static final String HOME = "file:///android_asset/pages/home.html";
+    public static final String VEHICLE = "file:///android_asset/pages/vehicles.html";
+    public static final String ADD_VEHICLE = "file:///android_asset/pages/add_vehicle.html";
 
     Activity activity;
     Context context;
@@ -210,8 +216,47 @@ public class WebInterface {
     }
 
     @JavascriptInterface
-    public void requestAddVehicle(){
+    public void requestOpenAddVehicle(){
         Log.d(TAG_Web, "requestAddVehicle: tte ");
+        fragmentHandler.obtainMessage(GOTO_ADD_VEHICLE_FRAGMENT).sendToTarget();
+    }
+
+    @JavascriptInterface
+    public void requestAddVehicle(String model, String licencePlate, String address, String moduleCode, boolean isAvailable){
+        // Check address
+        if (address.isEmpty()){
+            androidToWeb("addVehicleResult", "4");  // Error code 4
+            return;
+        }
+        // Check if the model exist
+        //Toast.makeText(context, "error model doesn't exist", Toast.LENGTH_SHORT).show();
+        //androidToWeb("addVehicleResult", "1");  // Error code 1
+
+        // Check if the module code is correct
+        //Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
+        //androidToWeb("addVehicleResult", "2");  // Error code 2
+
+        // Success: add vehicle & quit page
+        // Create vehicle
+        DBModelVehicle vehicle = new DBModelVehicle();
+        vehicle.setModel(model);
+        vehicle.setLicencePlate(licencePlate);
+        vehicle.setAddress(address);
+        vehicle.setIdOwner(userPreferences.getUserID());
+        vehicle.setAvailable(isAvailable);
+        vehicle.setBooked(false);
+
+        // Add user into user table
+        boolean success = databaseHelper.addVehicle(vehicle);
+        Log.d(TAG_Database, "success=" + success);
+        if (!success) {
+            Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
+            androidToWeb("addVehicleResult", "3");  // Error code 3
+            return;
+        }
+
+        // Return top vehicle fragment
+        fragmentHandler.obtainMessage(GOTO_VEHICLE_FRAGMENT).sendToTarget();
     }
 
 
@@ -297,6 +342,13 @@ public class WebInterface {
     public void changePage(String page){
         loadNewPage(page);
     }
+
+
+    @JavascriptInterface
+    public void requestReturnToHome(){
+        fragmentHandler.obtainMessage(GOTO_VEHICLE_FRAGMENT).sendToTarget();
+    }
+
 
     /*  ---------------------------------- *
      *  -- Methods send data to webPage -- *

@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -46,10 +47,11 @@ public class DatabaseHelper {
     }
 
     /**
-     * @param query query to execute
+     * @param preparedQuery query to execute
+     * @param elements element for '?' in preparedQuery
      * @return success
      */
-    private boolean executeQuery(String query){
+    private boolean executeQuery(String preparedQuery, Object... elements){
         // Test if the connection is ok
         if (connection == null) {
             // Failure. do not add anything to the list
@@ -57,16 +59,24 @@ public class DatabaseHelper {
             return false;
         }
 
-        // Find user in the database.
         try {
+            PreparedStatement st = connection.prepareStatement(preparedQuery);
+            for(int i = 1; i < elements.length + 1; i++ ){
+                st.setObject(i, elements[i-1]);
+            }
+
             // If it found, delete it and return true.
             // If it is not found, return false.
-            Statement st = connection.createStatement();
-            boolean result = st.execute(query);
+            int rowAffected = st.executeUpdate();
+
+            //Statement st = connection.createStatement();
+            /*boolean result = *///st.execute(query);
 
             // Close
             st.close();
-            return result;
+
+            // If almost 1 row is affected, return true
+            return rowAffected != 0;
         } catch (SQLException exception) {
             Log.e(TAG_Database, "executeQuery: ", exception);
             exception.printStackTrace();
@@ -87,8 +97,8 @@ public class DatabaseHelper {
     public boolean addUser(DBModelUser userModel){
         String query = "INSERT INTO " + TABLE_USER +
                 "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + ") " +
-                "VALUES ('" + userModel.getFullName() + "','" + userModel.getEmail() + "','" + userModel.getPhoneNumber() + "','" + userModel.getPassword() + "')";
-        return executeQuery(query);
+                "VALUES (?,?,?,?)";
+        return executeQuery(query, userModel.getFullName(), userModel.getEmail(), userModel.getPhoneNumber(), userModel.getPassword());
     }
 
     /**
@@ -96,8 +106,8 @@ public class DatabaseHelper {
      * @return the success
      */
     public boolean deleteUser(DBModelUser userModel){
-        String query = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = " + userModel.getId();
-        return executeQuery(query);
+        String query = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = ?";
+        return executeQuery(query, userModel.getId());
     }
 
     public List<DBModelUser> getAllUsers(){
@@ -206,6 +216,20 @@ public class DatabaseHelper {
     /*  ---------------------------------- *
      *  --            VEHICLES          -- *
      *  ---------------------------------- */
+
+    /**
+     * add a vehicle into the database
+     * @param modelVehicle the vehicle
+     * @return the success:<br>
+     *         - true  - if success<br>
+     *         - false - if not connection or exception
+     */
+    public boolean addVehicle(DBModelVehicle modelVehicle){
+        String query = "INSERT INTO " + TABLE_VEHICLE +
+                "( " + COLUMN_VEHICLE_MODEL + "," + COLUMN_VEHICLE_LICENCE_PLATE + "," + COLUMN_VEHICLE_ADDRESS + "," + COLUMN_VEHICLE_ID_OWNER + "," + COLUMN_VEHICLE_IS_AVAILABLE + ") " +
+                "VALUES (?,?,?,?,?)";
+        return executeQuery(query, modelVehicle.getModel(), modelVehicle.getLicencePlate(), modelVehicle.getAddress(), modelVehicle.getIdOwner(), modelVehicle.isAvailable());
+    }
 
     /**
      * @return List of all vehicles
