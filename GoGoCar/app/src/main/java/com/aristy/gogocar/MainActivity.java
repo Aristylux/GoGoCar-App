@@ -1,5 +1,9 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_DOWN;
+import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_LEFT;
+import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
+import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_UP;
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
@@ -103,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Set Fragment
-        setFragment(selectedFragment, R.anim.from_left, R.anim.to_right);
+        setFragment(selectedFragment, ANIMATE_SLIDE_LEFT);
 
         // For top bar and navigation bar
         setWindowVersion();
@@ -310,12 +314,12 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Move to old fragment from new fragment
      * @param fragment      new fragment
-     * @param anim_enter    animation in
-     * @param anim_exit     animation out
+     * @param animation     animation type
      */
-    public void setFragment(Fragment fragment, int anim_enter, int anim_exit){
+    public void setFragment(Fragment fragment, int animation){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(anim_enter, anim_exit);
+        //fragmentTransaction.setCustomAnimations(anim_enter, anim_exit);
+        Animation.animate(fragmentTransaction, animation);
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
     }
@@ -338,16 +342,16 @@ public class MainActivity extends AppCompatActivity {
         public boolean handleMessage(@NonNull Message message) {
             switch (message.what){
                 case GOTO_LOGIN_FRAGMENT:
-                    setFragment(new FragmentLogin(SQLConnection, userPreferences, handlers), R.anim.from_left, R.anim.to_right);
+                    setFragment(new FragmentLogin(SQLConnection, userPreferences, handlers), ANIMATE_SLIDE_LEFT);
                     break;
                 case GOTO_HOME_FRAGMENT:
-                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, HOME), R.anim.from_right, R.anim.to_left);
+                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, HOME), ANIMATE_SLIDE_RIGHT);
                     break;
                 case GOTO_ADD_VEHICLE_FRAGMENT:
-                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, ADD_VEHICLE), R.anim.from_right, /*R.anim.to_left*/ 0);
+                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, ADD_VEHICLE), ANIMATE_SLIDE_UP);
                     break;
                 case GOTO_VEHICLE_FRAGMENT:
-                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, VEHICLE), R.anim.from_left /*TODO change*/, R.anim.to_right);
+                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, VEHICLE), ANIMATE_SLIDE_DOWN);
                     break;
                 case STATUS_BAR_COLOR:
                     // Set color background
