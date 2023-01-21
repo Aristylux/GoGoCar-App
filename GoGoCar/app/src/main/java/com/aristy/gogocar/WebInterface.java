@@ -223,6 +223,11 @@ public class WebInterface {
 
     @JavascriptInterface
     public void requestAddVehicle(String model, String licencePlate, String address, String moduleCode, boolean isAvailable){
+        // Check address
+        if (address.isEmpty()){
+            androidToWeb("addVehicleResult", "4");  // Error code 4
+            return;
+        }
         // Check if the model exist
         //Toast.makeText(context, "error model doesn't exist", Toast.LENGTH_SHORT).show();
         //androidToWeb("addVehicleResult", "1");  // Error code 1

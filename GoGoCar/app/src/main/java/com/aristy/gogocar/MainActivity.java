@@ -318,7 +318,6 @@ public class MainActivity extends AppCompatActivity {
      */
     public void setFragment(Fragment fragment, int animation){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        //fragmentTransaction.setCustomAnimations(anim_enter, anim_exit);
         Animation.animate(fragmentTransaction, animation);
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
