@@ -18,7 +18,7 @@ function openPopupBook(vehicle) {
 
 popup_vehicle_button_close.addEventListener("click", (event) => {
     closePopup(popup);
-    vehicleDelete("true");
+    //vehicleDelete("true"); // debug PC
 });
 
 popup_vehicle_button_remove.addEventListener("click", function () {
