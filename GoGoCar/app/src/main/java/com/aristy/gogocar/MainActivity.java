@@ -17,6 +17,7 @@ import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
 import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_VEHICLE_FRAGMENT;
@@ -28,6 +29,7 @@ import static com.aristy.gogocar.SHAHash.hashPassword;
 import static com.aristy.gogocar.Security.getPinKey;
 import static com.aristy.gogocar.WebInterface.ADD_VEHICLE;
 import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
+import static com.aristy.gogocar.WebInterface.EDIT_VEHICLE;
 import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_REQUEST_CAR_NOT_FOUND;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
 import static com.aristy.gogocar.WebInterface.HOME;
@@ -349,8 +351,11 @@ public class MainActivity extends AppCompatActivity {
                 case GOTO_ADD_VEHICLE_FRAGMENT:
                     setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, ADD_VEHICLE), ANIMATE_SLIDE_UP);
                     break;
+                case GOTO_EDIT_VEHICLE_FRAGMENT:
+                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, EDIT_VEHICLE), ANIMATE_SLIDE_LEFT);
+                    break;
                 case GOTO_VEHICLE_FRAGMENT:
-                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, VEHICLE), ANIMATE_SLIDE_DOWN);
+                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, VEHICLE), (Integer) message.obj);
                     break;
                 case STATUS_BAR_COLOR:
                     // Set color background

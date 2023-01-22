@@ -188,7 +188,7 @@
         <script>
             const button_return = document.getElementById("button_return");
             button_return.addEventListener('click', function () {
-                if(androidConnected()) Android.requestReturnToHome();
+                if(androidConnected()) Android.requestReturnToHome("ADD_VEHICLE");
             });
 
             const add_vehicle_button = document.getElementById("add_vehicle_button");

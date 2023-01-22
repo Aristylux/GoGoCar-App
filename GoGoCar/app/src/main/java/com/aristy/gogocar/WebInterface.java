@@ -1,5 +1,8 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_DOWN;
+import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_LEFT;
+import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
@@ -8,6 +11,7 @@ import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_VEHICLE_FRAGMENT;
@@ -34,6 +38,7 @@ public class WebInterface {
     public static final String HOME = "file:///android_asset/pages/home.html";
     public static final String VEHICLE = "file:///android_asset/pages/vehicles.html";
     public static final String ADD_VEHICLE = "file:///android_asset/pages/add_vehicle.html";
+    public static final String EDIT_VEHICLE = "file:///android_asset/pages/vehicle_edit.html";
 
     Activity activity;
     Context context;
@@ -226,8 +231,27 @@ public class WebInterface {
     }
 
     @JavascriptInterface
+    public void requestReturnToHome(String from){
+        int animation = ANIMATE_SLIDE_LEFT;
+        if (from.equals("ADD_VEHICLE"))
+            animation = ANIMATE_SLIDE_DOWN;
+        if (from.equals("EDIT_VEHICLE"))
+            animation = ANIMATE_SLIDE_RIGHT;
+        fragmentHandler.obtainMessage(GOTO_VEHICLE_FRAGMENT, animation).sendToTarget();
+    }
+
+    /* -- vehicle edit -- */
+
+    @JavascriptInterface
+    public void requestOpenEditVehicle(){
+        Log.d(TAG_Web, "requestOpenEditVehicle:");
+        fragmentHandler.obtainMessage(GOTO_EDIT_VEHICLE_FRAGMENT, ANIMATE_SLIDE_RIGHT).sendToTarget();
+    }
+
+    /* -- vehicle add -- */
+
+    @JavascriptInterface
     public void requestOpenAddVehicle(){
-        Log.d(TAG_Web, "requestAddVehicle: tte ");
         fragmentHandler.obtainMessage(GOTO_ADD_VEHICLE_FRAGMENT).sendToTarget();
     }
 
@@ -266,7 +290,7 @@ public class WebInterface {
         }
 
         // Return top vehicle fragment
-        fragmentHandler.obtainMessage(GOTO_VEHICLE_FRAGMENT).sendToTarget();
+        fragmentHandler.obtainMessage(GOTO_VEHICLE_FRAGMENT, ANIMATE_SLIDE_DOWN).sendToTarget();
     }
 
 
@@ -352,13 +376,6 @@ public class WebInterface {
     public void changePage(String page){
         loadNewPage(page);
     }
-
-
-    @JavascriptInterface
-    public void requestReturnToHome(){
-        fragmentHandler.obtainMessage(GOTO_VEHICLE_FRAGMENT).sendToTarget();
-    }
-
 
     /*  ---------------------------------- *
      *  -- Methods send data to webPage -- *

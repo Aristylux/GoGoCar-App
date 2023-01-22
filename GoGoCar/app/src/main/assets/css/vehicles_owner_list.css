@@ -1,0 +1,101 @@
+ul {
+    padding: 0;
+    margin: 0;
+    margin-top: 20px;
+}
+
+li {
+    background-color: var(--background-color);
+    margin: 0 20px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px #0002;
+    border-radius: 15px;
+    padding: 15px;
+    transition: 0.3s;
+
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
+
+.vehicle_container {
+    transition: 0.5s;
+}
+
+.vehicle_container--hidden {
+    opacity: 0;
+}
+
+.vehicle_container i {
+    display: flex;
+    align-items: center;
+}
+
+.vehicle_container_left {
+    display: grid;
+    grid-template-rows: auto auto auto;
+}
+
+.vehicle_container_left i {
+    padding: 2px;
+}
+
+.vehicle_container_left .info {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+    gap: 5px;
+}
+
+.vehicle_container_left .vehicle_model {
+    font-weight: 600;
+}
+
+.state {
+    border: 1px solid;
+    border-radius: 1em;
+    font-size: 1em;
+    font-weight: 500;
+    padding: 0 7px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.state--available {
+    border-color: #21ff2c;
+    color: #10da09;
+}
+
+.state--booked {
+    border-color: #ffcb21;
+    color: #daa909;
+}
+
+.state--unavailable {
+    border-color: #218bff;
+    color: #0969da;
+}
+
+.vehicle_container_right .ico {
+    display: flex;
+    grid-column-gap: 5px;
+    flex-direction: row-reverse;
+}
+
+.vehicle_container_right i {
+    padding: 10px;
+    font-size: 1.5em;
+
+    color: var(--primary-color);
+    border-radius: 50%;
+    border-width: 1px;
+    border-color: var(--primary-color);;
+    border-style: solid;
+    box-shadow: 0px 2px 5px #0002;
+
+    transition: 0.3s;
+}
+
+.vehicle_container_right i:active {
+    color: var(--background-color)white;
+    background-color: var(--primary-color);
+}

@@ -10,7 +10,8 @@ public class HandlerCodes {
     public static final int GOTO_LOGIN_FRAGMENT = 1;
     public static final int GOTO_HOME_FRAGMENT = 2;
     public static final int GOTO_VEHICLE_FRAGMENT = 3;
-    public static final int GOTO_ADD_VEHICLE_FRAGMENT = 13;
+    public static final int GOTO_ADD_VEHICLE_FRAGMENT = 31;
+    public static final int GOTO_EDIT_VEHICLE_FRAGMENT = 32;
     public static final int STATUS_BAR_COLOR = 20;
 
     // Bluetooth codes

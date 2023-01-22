@@ -1,25 +1,43 @@
-// Action popup (button)
-let popup_vehicle_button_close = document.getElementById("but_pop_veh_close");
-let popup_vehicle_button_book = document.getElementById("but_pop_veh_book");
+var vehicle_selected;
 
-// [ANDROID]
-function openPopupBook(_vehicle_name, _vehicle_position) {
+// Action popup (button)
+let popup_vehicle_button_close = document.getElementById("but_pop_close");
+let popup_vehicle_button_remove = document.getElementById("but_pop_remove");
+
+function openPopupBook(vehicle) {
     let vehicle_name = document.getElementById("vehicle_name");
     let vehicle_position = document.getElementById("vehicle_position");
 
-    vehicle_name.innerText = _vehicle_name;
-    vehicle_position.innerText = _vehicle_position;
+    vehicle_name.innerText = "Delete your " + vehicle.name + " ?";
+    vehicle_position.innerText = vehicle.address;
+
+    vehicle_selected = vehicle;
 
     openPopup(popup);
 }
 
-popup_vehicle_button_close.addEventListener("click", function () {
-    console.log("close");
+popup_vehicle_button_close.addEventListener("click", (event) => {
     closePopup(popup);
+    vehicleDelete("true");
 });
 
-popup_vehicle_button_book.addEventListener("click", function () {
-    console.log("book");
+popup_vehicle_button_remove.addEventListener("click", function () {
     closePopup(popup);
-    // Open new html (booking)
+    if (androidConnected()) Android.requestRemoveVehicle(vehicle_selected.id);
 });
+
+// [ANDROID CALLBACK]
+function vehicleDelete(success) {
+    if (success === "true") {
+        // Remove (hide) vehicle_selected
+        const vehicles_container_info = document.querySelectorAll(".info");
+        vehicles_container_info.forEach((Element) => {
+            if (Element.innerText === vehicle_selected.licencePlate) {
+                //Element.parentElement.parentElement.style.display = "none";
+                Element.parentElement.parentElement.classList.add(
+                    "vehicle_container--hidden"
+                );
+            }
+        });
+    }
+}
