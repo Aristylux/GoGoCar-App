@@ -50,7 +50,9 @@ function setDatabase(_table_vehicle) {
         vehicles_container_edit.forEach(function (container, index) {
             container.addEventListener('click', (event) => {
                 // Open window edit
-                if (androidConnected()) Android.requestOpenAddVehicle(vehicles[index]);
+                console.log(index);
+                console.log(JSON.stringify(vehicles[index]));
+                if (androidConnected()) Android.requestOpenEditVehicle(JSON.stringify(vehicles[index]));
             });
         });
     }

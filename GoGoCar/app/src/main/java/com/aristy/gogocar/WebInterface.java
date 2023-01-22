@@ -38,7 +38,7 @@ public class WebInterface {
     public static final String HOME = "file:///android_asset/pages/home.html";
     public static final String VEHICLE = "file:///android_asset/pages/vehicles.html";
     public static final String ADD_VEHICLE = "file:///android_asset/pages/add_vehicle.html";
-    public static final String EDIT_VEHICLE = "file:///android_asset/pages/vehicle_edit.html";
+    public static final String EDIT_VEHICLE = "file:///android_asset/pages/vehicles_edit.html";
 
     Activity activity;
     Context context;
@@ -243,9 +243,9 @@ public class WebInterface {
     /* -- vehicle edit -- */
 
     @JavascriptInterface
-    public void requestOpenEditVehicle(){
-        Log.d(TAG_Web, "requestOpenEditVehicle:");
-        fragmentHandler.obtainMessage(GOTO_EDIT_VEHICLE_FRAGMENT, ANIMATE_SLIDE_RIGHT).sendToTarget();
+    public void requestOpenEditVehicle(String vehicle){
+        Log.d(TAG_Web, "requestOpenEditVehicle: " + vehicle);
+        fragmentHandler.obtainMessage(GOTO_EDIT_VEHICLE_FRAGMENT).sendToTarget();
     }
 
     /* -- vehicle add -- */
