@@ -25,9 +25,83 @@
                 border-radius: 15px;
                 padding: 15px;
                 transition: 0.3s;
+
+                display: grid;
+                grid-template-columns: 1fr auto;
             }
 
+            /*
             .vehicle_container:active {
+                background-color: var(--primary-color);
+            }*/
+
+            .vehicle_container i {
+                display: flex;
+                align-items: center;
+            }
+
+            .vehicle_container_left {
+                display: grid;
+                grid-template-rows: auto auto auto;
+            }
+
+            .vehicle_container_left i {
+                padding: 2px;
+            }
+
+            .vehicle_container_left .info {
+                display: grid;
+                grid-template-columns: auto auto 1fr;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .vehicle_container_left .vehicle_model {
+                font-weight: 600;
+            }
+
+            .state {
+                border: 1px solid;
+                border-radius: 1em;
+                font-size: 1em;
+                font-weight: 500;
+                padding: 0 7px;
+                margin-bottom: 10px;
+                text-align: center;
+            }
+
+            .state--active {
+                border-color: #218bff;
+                color: #0969da;
+            }
+
+            .state--booked {
+                border-color: #ffcb21;
+                color: #daa909;
+            }
+
+            .vehicle_container_right .ico {
+                display: flex;
+                grid-column-gap: 5px;
+                flex-direction: row-reverse;
+            }
+
+            .vehicle_container_right i {
+                padding: 10px;
+                font-size: 1.5em;
+
+                color: var(--primary-color);
+                border-radius: 50%;
+                border-width: 1px;
+                border-color: var(--primary-color);;
+                border-style: solid;
+                box-shadow: 0px 2px 5px #0002;
+
+                transition: 0.3s;
+            }
+
+            .vehicle_container_right i:active {
+                color: white;
                 background-color: var(--primary-color);
             }
         </style>
@@ -36,7 +110,7 @@
 
         #no_vehicles {
             color: #e0e0e0;
-            display: flex;
+            display: none; /*flex when active*/
             flex-direction: column;
             align-items: center;
             margin: auto;
@@ -52,6 +126,7 @@
 
         </style>
 
+        <!--style page-->
         <style>
 
         a {
@@ -101,7 +176,49 @@
         <section id="page-content">
             <h1>Vehicles</h1>
 
-            <ul id="vehicles_list"></ul>
+            <ul id="vehicles_list">
+
+                <li class="vehicle_container">
+                    <div class="vehicle_container_left">
+                        <div class="vehicle_model">Renault Clio</div>
+                        <div class="info">
+                            <i class="fi fi-sr-map-marker"></i>
+                            <span>12 rue du Pain</span>
+                        </div>
+                        <div class="info">
+                            <i class="fi fi-sr-rectangle-barcode"></i>
+                            <span>FR-456-RY</span>
+                        </div>
+                    </div>
+                    <div class="vehicle_container_right">
+                        <div class="state state--active">Active</div>
+                        <div class="ico">
+                            <i class="fi fi-sr-trash"></i>
+                            <i class="fi fi-sr-pencil"></i>
+                        </div>
+                    </div>
+                </li>
+                <li class="vehicle_container">
+                    <div class="vehicle_container_left">
+                        <div class="vehicle_model">Porsche 911</div>
+                        <div class="info">
+                            <i class="fi fi-sr-map-marker"></i>
+                            <span>976 Avenue Jean</span>
+                        </div>
+                        <div class="info">
+                            <i class="fi fi-sr-rectangle-barcode"></i>
+                            <span>TR-456-FH</span>
+                        </div>
+                    </div>
+                    <div class="vehicle_container_right">
+                        <div class="state state--booked">Booked</div>
+                        <div class="ico">
+                            <i class="fi fi-sr-trash"></i>
+                            <i class="fi fi-sr-pencil"></i>
+                        </div>
+                    </div>
+                </li>
+            </ul>
 
             <div id="no_vehicles">
                 <i class="fi fi-sr-search"></i>
@@ -142,6 +259,22 @@
         <script>
             // Request database
             if (androidConnected()) Android.requestUserVehicles();
+            /*
+            else{
+               
+                
+                var vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
+                console.log(vehicles.length);
+            
+                if (vehicles.length == 0){
+                    document.getElementById("no_vehicles").style.display = 'flex';
+                } else {
+                    vehicles.forEach((vehicle) => {
+                        addElement(vehicle);
+                    });
+                }
+            }
+            */    
 
             // [ANDROID CALLBACK] Retrive databases from android (result)
             function setDatabase(_table_vehicle) {
@@ -149,9 +282,9 @@
 
                 console.log(vehicles.length);
             
-                if (vehicles.length != 0){
-                    document.getElementById("no_vehicles").style.display = 'none';
-
+                if (vehicles.length == 0){
+                    document.getElementById("no_vehicles").style.display = 'flex';
+                } else {
                     vehicles.forEach((vehicle) => {
                         addElement(vehicle);
                     });
