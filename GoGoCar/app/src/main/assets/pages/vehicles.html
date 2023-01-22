@@ -34,6 +34,11 @@
                 grid-template-columns: 1fr auto;
             }
 
+            .vehicle_container {
+                /*doesn't work*/
+                transition: 1s;
+            }
+
             .vehicle_container i {
                 display: flex;
                 align-items: center;
@@ -280,7 +285,7 @@
         <script>
             // Request database
             if (androidConnected()) Android.requestUserVehicles();
-            /*
+            
             else{
                 var vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
                 console.log(vehicles.length);
@@ -294,7 +299,6 @@
 
                     const vehicles_container = document.querySelectorAll(".fi-sr-trash");
                     vehicles_container.forEach(function (container, index) {
-                        console.log(index);
                         container.addEventListener("click", (event) => {
                             // Open popup 'book'
                             openPopupBook(vehicles[index]);
@@ -302,7 +306,7 @@
                     });
                 }
             }
-            */
+            
 
             // [ANDROID CALLBACK] Retrive databases from android (result)
             function setDatabase(_table_vehicle) {
@@ -439,7 +443,6 @@
             let popup_vehicle_button_close = document.getElementById("but_pop_close");
             let popup_vehicle_button_remove = document.getElementById("but_pop_remove");
 
-            // [ANDROID]
             function openPopupBook(vehicle) {
                 let vehicle_name = document.getElementById("vehicle_name");
                 let vehicle_position = document.getElementById("vehicle_position");
@@ -460,6 +463,21 @@
                 closePopup(popup);
                 if (androidConnected()) Android.requestRemoveVehicle(vehicle_selected.id);
             });
+
+            
+
+            // [ANDROID CALLBACK]
+            function vehicleDelete(success){
+                if (success === "true"){
+                    // Remove (hide) vehicle_selected                   
+                    const vehicles_container_info = document.querySelectorAll(".info");
+                    vehicles_container_info.forEach((Element) => {
+                        if (Element.innerText === vehicle_selected.licencePlate) {
+                            Element.parentElement.parentElement.style.display = "none";
+                        }
+                    });
+                }
+            }
 
         </script>
 

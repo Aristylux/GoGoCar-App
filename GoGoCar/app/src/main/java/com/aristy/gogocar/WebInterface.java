@@ -222,6 +222,7 @@ public class WebInterface {
         boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
 
         if (!isDeleted) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
+        else androidToWeb("vehicleDelete", "true");
     }
 
     @JavascriptInterface
