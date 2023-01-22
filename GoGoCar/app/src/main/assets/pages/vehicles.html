@@ -35,8 +35,11 @@
             }
 
             .vehicle_container {
-                /*doesn't work*/
-                transition: 1s;
+                transition: 0.5s;
+            }
+
+            .vehicle_container--hidden {
+                opacity: 0;
             }
 
             .vehicle_container i {
@@ -457,6 +460,7 @@
 
             popup_vehicle_button_close.addEventListener("click", (event) => {
                 closePopup(popup);
+                vehicleDelete("true");
             });
 
             popup_vehicle_button_remove.addEventListener("click", function () {
@@ -473,7 +477,8 @@
                     const vehicles_container_info = document.querySelectorAll(".info");
                     vehicles_container_info.forEach((Element) => {
                         if (Element.innerText === vehicle_selected.licencePlate) {
-                            Element.parentElement.parentElement.style.display = "none";
+                            //Element.parentElement.parentElement.style.display = "none";
+                            Element.parentElement.parentElement.classList.add("vehicle_container--hidden");
                         }
                     });
                 }
