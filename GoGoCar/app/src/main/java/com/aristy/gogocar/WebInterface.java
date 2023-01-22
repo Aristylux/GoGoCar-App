@@ -37,7 +37,7 @@ public class WebInterface {
 
     public static final String HOME = "file:///android_asset/pages/home.html";
     public static final String VEHICLE = "file:///android_asset/pages/vehicles.html";
-    public static final String ADD_VEHICLE = "file:///android_asset/pages/add_vehicle.html";
+    public static final String ADD_VEHICLE = "file:///android_asset/pages/vehicles_add.html";
     public static final String EDIT_VEHICLE = "file:///android_asset/pages/vehicles_edit.html";
 
     Activity activity;
