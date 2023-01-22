@@ -10,6 +10,9 @@
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
         <link rel="stylesheet" href="../css/style_button.css"/>
         
+        <link rel="stylesheet" href="../css/popup.css" />
+        <link rel="stylesheet" href="../css/modal.css" />
+        
         <!--vehicles_owner_list.css-->
         <style>
             ul {
@@ -236,6 +239,22 @@
             </a>
         </div>
 
+        <!-- Popups message -->
+        <div id="modal_popup" class="modal">
+            <!-- Popup message for book a vehicle -->
+            <div id="popup" class="popup">
+                <h1 id="vehicle_name"></h1>
+                <div id="popup_information">
+                    <i id="ico_position" class="fi fi-rr-map-marker"></i>
+                    <span id="vehicle_position">Position</span>
+                </div>
+                <div id="popup_buttons">
+                    <button id="but_pop_close">No, close</button>
+                    <button id="but_pop_remove" class="border-button">Yes, delete</button>
+                </div>
+            </div>
+        </div>
+
         <nav id="navigation" class="nav">
             <a id="nav_home" href="#" class="nav__link nav__link__ripple">
                 <i id="ico_home" class="nav__icon fi fi-rr-home"></i>
@@ -260,7 +279,30 @@
 
         <script>
             // Request database
-            if (androidConnected()) Android.requestUserVehicles(); 
+            if (androidConnected()) Android.requestUserVehicles();
+            /*
+            else{
+                var vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
+                console.log(vehicles.length);
+            
+                if (vehicles.length == 0){
+                    document.getElementById("no_vehicles").style.display = 'flex';
+                } else {
+                    vehicles.forEach((vehicle) => {
+                        addElement(vehicle);
+                    });
+
+                    const vehicles_container = document.querySelectorAll(".fi-sr-trash");
+                    vehicles_container.forEach(function (container, index) {
+                        console.log(index);
+                        container.addEventListener("click", (event) => {
+                            // Open popup 'book'
+                            openPopupBook(vehicles[index]);
+                        });
+                    });
+                }
+            }
+            */
 
             // [ANDROID CALLBACK] Retrive databases from android (result)
             function setDatabase(_table_vehicle) {
@@ -273,6 +315,14 @@
                 } else {
                     vehicles.forEach((vehicle) => {
                         addElement(vehicle);
+                    });
+
+                    const vehicles_container = document.querySelectorAll(".fi-sr-trash");
+                    vehicles_container.forEach(function (container, index) {
+                        container.addEventListener("click", (event) => {
+                            // Open popup 'book'
+                            openPopupBook(vehicles[index]);
+                        });
                     });
                 }
             }
@@ -377,7 +427,39 @@
                 if (androidConnected()) Android.requestOpenAddVehicle();
             });
 
-            
+        </script>
+
+        <script src="../js/popup.js"></script>
+
+        <script>
+
+            var vehicle_selected;
+
+            // Action popup (button)
+            let popup_vehicle_button_close = document.getElementById("but_pop_close");
+            let popup_vehicle_button_remove = document.getElementById("but_pop_remove");
+
+            // [ANDROID]
+            function openPopupBook(vehicle) {
+                let vehicle_name = document.getElementById("vehicle_name");
+                let vehicle_position = document.getElementById("vehicle_position");
+
+                vehicle_name.innerText = "Delete your " + vehicle.name + " ?";
+                vehicle_position.innerText = vehicle.address;
+                
+                vehicle_selected = vehicle;
+
+                openPopup(popup);
+            }
+
+            popup_vehicle_button_close.addEventListener("click", (event) => {
+                closePopup(popup);
+            });
+
+            popup_vehicle_button_remove.addEventListener("click", function () {
+                closePopup(popup);
+                if (androidConnected()) Android.requestRemoveVehicle(vehicle_selected.id);
+            });
 
         </script>
 
