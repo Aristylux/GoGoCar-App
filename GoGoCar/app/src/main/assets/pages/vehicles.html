@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
         <link rel="stylesheet" href="../css/style_button.css"/>
         
+        <!--vehicles_owner_list.css-->
         <style>
             ul {
                 padding: 0;
@@ -29,11 +30,6 @@
                 display: grid;
                 grid-template-columns: 1fr auto;
             }
-
-            /*
-            .vehicle_container:active {
-                background-color: var(--primary-color);
-            }*/
 
             .vehicle_container i {
                 display: flex;
@@ -70,14 +66,19 @@
                 text-align: center;
             }
 
-            .state--active {
-                border-color: #218bff;
-                color: #0969da;
+            .state--available {
+                border-color: #21ff2c;
+                color: #10da09;
             }
 
             .state--booked {
                 border-color: #ffcb21;
                 color: #daa909;
+            }
+
+            .state--unavailable {
+                border-color: #218bff;
+                color: #0969da;
             }
 
             .vehicle_container_right .ico {
@@ -177,7 +178,7 @@
             <h1>Vehicles</h1>
 
             <ul id="vehicles_list">
-
+<!--
                 <li class="vehicle_container">
                     <div class="vehicle_container_left">
                         <div class="vehicle_model">Renault Clio</div>
@@ -218,6 +219,7 @@
                         </div>
                     </div>
                 </li>
+-->
             </ul>
 
             <div id="no_vehicles">
@@ -258,23 +260,7 @@
 
         <script>
             // Request database
-            if (androidConnected()) Android.requestUserVehicles();
-            /*
-            else{
-               
-                
-                var vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
-                console.log(vehicles.length);
-            
-                if (vehicles.length == 0){
-                    document.getElementById("no_vehicles").style.display = 'flex';
-                } else {
-                    vehicles.forEach((vehicle) => {
-                        addElement(vehicle);
-                    });
-                }
-            }
-            */    
+            if (androidConnected()) Android.requestUserVehicles(); 
 
             // [ANDROID CALLBACK] Retrive databases from android (result)
             function setDatabase(_table_vehicle) {
@@ -368,6 +354,11 @@
                 ul.appendChild(li);
             }
 
+            /**
+             * determine the vehicle state
+             * 
+             * return: class and text
+             */
             function determineState(vehicle){
                 if(vehicle.isAvailable){
                     if(vehicle.isBooked)
@@ -385,6 +376,8 @@
                 console.log("add vehicle");
                 if (androidConnected()) Android.requestOpenAddVehicle();
             });
+
+            
 
         </script>
 
