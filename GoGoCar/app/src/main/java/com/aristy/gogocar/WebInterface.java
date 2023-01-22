@@ -216,6 +216,15 @@ public class WebInterface {
     }
 
     @JavascriptInterface
+    public void requestRemoveVehicle(int vehicleID){
+        DBModelVehicle vehicle = new DBModelVehicle();
+        vehicle.setId(vehicleID);
+        boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
+
+        if (!isDeleted) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
+    }
+
+    @JavascriptInterface
     public void requestOpenAddVehicle(){
         Log.d(TAG_Web, "requestAddVehicle: tte ");
         fragmentHandler.obtainMessage(GOTO_ADD_VEHICLE_FRAGMENT).sendToTarget();

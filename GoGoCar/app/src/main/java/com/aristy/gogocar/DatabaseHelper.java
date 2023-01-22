@@ -232,6 +232,15 @@ public class DatabaseHelper {
     }
 
     /**
+     * @param modelVehicle Vehicle to delete
+     * @return the success
+     */
+    public boolean deleteVehicle(DBModelVehicle modelVehicle){
+        String query = "DELETE FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID + " = ?";
+        return executeQuery(query, modelVehicle.getId());
+    }
+
+    /**
      * @return List of all vehicles
      */
     public List<DBModelVehicle> getAllVehicles(){
