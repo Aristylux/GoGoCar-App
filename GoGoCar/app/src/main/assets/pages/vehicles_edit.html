@@ -69,11 +69,12 @@
                         <dt>Activate the search of the vehicle</dt>
                     </div>
                 </div>
-                <div class="form-group button">
-                    <button id="exit_vehicle_button">Exit</button>
-                    <button id="edit_vehicle_button" class="border-button">Save changes</button>
-                </div>
+                
             </form>
+            <div class="form-group button">
+                <button id="exit_vehicle_button">Exit</button>
+                <button id="edit_vehicle_button" class="border-button">Save changes</button>
+            </div>
         </section>
 
         <script src="../js/androidInterface.js"></script>
@@ -119,7 +120,7 @@
                 formVehicle.elements["vehicle_model"].value = JSONvehicle.name;
                 formVehicle.elements["vehicle_licence_plate"].value = JSONvehicle.licencePlate;
                 formVehicle.elements["vehicle_address"].value = JSONvehicle.address;
-                formVehicle.elements["vehicle_module_code"].value = JSONvehicle.idModule;
+                formVehicle.elements["vehicle_module_code"].value = JSONvehicle.codeModule;
                 formVehicle.elements["switch"].checked = JSONvehicle.isAvailable;
             }
 

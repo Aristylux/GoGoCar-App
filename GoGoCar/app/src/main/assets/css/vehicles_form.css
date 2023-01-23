@@ -66,7 +66,7 @@
 
 /* buttons */
 
-.form-group+.button {
+.form-group.button {
     width: 440px;
     max-width: 100%;
     display: flex;

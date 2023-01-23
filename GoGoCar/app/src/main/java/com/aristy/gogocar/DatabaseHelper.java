@@ -267,8 +267,57 @@ public class DatabaseHelper {
      * @return List of all vehicles owned by the user
      */
     public List<DBModelVehicle> getVehiclesByUser(int IDUser){
-        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID_OWNER + " = " + IDUser;
-        return getVehicles(query);
+        //String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID_OWNER + " = " + IDUser;
+        String query = "SELECT " + TABLE_VEHICLE + ".*, " + TABLE_MODULE + "." + COLUMN_MODULE_NAME + " FROM " + TABLE_VEHICLE +
+                " JOIN " + TABLE_MODULE + " ON " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_MODULE + " = " + TABLE_MODULE + "." + COLUMN_MODULE_ID +
+                " WHERE " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_OWNER + " = " + IDUser ;
+        return getVehiclesJoin(query);
+    }
+
+    private List<DBModelVehicle> getVehiclesJoin(String query){
+        List<DBModelVehicle> returnList = new ArrayList<>();
+
+        // Get data from database
+        try {
+            if (connection == null) {
+                Log.e(TAG_Database, "getVehicle: connect is null");
+                return returnList;
+            }
+
+            // Execute query
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            // For each row returned
+            while (rs.next()) {
+                // Get values
+                int vehicle_id = rs.getInt(1);
+                String model = rs.getString(2);
+                String licencePlate = rs.getString(3);
+                String address = rs.getString(4);
+                int idOwner = rs.getInt(5);
+                boolean isAvailable = rs.getBoolean(6);
+                boolean isBooked = rs.getBoolean(7);
+                int idUser = rs.getInt(8);
+                int idModule = rs.getInt(9);
+                String codeModule = rs.getString(10);
+
+                // Create object and add it to the list
+                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser, idModule);
+                vehicle.setCodeModule(codeModule);
+                Log.d(TAG_Database, "getVehicles: " + vehicle);
+                returnList.add(vehicle);
+            }
+
+            // Close both cursor and the database
+            rs.close();
+            st.close();
+        }catch (Exception exception){
+            Log.e(TAG_Database, "getVehicles: " , exception);
+            exception.printStackTrace();
+        }
+
+        return returnList;
     }
 
     /**
@@ -337,8 +386,13 @@ public class DatabaseHelper {
      * @return module
      */
     public DBModelModule getModuleById(int ID){
-        String query = "SELECT * FROM " + TABLE_MODULE + " WHERE " + COLUMN_MODULE_ID + " = " + ID;;
-        return getModules(query).get(0);
+        String query = "SELECT * FROM " + TABLE_MODULE + " WHERE " + COLUMN_MODULE_ID + " = " + ID;
+        //return getModules(query).get(0);
+        List<DBModelModule> modules = getModules(query);
+        if (modules.size() == 0)
+            return new DBModelModule();
+        else
+            return getModules(query).get(0);
     }
 
     /**
@@ -482,6 +536,7 @@ class DBModelVehicle {
     private boolean isBooked;
     private int idUser;
     private int idModule;
+    private String codeModule;
 
     // Constructor
     public DBModelVehicle(int id, String model, String licencePlate, String address, int idOwner, boolean isAvailable, boolean isBooked, int idUser, int idModule) {
@@ -514,6 +569,7 @@ class DBModelVehicle {
             map.put("isBooked", isBooked);
             map.put("idUser", idUser);
             map.put("idModule", idModule);
+            map.put("codeModule", codeModule);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -593,6 +649,14 @@ class DBModelVehicle {
 
     public void setIdModule(int idModule) {
         this.idModule = idModule;
+    }
+
+    public String getCodeModule() {
+        return codeModule;
+    }
+
+    public void setCodeModule(String codeModule) {
+        this.codeModule = codeModule;
     }
 }
 
