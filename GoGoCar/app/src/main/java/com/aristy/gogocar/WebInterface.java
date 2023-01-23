@@ -291,6 +291,8 @@ public class WebInterface {
         vehicle.setIdOwner(userPreferences.getUserID());
         vehicle.setAvailable(isAvailable);
         vehicle.setBooked(false);
+        // Use module code
+        vehicle.setIdModule(1);
 
         // Add user into user table
         boolean success = databaseHelper.addVehicle(vehicle);

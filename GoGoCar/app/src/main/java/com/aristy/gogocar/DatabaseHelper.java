@@ -36,6 +36,7 @@ public class DatabaseHelper {
     private static final String COLUMN_VEHICLE_IS_AVAILABLE = "is_available";
     private static final String COLUMN_VEHICLE_IS_BOOKED = "is_booked";
     private static final String COLUMN_VEHICLE_ID_USER_BOOK = "id_user_book";
+    private static final String COLUMN_VEHICLE_ID_MODULE = "id_module";
     // id image
     // id module (stm 32 table)
 
@@ -68,9 +69,6 @@ public class DatabaseHelper {
             // If it found, delete it and return true.
             // If it is not found, return false.
             int rowAffected = st.executeUpdate();
-
-            //Statement st = connection.createStatement();
-            /*boolean result = *///st.execute(query);
 
             // Close
             st.close();
@@ -226,9 +224,9 @@ public class DatabaseHelper {
      */
     public boolean addVehicle(DBModelVehicle modelVehicle){
         String query = "INSERT INTO " + TABLE_VEHICLE +
-                "( " + COLUMN_VEHICLE_MODEL + "," + COLUMN_VEHICLE_LICENCE_PLATE + "," + COLUMN_VEHICLE_ADDRESS + "," + COLUMN_VEHICLE_ID_OWNER + "," + COLUMN_VEHICLE_IS_AVAILABLE + ") " +
-                "VALUES (?,?,?,?,?)";
-        return executeQuery(query, modelVehicle.getModel(), modelVehicle.getLicencePlate(), modelVehicle.getAddress(), modelVehicle.getIdOwner(), modelVehicle.isAvailable());
+                "( " + COLUMN_VEHICLE_MODEL + "," + COLUMN_VEHICLE_LICENCE_PLATE + "," + COLUMN_VEHICLE_ADDRESS + "," + COLUMN_VEHICLE_ID_OWNER + "," + COLUMN_VEHICLE_IS_AVAILABLE + "," + COLUMN_VEHICLE_ID_MODULE + ") " +
+                "VALUES (?,?,?,?,?,?)";
+        return executeQuery(query, modelVehicle.getModel(), modelVehicle.getLicencePlate(), modelVehicle.getAddress(), modelVehicle.getIdOwner(), modelVehicle.isAvailable(), modelVehicle.getIdModule());
     }
 
     /**
@@ -304,9 +302,10 @@ public class DatabaseHelper {
                 boolean isAvailable = rs.getBoolean(6);
                 boolean isBooked = rs.getBoolean(7);
                 int idUser = rs.getInt(8);
+                int idModule = rs.getInt(9);
 
                 // Create object and add it to the list
-                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser);
+                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser, idModule);
                 Log.d(TAG_Database, "getAllVehicles: " + vehicle);
                 returnList.add(vehicle);
             }
@@ -407,9 +406,10 @@ class DBModelVehicle {
     private boolean isAvailable;
     private boolean isBooked;
     private int idUser;
+    private int idModule;
 
     // Constructor
-    public DBModelVehicle(int id, String model, String licencePlate, String address, int idOwner, boolean isAvailable, boolean isBooked, int idUser) {
+    public DBModelVehicle(int id, String model, String licencePlate, String address, int idOwner, boolean isAvailable, boolean isBooked, int idUser, int idModule) {
         this.id = id;
         this.model = model;
         this.licencePlate = licencePlate;
@@ -418,6 +418,7 @@ class DBModelVehicle {
         this.isAvailable = isAvailable;
         this.isBooked = isBooked;
         this.idUser = idUser;
+        this.idModule = idModule;
     }
 
     public DBModelVehicle() {
@@ -437,6 +438,7 @@ class DBModelVehicle {
             map.put("isAvailable", isAvailable);
             map.put("isBooked", isBooked);
             map.put("idUser", idUser);
+            map.put("idModule", idModule);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -508,5 +510,13 @@ class DBModelVehicle {
 
     public void setIdUser(int idUser) {
         this.idUser = idUser;
+    }
+
+    public int getIdModule() {
+        return idModule;
+    }
+
+    public void setIdModule(int idModule) {
+        this.idModule = idModule;
     }
 }
