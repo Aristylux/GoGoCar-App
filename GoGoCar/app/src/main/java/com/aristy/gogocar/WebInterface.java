@@ -274,13 +274,18 @@ public class WebInterface {
             androidToWeb("addVehicleResult", "4");  // Error code 4
             return;
         }
+
         // Check if the model exist
         //Toast.makeText(context, "error model doesn't exist", Toast.LENGTH_SHORT).show();
         //androidToWeb("addVehicleResult", "1");  // Error code 1
 
         // Check if the module code is correct
-        //Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
-        //androidToWeb("addVehicleResult", "2");  // Error code 2
+        DBModelModule module = databaseHelper.getModuleByName(moduleCode);
+        if(module.getId() == 0){
+            Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
+            androidToWeb("addVehicleResult", "2");  // Error code 2
+            return;
+        }
 
         // Success: add vehicle & quit page
         // Create vehicle
@@ -291,10 +296,9 @@ public class WebInterface {
         vehicle.setIdOwner(userPreferences.getUserID());
         vehicle.setAvailable(isAvailable);
         vehicle.setBooked(false);
-        // Use module code
-        vehicle.setIdModule(1);
+        vehicle.setIdModule(module.getId());
 
-        // Add user into user table
+        // Add vehicle into vehicle table
         boolean success = databaseHelper.addVehicle(vehicle);
         Log.d(TAG_Database, "success=" + success);
         if (!success) {

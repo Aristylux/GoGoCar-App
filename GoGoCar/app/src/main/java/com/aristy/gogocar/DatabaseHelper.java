@@ -347,7 +347,11 @@ public class DatabaseHelper {
      */
     public DBModelModule getModuleByName(String name){
         String query = "SELECT * FROM " + TABLE_MODULE + " WHERE " + COLUMN_MODULE_NAME + " = '" + name + "';";
-        return getModules(query).get(0);
+        List<DBModelModule> modules = getModules(query);
+        if (modules.size() == 0)
+            return new DBModelModule();
+        else
+            return getModules(query).get(0);
     }
 
     /**
@@ -602,6 +606,9 @@ class DBModelModule {
         this.id = id;
         this.name = name;
         this.macAddress = macAddress;
+    }
+
+    public DBModelModule() {
     }
 
     @NonNull
