@@ -9,6 +9,7 @@ import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
+import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
@@ -242,10 +243,21 @@ public class WebInterface {
 
     /* -- vehicle edit -- */
 
+    /**
+     * Open Edit fragment
+     * @param vehicle String JSON vehicle
+     */
     @JavascriptInterface
     public void requestOpenEditVehicle(String vehicle){
-        Log.d(TAG_Web, "requestOpenEditVehicle: " + vehicle);
-        fragmentHandler.obtainMessage(GOTO_EDIT_VEHICLE_FRAGMENT).sendToTarget();
+        fragmentHandler.obtainMessage(GOTO_EDIT_VEHICLE_FRAGMENT, vehicle).sendToTarget();
+    }
+
+    /**
+     * Send vehicle (in main) to the new fragment
+     */
+    @JavascriptInterface
+    public void requestGetVehicle(){
+        fragmentHandler.obtainMessage(DATA_SET_VEHICLE).sendToTarget();
     }
 
     /* -- vehicle add -- */
@@ -427,6 +439,8 @@ public class WebInterface {
      */
     static class FunctionNames {
         public static final String DRIVING_REQUEST = "requestDriveCallback";
+
+        public static final String SET_VEHICLE_EDIT = "setVehicle";
     }
 
     static class ErrorCodes {

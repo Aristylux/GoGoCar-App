@@ -16,6 +16,7 @@ import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
+import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
 import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
@@ -32,6 +33,7 @@ import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
 import static com.aristy.gogocar.WebInterface.EDIT_VEHICLE;
 import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_REQUEST_CAR_NOT_FOUND;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
+import static com.aristy.gogocar.WebInterface.FunctionNames.SET_VEHICLE_EDIT;
 import static com.aristy.gogocar.WebInterface.HOME;
 import static com.aristy.gogocar.WebInterface.VEHICLE;
 
@@ -336,8 +338,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentApp.putArguments(args);
     }
 
-    Handler fragmentHandler = new Handler(new Handler.Callback() {
+    String vehicle;
 
+    Handler fragmentHandler = new Handler(new Handler.Callback() {
         @SuppressLint("MissingPermission")
         @Override
         public boolean handleMessage(@NonNull Message message) {
@@ -346,20 +349,28 @@ public class MainActivity extends AppCompatActivity {
                     setFragment(new FragmentLogin(SQLConnection, userPreferences, handlers), ANIMATE_SLIDE_LEFT);
                     break;
                 case GOTO_HOME_FRAGMENT:
-                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, HOME), ANIMATE_SLIDE_RIGHT);
+                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, HOME);
+                    setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT);
                     break;
                 case GOTO_ADD_VEHICLE_FRAGMENT:
-                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, ADD_VEHICLE), ANIMATE_SLIDE_UP);
+                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, ADD_VEHICLE);
+                    setFragment(fragmentApp, ANIMATE_SLIDE_UP);
                     break;
                 case GOTO_EDIT_VEHICLE_FRAGMENT:
-                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, EDIT_VEHICLE), ANIMATE_SLIDE_LEFT);
+                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, EDIT_VEHICLE);
+                    setFragment(fragmentApp, ANIMATE_SLIDE_LEFT);
+                    vehicle = String.valueOf(message.obj);
                     break;
                 case GOTO_VEHICLE_FRAGMENT:
-                    setFragment(new FragmentApp(SQLConnection, userPreferences, handlers, VEHICLE), (Integer) message.obj);
+                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, VEHICLE);
+                    setFragment(fragmentApp, (Integer) message.obj);
                     break;
                 case STATUS_BAR_COLOR:
                     // Set color background
                     getWindow().setStatusBarColor((Integer) message.obj);
+                    break;
+                case DATA_SET_VEHICLE:
+                    sendDataToFragment(SET_VEHICLE_EDIT, vehicle);
                     break;
             }
             return true;

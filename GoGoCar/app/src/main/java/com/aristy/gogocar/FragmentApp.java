@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,7 +83,10 @@ public class FragmentApp extends Fragment {
     public void putArguments(Bundle args){
         String functionName = args.getString(ARG_FUNCTION_NAME);
         String params = args.getString(ARG_FUNCTION_PARAMS);
-        web.post(() -> web.loadUrl("javascript:" + functionName + "('" + params + "')"));
+        if (web != null)
+            web.post(() -> web.loadUrl("javascript:" + functionName + "('" + params + "')"));
+        else
+            Log.e("Gogocar_Fragments", "putArguments: error, web = null");
     }
     
 }
