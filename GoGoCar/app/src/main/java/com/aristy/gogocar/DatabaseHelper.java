@@ -19,6 +19,7 @@ import java.util.List;
 
 public class DatabaseHelper {
 
+    /* USER */
     private static final String TABLE_USER = "users";
     private static final String COLUMN_USER_ID = "id";
     private static final String COLUMN_USER_NAME = "name";
@@ -27,6 +28,7 @@ public class DatabaseHelper {
     private static final String COLUMN_USER_PASSWORD = "password";
     // id person (identity card table) (if null => not approved)
 
+    /* VEHICLE */
     private static final String TABLE_VEHICLE = "vehicles";
     private static final String COLUMN_VEHICLE_ID = "id";
     private static final String COLUMN_VEHICLE_MODEL = "model";
@@ -38,7 +40,12 @@ public class DatabaseHelper {
     private static final String COLUMN_VEHICLE_ID_USER_BOOK = "id_user_book";
     private static final String COLUMN_VEHICLE_ID_MODULE = "id_module";
     // id image
-    // id module (stm 32 table)
+
+    /* MODULE */
+    private static final String TABLE_MODULE = "modules";
+    private static final String COLUMN_MODULE_ID = "id";
+    private static final String COLUMN_MODULE_NAME = "name";
+    private static final String COLUMN_MODULE_MAC_ADDRESS = "mac_address";
 
     Connection connection;
 
@@ -306,7 +313,7 @@ public class DatabaseHelper {
 
                 // Create object and add it to the list
                 DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser, idModule);
-                Log.d(TAG_Database, "getAllVehicles: " + vehicle);
+                Log.d(TAG_Database, "getVehicles: " + vehicle);
                 returnList.add(vehicle);
             }
 
@@ -314,12 +321,76 @@ public class DatabaseHelper {
             rs.close();
             st.close();
         }catch (Exception exception){
-            Log.e(TAG_Database, "getAllVehicles: " , exception);
+            Log.e(TAG_Database, "getVehicles: " , exception);
             exception.printStackTrace();
         }
 
         return returnList;
     }
+
+    /*  ---------------------------------- *
+     *  --            MODULES           -- *
+     *  ---------------------------------- */
+
+    /**
+     * @param ID module id
+     * @return module
+     */
+    public DBModelModule getModuleById(int ID){
+        String query = "SELECT * FROM " + TABLE_MODULE + " WHERE " + COLUMN_MODULE_ID + " = " + ID;;
+        return getModules(query).get(0);
+    }
+
+    /**
+     * @param name identification name
+     * @return module
+     */
+    public DBModelModule getModuleByName(String name){
+        String query = "SELECT * FROM " + TABLE_MODULE + " WHERE " + COLUMN_MODULE_NAME + " = '" + name + "';";
+        return getModules(query).get(0);
+    }
+
+    /**
+     * @param query query
+     * @return list of modules
+     */
+    private List<DBModelModule> getModules(String query){
+        List<DBModelModule> returnList = new ArrayList<>();
+
+        // Test connection
+        if (connection == null) {
+            Log.e(TAG_Database, "getModules: connect is null");
+            return returnList;
+        }
+
+        try {
+            // Execute query
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            // Get data
+            while (rs.next()) {
+                // Get values
+                int module_id = rs.getInt(1);
+                String name = rs.getString(2);
+                String mac_address = rs.getString(3);
+
+                // Create object and add it to the list
+                DBModelModule module = new DBModelModule(module_id, name, mac_address);
+                Log.d(TAG_Database, "getModules: " + module);
+                returnList.add(module);
+            }
+
+            // Close both cursor and the database
+            rs.close();
+            st.close();
+        } catch (Exception exception){
+            Log.e(TAG_Database, "getModules: " , exception);
+            exception.printStackTrace();
+        }
+        return returnList;
+    }
+
 }
 
 class DBModelUser {
@@ -518,5 +589,52 @@ class DBModelVehicle {
 
     public void setIdModule(int idModule) {
         this.idModule = idModule;
+    }
+}
+
+class DBModelModule {
+
+    private int id;
+    private String name;
+    private String macAddress;
+
+    public DBModelModule(int id, String name, String macAddress) {
+        this.id = id;
+        this.name = name;
+        this.macAddress = macAddress;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "DBModelModules{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", macAddress='" + macAddress + '\'' +
+                '}';
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMacAddress() {
+        return macAddress;
+    }
+
+    public void setMacAddress(String macAddress) {
+        this.macAddress = macAddress;
     }
 }
