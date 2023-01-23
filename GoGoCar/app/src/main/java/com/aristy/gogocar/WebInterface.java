@@ -448,6 +448,8 @@ public class WebInterface {
         public static final String DRIVING_REQUEST_BLUETOOTH_DISABLED = "2";
         public static final String DRIVING_REQUEST_LOCALISATION_DISABLE = "3";
         public static final String DRIVING_REQUEST_CAR_NOT_FOUND = "4";
+        public static final String DRIVING_CONNECTION_FAILED = "5";
+        public static final String DRIVING_CONNECTION_DISCONNECTED = "6";
     }
 
     static class Boolean {

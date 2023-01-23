@@ -31,6 +31,8 @@ import static com.aristy.gogocar.Security.getPinKey;
 import static com.aristy.gogocar.WebInterface.ADD_VEHICLE;
 import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
 import static com.aristy.gogocar.WebInterface.EDIT_VEHICLE;
+import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_CONNECTION_DISCONNECTED;
+import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_CONNECTION_FAILED;
 import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_REQUEST_CAR_NOT_FOUND;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
 import static com.aristy.gogocar.WebInterface.FunctionNames.SET_VEHICLE_EDIT;
@@ -195,8 +197,8 @@ public class MainActivity extends AppCompatActivity {
     String lastMacAddress = null;
 
     // Get into database
-    String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
-
+    //String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
+    String hashMacAddressModule = "29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4";
 
     private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
         @SuppressLint("MissingPermission")
@@ -284,16 +286,18 @@ public class MainActivity extends AppCompatActivity {
                 case BT_STATE_CONNECTION_FAILED:
                     Log.v(TAG_BT, "BT_STATE_CONNECTION_FAILED");
                     bluetoothConnection.connectionFailed();
+                    sendDataToFragment(DRIVING_REQUEST, DRIVING_CONNECTION_FAILED);
                     break;
                 case BT_STATE_MESSAGE_RECEIVED:
                     Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
-                    bluetoothConnection.messageReceived((String) message.obj);
                     // TODO (test)
-                    sendDataToFragment(bluetoothConnection.getMessageFunction(), bluetoothConnection.getMessageParams());
+                    //bluetoothConnection.messageReceived((String) message.obj);
+                    //sendDataToFragment(bluetoothConnection.getMessageFunction(), bluetoothConnection.getMessageParams());
                     break;
                 case BT_STATE_DISCONNECTED:
                     Log.v(TAG_BT, "BT_STATE_DISCONNECTED");
                     bluetoothConnection.connectionFinished();
+                    sendDataToFragment(DRIVING_REQUEST, DRIVING_CONNECTION_DISCONNECTED);
                     break;
             }
             return true;
