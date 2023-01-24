@@ -8,6 +8,7 @@ import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
+import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_STATE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
@@ -184,6 +185,12 @@ public class WebInterface {
     /*  ---------------------------------- *
      *  --           home.html          -- *
      *  ---------------------------------- */
+
+    @JavascriptInterface
+    public void requestData(){
+        requestUserName();
+        bluetoothHandler.obtainMessage(BT_REQUEST_STATE).sendToTarget();
+    }
 
     @JavascriptInterface
     public void requestDrive(){

@@ -11,6 +11,7 @@ import static com.aristy.gogocar.ConnectionHelper.connectionValid;
 import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_NAME;
 import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_PARAMS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
+import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_STATE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
@@ -308,6 +309,14 @@ public class MainActivity extends AppCompatActivity {
                 case BT_STATE_DISCONNECTING:
                     Log.v(TAG_BT, "BT_STATE_DISCONNECTING");
                     bluetoothConnection.closeConnection();
+                    break;
+                case BT_REQUEST_STATE:
+                    if (bluetoothConnection == null) {
+                        sendDataToFragment("setSwitchState", "false");
+                        break;
+                    }
+                    boolean connected = bluetoothConnection.getBluetoothSocket().isConnected();
+                    sendDataToFragment("setSwitchState", String.valueOf(connected));
                     break;
             }
             return true;

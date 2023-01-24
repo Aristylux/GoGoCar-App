@@ -26,5 +26,6 @@ public class HandlerCodes {
     public static final int BT_STATE_DISCONNECTING = 7;
 
     public static final int BT_REQUEST_ENABLE = 11;
+    public static final int BT_REQUEST_STATE = 12;
 
 }

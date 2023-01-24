@@ -89,7 +89,7 @@
 
         <script>
             // On load page:
-            if(androidConnected()) Android.requestUserName();
+            if(androidConnected()) Android.requestData();
 
             // [ANDROID CALLBACK]
             function setUserName(name){
@@ -100,7 +100,16 @@
 
             // Get all car booked for the user
 
+
+            // Switch
             let switchElement = document.getElementById('switch');
+
+            function setSwitchState(state){
+                if(state === "true")
+                    switchElement.checked = true;
+                else
+                    switchElement.checked = false;
+            }
 
             switchElement.addEventListener('change', function () {
                 if (switchElement.checked) {
