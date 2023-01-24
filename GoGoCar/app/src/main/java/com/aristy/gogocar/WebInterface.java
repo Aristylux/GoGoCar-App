@@ -260,6 +260,36 @@ public class WebInterface {
         fragmentHandler.obtainMessage(DATA_SET_VEHICLE).sendToTarget();
     }
 
+    @JavascriptInterface
+    public void requestUpdateVehicle(int id, String model, String licencePlate, String address, String moduleCode, boolean isAvailable){
+
+        // Check if the module code is correct
+        DBModelModule module = databaseHelper.getModuleByName(moduleCode);
+        if(module.getId() == 0){
+            Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
+            androidToWeb("updateVehicleResult", "2");  // Error code 2
+            return;
+        }
+
+        DBModelVehicle vehicle = new DBModelVehicle();
+        vehicle.setId(id);
+        vehicle.setModel(model);
+        vehicle.setLicencePlate(licencePlate);
+        vehicle.setAddress(address);
+        vehicle.setIdModule(module.getId());
+        vehicle.setAvailable(isAvailable);
+
+        boolean success = databaseHelper.updateVehicle(vehicle);
+        if (!success) {
+            Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
+            androidToWeb("updateVehicleResult", "3");  // Error code 3
+            return;
+        }
+
+        // Return top vehicle fragment
+        fragmentHandler.obtainMessage(GOTO_VEHICLE_FRAGMENT, ANIMATE_SLIDE_RIGHT).sendToTarget();
+    }
+
     /* -- vehicle add -- */
 
     @JavascriptInterface

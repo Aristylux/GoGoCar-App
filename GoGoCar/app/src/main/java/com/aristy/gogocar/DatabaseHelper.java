@@ -245,6 +245,14 @@ public class DatabaseHelper {
         return executeQuery(query, modelVehicle.getId());
     }
 
+    public boolean updateVehicle(DBModelVehicle vehicle){
+        String query = "UPDATE " + TABLE_VEHICLE + " SET " +
+                COLUMN_VEHICLE_MODEL + " = ?, " + COLUMN_VEHICLE_LICENCE_PLATE + " = ?, " + COLUMN_VEHICLE_ADDRESS + " = ?, " +
+                COLUMN_VEHICLE_IS_AVAILABLE + " = ?, " + COLUMN_VEHICLE_ID_MODULE + " = ? " +
+                "WHERE " + COLUMN_VEHICLE_ID + " = ?";
+        return executeQuery(query, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.isAvailable(), vehicle.getIdModule(), vehicle.getId());
+    }
+
     /**
      * @return List of all vehicles
      */
