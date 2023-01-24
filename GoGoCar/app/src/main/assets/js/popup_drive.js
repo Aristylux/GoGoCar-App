@@ -22,5 +22,5 @@ popup_vehicle_button_book.addEventListener("click", function () {
     console.log("book");
     closePopup(popup);
     // Open new html (booking)
-    if (androidConnected()) Android.requestOpenBook(vehicle_selected);
+    if (androidConnected()) Android.requestOpenBook(JSON.stringify(vehicle_selected));
 });

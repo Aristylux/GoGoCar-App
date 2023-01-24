@@ -382,6 +382,7 @@ public class MainActivity extends AppCompatActivity {
                 case GOTO_BOOK_VEHICLE_FRAGMENT:
                     fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, BOOK_VEHICLE);
                     setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT);
+                    vehicle = String.valueOf(message.obj);
                     break;
                 case GOTO_ADD_VEHICLE_FRAGMENT:
                     fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, ADD_VEHICLE);

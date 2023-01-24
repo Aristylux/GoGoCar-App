@@ -247,12 +247,20 @@ public class WebInterface {
 
     @JavascriptInterface
     public void requestOpenBook(String vehicle){
-        fragmentHandler.obtainMessage(GOTO_BOOK_VEHICLE_FRAGMENT).sendToTarget();
+        Log.d(TAG_Web, "requestOpenBook: " + vehicle);
+        fragmentHandler.obtainMessage(GOTO_BOOK_VEHICLE_FRAGMENT, vehicle).sendToTarget();
     }
 
     @JavascriptInterface
     public void requestReturnToDrive(){
         fragmentHandler.obtainMessage(GOTO_DRIVE_FRAGMENT).sendToTarget();
+    }
+
+    // -- Book
+
+    @JavascriptInterface
+    public void requestBookVehicle(int vehicleID, String pickupDate, String dropDate){
+        Log.d(TAG_Web, "requestBookVehicle: " + vehicleID + " " + pickupDate + " " + dropDate);
     }
 
     /*  ---------------------------------- *
