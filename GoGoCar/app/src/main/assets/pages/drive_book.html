@@ -17,6 +17,120 @@
             }
         </style>
 
+<link rel="stylesheet" href="../css/vehicles_form.css"/>
+
+        <!-- form -->
+        <style>
+
+
+.form-group input {
+    padding: 6px 35px;
+    font-size: 1em;
+    transition: all 0.2s ease;
+
+    border: none;
+    outline: none;
+    border-bottom: 2px solid #ccc;
+    border-top: 2px solid transparent;
+}
+
+.form-group input:is(:focus, :valid) {
+    border-bottom-color: var(--primary-color);
+}
+
+.form-group span {
+    color: #524544;    
+}
+
+.form-group i {
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+}
+
+
+/* button */
+.button {
+    margin-top: 30px;
+    width: 440px;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.button input {
+    padding: 6px 35px;
+    border: none;
+    color: #FFFFFF;
+    font-size: 1.2em;
+    font-weight: 500;
+    letter-spacing: 1px;
+    border-radius: 25px;
+    background-color: var(--primary-color);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.button input:active {
+    background-color: var(--secondary-color);
+}
+
+
+dd {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: #6d7270;
+    min-height: 20px;
+}
+
+/* buttons group */
+
+.radio-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5px;
+}
+
+.form-radio {
+    background-color: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    padding: 10px;
+    color: #242927;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+
+    transition: all 0.3s ease;
+
+}
+
+.form-radio i {
+    font-size: 2em;
+}
+
+.form-radio.radio--active {
+    background-color: var(--primary-color);
+    color: #f6f8fa;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+}
+
+.form-radio.radio--active i{
+    color: #f6f8fa;
+}
+
+.form-radio.radio--active span{
+    color: inherit;
+}
+
+        </style>
+
+
     </head>
     <body>
         <div id="screen_header">
@@ -27,7 +141,69 @@
         </div>
 
         <section>
-            
+            <form id="book_form" action="#">
+                <div class="form-group">
+                    <dt>Model</dt>
+                    <dd>
+                        <i class="fi fi-rr-car"></i>
+                        <span>Peugeot 3008</span>
+                    </dd>
+                </div>
+                <div class="form-group">
+                    <dt>Address</dt>
+                    <dd>
+                        <i class="fi fi-rr-map-marker"></i>
+                        <span>10 Rue du Clergé</span>
+                    </dd>
+                </div>
+                <div class="form-group">
+                    <dt>Licence Plate</dt>
+                    <dd>
+                        <i class="fi fi-rr-barcode-read"></i>
+                        <span>TR-982-ZZ</span>
+                    </dd>
+                </div>
+                <div class="form-group">
+                    <dt>Pickup Date</dt>
+                    <dd>
+                        <i class="fi fi-rr-calendar"></i>
+                        <input class="form-control" id="pickup_date" type="date" placeholder="Pickup Date">
+                    </dd>
+                    <dd>
+                        <small></small>
+                    </dd>
+                </div>
+                <div class="form-group">
+                    <dt>Drop Date</dt>
+                    <dd>
+                        <i class="fi fi-rr-calendar"></i>
+                        <input class="form-control" id="drop_date" type="date" placeholder="Pickup Date">   
+                    </dd>
+                    <dd>
+                        <small></small>
+                    </dd>
+                </div>
+                <div class="form-group">
+                    <dt>Capacity</dt>
+                    <div class="radio-group">
+                        <div class="form-radio">
+                            <i class="fi fi-rr-taxi"></i>
+                            <span>1 Person</span>
+                        </div>
+                        <div class="form-radio">
+                            <i class="fi fi-rr-taxi"></i>
+                            <span>2 Persons</span>
+                        </div>
+                        <div class="form-radio">
+                            <i class="fi fi-rr-taxi"></i>
+                            <span>3 or more Persons</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="button">
+                    <input id="book_vehicle_button" type="button" value="Book">
+                </div>
+            </form>
         </section>
 
         <script src="../js/androidInterface.js"></script>
@@ -38,6 +214,15 @@
             button_return.addEventListener('click', function () {
                 if(androidConnected()) Android.requestReturnToDrive();
             });
+
+            // Radio group
+            const radio_buttons = document.querySelectorAll(".form-radio");
+            radio_buttons.forEach(function (radio_button, index) {
+            radio_button.addEventListener('click', (event) => {
+                radio_buttons.forEach( (button) => button.classList.remove("radio--active"));
+                radio_button.classList.add("radio--active");
+            });
+        });
         </script>
     </body>
 </html>
