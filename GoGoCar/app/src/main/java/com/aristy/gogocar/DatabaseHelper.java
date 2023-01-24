@@ -346,7 +346,7 @@ public class DatabaseHelper {
 
         // Get data from database
         try {
-            if (connection == null) {
+            if (connection == null || connection.isClosed()) {
                 Log.e(TAG_Database, "getVehicle: connect is null");
                 return returnList;
             }

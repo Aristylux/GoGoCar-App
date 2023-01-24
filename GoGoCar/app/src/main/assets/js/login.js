@@ -85,11 +85,11 @@ const error_messages = {
     messages: [
         "",
         "First Name & Last Name needed",
-        "Email incorrect",
+        "Incorrect email",
         "Email already used",
-        "Phone incorrect",
+        "Incorrect phone",
         "Phone already used",
-        "Password are empty",
+        "Empty password",
         "Password are not identical",
     ],
     getErrorText: function (errorCode) {

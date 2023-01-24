@@ -201,8 +201,8 @@ public class MainActivity extends AppCompatActivity {
     String lastMacAddress = null;
 
     // Get into database
-    //String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
-    String hashMacAddressModule = "29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4";
+    String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
+    //String hashMacAddressModule = "29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4";
 
     private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
         @SuppressLint("MissingPermission")
@@ -294,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case BT_STATE_MESSAGE_RECEIVED:
                     Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
+                    Log.d(TAG_BT, "handleMessage: received: " + message.obj);
                     // TODO (test)
                     //bluetoothConnection.messageReceived((String) message.obj);
                     //sendDataToFragment(bluetoothConnection.getMessageFunction(), bluetoothConnection.getMessageParams());

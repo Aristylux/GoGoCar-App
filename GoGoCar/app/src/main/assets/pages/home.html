@@ -129,7 +129,7 @@
                     if(androidConnected()) Android.showToast("You can drive :-)");
                 } else {
                     switchElement.checked = false;
-                    console.log(allowedToDrive);
+                    console.log("Error callback type: " + allowedToDrive);
                     if (typeof allowedToDrive == "string") allowedToDrive = parseInt(allowedToDrive);
 
                     switch (allowedToDrive) {
