@@ -129,13 +129,11 @@
                     if(androidConnected()) Android.showToast("You can drive :-)");
                 } else {
                     switchElement.checked = false;
-                    console.log(typeof allowedToDrive);
                     console.log(allowedToDrive);
                     if (typeof allowedToDrive == "string") allowedToDrive = parseInt(allowedToDrive);
-                    console.log(allowedToDrive);
 
                     switch (allowedToDrive) {
-                        case 4:
+                        case 4: //DRIVING_REQUEST_CAR_NOT_FOUND
                             if(androidConnected()) Android.showToast("You cannot drive, car not found.");
                             break;
                     

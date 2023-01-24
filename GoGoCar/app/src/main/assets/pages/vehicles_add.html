@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="../css/main_theme.css" />
+
+        <link rel="stylesheet" href="../ico/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+
+        <link rel="stylesheet" href="../css/switch.css" />
+        <link rel="stylesheet" href="../css/style_button.css"/>
+
+        <link rel="stylesheet" href="../css/screen_header.css"/>
+
+
+        <style>
+            section {
+                margin: 2em;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+        </style>
+
+        <link rel="stylesheet" href="../css/vehicles_form.css"/>
+
+    </head>
+    <body>
+        <div id="screen_header">
+            <a id="button_return" href="#">
+                <i id="ico_return" class="fi fi-rr-arrow-small-left"></i>
+            </a>
+            <h1>Add a vehicle</h1>
+        </div>
+
+        <section>
+            <form id="form-add-vehicle">
+                <div class="form-group">
+                    <dt>Model</dt>
+                    <dd>
+                        <input id="vehicle_model" class="form-control" type="text" name="" >
+                    </dd>
+                </div>
+                <div class="form-group">
+                    <dt>Licence plate</dt>
+                    <dd>
+                        <input id="vehicle_licence_plate" class="form-control" type="text" name="" >
+                    </dd>
+                </div>
+                <div class="form-group">
+                    <dt>Address</dt>
+                    <dd>
+                        <input id="vehicle_address" class="form-control" type="text" name="" >
+                    </dd>
+                </div>
+                <div class="form-group">
+                    <dt>Module Mi Carro Es Tu Carro Code</dt>
+                    <dd>
+                        <input id="vehicle_module_code" class="form-control" type="text" name="" >
+                        <p class="note">You can find the code in the module.</p>
+                    </dd>
+                </div>
+                <div class="form-group switch-container">
+                    <div id="switch_container">
+                        <label class="switch">
+                            <input id="switch" type="checkbox" class="switch_input"  >
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div>
+                        <dt>Activate the search of the vehicle</dt>
+                        <p class="note">You can modify that everytime you want.</p>
+                    </div>
+                </div>
+            </form>
+            <div class="form-group button">
+                <button id="add_vehicle_button">Add Vehicle</button>
+            </div>
+        </section>
+
+        <script src="../js/androidInterface.js"></script>
+
+        <script>
+            const button_return = document.getElementById("button_return");
+            button_return.addEventListener('click', function () {
+                if(androidConnected()) Android.requestReturnToHome("ADD_VEHICLE");
+            });
+
+            const add_vehicle_button = document.getElementById("add_vehicle_button");
+            add_vehicle_button.addEventListener('click', function() {
+                // Get values
+                const formVehicle = document.getElementById("form-add-vehicle");
+                const formVhModel = formVehicle.elements["vehicle_model"].value;
+                const formVhLicencePlate = formVehicle.elements["vehicle_licence_plate"].value;
+                const formVhAddress = formVehicle.elements["vehicle_address"].value;
+                const formVhModuleCode = formVehicle.elements["vehicle_module_code"].value;
+                const formVhIsAvailable = formVehicle.elements["switch"].checked;
+                
+                console.log("vehicle: " + formVhModel + ", " + formVhLicencePlate + ", " + formVhAddress + ", " + formVhModuleCode + ", " + formVhIsAvailable);
+
+                // Sent to android
+                if(androidConnected()) Android.requestAddVehicle(formVhModel, formVhLicencePlate, formVhAddress, formVhModuleCode, formVhIsAvailable);
+            });
+
+            //[ANDROID CALLBACK]
+            // Fail
+            // Stay in the current page
+            function addVehicleResult(code) {
+                console.log("code:" + code);
+            }
+        </script>
+    </body>
+</html>

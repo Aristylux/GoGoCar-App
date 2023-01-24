@@ -16,9 +16,11 @@ public class BluetoothCommunication extends Thread {
     private InputStream inputStream = null;
     private OutputStream outputStream = null;
 
-    BluetoothConnection bluetoothConnection;
+    private final BluetoothConnection bluetoothConnection;
     private BluetoothSocket bluetoothSocket;
-    Handler handler;
+    private final Handler handler;
+
+    private String textMessage = "";
 
     public BluetoothCommunication(BluetoothConnection bluetoothConnection, Handler handler){
         this.bluetoothConnection = bluetoothConnection;
@@ -43,14 +45,13 @@ public class BluetoothCommunication extends Thread {
             try {
                 bytes = inputStream.read(buffer);
                 String tempMessage = new String(buffer,0, bytes);
-                // TODO (test)
-                StringBuilder line = new StringBuilder();
-                for (char ch : tempMessage.toCharArray()){
-                    line.append(ch);
-                    // the char is an end of line, send to handler and clear line for a new line
-                    if(ch == '\n') {
-                        handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, line).sendToTarget();
-                        //line = "";
+                for (int i = 0; i < tempMessage.length(); i++){
+                    //Log.d(TAG_B,  i + " [" + message.charAt(i) + "]");
+                    textMessage += tempMessage.charAt(i);
+                    if(tempMessage.charAt(i) == '\n') {
+                        //Log.d(TAG_B, count + "\t" + textMessage);
+                        handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, textMessage).sendToTarget();
+                        textMessage = "";
                     }
                 }
             } catch (IOException exception) {
@@ -73,7 +74,7 @@ public class BluetoothCommunication extends Thread {
     /**
      * write to the output stream <br>
      * (in the bluetooth line) <br>
-     * String word = "hello world";
+     * String word = "hello world"; <br>
      * use: class.write(word.getBytes());
      * @param bytes data
      */

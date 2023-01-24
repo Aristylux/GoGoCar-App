@@ -10,95 +10,63 @@
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
         <link rel="stylesheet" href="../css/style_button.css"/>
         
-        <style>
-            ul {
-                padding: 0;
-                margin: 0;
-                margin-top: 20px;
-            }
-
-            li {
-                background-color: var(--background-color);
-                margin: 0 20px;
-                margin-bottom: 10px;
-                box-shadow: 0 2px 5px #0002;
-                border-radius: 15px;
-                padding: 15px;
-                transition: 0.3s;
-            }
-
-            .vehicle_container:active {
-                background-color: var(--primary-color);
-            }
-        </style>
-
-        <style>
-
-        #no_vehicles {
-            color: #ddd;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: auto;
-            margin-top: 29%;
-            font-size: 2em;
-            font-weight: 600;
-            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-        }
-
-        #no_vehicles i {
-            font-size: 3em;
-        }
-
-        </style>
-
-        <style>
-
-        a {
-            text-decoration: none;
-        }
-
-        .button_bottom {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            margin: 5%;
-            margin-bottom: 20%;
-
-            animation: transitionIn 0.5s;
-        }
-
-        #add_vehicle_button {
-            background-color: var(--primary-color);
-            color: #ffffff;
-            font-weight: 600;
-
-            border-radius: 25px;
-            padding: 5px 0;
-            padding-right: 10px;
-
-            display: inline-grid;
-            grid-template-columns: max-content max-content;
-            column-gap: 5px;
-
-            align-items: center;
-
-        }
-
-        #add_vehicle_button i {
-            display: flex;
-            align-items: center;
-            font-size: 2.4em;
-        }
-
-        </style>
-
+        <!--popup style-->
+        <link rel="stylesheet" href="../css/popup.css" />
+        <link rel="stylesheet" href="../css/modal.css" />
+        
+        <!--page style-->
+        <link rel="stylesheet" href="../css/vehicles.css" />
+        <link rel="stylesheet" href="../css/no_vehicle_logo.css" />
+        <link rel="stylesheet" href="../css/vehicles_owner_list.css" />
     </head>
     <body>
         <section id="page-content">
             <h1>Vehicles</h1>
 
-            <ul id="vehicles_list"></ul>
+            <ul id="vehicles_list">
+<!--
+                <li class="vehicle_container">
+                    <div class="vehicle_container_left">
+                        <div class="vehicle_model">Renault Clio</div>
+                        <div class="info">
+                            <i class="fi fi-sr-map-marker"></i>
+                            <span>12 rue du Pain</span>
+                        </div>
+                        <div class="info">
+                            <i class="fi fi-sr-rectangle-barcode"></i>
+                            <span>FR-456-RY</span>
+                        </div>
+                    </div>
+                    <div class="vehicle_container_right">
+                        <div class="state state--active">Active</div>
+                        <div class="ico">
+                            <i class="fi fi-sr-trash"></i>
+                            <i class="fi fi-sr-pencil"></i>
+                        </div>
+                    </div>
+                </li>
+                <li class="vehicle_container">
+                    <div class="vehicle_container_left">
+                        <div class="vehicle_model">Porsche 911</div>
+                        <div class="info">
+                            <i class="fi fi-sr-map-marker"></i>
+                            <span>976 Avenue Jean</span>
+                        </div>
+                        <div class="info">
+                            <i class="fi fi-sr-rectangle-barcode"></i>
+                            <span>TR-456-FH</span>
+                        </div>
+                    </div>
+                    <div class="vehicle_container_right">
+                        <div class="state state--booked">Booked</div>
+                        <div class="ico">
+                            <i class="fi fi-sr-trash"></i>
+                            <i class="fi fi-sr-pencil"></i>
+                        </div>
+                    </div>
+                </li>
+-->
+            </ul>
 
             <div id="no_vehicles">
                 <i class="fi fi-sr-search"></i>
@@ -112,6 +80,22 @@
                 <i class="fi fi-sr-plus-small"></i>
                 <span class="nav__text">Add</span>
             </a>
+        </div>
+
+        <!-- Popups message -->
+        <div id="modal_popup" class="modal">
+            <!-- Popup message for book a vehicle -->
+            <div id="popup" class="popup">
+                <h1 id="vehicle_name"></h1>
+                <div id="popup_information">
+                    <i id="ico_position" class="fi fi-rr-map-marker"></i>
+                    <span id="vehicle_position">Position</span>
+                </div>
+                <div id="popup_buttons">
+                    <button id="but_pop_close">No, close</button>
+                    <button id="but_pop_remove" class="border-button">Yes, delete</button>
+                </div>
+            </div>
         </div>
 
         <nav id="navigation" class="nav">
@@ -134,44 +118,11 @@
         </nav>
 
         <script src="../js/androidInterface.js"></script>
+
+        <script src="../js/popup.js"></script>
+        <script src="../js/popup_vehicles.js"></script>
+        <script src="../js/vehicles.js"></script>
+
         <script src="../js/nav.js"></script>
-
-        <script>
-            // Request database
-            if (androidConnected()) Android.requestUserVehicles();
-
-            // [ANDROID CALLBACK] Retrive databases from android (result)
-            function setDatabase(_table_vehicle) {
-                var vehicles = JSON.parse(_table_vehicle);
-
-                console.log(vehicles.length);
-            
-                if (vehicles.length != 0){
-                    document.getElementById("no_vehicles").style.display = 'none';
-
-                    vehicles.forEach((vehicle) => {
-                        addElement(vehicle);
-                    });
-                }
-            }
-
-            // Add element to ul list
-            function addElement(vehicle) {
-                let vehicle_info = [vehicle.name, vehicle.address, vehicle.licencePlate];
-            
-                // Create Container
-                let li = document.createElement("li");
-                li.classList.add("vehicle_container");
-                vehicle_info.forEach((info) => {
-                    let div = document.createElement("div");
-                    div.appendChild(document.createTextNode(info));
-                    li.appendChild(div);
-                });
-                const ul = document.getElementById("vehicles_list");
-                ul.appendChild(li);
-            }
-
-        </script>
-
     </body>
 </html>

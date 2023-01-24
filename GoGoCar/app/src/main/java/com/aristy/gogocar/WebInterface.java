@@ -1,14 +1,21 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_DOWN;
+import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_LEFT;
+import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
+import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
+import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
@@ -28,6 +35,11 @@ import java.sql.Connection;
 import java.util.List;
 
 public class WebInterface {
+
+    public static final String HOME = "file:///android_asset/pages/home.html";
+    public static final String VEHICLE = "file:///android_asset/pages/vehicles.html";
+    public static final String ADD_VEHICLE = "file:///android_asset/pages/vehicles_add.html";
+    public static final String EDIT_VEHICLE = "file:///android_asset/pages/vehicles_edit.html";
 
     Activity activity;
     Context context;
@@ -202,11 +214,164 @@ public class WebInterface {
      *  --        vehicles.html         -- *
      *  ---------------------------------- */
 
+    /**
+     * Ask all vehicles owned by the current user
+     */
     @JavascriptInterface
     public void requestUserVehicles(){
-        //DatabaseHelper databaseHelper = new DatabaseHelper(connection);
         List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userPreferences.getUserID());
         androidToWeb("setDatabase", vehicles.toString());
+    }
+
+    /**
+     * Remove a vehicle
+     * @param vehicleID id vehicle for identification<br>
+     * <br>
+     * return: true to webView if success<br>
+     *         else, show error
+     */
+    @JavascriptInterface
+    public void requestRemoveVehicle(int vehicleID){
+        DBModelVehicle vehicle = new DBModelVehicle();
+        vehicle.setId(vehicleID);
+        boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
+
+        if (!isDeleted) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
+        else androidToWeb("vehicleDelete", "true");
+    }
+
+    /**
+     * Return to the main fragment
+     * @param from fragment origin: <strong>add</strong> or <strong>edit</strong>
+     */
+    @JavascriptInterface
+    public void requestReturnToHome(String from){
+        int animation = ANIMATE_SLIDE_LEFT;
+        if (from.equals("ADD_VEHICLE"))
+            animation = ANIMATE_SLIDE_DOWN;
+        if (from.equals("EDIT_VEHICLE"))
+            animation = ANIMATE_SLIDE_RIGHT;
+        fragmentHandler.obtainMessage(GOTO_VEHICLE_FRAGMENT, animation).sendToTarget();
+    }
+
+    /* -- vehicle edit -- */
+
+    /**
+     * Open Edit fragment
+     * @param vehicle String JSON vehicle
+     */
+    @JavascriptInterface
+    public void requestOpenEditVehicle(String vehicle){
+        fragmentHandler.obtainMessage(GOTO_EDIT_VEHICLE_FRAGMENT, vehicle).sendToTarget();
+    }
+
+    /**
+     * Send vehicle (in main) to the new fragment
+     */
+    @JavascriptInterface
+    public void requestGetVehicle(){
+        fragmentHandler.obtainMessage(DATA_SET_VEHICLE).sendToTarget();
+    }
+
+    /**
+     * request an update to the database
+     * @param id vehicle id
+     * @param model vehicle model
+     * @param licencePlate vehicle licence plate
+     * @param address main address
+     * @param moduleCode code mi carro es tu carro module
+     * @param isAvailable if vehicle is available for booking
+     */
+    @JavascriptInterface
+    public void requestUpdateVehicle(int id, String model, String licencePlate, String address, String moduleCode, boolean isAvailable){
+
+        // Check if the module code is correct
+        DBModelModule module = databaseHelper.getModuleByName(moduleCode);
+        if(module.getId() == 0){
+            Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
+            androidToWeb("updateVehicleResult", "2");  // Error code 2
+            return;
+        }
+
+        DBModelVehicle vehicle = new DBModelVehicle();
+        vehicle.setId(id);
+        vehicle.setModel(model);
+        vehicle.setLicencePlate(licencePlate);
+        vehicle.setAddress(address);
+        vehicle.setIdModule(module.getId());
+        vehicle.setAvailable(isAvailable);
+
+        boolean success = databaseHelper.updateVehicle(vehicle);
+        if (!success) {
+            Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
+            androidToWeb("updateVehicleResult", "3");  // Error code 3
+            return;
+        }
+
+        // Return top vehicle fragment
+        fragmentHandler.obtainMessage(GOTO_VEHICLE_FRAGMENT, ANIMATE_SLIDE_RIGHT).sendToTarget();
+    }
+
+    /* -- vehicle add -- */
+
+    /**
+     * Open Add a vehicle fragment
+     */
+    @JavascriptInterface
+    public void requestOpenAddVehicle(){
+        fragmentHandler.obtainMessage(GOTO_ADD_VEHICLE_FRAGMENT).sendToTarget();
+    }
+
+    /**
+     * Request to the database, add a new vehicle
+     * @param model vehicle name
+     * @param licencePlate vehicle licence plate
+     * @param address main address
+     * @param moduleCode mi carro es tu carro module code
+     * @param isAvailable if the vehicle is available for booking
+     */
+    @JavascriptInterface
+    public void requestAddVehicle(String model, String licencePlate, String address, String moduleCode, boolean isAvailable){
+        // Check address
+        if (address.isEmpty()){
+            androidToWeb("addVehicleResult", "4");  // Error code 4
+            return;
+        }
+
+        // Check if the model exist
+        //Toast.makeText(context, "error model doesn't exist", Toast.LENGTH_SHORT).show();
+        //androidToWeb("addVehicleResult", "1");  // Error code 1
+
+        // Check if the module code is correct
+        DBModelModule module = databaseHelper.getModuleByName(moduleCode);
+        if(module.getId() == 0){
+            Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
+            androidToWeb("addVehicleResult", "2");  // Error code 2
+            return;
+        }
+
+        // Success: add vehicle & quit page
+        // Create vehicle
+        DBModelVehicle vehicle = new DBModelVehicle();
+        vehicle.setModel(model);
+        vehicle.setLicencePlate(licencePlate);
+        vehicle.setAddress(address);
+        vehicle.setIdOwner(userPreferences.getUserID());
+        vehicle.setAvailable(isAvailable);
+        vehicle.setBooked(false);
+        vehicle.setIdModule(module.getId());
+
+        // Add vehicle into vehicle table
+        boolean success = databaseHelper.addVehicle(vehicle);
+        Log.d(TAG_Database, "success=" + success);
+        if (!success) {
+            Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
+            androidToWeb("addVehicleResult", "3");  // Error code 3
+            return;
+        }
+
+        // Return top vehicle fragment
+        fragmentHandler.obtainMessage(GOTO_VEHICLE_FRAGMENT, ANIMATE_SLIDE_DOWN).sendToTarget();
     }
 
 
@@ -235,10 +400,11 @@ public class WebInterface {
         Log.d(TAG_Web, "deleteUserAccount: user=" + user);
 
         // Remove user from database
-        databaseHelper.deleteUser(user);
+        boolean isDeleted = databaseHelper.deleteUser(user);
 
         // Logout
-        logout();
+        if (isDeleted) logout();
+        else Log.d(TAG_Web, "deleteUserAccount: error");
     }
 
     @JavascriptInterface
@@ -278,7 +444,7 @@ public class WebInterface {
 
     @JavascriptInterface
     public void requestDatabase(){
-        List<DBModelVehicle> vehicles = databaseHelper.getAllVehicles();
+        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userPreferences.getUserID());
         Log.d(TAG_Web, "requestDatabase: " + vehicles.toString());
         androidToWeb("setDatabase", vehicles.toString());
     }
@@ -342,6 +508,8 @@ public class WebInterface {
      */
     static class FunctionNames {
         public static final String DRIVING_REQUEST = "requestDriveCallback";
+
+        public static final String SET_VEHICLE_EDIT = "setVehicle";
     }
 
     static class ErrorCodes {
@@ -349,6 +517,8 @@ public class WebInterface {
         public static final String DRIVING_REQUEST_BLUETOOTH_DISABLED = "2";
         public static final String DRIVING_REQUEST_LOCALISATION_DISABLE = "3";
         public static final String DRIVING_REQUEST_CAR_NOT_FOUND = "4";
+        public static final String DRIVING_CONNECTION_FAILED = "5";
+        public static final String DRIVING_CONNECTION_DISCONNECTED = "6";
     }
 
     static class Boolean {
