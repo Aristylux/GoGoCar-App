@@ -23,6 +23,7 @@ public class HandlerCodes {
     public static final int BT_STATE_CONNECTION_FAILED = 4;
     public static final int BT_STATE_MESSAGE_RECEIVED = 5;
     public static final int BT_STATE_DISCONNECTED = 6;
+    public static final int BT_STATE_DISCONNECTING = 7;
 
     public static final int BT_REQUEST_ENABLE = 11;
 

@@ -8,6 +8,7 @@ import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
@@ -211,6 +212,11 @@ public class WebInterface {
 
         //Intent enableBtIntent
         bluetoothHandler.obtainMessage(BT_STATE_DISCOVERING).sendToTarget();
+    }
+
+    @JavascriptInterface
+    public void requestStopDrive(){
+        bluetoothHandler.obtainMessage(BT_STATE_DISCONNECTING).sendToTarget();
     }
 
     /*  ---------------------------------- *
