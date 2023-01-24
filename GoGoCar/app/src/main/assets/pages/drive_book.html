@@ -130,6 +130,15 @@ dd {
 
         </style>
 
+<style>
+    #info_form {
+        margin-bottom: 30px;
+        /*
+        border-radius: 20px;
+        box-shadow: 0px 1px 5px rgba(0,0,0,0.2);
+        */
+    }
+</style>
 
     </head>
     <body>
@@ -141,7 +150,7 @@ dd {
         </div>
 
         <section>
-            <form id="book_form" action="#">
+            <form id="info_form">
                 <div class="form-group">
                     <dt>Model</dt>
                     <dd>
@@ -163,6 +172,9 @@ dd {
                         <span>TR-982-ZZ</span>
                     </dd>
                 </div>
+            </form>
+
+            <form id="book_form" action="#">
                 <div class="form-group">
                     <dt>Pickup Date</dt>
                     <dd>
@@ -218,11 +230,49 @@ dd {
             // Radio group
             const radio_buttons = document.querySelectorAll(".form-radio");
             radio_buttons.forEach(function (radio_button, index) {
-            radio_button.addEventListener('click', (event) => {
-                radio_buttons.forEach( (button) => button.classList.remove("radio--active"));
-                radio_button.classList.add("radio--active");
+                radio_button.addEventListener('click', (event) => {
+                    radio_buttons.forEach( (button) => button.classList.remove("radio--active"));
+                    radio_button.classList.add("radio--active");
+                });
             });
-        });
+
+            // Request selected vehicle
+            if(androidConnected()) Android.requestGetVehicle();
+            else setVehicle('{"name":"tet", "address":"rue", "licencePlate":"5454"}'); // debug PC
+            
+            // [ANDROID CALLBACK]
+            function setVehicle(vehicle){
+                console.log("set: " + vehicle);
+                var JSONvehicle = JSON.parse(vehicle);
+                const infos = [JSONvehicle.name, JSONvehicle.address, JSONvehicle.licencePlate];
+
+                const formInfo = document.getElementById("info_form");
+                const radio_buttons = formInfo.querySelectorAll("span");
+                radio_buttons.forEach((button, index) => {
+                    button.innerText = infos[index];
+                });
+            }
+
+            // Submit Form
+            const book_vehicle_button = document.getElementById("book_vehicle_button");
+            book_vehicle_button.addEventListener('click', function() {
+                // Get values
+                const form = document.getElementById("book_form");
+                const formPickupDate = formVehicle.elements["pickup_date"].value;
+                const formDropDate = formVehicle.elements["drop_date"].value;
+                //const formPersons = formVehicle.elements["person"].checked;
+            
+                // Sent to android
+                if(androidConnected()) Android.requestBookVehicle(JSONvehicle.id, formPickupDate, formDropDate);
+            });
+
+            //[ANDROID CALLBACK]
+            // Fail
+            // Stay in the current page
+            function updateVehicleResult(code) {
+                console.log("code:" + code);
+            }
+
         </script>
     </body>
 </html>
