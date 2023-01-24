@@ -214,13 +214,22 @@ public class WebInterface {
      *  --        vehicles.html         -- *
      *  ---------------------------------- */
 
+    /**
+     * Ask all vehicles owned by the current user
+     */
     @JavascriptInterface
     public void requestUserVehicles(){
-        //DatabaseHelper databaseHelper = new DatabaseHelper(connection);
         List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userPreferences.getUserID());
         androidToWeb("setDatabase", vehicles.toString());
     }
 
+    /**
+     * Remove a vehicle
+     * @param vehicleID id vehicle for identification<br>
+     * <br>
+     * return: true to webView if success<br>
+     *         else, show error
+     */
     @JavascriptInterface
     public void requestRemoveVehicle(int vehicleID){
         DBModelVehicle vehicle = new DBModelVehicle();
@@ -231,6 +240,10 @@ public class WebInterface {
         else androidToWeb("vehicleDelete", "true");
     }
 
+    /**
+     * Return to the main fragment
+     * @param from fragment origin: <strong>add</strong> or <strong>edit</strong>
+     */
     @JavascriptInterface
     public void requestReturnToHome(String from){
         int animation = ANIMATE_SLIDE_LEFT;
@@ -260,6 +273,15 @@ public class WebInterface {
         fragmentHandler.obtainMessage(DATA_SET_VEHICLE).sendToTarget();
     }
 
+    /**
+     * request an update to the database
+     * @param id vehicle id
+     * @param model vehicle model
+     * @param licencePlate vehicle licence plate
+     * @param address main address
+     * @param moduleCode code mi carro es tu carro module
+     * @param isAvailable if vehicle is available for booking
+     */
     @JavascriptInterface
     public void requestUpdateVehicle(int id, String model, String licencePlate, String address, String moduleCode, boolean isAvailable){
 
@@ -292,11 +314,22 @@ public class WebInterface {
 
     /* -- vehicle add -- */
 
+    /**
+     * Open Add a vehicle fragment
+     */
     @JavascriptInterface
     public void requestOpenAddVehicle(){
         fragmentHandler.obtainMessage(GOTO_ADD_VEHICLE_FRAGMENT).sendToTarget();
     }
 
+    /**
+     * Request to the database, add a new vehicle
+     * @param model vehicle name
+     * @param licencePlate vehicle licence plate
+     * @param address main address
+     * @param moduleCode mi carro es tu carro module code
+     * @param isAvailable if the vehicle is available for booking
+     */
     @JavascriptInterface
     public void requestAddVehicle(String model, String licencePlate, String address, String moduleCode, boolean isAvailable){
         // Check address
