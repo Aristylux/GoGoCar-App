@@ -18,6 +18,8 @@ import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
 import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
 import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_DRIVE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
@@ -29,7 +31,9 @@ import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 import static com.aristy.gogocar.Security.getPinKey;
 import static com.aristy.gogocar.WebInterface.ADD_VEHICLE;
+import static com.aristy.gogocar.WebInterface.BOOK_VEHICLE;
 import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
+import static com.aristy.gogocar.WebInterface.DRIVE;
 import static com.aristy.gogocar.WebInterface.EDIT_VEHICLE;
 import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_CONNECTION_DISCONNECTED;
 import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_CONNECTION_FAILED;
@@ -354,6 +358,14 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case GOTO_HOME_FRAGMENT:
                     fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, HOME);
+                    setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT);
+                    break;
+                case GOTO_DRIVE_FRAGMENT:
+                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, DRIVE);
+                    setFragment(fragmentApp, ANIMATE_SLIDE_LEFT);
+                    break;
+                case GOTO_BOOK_VEHICLE_FRAGMENT:
+                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, BOOK_VEHICLE);
                     setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT);
                     break;
                 case GOTO_ADD_VEHICLE_FRAGMENT:

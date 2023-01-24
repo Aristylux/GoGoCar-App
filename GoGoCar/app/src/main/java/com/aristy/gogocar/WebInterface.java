@@ -37,6 +37,8 @@ import java.util.List;
 public class WebInterface {
 
     public static final String HOME = "file:///android_asset/pages/home.html";
+    public static final String DRIVE = "file:///android_asset/pages/drive.html";
+    public static final String BOOK_VEHICLE = "file:///android_asset/pages/drive_book.html";
     public static final String VEHICLE = "file:///android_asset/pages/vehicles.html";
     public static final String ADD_VEHICLE = "file:///android_asset/pages/vehicles_add.html";
     public static final String EDIT_VEHICLE = "file:///android_asset/pages/vehicles_edit.html";
@@ -209,6 +211,29 @@ public class WebInterface {
         bluetoothHandler.obtainMessage(BT_STATE_DISCOVERING).sendToTarget();
     }
 
+    /*  ---------------------------------- *
+     *  --          drive.html          -- *
+     *  ---------------------------------- */
+
+    @JavascriptInterface
+    public void requestDatabase(){
+        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userPreferences.getUserID());
+        Log.d(TAG_Web, "requestDatabase: " + vehicles.toString());
+        androidToWeb("setDatabase", vehicles.toString());
+    }
+
+    /*
+    @JavascriptInterface
+    public void openPopupBook(int id_vehicle){
+        Log.d(TAG_Web, "id vehicle: " + id_vehicle);
+        DBModelVehicle vehicle = databaseHelper.getVehicleById(id_vehicle);
+        androidToWeb("openPopupBook", vehicle.getModel(), vehicle.getAddress());
+    }*/
+
+    @JavascriptInterface
+    public void requestOpenBook(){
+        fragmentHandler.obtainMessage(GOTO_EDIT_VEHICLE_FRAGMENT).sendToTarget();
+    }
 
     /*  ---------------------------------- *
      *  --        vehicles.html         -- *
@@ -430,23 +455,6 @@ public class WebInterface {
 
         // Request to change the color
         fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) colorSigned).sendToTarget();
-    }
-
-    @JavascriptInterface
-    public void openPopupBook(int id_vehicle){
-        Log.d(TAG_Web, "id vehicle: " + id_vehicle);
-
-        DBModelVehicle vehicle = databaseHelper.getVehicleById(id_vehicle);
-
-        androidToWeb("openPopupBook", vehicle.getModel(), vehicle.getAddress());
-    }
-
-
-    @JavascriptInterface
-    public void requestDatabase(){
-        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userPreferences.getUserID());
-        Log.d(TAG_Web, "requestDatabase: " + vehicles.toString());
-        androidToWeb("setDatabase", vehicles.toString());
     }
 
     /*  ---------------------------------- *
