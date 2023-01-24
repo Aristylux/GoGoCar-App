@@ -51,7 +51,8 @@ CREATE TABLE vehicles (
     id_owner INTEGER NOT NULL,
     is_available BOOLEAN NOT NULL DEFAULT TRUE,
     is_booked BOOLEAN NOT NULL DEFAULT FALSE,
-    id_user_book INTEGER
+    id_user_book INTEGER,
+    id_module INTEGER UNIQUE NOT NULL
     );
 ```
 
@@ -60,7 +61,7 @@ CREATE TABLE vehicles (
 ```sql
 CREATE TABLE modules (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    name VARCHAR(10) UNIQUE NOT NULL,
+    name VARCHAR(11) UNIQUE NOT NULL,
     mac_address VARCHAR(129) UNIQUE NOT NULL
     );
 ```
@@ -80,20 +81,25 @@ INSERT INTO users(name, email, phone, password) VALUES
 ## Vehicles
 
 ```sql
-INSERT INTO vehicles (model, licence_plate, address, id_owner) VALUES 
-    ('Peugeot 105', 'YZ-875-AZ', '14 rue des romarins', 1),
-    ('Renault Mégane', 'PA-510-ND', '2 avenue Champ de Mars', 2);
+INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES 
+    ('Peugeot 105', 'YZ-875-AZ', '14 rue des romarins', 1, 3),
+    ('Renault Mégane', 'PA-510-ND', '2 avenue Champ de Mars', 2, 4);
 ```
 
 ```sql
-INSERT INTO vehicles (model, licence_plate, address, id_owner) VALUES 
-    ('Nissan GT', 'BD-325-FE', '26 rue General de Gaulle', 3),
-    ('Peugeot 206', 'AM-871-DD', '18 Boulevard Jules Ferry', 3);
+INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES 
+    ('Nissan GT', 'BD-325-FE', '26 rue General de Gaulle', 3, 5),
+    ('Peugeot 206', 'AM-871-DD', '18 Boulevard Jules Ferry', 3, 6);
 ```
 
 ## Modules gogocar
 
 ```sql
 INSERT INTO modules (name, mac_address) VALUES
-    ('01-01-0001', 'e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9');
+    ('#01-01-0001', 'e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9'),
+    ('#01-01-0002', '29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4'),
+    ('#01-01-0003', '1'),
+    ('#01-01-0004', '2'),
+    ('#01-01-0005', '3'),
+    ('#01-01-0006', '4');
 ```

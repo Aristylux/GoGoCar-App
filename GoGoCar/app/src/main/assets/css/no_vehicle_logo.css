@@ -1,0 +1,15 @@
+#no_vehicles {
+    color: #e0e0e0;
+    display: none; /*flex when active*/
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    margin-top: 29%;
+    font-size: 2em;
+    font-weight: 600;
+    /*text-shadow: 1px 5px 10px rgba(0, 0, 0, 0.2);*/
+}
+
+#no_vehicles i {
+    font-size: 3em;
+}
