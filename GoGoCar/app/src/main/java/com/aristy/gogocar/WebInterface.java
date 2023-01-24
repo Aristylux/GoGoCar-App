@@ -12,6 +12,8 @@ import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_DRIVE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
@@ -231,8 +233,13 @@ public class WebInterface {
     }*/
 
     @JavascriptInterface
-    public void requestOpenBook(){
-        fragmentHandler.obtainMessage(GOTO_EDIT_VEHICLE_FRAGMENT).sendToTarget();
+    public void requestOpenBook(String vehicle){
+        fragmentHandler.obtainMessage(GOTO_BOOK_VEHICLE_FRAGMENT).sendToTarget();
+    }
+
+    @JavascriptInterface
+    public void requestReturnToDrive(){
+        fragmentHandler.obtainMessage(GOTO_DRIVE_FRAGMENT).sendToTarget();
     }
 
     /*  ---------------------------------- *

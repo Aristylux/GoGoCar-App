@@ -73,6 +73,7 @@
 
 // Global Variable
 var vehicles;
+var vehicle_selected;
 
 // Request database
 if (androidConnected()) Android.requestDatabase();
@@ -89,7 +90,8 @@ else{
             // Open popup 'book'
             console.log(index);
             //if (androidConnected()) Android.openPopupBook(vehicles[index].id);
-            openPopupBook(vehicles[index])
+            vehicle_selected = vehicles[index];
+            openPopupBook();
         });
     });
 }
@@ -108,7 +110,9 @@ function setDatabase(_table_vehicle) {
             // Open popup 'book'
             console.log(index);
             //if (androidConnected()) Android.openPopupBook(vehicles[index].id);
-            openPopupBook(vehicles[index])
+            //openPopupBook(vehicles[index])
+            vehicle_selected = vehicles[index];
+            openPopupBook();
         });
     });
 }
