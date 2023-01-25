@@ -253,6 +253,13 @@ public class DatabaseHelper {
         return executeQuery(query, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.isAvailable(), vehicle.getIdModule(), vehicle.getId());
     }
 
+    /**
+     * set or reset a vehicle for booking
+     * @param vehicleID the vehicle id
+     * @param userID the user who book
+     * @param isBooked if the user book or not
+     * @return success
+     */
     public boolean setBookedVehicle(int vehicleID, int userID, boolean isBooked){
         String query = "UPDATE " + TABLE_VEHICLE + " SET " +
                 COLUMN_VEHICLE_ID_USER_BOOK + " = ?, " + COLUMN_VEHICLE_IS_BOOKED + " = ? " +
