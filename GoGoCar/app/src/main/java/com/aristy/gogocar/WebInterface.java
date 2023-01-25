@@ -237,30 +237,30 @@ public class WebInterface {
         androidToWeb("setDatabase", vehicles.toString());
     }
 
-    /*
-    @JavascriptInterface
-    public void openPopupBook(int id_vehicle){
-        Log.d(TAG_Web, "id vehicle: " + id_vehicle);
-        DBModelVehicle vehicle = databaseHelper.getVehicleById(id_vehicle);
-        androidToWeb("openPopupBook", vehicle.getModel(), vehicle.getAddress());
-    }*/
-
     @JavascriptInterface
     public void requestOpenBook(String vehicle){
         Log.d(TAG_Web, "requestOpenBook: " + vehicle);
         fragmentHandler.obtainMessage(GOTO_BOOK_VEHICLE_FRAGMENT, vehicle).sendToTarget();
     }
 
+    /* -- drive Book -- */
+
     @JavascriptInterface
     public void requestReturnToDrive(){
         fragmentHandler.obtainMessage(GOTO_DRIVE_FRAGMENT).sendToTarget();
     }
 
-    // -- Book
-
     @JavascriptInterface
-    public void requestBookVehicle(int vehicleID, String pickupDate, String dropDate){
-        Log.d(TAG_Web, "requestBookVehicle: " + vehicleID + " " + pickupDate + " " + dropDate);
+    public void requestBookVehicle(int vehicleID, String pickupDate, String dropDate, int capacity){
+        Log.d(TAG_Web, "requestBookVehicle: " + vehicleID + ", " + pickupDate + ", " + dropDate + ", " + capacity);
+
+        // Check if the vehicle is available for these dates
+
+        // If everything is ok, update database
+        boolean isUpdate = databaseHelper.setBookedVehicle(vehicleID, userPreferences.getUserID(), true);
+
+        if(!isUpdate) Toast.makeText(context, "ERROR: Can't update.", Toast.LENGTH_SHORT).show();
+        else fragmentHandler.obtainMessage(GOTO_DRIVE_FRAGMENT).sendToTarget();
     }
 
     /*  ---------------------------------- *

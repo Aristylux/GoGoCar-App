@@ -109,8 +109,6 @@ function setDatabase(_table_vehicle) {
         container.addEventListener("click", (event) => {
             // Open popup 'book'
             console.log(index);
-            //if (androidConnected()) Android.openPopupBook(vehicles[index].id);
-            //openPopupBook(vehicles[index])
             vehicle_selected = vehicles[index];
             openPopupBook();
         });
@@ -119,9 +117,7 @@ function setDatabase(_table_vehicle) {
 
 // Add element to ul list
 function addElement(vehicle) {
-    console.log(vehicle.name);
-    console.log(vehicle.address);
-    let vehicle_info = [vehicle.name, vehicle.address];
+    const vehicle_info = [vehicle.name, vehicle.address];
 
     // Create Container
     let li = document.createElement("li");

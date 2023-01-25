@@ -236,14 +236,16 @@ dd {
                 });
             });
 
+            // Global var: Selected Vehicle
+            var JSONvehicle; // defined by setVehicle
+
             // Request selected vehicle
             if(androidConnected()) Android.requestGetVehicle();
             else setVehicle('{"name":"tet", "address":"rue", "licencePlate":"5454"}'); // debug PC
             
             // [ANDROID CALLBACK]
             function setVehicle(vehicle){
-                console.log("set: " + vehicle);
-                var JSONvehicle = JSON.parse(vehicle);
+                JSONvehicle = JSON.parse(vehicle);
                 const infos = [JSONvehicle.name, JSONvehicle.address, JSONvehicle.licencePlate];
 
                 const formInfo = document.getElementById("info_form");
@@ -258,12 +260,12 @@ dd {
             book_vehicle_button.addEventListener('click', function() {
                 // Get values
                 const form = document.getElementById("book_form");
-                const formPickupDate = formVehicle.elements["pickup_date"].value;
-                const formDropDate = formVehicle.elements["drop_date"].value;
-                //const formPersons = formVehicle.elements["person"].checked;
+                const formPickupDate = form.elements["pickup_date"].value;
+                const formDropDate = form.elements["drop_date"].value;
+                //const formPersons = form.elements["person"].checked;
             
                 // Sent to android
-                if(androidConnected()) Android.requestBookVehicle(JSONvehicle.id, formPickupDate, formDropDate);
+                if(androidConnected()) Android.requestBookVehicle(JSONvehicle.id, formPickupDate, formDropDate, 2);
             });
 
             //[ANDROID CALLBACK]
