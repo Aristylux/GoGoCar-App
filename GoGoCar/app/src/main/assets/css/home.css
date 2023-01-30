@@ -8,12 +8,7 @@ h2 {
     margin-bottom: 25px;
 }
 
-.title_container {
-    color: white;
-    margin-left: 25px;
-}
-
-#container {
+.container {
     background: var(--background-color);
     margin: 0 20px 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -47,13 +42,13 @@ li {
     grid-gap: 5px;
 }
 
-#drive_vehicle {
+.drive_vehicle {
     display: grid;
     grid-template-rows: auto auto 1fr;
     grid-gap: 5px;
 }
 
-#drive_vehicle h3 {
+.drive_vehicle h3 {
     text-align: center;
 }
 
