@@ -286,6 +286,15 @@ public class DatabaseHelper {
 
     /**
      * @param IDUser actual user
+     * @return List of vehicles booked by the user.
+     */
+    public List<DBModelVehicle> getVehiclesBooked(int IDUser) {
+        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID_USER_BOOK + " = " + IDUser;
+        return getVehicles(query);
+    }
+
+    /**
+     * @param IDUser actual user
      * @return List of all vehicles owned by the user
      */
     public List<DBModelVehicle> getVehiclesByUser(int IDUser){

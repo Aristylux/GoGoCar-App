@@ -189,6 +189,12 @@ public class WebInterface {
     @JavascriptInterface
     public void requestData(){
         requestUserName();
+
+        // List booked vehicle for this user
+        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userPreferences.getUserID());
+        androidToWeb("setVehicleBooked", vehicles.toString());
+
+        // Set state of switch
         bluetoothHandler.obtainMessage(BT_REQUEST_STATE).sendToTarget();
     }
 
