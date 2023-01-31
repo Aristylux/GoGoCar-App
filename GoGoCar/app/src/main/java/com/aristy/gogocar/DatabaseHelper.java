@@ -326,6 +326,8 @@ public class DatabaseHelper {
             // For each row returned
             while (rs.next()) {
                 // Get values
+
+                //TODO rs.findColumn();
                 int vehicle_id = rs.getInt(1);
                 String model = rs.getString(2);
                 String licencePlate = rs.getString(3);

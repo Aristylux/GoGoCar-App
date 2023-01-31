@@ -56,8 +56,8 @@
                         </label>
                     </div>
                 </div>
-                
             </div>
+            
 
             <!-- Debug -->
             <div hidden>
@@ -102,6 +102,23 @@
     
                 vehicles.forEach((vehicle) => {
                     addElement(vehicle);
+                });
+
+                const switchs = document.querySelectorAll(".switch_input");
+                switchs.forEach(function (switch_input, index) {
+                    switch_input.addEventListener('change', (event) => {
+                        if (switch_input.checked) {
+                            console.log("Checked");
+                            
+                            // Verify if user can drive car
+                            if(androidConnected()) Android.requestDrive();
+                            
+                        } else {
+                            console.log("Not checked");
+                            // User finish to drive
+                            if(androidConnected()) Android.requestStopDrive();
+                        }
+                    });
                 });
             }
 
@@ -207,7 +224,7 @@
             }
             
 
-
+/*
             // Switch
             let switchElement = document.getElementById('switch');
 
@@ -231,7 +248,7 @@
                     if(androidConnected()) Android.requestStopDrive();
                 }
             });
-
+*/
             // [ANDROID CALLBACK]
             /*
              *
