@@ -61,11 +61,7 @@ public class DatabaseHelper {
      */
     private boolean executeQuery(String preparedQuery, Object... elements){
         // Test if the connection is ok
-        if (connection == null) {
-            // Failure. do not add anything to the list
-            Log.e(TAG_Database, "executeQuery: connect is null");
-            return false;
-        }
+        if (isConnectionError("executeQuery")) return false;
 
         try {
             PreparedStatement st = connection.prepareStatement(preparedQuery);
@@ -85,6 +81,16 @@ public class DatabaseHelper {
         } catch (SQLException exception) {
             Log.e(TAG_Database, "executeQuery: ", exception);
             exception.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean isConnectionError(String funcName){
+        if (connection == null /*|| connection.isClosed()*/) {
+            // Failure. do not add anything to the list
+            Log.e(TAG_Database, funcName + ": connect is null");
+            return true;
+        } else {
             return false;
         }
     }
@@ -120,37 +126,33 @@ public class DatabaseHelper {
 
         String query = "SELECT * FROM " + TABLE_USER;
 
+        if (isConnectionError("getAllUsers")) return returnList;
+
         // Get data from database
         try {
-            if (connection != null) {
-                Statement st = connection.createStatement();
-                ResultSet rs = st.executeQuery(query);
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
 
-                while (rs.next()) {
-                    // Loop through the cursor (result set) and create new user objects. Put them into the return list.
-                    int userID = rs.getInt(1);
-                    String userName = rs.getString(2);
-                    String userEmail = rs.getString(3);
-                    String userPhone = rs.getString(4);
-                    String userHash = rs.getString(5);
-                    //int userIdentityID = rs.getInt(6);
+            while (rs.next()) {
+                // Loop through the cursor (result set) and create new user objects. Put them into the return list.
+                int userID = rs.getInt(1);
+                String userName = rs.getString(2);
+                String userEmail = rs.getString(3);
+                String userPhone = rs.getString(4);
+                String userHash = rs.getString(5);
+                //int userIdentityID = rs.getInt(6);
 
-                    DBModelUser user = new DBModelUser(userID, userName, userEmail, userPhone, userHash);
-                    Log.i(TAG_Database, user.toString());
-                    returnList.add(user);
-                }
-
-                // Close both result and the statement
-                rs.close();
-                st.close();
-            } else {
-                // else: Failure. do not add anything to the list
-                Log.e(TAG_Database, "getAllUsers: is null");
+                DBModelUser user = new DBModelUser(userID, userName, userEmail, userPhone, userHash);
+                Log.i(TAG_Database, user.toString());
+                returnList.add(user);
             }
-        }catch (Exception exception){
+
+            // Close both result and the statement
+            rs.close();
+            st.close();
+        } catch (Exception exception){
             Log.e(TAG_Database, "getAllUsers: ", exception);
         }
-
         return returnList;
     }
 
@@ -188,29 +190,26 @@ public class DatabaseHelper {
     private DBModelUser getUser(String query){
         DBModelUser user = new DBModelUser();
 
+        if (isConnectionError("getUser")) return user;
+
         try {
-            if (connection != null) {
-                Statement st = connection.createStatement();
-                ResultSet rs = st.executeQuery(query);
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
 
-                if (rs.next()) {
-                    int user_id = rs.getInt(1);
-                    String name = rs.getString(2);
-                    String email = rs.getString(3);
-                    String phone = rs.getString(4);
-                    String hash = rs.getString(5);
-                    //int identity_id = rs.getInt(6);
+            if (rs.next()) {
+                int user_id = rs.getInt(1);
+                String name = rs.getString(2);
+                String email = rs.getString(3);
+                String phone = rs.getString(4);
+                String hash = rs.getString(5);
+                //int identity_id = rs.getInt(6);
 
-                    user = new DBModelUser(user_id, name, email, phone, hash);
-                    Log.i(TAG_Database, "getUser: " + user);
-                }
-
-                rs.close();
-                st.close();
-            } else {
-                // else: Failure. do not add anything to the list
-                Log.e(TAG_Database, "getUser: connect is null");
+                user = new DBModelUser(user_id, name, email, phone, hash);
+                Log.i(TAG_Database, "getUser: " + user);
             }
+
+            rs.close();
+            st.close();
         } catch (SQLException exception) {
             Log.e(TAG_Database, "getUser: ", exception);
             exception.printStackTrace();
@@ -238,13 +237,17 @@ public class DatabaseHelper {
 
     /**
      * @param modelVehicle Vehicle to delete
-     * @return the success
+     * @return success
      */
     public boolean deleteVehicle(DBModelVehicle modelVehicle){
         String query = "DELETE FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID + " = ?";
         return executeQuery(query, modelVehicle.getId());
     }
 
+    /**
+     * @param vehicle vehicle to update
+     * @return success
+     */
     public boolean updateVehicle(DBModelVehicle vehicle){
         String query = "UPDATE " + TABLE_VEHICLE + " SET " +
                 COLUMN_VEHICLE_MODEL + " = ?, " + COLUMN_VEHICLE_LICENCE_PLATE + " = ?, " + COLUMN_VEHICLE_ADDRESS + " = ?, " +
@@ -277,10 +280,10 @@ public class DatabaseHelper {
 
     /**
      * @param IDUser actual user
-     * @return List of vehicles which are not owned by the user and available.
+     * @return List of vehicles which are not owned by the user, available and not booked.
      */
     public List<DBModelVehicle> getVehiclesAvailable(int IDUser) {
-        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_IS_AVAILABLE + " = true AND " + COLUMN_VEHICLE_ID_OWNER + " != " + IDUser;
+        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_IS_AVAILABLE + " = true AND " + COLUMN_VEHICLE_IS_BOOKED + " = false AND " + COLUMN_VEHICLE_ID_OWNER + " != " + IDUser;
         return getVehicles(query);
     }
 
@@ -305,16 +308,17 @@ public class DatabaseHelper {
         return getVehiclesJoin(query);
     }
 
+    /**
+     * @param query query with join
+     * @return list of vehicles
+     */
     private List<DBModelVehicle> getVehiclesJoin(String query){
         List<DBModelVehicle> returnList = new ArrayList<>();
 
+        if (isConnectionError("getVehiclesJoin")) return returnList;
+
         // Get data from database
         try {
-            if (connection == null) {
-                Log.e(TAG_Database, "getVehicle: connect is null");
-                return returnList;
-            }
-
             // Execute query
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(query);
@@ -336,7 +340,7 @@ public class DatabaseHelper {
                 // Create object and add it to the list
                 DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser, idModule);
                 vehicle.setCodeModule(codeModule);
-                Log.d(TAG_Database, "getVehicles: " + vehicle);
+                Log.d(TAG_Database, "getVehiclesJoin: " + vehicle);
                 returnList.add(vehicle);
             }
 
@@ -344,7 +348,7 @@ public class DatabaseHelper {
             rs.close();
             st.close();
         }catch (Exception exception){
-            Log.e(TAG_Database, "getVehicles: " , exception);
+            Log.e(TAG_Database, "getVehiclesJoin: " , exception);
             exception.printStackTrace();
         }
 
@@ -367,13 +371,10 @@ public class DatabaseHelper {
     private List<DBModelVehicle> getVehicles(String query){
         List<DBModelVehicle> returnList = new ArrayList<>();
 
+        if (isConnectionError("getVehicles")) return returnList;
+
         // Get data from database
         try {
-            if (connection == null || connection.isClosed()) {
-                Log.e(TAG_Database, "getVehicle: connect is null");
-                return returnList;
-            }
-
             // Execute query
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(query);
@@ -446,11 +447,7 @@ public class DatabaseHelper {
     private List<DBModelModule> getModules(String query){
         List<DBModelModule> returnList = new ArrayList<>();
 
-        // Test connection
-        if (connection == null) {
-            Log.e(TAG_Database, "getModules: connect is null");
-            return returnList;
-        }
+        if (isConnectionError("getModules")) return returnList;
 
         try {
             // Execute query
@@ -567,6 +564,7 @@ class DBModelVehicle {
     private boolean isBooked;
     private int idUser;
     private int idModule;
+
     private String codeModule;
 
     // Constructor
