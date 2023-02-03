@@ -267,7 +267,7 @@ public class DatabaseHelper {
         String query = "UPDATE " + TABLE_VEHICLE + " SET " +
                 COLUMN_VEHICLE_ID_USER_BOOK + " = ?, " + COLUMN_VEHICLE_IS_BOOKED + " = ? " +
                 "WHERE " + COLUMN_VEHICLE_ID + " = ?";
-        return executeQuery(query,userID, isBooked, vehicleID);
+        return executeQuery(query, userID, isBooked, vehicleID);
     }
 
     /**

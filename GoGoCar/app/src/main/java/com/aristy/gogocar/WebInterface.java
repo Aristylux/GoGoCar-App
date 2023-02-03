@@ -232,6 +232,14 @@ public class WebInterface {
         bluetoothHandler.obtainMessage(BT_STATE_DISCONNECTING).sendToTarget();
     }
 
+    @JavascriptInterface
+    public void requestCancelJourney(int vehicleID){
+        boolean isUpdate = databaseHelper.setBookedVehicle(vehicleID, 0, false);
+
+        if(!isUpdate) Toast.makeText(context, "ERROR: Can't cancel.", Toast.LENGTH_SHORT).show();
+        else androidToWeb("journeyDelete", "true");
+    }
+
     /*  ---------------------------------- *
      *  --          drive.html          -- *
      *  ---------------------------------- */
