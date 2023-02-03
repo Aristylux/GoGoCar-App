@@ -10,6 +10,9 @@
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
         <link rel="stylesheet" href="../css/style_button.css"/>
 
+        <link rel="stylesheet" href="../css/popup.css" />
+        <link rel="stylesheet" href="../css/modal.css" />
+
         <link rel="stylesheet" href="../css/home.css" />
 
         <link rel="stylesheet" href="../css/switch.css" />
@@ -60,7 +63,7 @@
                     </div>
                 </div>
                 <div class="buttons">
-                    <button class="border-button">Cancel</button>
+                    <button class="bt_cancel border-button">Cancel</button>
                 </div>
             </div>
             
@@ -75,6 +78,20 @@
             </div>
         </section>
 
+        <!-- Popup message for cancel a reservation -->
+        <div id="modal_popup" class="modal">
+            <div id="popup" class="popup">
+                <h1 id="vehicle_name">Cancel?</h1>
+                <div id="popup_vehicle_information">
+                    <i class="fi fi-rr-exclamation"></i>
+                    <span id="vehicle_position">This operation will cancel the vehicle</span>
+                </div>
+                <div id="popup_vehicle_buttons">
+                    <button id="but_pop_back">No, go back</button>
+                    <button id="but_pop_cancel" class="border-button">Yes, cancel</button>
+                </div>
+            </div>
+        </div>
         
 
         <nav id="navigation" class="nav">
@@ -100,6 +117,8 @@
         <script src="../js/home.js"></script>
         <script src="../js/nav.js"></script>
 
+        <script src="../js/popup.js"></script>
+
         <script>
             // On load page:
             if(androidConnected()) Android.requestData();
@@ -124,6 +143,15 @@
                             // User finish to drive
                             if(androidConnected()) Android.requestStopDrive();
                         }
+                    });
+                });
+
+                const button_cancel = document.querySelectorAll(".bt_cancel");
+                button_cancel.forEach(function (cancel_input, index) {
+                    cancel_input.addEventListener('click', (event) => {
+                        // Open Popup: Are you sure?
+                        console.log("open");
+                        openPopup(popup);
                     });
                 });
             }
@@ -230,7 +258,7 @@
                 li.appendChild(divBut);
 
                 let but = document.createElement("button");
-                but.setAttribute("class", "border-button");
+                but.setAttribute("class", "bt_cancel border-button");
                 but.textContent = "Cancel";
                 divBut.appendChild(but);
 
@@ -298,6 +326,26 @@
                 }
             }
 
+        </script>
+
+        
+
+        <script>
+            // Action popup (button)
+            let but_pop_back = document.getElementById("but_pop_back");
+            let but_pop_cancel = document.getElementById("but_pop_cancel");
+
+            but_pop_back.addEventListener("click", function () {
+                console.log("close");
+                closePopup(popup);
+            });
+
+            but_pop_cancel.addEventListener("click", function () {
+                console.log("cancel");
+                closePopup(popup);
+                // Remove vehicle
+                if (androidConnected()) Android.requestCancelJourney();
+            });
         </script>
 
     </body>   
