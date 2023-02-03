@@ -39,7 +39,7 @@
             <ul id="journey_list"></ul>
             
             
-            <div class="container">
+            <div class="journey-container">
                 <ul>
                     <li>
                         <h2>Your trip with Isen's car</h2>
@@ -50,7 +50,8 @@
                     </li>
                     <li class="info">
                         <i class="fi fi-rr-rectangle-barcode"></i>
-                        <span>Licence plate: TR-524-ZY</span>
+                        <span>Licence plate:</span>
+                        <span class="lp">TR-524-ZY</span>
                     </li>
                 </ul>
                 <div class="drive_vehicle">
@@ -151,7 +152,7 @@
                     cancel_input.addEventListener('click', (event) => {
                         // Open Popup: Are you sure?
                         console.log("open");
-                        openPopup(popup);
+                        openPopupCancelJourney(vehicles[index]);
                     });
                 });
             }
@@ -175,6 +176,32 @@
                     vehicles.forEach((vehicle) => {
                         addElement(vehicle);
                     });
+
+                    const switchs = document.querySelectorAll(".switch_input");
+                    switchs.forEach(function (switch_input, index) {
+                        switch_input.addEventListener('change', (event) => {
+                            if (switch_input.checked) {
+                                console.log("Checked");
+                                
+                                // Verify if user can drive car
+                                if(androidConnected()) Android.requestDrive();
+                                
+                            } else {
+                                console.log("Not checked");
+                                // User finish to drive
+                                if(androidConnected()) Android.requestStopDrive();
+                            }
+                        });
+                    });
+
+                    const button_cancel = document.querySelectorAll(".bt_cancel");
+                    button_cancel.forEach(function (cancel_input, index) {
+                        cancel_input.addEventListener('click', (event) => {
+                            // Open Popup: Are you sure?
+                            console.log("open");
+                            openPopupCancelJourney(vehicles[index]);
+                        });
+                    });
                 }
             }
 
@@ -183,7 +210,7 @@
 
                 // Create Container
                 let li = document.createElement("li");
-                li.classList.add("container");
+                li.classList.add("journey-container");
 
                 // Infos
                 let ul_infos = document.createElement("ul");
@@ -221,8 +248,13 @@
                 info2.appendChild(i2);
 
                 let span2 = document.createElement("span");
-                span2.textContent = "Licence plate: " + vehicle.licencePlate;
+                span2.textContent = "Licence plate:"
                 info2.appendChild(span2);
+
+                let span3 = document.createElement("span");
+                span3.setAttribute("class", "lp");
+                span3.textContent = vehicle.licencePlate;
+                info2.appendChild(span3);
 
                 ul_infos.appendChild(info2);
 
@@ -331,6 +363,13 @@
         
 
         <script>
+            var vehicle_selected;
+
+            function openPopupCancelJourney(vehicle){
+                vehicle_selected = vehicle;
+                openPopup(popup);
+            }
+
             // Action popup (button)
             let but_pop_back = document.getElementById("but_pop_back");
             let but_pop_cancel = document.getElementById("but_pop_cancel");
@@ -344,8 +383,25 @@
                 console.log("cancel");
                 closePopup(popup);
                 // Remove vehicle
-                if (androidConnected()) Android.requestCancelJourney();
+                if (androidConnected()) Android.requestCancelJourney(vehicle_selected.id);
+                journeyDelete("true");
             });
+
+
+            // [ANDROID CALLBACK]
+            function journeyDelete(success) {
+                if (success === "true") {
+                    // Remove (hide) journey_selected
+                    const vehicles_container_info = document.querySelectorAll(".lp");
+                    vehicles_container_info.forEach((Element) => {
+                        if (Element.innerText === vehicle_selected.licencePlate) {
+                            console.log(Element);
+                            Element.parentElement.parentElement.parentElement.classList.add("journey-container--hidden");
+                        }
+                    });
+                }
+            }
+
         </script>
 
     </body>   
