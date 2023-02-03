@@ -16,7 +16,10 @@
 
         <!--list.css-->
         <style>
-
+            .buttons {
+                display: flex;
+                justify-content: center;
+            }
         </style>
 
     </head>
@@ -55,6 +58,9 @@
                             <span class="slider"></span>
                         </label>
                     </div>
+                </div>
+                <div class="buttons">
+                    <button class="border-button">Cancel</button>
                 </div>
             </div>
             
@@ -217,6 +223,16 @@
                 let span = document.createElement("span");
                 span.setAttribute("class", "slider");
                 label.appendChild(span);
+
+                // Button
+                let divBut = document.createElement("div");
+                divBut.setAttribute("class", "buttons");
+                li.appendChild(divBut);
+
+                let but = document.createElement("button");
+                but.setAttribute("class", "border-button");
+                but.textContent = "Cancel";
+                divBut.appendChild(but);
 
                 //document.body.appendChild(li);
                 const ul = document.getElementById("journey_list");
