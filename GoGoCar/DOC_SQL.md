@@ -91,10 +91,12 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
     ('Nissan GT', 'BD-325-FE', '26 rue General de Gaulle', 3, 5),
     ('Peugeot 206', 'AM-871-DD', '18 Boulevard Jules Ferry', 3, 6);
 ```
+
 ```sql
 INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES 
     ('Mini Cooper', 'ST-425-ZE', '10 Avenue Francois Cuzin', 3, 7),
     ('Fiat 500', 'PN-671-DT', '18 Boulevard Jules Ferry', 4, 8);
+```
 
 ## Modules gogocar
 
