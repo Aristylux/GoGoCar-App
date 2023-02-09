@@ -91,6 +91,15 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
     ('Nissan GT', 'BD-325-FE', '26 rue General de Gaulle', 3, 5),
     ('Peugeot 206', 'AM-871-DD', '18 Boulevard Jules Ferry', 3, 6);
 ```
+```sql
+INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
+    ('Citroën c3', 'QS-523-EE', '5 Boulevard des Arènes' , 4, 7),
+    ('Chevrolet Camaro', 'DE-431-AD', '12 rue Picot' , 2, 8),
+    ('Fiat 500', 'WS-856-CE', '268 rue du Dr Paradis' , 5, 9),
+    ('Mini Cooper', 'DL-727-HS', ' 6 Avenue du 11 novembre' , 2, 10),
+    ('Peugeot 208', 'CQ-154-IU', '270 rue jean monnet' , 5, 11),
+    ('Renault Mégane', 'MF-476-NX', '34 Avenue Francois Cuzin', 6, 12);
+```
 
 ## Modules gogocar
 
