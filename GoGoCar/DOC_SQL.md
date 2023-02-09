@@ -65,7 +65,14 @@ CREATE TABLE modules (
     mac_address VARCHAR(129) UNIQUE NOT NULL
     );
 ```
-
+### Marques et Modeles voitures
+```sql
+CREATE TABLE `modeles` (
+  `id` int(11) NOT NULL,
+  `marque` varchar(255) NOT NULL,
+  `modele` varchar(255) NOT NULL
+);
+```
 # Insert
 
 ## User
