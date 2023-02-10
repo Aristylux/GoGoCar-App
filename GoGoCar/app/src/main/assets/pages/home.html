@@ -186,7 +186,7 @@
                                 console.log("Checked");
                                 switch_selected = switchs[index];
                                 // Verify if user can drive car
-                                if(androidConnected()) Android.requestDrive();
+                                if(androidConnected()) Android.requestDrive(index);
                                 
                             } else {
                                 console.log("Not checked");
@@ -306,11 +306,12 @@
 
             // Switch
             // [ANDROID CALLBACK][main (bluetooth)]
-            function setSwitchState(state){
-                if(state === "true")
-                    switch_selected.checked = true;
-                else
-                    switch_selected.checked = false;
+            function setSwitchState(state, switchID){
+                if(state === "true"){
+                    const switchs = document.querySelectorAll(".switch_input");
+                    switchs[switchID].checked = true;
+                } //else
+                    //switch_selected.checked = false;
             }
 
             // [ANDROID CALLBACK]
