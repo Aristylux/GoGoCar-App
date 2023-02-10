@@ -194,8 +194,8 @@ public class WebInterface {
         List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userPreferences.getUserID());
         androidToWeb("setVehicleBooked", vehicles.toString());
 
-        // Set state of switch
-        bluetoothHandler.obtainMessage(BT_REQUEST_STATE).sendToTarget();
+        // TODO -> Set state of switch
+        //bluetoothHandler.obtainMessage(BT_REQUEST_STATE).sendToTarget();
     }
 
     @JavascriptInterface

@@ -307,12 +307,10 @@
             // Switch
             // [ANDROID CALLBACK][main (bluetooth)]
             function setSwitchState(state){
-                if(vehicle_selected_ind == index){
-                    if(state === "true")
-                        switch_selected.checked = true;
-                    else
-                        switch_selected.checked = false;
-                }
+                if(state === "true")
+                    switch_selected.checked = true;
+                else
+                    switch_selected.checked = false;
             }
 
             // [ANDROID CALLBACK]

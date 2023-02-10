@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                     bluetoothConnection.closeConnection();
                     break;
                 case BT_REQUEST_STATE:
-                    if (bluetoothConnection == null) {
+                    if (bluetoothConnection == null || bluetoothConnection.getBluetoothSocket() == null) {
                         sendDataToFragment("setSwitchState", "false");
                         break;
                     }
