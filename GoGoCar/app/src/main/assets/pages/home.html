@@ -157,6 +157,8 @@
                 });
             }
 
+            var switch_selected;
+
             // [ANDROID CALLBACK]
             function setUserName(name){
                 let nameElmt = document.getElementById("user_name");
@@ -171,7 +173,7 @@
                 
                 if (vehicles.length == 0){
                     //document.getElementById("no_vehicles").style.display = 'flex';
-                    console.log("no vehicle booked")
+                    console.log("no vehicle booked");
                 } else {
                     vehicles.forEach((vehicle) => {
                         addElement(vehicle);
@@ -182,7 +184,7 @@
                         switch_input.addEventListener('change', (event) => {
                             if (switch_input.checked) {
                                 console.log("Checked");
-                                
+                                switch_selected = switchs[index];
                                 // Verify if user can drive car
                                 if(androidConnected()) Android.requestDrive();
                                 
@@ -302,31 +304,17 @@
             }
             
 
-/*
             // Switch
-            let switchElement = document.getElementById('switch');
-
+            // [ANDROID CALLBACK][main (bluetooth)]
             function setSwitchState(state){
-                if(state === "true")
-                    switchElement.checked = true;
-                else
-                    switchElement.checked = false;
+                if(vehicle_selected_ind == index){
+                    if(state === "true")
+                        switch_selected.checked = true;
+                    else
+                        switch_selected.checked = false;
+                }
             }
 
-            switchElement.addEventListener('change', function () {
-                if (switchElement.checked) {
-                    console.log("Checked");
-                    // Verify if user can drive car
-
-                    if(androidConnected()) Android.requestDrive();
-                    
-                } else {
-                    console.log("Not checked");
-                    // User finish to drive
-                    if(androidConnected()) Android.requestStopDrive();
-                }
-            });
-*/
             // [ANDROID CALLBACK]
             /*
              *
@@ -339,7 +327,7 @@
 
                     if(androidConnected()) Android.showToast("You can drive :-)");
                 } else {
-                    switchElement.checked = false;
+                    switch_selected.checked = false;
                     console.log("Error callback type: " + allowedToDrive);
                     if (typeof allowedToDrive == "string") allowedToDrive = parseInt(allowedToDrive);
 
@@ -376,11 +364,13 @@
             let but_pop_back = document.getElementById("but_pop_back");
             let but_pop_cancel = document.getElementById("but_pop_cancel");
 
+            // Return nothing
             but_pop_back.addEventListener("click", function () {
                 console.log("close");
                 closePopup(popup);
             });
 
+            // Cancel the journey
             but_pop_cancel.addEventListener("click", function () {
                 console.log("cancel");
                 closePopup(popup);
