@@ -23,6 +23,54 @@
                 display: flex;
                 justify-content: center;
             }
+            
+            .box-nav {
+                margin: 0 20px 10px;
+                background: var(--background-color);
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                /*padding: 20px;*/
+
+                display: grid;
+                grid-template-columns: auto 1fr auto;
+            }
+
+            .box-ico {
+                padding: 10px !important;
+                margin: 10px;
+                font-size: 2em;
+            }
+
+            .box-ico.cl {
+                border-radius: 10px;
+            }
+
+            .box-ico.go {
+                color: var(--primary-color);
+            }
+
+            #box-cl-drive {
+                background-color: bisque;
+                color: tan;
+            }
+
+            #box-cl-vehicles {
+                background-color: aquamarine;
+                color: cadetblue;
+            }
+
+            .box-desc {
+                margin: 10px;
+                display: flex;
+                flex-direction: column;
+                align-self: center;
+            }
+
+            .box-desc h1 {
+                text-align: left;
+                font-size: 1em;
+                font-weight: bold;
+            }
         </style>
 
     </head>
@@ -34,7 +82,24 @@
                 <h2>Welcome home!</h2>
                 <h3 id="user_name">Full name</div>
             </div>
-            
+
+            <div class="box-nav">
+                <i id="box-cl-drive" class="fi fi-rr-search box-ico cl"></i>
+                <div class="box-desc">
+                    <h1>Drive</h1>
+                    <p>Book a vehicle</p>
+                </div>
+                <i class="fi fi-rr-angle-small-right box-ico go"></i>
+            </div>
+
+            <div class="box-nav">
+                <i id="box-cl-vehicles" class="fi fi-rr-car box-ico cl"></i>
+                <div class="box-desc">
+                    <h1>Vehicles</h1>
+                    <p>Your cars</p>
+                </div>
+                <i class="fi fi-rr-angle-small-right box-ico go"></i>
+            </div>
             
             <ul id="journey_list"></ul>
             
