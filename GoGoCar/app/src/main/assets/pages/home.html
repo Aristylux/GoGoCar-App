@@ -15,85 +15,9 @@
 
         <link rel="stylesheet" href="../css/home.css" />
         <link rel="stylesheet" href="../css/navigation_box.css" />
+        <link rel="stylesheet" href="../css/journey_list.css" />
 
         <link rel="stylesheet" href="../css/switch.css" />
-
-        <!--list.css-->
-        <style>
-            .buttons {
-                display: flex;
-                justify-content: center;
-            }
-            
-            .box-nav {
-                margin: 0 20px 10px;
-                background: var(--background-color);
-                border-radius: 10px;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-                /*padding: 20px;*/
-
-                display: grid;
-                grid-template-columns: auto 1fr auto;
-
-                transition: background-color 0.5s ease;
-            }
-
-            .box-nav:active {
-                background-color: #979797;
-            }
-
-            .box-ico {
-                padding: 10px !important;
-                margin: 10px;
-                font-size: 2em;
-                transition: background-color 0.5s ease, color 0.5s ease;
-            }
-
-            .box-ico.cl {
-                border-radius: 10px;
-            }
-
-            .box-ico.go {
-                color: var(--primary-color);
-            }
-
-            #box-cl-drive {
-                background-color: bisque;
-                color: tan;
-            }
-
-            #box-cl-vehicles {
-                background-color: aquamarine;
-                color: cadetblue;
-            }
-
-            .box-nav.disabled {
-                background-color: #edeeee;
-            }
-
-            .box-nav.disabled .box-ico.cl {
-                background-color: #b1b4bb !important;
-                color: #8c8c8c !important;
-            }
-
-            .box-nav.disabled .box-ico.go {
-                color: #8c8c8c !important;
-            }
-
-            .box-desc {
-                margin: 10px;
-                display: flex;
-                flex-direction: column;
-                align-self: center;
-            }
-
-            .box-desc h1 {
-                text-align: left;
-                font-size: 1em;
-                font-weight: bold;
-            }
-        </style>
-
     </head>
     <body>
        
@@ -205,6 +129,7 @@
         <script src="../js/nav.js"></script>
 
         <script src="../js/popup.js"></script>
+        <script src="../js/popup_home_cancel.js"></script>
 
         <script>
             // On load page:
@@ -259,17 +184,19 @@
             // Get all car booked for the user
             // [ANDROID CALLBACK]
             function setVehicleBooked(_table_vehicle){
-
                 var vehicles = JSON.parse(_table_vehicle);
                 
                 if (vehicles.length == 0){
+                    // Hide container
                     //document.getElementById("no_vehicles").style.display = 'flex';
                     console.log("no vehicle booked");
                 } else {
+                    // Add booked vehicles to the list
                     vehicles.forEach((vehicle) => {
                         addElement(vehicle);
                     });
 
+                    // Add interruption switch
                     const switchs = document.querySelectorAll(".switch_input");
                     switchs.forEach(function (switch_input, index) {
                         switch_input.addEventListener('change', (event) => {
@@ -278,7 +205,6 @@
                                 switch_selected = switchs[index];
                                 // Verify if user can drive car
                                 if(androidConnected()) Android.requestDrive(index);
-                                
                             } else {
                                 console.log("Not checked");
                                 // User finish to drive
@@ -287,6 +213,7 @@
                         });
                     });
 
+                    // Add interruption cancel button
                     const button_cancel = document.querySelectorAll(".bt_cancel");
                     button_cancel.forEach(function (cancel_input, index) {
                         cancel_input.addEventListener('click', (event) => {
@@ -397,18 +324,17 @@
 
             // Switch
             // [ANDROID CALLBACK][main (bluetooth)]
-            function setSwitchState(state, switchID){
+            function setSwitchState(state){
                 if(state === "true"){
-                    const switchs = document.querySelectorAll(".switch_input");
-                    switchs[switchID].checked = true;
-                } //else
-                    //switch_selected.checked = false;
+                    switch_selected.checked = true;
+                } else
+                    switch_selected.checked = false;
             }
 
             // [ANDROID CALLBACK]
             /*
              *
-             * allowedToDrive 'true', 'error_code'
+             * allowedToDrive = 'true', 'error_code'
              */
             function requestDriveCallback(allowedToDrive){
                 const box_nav = document.querySelectorAll(".box-nav");
@@ -429,6 +355,8 @@
 
                     switch (allowedToDrive) {
                         case 4: //DRIVING_REQUEST_CAR_NOT_FOUND
+                            // Open Popup : you cannot drive.
+                            // You're not allowed to drive this car...
                             if(androidConnected()) Android.showToast("You cannot drive, car not found.");
                             break;
                         case 6: //DRIVING_CONNECTION_DISCONNECTED (finish to drive)
@@ -440,12 +368,6 @@
                         default:
                             break;
                     }
-                    // Open Popup : you cannot drive.
-                    // You're not allowed to drive this car...
-
-                    
-
-                    //if(androidConnected()) Android.showToast("You cannot drive :-(");
                 }
             }
 
@@ -458,51 +380,5 @@
             });
 
         </script>
-
-        
-
-        <script>
-            var vehicle_selected;
-
-            function openPopupCancelJourney(vehicle){
-                vehicle_selected = vehicle;
-                openPopup(popup);
-            }
-
-            // Action popup (button)
-            let but_pop_back = document.getElementById("but_pop_back");
-            let but_pop_cancel = document.getElementById("but_pop_cancel");
-
-            // Return nothing
-            but_pop_back.addEventListener("click", function () {
-                console.log("close");
-                closePopup(popup);
-            });
-
-            // Cancel the journey
-            but_pop_cancel.addEventListener("click", function () {
-                console.log("cancel");
-                closePopup(popup);
-                // Remove vehicle
-                if (androidConnected()) Android.requestCancelJourney(vehicle_selected.id);
-            });
-
-
-            // [ANDROID CALLBACK]
-            function journeyDelete(success) {
-                if (success === "true") {
-                    // Remove (hide) journey_selected
-                    const vehicles_container_info = document.querySelectorAll(".lp");
-                    vehicles_container_info.forEach((Element) => {
-                        if (Element.innerText === vehicle_selected.licencePlate) {
-                            console.log(Element);
-                            Element.parentElement.parentElement.parentElement.classList.add("journey-container--hidden");
-                        }
-                    });
-                }
-            }
-
-        </script>
-
     </body>   
 </html>

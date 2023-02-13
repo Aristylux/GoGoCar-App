@@ -233,7 +233,6 @@ public class WebInterface {
     public void requestDrive(int vehicleID){
         Log.d(TAG_Web, "requestDrive: ");
         // Check if coarse location must be asked
-        //androidToWeb(DRIVING_REQUEST, TRUE);
         if (!checkPermission(activity)){
             // re-init operation
             Toast.makeText(context, "ask.", Toast.LENGTH_SHORT).show();
