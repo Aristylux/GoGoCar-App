@@ -2,6 +2,11 @@ package com.aristy.gogocar;
 
 import androidx.fragment.app.FragmentTransaction;
 
+/**
+ * On the work: <a href="https://github.com/AtifSayings/Animatoo/">Atif</a><br>
+ * Translated for java and fragment<br>
+ * anim: <a href="https://github.com/AtifSayings/Animatoo/tree/master/animatoolib/src/main/res/anim">Anim folder</a>
+ */
 public class Animation {
 
     public static final int ANIMATE_SLIDE_RIGHT = 1;
@@ -9,6 +14,11 @@ public class Animation {
     public static final int ANIMATE_SLIDE_DOWN = 3;
     public static final int ANIMATE_SLIDE_UP = 4;
 
+    /**
+     * Animates fragment transitions
+     * @param fragmentTransaction Transaction
+     * @param animation animation code
+     */
     public static void animate(FragmentTransaction fragmentTransaction, int animation){
         switch (animation){
             case ANIMATE_SLIDE_RIGHT:
