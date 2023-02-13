@@ -25,6 +25,7 @@ import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
 import static com.aristy.gogocar.SHAHash.hashPassword;
+import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
 
 import android.app.Activity;
@@ -232,6 +233,7 @@ public class WebInterface {
     public void requestDrive(int vehicleID){
         Log.d(TAG_Web, "requestDrive: ");
         // Check if coarse location must be asked
+        //androidToWeb(DRIVING_REQUEST, TRUE);
         if (!checkPermission(activity)){
             // re-init operation
             Toast.makeText(context, "ask.", Toast.LENGTH_SHORT).show();

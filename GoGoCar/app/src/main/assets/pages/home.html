@@ -33,12 +33,15 @@
 
                 display: grid;
                 grid-template-columns: auto 1fr auto;
+
+                transition: background-color 0.5s ease;
             }
 
             .box-ico {
                 padding: 10px !important;
                 margin: 10px;
                 font-size: 2em;
+                transition: background-color 0.5s ease, color 0.5s ease;
             }
 
             .box-ico.cl {
@@ -96,7 +99,7 @@
                 <h3 id="user_name">Full name</div>
             </div>
 
-            <div class="box-nav disabled">
+            <div class="box-nav">
                 <i id="box-cl-drive" class="fi fi-rr-search box-ico cl"></i>
                 <div class="box-desc">
                     <h1>Drive</h1>
@@ -211,16 +214,20 @@
                 const switchs = document.querySelectorAll(".switch_input");
                 switchs.forEach(function (switch_input, index) {
                     switch_input.addEventListener('change', (event) => {
+                        const box_nav = document.querySelectorAll(".box-nav");
                         if (switch_input.checked) {
                             console.log("Checked");
-                            
-                            // Verify if user can drive car
-                            if(androidConnected()) Android.requestDrive();
-                            
+                            box_nav.forEach((box) => {
+                                console.log("log");
+                                box.classList.add("disabled");
+                            });
                         } else {
                             console.log("Not checked");
                             // User finish to drive
-                            if(androidConnected()) Android.requestStopDrive();
+                            box_nav.forEach((box) => {
+                                console.log("log");
+                                box.classList.remove("disabled");
+                            });
                         }
                     });
                 });
@@ -398,11 +405,16 @@
              * allowedToDrive 'true', 'error_code'
              */
             function requestDriveCallback(allowedToDrive){
+                const box_nav = document.querySelectorAll(".box-nav");
 
                 if(allowedToDrive === "true"){
                     // Open Popup : you can drive.
-
                     if(androidConnected()) Android.showToast("You can drive :-)");
+
+                    // Stay in the home fragment 
+                    box_nav.forEach((box) => {
+                        box.classList.add("disabled");
+                    })
                 } else {
                     switch_selected.checked = false;
                     console.log("Error callback type: " + allowedToDrive);
@@ -412,7 +424,11 @@
                         case 4: //DRIVING_REQUEST_CAR_NOT_FOUND
                             if(androidConnected()) Android.showToast("You cannot drive, car not found.");
                             break;
-                    
+                        case 6: //DRIVING_CONNECTION_DISCONNECTED (finish to drive)
+                            box_nav.forEach((box) => {
+                                box.classList.remove("disabled");
+                            })
+                            break;
                         default:
                             break;
                     }
