@@ -11,13 +11,17 @@ import static com.aristy.gogocar.ConnectionHelper.connectionValid;
 import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_NAME;
 import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_PARAMS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
+import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_STATE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
 import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
 import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_DRIVE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
@@ -29,7 +33,9 @@ import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 import static com.aristy.gogocar.Security.getPinKey;
 import static com.aristy.gogocar.WebInterface.ADD_VEHICLE;
+import static com.aristy.gogocar.WebInterface.BOOK_VEHICLE;
 import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
+import static com.aristy.gogocar.WebInterface.DRIVE;
 import static com.aristy.gogocar.WebInterface.EDIT_VEHICLE;
 import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_CONNECTION_DISCONNECTED;
 import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_CONNECTION_FAILED;
@@ -197,8 +203,8 @@ public class MainActivity extends AppCompatActivity {
     String lastMacAddress = null;
 
     // Get into database
-    //String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
-    String hashMacAddressModule = "29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4";
+    String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
+    //String hashMacAddressModule = "29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4";
 
     private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
         @SuppressLint("MissingPermission")
@@ -290,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case BT_STATE_MESSAGE_RECEIVED:
                     Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
+                    Log.d(TAG_BT, "handleMessage: received: " + message.obj);
                     // TODO (test)
                     //bluetoothConnection.messageReceived((String) message.obj);
                     //sendDataToFragment(bluetoothConnection.getMessageFunction(), bluetoothConnection.getMessageParams());
@@ -298,6 +305,18 @@ public class MainActivity extends AppCompatActivity {
                     Log.v(TAG_BT, "BT_STATE_DISCONNECTED");
                     bluetoothConnection.connectionFinished();
                     sendDataToFragment(DRIVING_REQUEST, DRIVING_CONNECTION_DISCONNECTED);
+                    break;
+                case BT_STATE_DISCONNECTING:
+                    Log.v(TAG_BT, "BT_STATE_DISCONNECTING");
+                    bluetoothConnection.closeConnection();
+                    break;
+                case BT_REQUEST_STATE:
+                    if (bluetoothConnection == null || bluetoothConnection.getBluetoothSocket() == null) {
+                        sendDataToFragment("setSwitchState", "false");
+                        break;
+                    }
+                    boolean connected = bluetoothConnection.getBluetoothSocket().isConnected();
+                    sendDataToFragment("setSwitchState", String.valueOf(connected));
                     break;
             }
             return true;
@@ -355,6 +374,15 @@ public class MainActivity extends AppCompatActivity {
                 case GOTO_HOME_FRAGMENT:
                     fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, HOME);
                     setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT);
+                    break;
+                case GOTO_DRIVE_FRAGMENT:
+                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, DRIVE);
+                    setFragment(fragmentApp, ANIMATE_SLIDE_LEFT);
+                    break;
+                case GOTO_BOOK_VEHICLE_FRAGMENT:
+                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, BOOK_VEHICLE);
+                    setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT);
+                    vehicle = String.valueOf(message.obj);
                     break;
                 case GOTO_ADD_VEHICLE_FRAGMENT:
                     fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, ADD_VEHICLE);

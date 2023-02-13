@@ -8,10 +8,14 @@ import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
+import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_STATE;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_DRIVE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
@@ -21,6 +25,7 @@ import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
 import static com.aristy.gogocar.SHAHash.hashPassword;
+import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
 
 import android.app.Activity;
@@ -37,6 +42,8 @@ import java.util.List;
 public class WebInterface {
 
     public static final String HOME = "file:///android_asset/pages/home.html";
+    public static final String DRIVE = "file:///android_asset/pages/drive.html";
+    public static final String BOOK_VEHICLE = "file:///android_asset/pages/drive_book.html";
     public static final String VEHICLE = "file:///android_asset/pages/vehicles.html";
     public static final String ADD_VEHICLE = "file:///android_asset/pages/vehicles_add.html";
     public static final String EDIT_VEHICLE = "file:///android_asset/pages/vehicles_edit.html";
@@ -85,7 +92,7 @@ public class WebInterface {
 
         // If user doesn't exist
         if (user == null) {
-            Log.e(TAG_Web, "AuthenticationLogin: no this user in our database");
+            Log.e(TAG_Auth, "AuthenticationLogin: this user isn't in our database");
             // Send error to the page
             androidToWeb("errorAuthenticationLogin");
         } else {
@@ -127,7 +134,7 @@ public class WebInterface {
     public void AuthenticationRegister(String fullName, String email, String phoneNumber, String password){
         // Hash password
         String hash = hashPassword(password, SHAHash.DOMAIN);
-        Log.d(TAG_Web, "pw= \"" + password + "\", hash= \"" + hash + "\"");
+        Log.d(TAG_Auth, "pw= \"" + password + "\", hash= \"" + hash + "\"");
 
         // Create user
         DBModelUser user = new DBModelUser(-1, fullName, email, phoneNumber, hash);
@@ -151,6 +158,12 @@ public class WebInterface {
         fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) HexColor.TRANSPARENT).sendToTarget();
     }
 
+    /**
+     * Verify email isn't in the database
+     * @param email         new email to verify
+     * @param successCode   code to return in success
+     * @param errorCode     code to return in failure
+     */
     @JavascriptInterface
     public void verifyEmail(String email, int successCode, int errorCode){
         // Check in database if email exist
@@ -164,6 +177,12 @@ public class WebInterface {
             androidToWeb("errorAuthenticationRegistration", String.valueOf(errorCode));
     }
 
+    /**
+     * Verify phone isn't in the database
+     * @param phone         new phone to verify
+     * @param successCode   code to return in success
+     * @param errorCode     code to return in failure
+     */
     @JavascriptInterface
     public void verifyPhone(String phone, int successCode, int errorCode){
         DBModelUser user = databaseHelper.getUserByPhone(phone);
@@ -180,8 +199,38 @@ public class WebInterface {
      *  --           home.html          -- *
      *  ---------------------------------- */
 
+    /**
+     * Can block to home fragment during driving
+     */
+    boolean isDriving;
+
+    /**
+     * Request data:
+     * Name of the actual user
+     * Get vehicles booked by the user
+     * Set switch activated or not from bluetooth
+     */
     @JavascriptInterface
-    public void requestDrive(){
+    public void requestData(){
+        requestUserName();
+
+        // List booked vehicle for this user
+        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userPreferences.getUserID());
+        androidToWeb("setVehicleBooked", vehicles.toString());
+
+        // Set state of switch
+        bluetoothHandler.obtainMessage(BT_REQUEST_STATE).sendToTarget();
+    }
+
+    /**
+     * Ask to app do connect to the bluetooth
+     * Verify connection
+     * Check bluetooth enabled
+     * Check location enabled
+     * @param vehicleID id vehicle to drive
+     */
+    @JavascriptInterface
+    public void requestDrive(int vehicleID){
         Log.d(TAG_Web, "requestDrive: ");
         // Check if coarse location must be asked
         if (!checkPermission(activity)){
@@ -205,10 +254,63 @@ public class WebInterface {
             return;
         }
 
+        // Block user to home fragment during the journey (yes)
+        isDriving = true;
+
         //Intent enableBtIntent
         bluetoothHandler.obtainMessage(BT_STATE_DISCOVERING).sendToTarget();
     }
 
+    @JavascriptInterface
+    public void requestStopDrive(){
+        isDriving = false;
+        bluetoothHandler.obtainMessage(BT_STATE_DISCONNECTING).sendToTarget();
+    }
+
+    @JavascriptInterface
+    public void requestCancelJourney(int vehicleID){
+        boolean isUpdate = databaseHelper.setBookedVehicle(vehicleID, 0, false);
+
+        if(!isUpdate) Toast.makeText(context, "ERROR: Can't cancel.", Toast.LENGTH_SHORT).show();
+        else androidToWeb("journeyDelete", "true");
+    }
+
+    /*  ---------------------------------- *
+     *  --          drive.html          -- *
+     *  ---------------------------------- */
+
+    @JavascriptInterface
+    public void requestDatabase(){
+        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userPreferences.getUserID());
+        Log.d(TAG_Web, "requestDatabase: " + vehicles.toString());
+        androidToWeb("setDatabase", vehicles.toString());
+    }
+
+    @JavascriptInterface
+    public void requestOpenBook(String vehicle){
+        Log.d(TAG_Web, "requestOpenBook: " + vehicle);
+        fragmentHandler.obtainMessage(GOTO_BOOK_VEHICLE_FRAGMENT, vehicle).sendToTarget();
+    }
+
+    /* -- drive Book -- */
+
+    @JavascriptInterface
+    public void requestReturnToDrive(){
+        fragmentHandler.obtainMessage(GOTO_DRIVE_FRAGMENT).sendToTarget();
+    }
+
+    @JavascriptInterface
+    public void requestBookVehicle(int vehicleID, String pickupDate, String dropDate, int capacity){
+        Log.d(TAG_Web, "requestBookVehicle: " + vehicleID + ", " + pickupDate + ", " + dropDate + ", " + capacity);
+
+        // Check if the vehicle is available for these dates
+
+        // If everything is ok, update database
+        boolean isUpdate = databaseHelper.setBookedVehicle(vehicleID, userPreferences.getUserID(), true);
+
+        if(!isUpdate) Toast.makeText(context, "ERROR: Can't update.", Toast.LENGTH_SHORT).show();
+        else fragmentHandler.obtainMessage(GOTO_DRIVE_FRAGMENT).sendToTarget();
+    }
 
     /*  ---------------------------------- *
      *  --        vehicles.html         -- *
@@ -432,30 +534,14 @@ public class WebInterface {
         fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) colorSigned).sendToTarget();
     }
 
-    @JavascriptInterface
-    public void openPopupBook(int id_vehicle){
-        Log.d(TAG_Web, "id vehicle: " + id_vehicle);
-
-        DBModelVehicle vehicle = databaseHelper.getVehicleById(id_vehicle);
-
-        androidToWeb("openPopupBook", vehicle.getModel(), vehicle.getAddress());
-    }
-
-
-    @JavascriptInterface
-    public void requestDatabase(){
-        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userPreferences.getUserID());
-        Log.d(TAG_Web, "requestDatabase: " + vehicles.toString());
-        androidToWeb("setDatabase", vehicles.toString());
-    }
-
     /*  ---------------------------------- *
      *  --          Navigation          -- *
      *  ---------------------------------- */
 
     @JavascriptInterface
     public void changePage(String page){
-        loadNewPage(page);
+        if (!isDriving)
+            loadNewPage(page);
     }
 
     /*  ---------------------------------- *

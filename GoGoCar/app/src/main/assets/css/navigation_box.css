@@ -1,0 +1,66 @@
+.box-nav {
+    margin: 0 20px 10px;
+    background: var(--background-color);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+
+    transition: background-color 0.5s ease;
+}
+
+.box-nav:active {
+    background-color: #979797;
+}
+
+.box-ico {
+    padding: 10px !important;
+    margin: 10px;
+    font-size: 2em;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.box-ico.cl {
+    border-radius: 10px;
+}
+
+.box-ico.go {
+    color: var(--primary-color);
+}
+
+#box-cl-drive {
+    background-color: bisque;
+    color: tan;
+}
+
+#box-cl-vehicles {
+    background-color: aquamarine;
+    color: cadetblue;
+}
+
+.box-nav.disabled {
+    background-color: #edeeee;
+}
+
+.box-nav.disabled .box-ico.cl {
+    background-color: #b1b4bb !important;
+    color: #8c8c8c !important;
+}
+
+.box-nav.disabled .box-ico.go {
+    color: #8c8c8c !important;
+}
+
+.box-desc {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+}
+
+.box-desc h1 {
+    text-align: left;
+    font-size: 1em;
+    font-weight: bold;
+}

@@ -86,7 +86,7 @@ public class FragmentApp extends Fragment {
         if (web != null)
             web.post(() -> web.loadUrl("javascript:" + functionName + "('" + params + "')"));
         else
-            Log.e("Gogocar_Fragments", "putArguments: error, web = null");
+            Log.e("GoGoCar_Fragments", "putArguments: error, web = null");
     }
     
 }
