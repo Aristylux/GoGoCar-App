@@ -1,9 +1,8 @@
 package com.aristy.gogocar;
 
-import static com.aristy.gogocar.CodesTAG.TAG_Web;
-
-import android.util.Log;
-
+/**
+ * Hexadecimal colors class
+ */
 public class HexColor {
 
     public static final long TRANSPARENT = 0;
@@ -14,6 +13,9 @@ public class HexColor {
         this.color = color;
     }
 
+    /**
+     * Convert web color to android color
+     */
     public void convertToAndroidColor(){
         // Get Transparency
         String transparency = color.substring(Math.max(color.length() - 2, 0));
@@ -27,10 +29,13 @@ public class HexColor {
         color = "#" + transparency + stringBuilder;
     }
 
+    /**
+     * Color converted for android xml file
+     * @return code signed
+     */
     public long getDecSigned(){
         // Verification if format : #XXXXXXXX -> #TTRRGGBB
         String formattedHex = checkHex(color);
-        Log.d(TAG_Web, "formattedHex : " + formattedHex);
 
         // Convert Decimal (for binary)
         long dec = Long.parseLong(formattedHex, 16);
@@ -50,6 +55,11 @@ public class HexColor {
         return (decConvert + 1) * -1;
     }
 
+    /**
+     * Verify if the color is correct and format
+     * @param hex color in hexadecimal
+     * @return formatted color
+     */
     private String checkHex(String hex){
         StringBuilder formattedHex = new StringBuilder(hex);
         if(formattedHex.charAt(0) == '#')
@@ -69,6 +79,11 @@ public class HexColor {
         return String.valueOf(formattedHex);
     }
 
+    /**
+     * Invert bits: 1 -> 0, 0 -> 1
+     * @param bits bit string
+     * @return inverted bit string
+     */
     private String swipeBits(String bits){
         StringBuilder bitsInverted = new StringBuilder(bits);
         for (int index = 0; index < bits.length(); index++){
