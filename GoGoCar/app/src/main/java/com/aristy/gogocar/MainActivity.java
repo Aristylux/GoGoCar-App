@@ -113,11 +113,12 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle args = new Bundle();
         args.putSerializable("FRGHandler", new HandlerWrapper(fragmentHandler));
-        args.putSerializable("BLEHandler", new HandlerWrapper(bluetoothHandler));
+        //args.putSerializable("BLEHandler", new HandlerWrapper(bluetoothHandler));
+        args.putParcelable("userPreferences", userPreferences);
 
         // If the user is not logged
         if(!isLogged)
-            selectedFragment = new FragmentLogin(SQLConnection, userPreferences, handlers);
+            selectedFragment = new FragmentLogin(SQLConnection);
         else {
             fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, HOME);
             selectedFragment = fragmentApp;
@@ -376,7 +377,13 @@ public class MainActivity extends AppCompatActivity {
         public boolean handleMessage(@NonNull Message message) {
             switch (message.what){
                 case GOTO_LOGIN_FRAGMENT:
-                    setFragment(new FragmentLogin(SQLConnection, userPreferences, handlers), ANIMATE_SLIDE_LEFT);
+                    Bundle args = new Bundle();
+                    args.putSerializable("FRGHandler", new HandlerWrapper(fragmentHandler));
+                    args.putParcelable("userPreferences", userPreferences);
+
+                    FragmentLogin fragmentLogin = new FragmentLogin(SQLConnection);
+                    fragmentLogin.setArguments(args);
+                    setFragment(fragmentLogin, ANIMATE_SLIDE_LEFT);
                     break;
                 case GOTO_HOME_FRAGMENT:
                     fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, HOME);

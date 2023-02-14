@@ -27,13 +27,12 @@ import java.sql.Connection;
 public class FragmentLogin extends Fragment {
 
     Connection SQLConnection;
-    UserPreferences userPreferences;
-    Handler [] handlers;
 
-    public FragmentLogin(Connection SQLConnection, UserPreferences userPreferences, Handler [] handlers){
+    UserPreferences userPreferences;
+    Handler fragmentHandler;
+
+    public FragmentLogin(Connection SQLConnection){
         this.SQLConnection = SQLConnection;
-        this.userPreferences = userPreferences;
-        //this.handlers = handlers;
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -50,8 +49,7 @@ public class FragmentLogin extends Fragment {
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        //web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, handlers), "Android");
-        web.addJavascriptInterface(new WIAuthentication(getContext(), web,SQLConnection, userPreferences, handlers[0]), "Android");
+        web.addJavascriptInterface(new WIAuthentication(getContext(), web, SQLConnection, userPreferences, fragmentHandler), "Android");
 
         return view;
     }
@@ -60,12 +58,12 @@ public class FragmentLogin extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            // Get handler
             HandlerWrapper handlerWrapperFRG = (HandlerWrapper) getArguments().getSerializable("FRGHandler");
-            Handler fragmentHandler = handlerWrapperFRG.getHandler();
-            //Log.d(TAG_Auth, "onCreate: handler: " + fragmentHandler);
-            HandlerWrapper handlerWrapperBLE = (HandlerWrapper) getArguments().getSerializable("BLEHandler");
-            Handler bluetoothHandler = handlerWrapperBLE.getHandler();
-            handlers = new Handler[]{fragmentHandler, bluetoothHandler};
+            this.fragmentHandler = handlerWrapperFRG.getHandler();
+
+            // Get user preferences
+            this.userPreferences = getArguments().getParcelable("userPreferences");
         }
     }
 }
