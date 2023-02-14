@@ -50,7 +50,8 @@ public class FragmentLogin extends Fragment {
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, handlers), "Android");
+        //web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, handlers), "Android");
+        web.addJavascriptInterface(new WIAuthentication(getContext(), web,SQLConnection, userPreferences, handlers[0]), "Android");
 
         return view;
     }
