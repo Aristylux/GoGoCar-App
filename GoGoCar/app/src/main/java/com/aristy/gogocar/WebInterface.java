@@ -8,10 +8,14 @@ import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
+import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_STATE;
+import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_DRIVE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
@@ -21,6 +25,7 @@ import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
 import static com.aristy.gogocar.SHAHash.hashPassword;
+import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
 
 import android.app.Activity;
@@ -37,6 +42,8 @@ import java.util.List;
 public class WebInterface {
 
     public static final String HOME = "file:///android_asset/pages/home.html";
+    public static final String DRIVE = "file:///android_asset/pages/drive.html";
+    public static final String BOOK_VEHICLE = "file:///android_asset/pages/drive_book.html";
     public static final String VEHICLE = "file:///android_asset/pages/vehicles.html";
     public static final String ADD_VEHICLE = "file:///android_asset/pages/vehicles_add.html";
     public static final String EDIT_VEHICLE = "file:///android_asset/pages/vehicles_edit.html";
@@ -66,122 +73,44 @@ public class WebInterface {
         this.bluetoothHandler = handlers[BLUETOOTH_HANDLER_POS];
     }
 
-    /*  ---------------------------------- *
-     *  --          login.html          -- *
-     *  ---------------------------------- */
 
-    /**
-     * When Click on login button
-     * @param email     input user email
-     * @param password  input user password
-     */
-    @JavascriptInterface
-    public void AuthenticationLogin(String email, String password){
-        // Hash password
-        String hash = hashPassword(password, SHAHash.DOMAIN);
-
-        // Verify user exist for this email and password
-        DBModelUser user = verify(email, hash);
-
-        // If user doesn't exist
-        if (user == null) {
-            Log.e(TAG_Web, "AuthenticationLogin: no this user in our database");
-            // Send error to the page
-            androidToWeb("errorAuthenticationLogin");
-        } else {
-            // Set user in app & Save user for the application (user id)
-            userPreferences.setUser(user);
-
-            // Go to home
-            fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
-            fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) HexColor.TRANSPARENT).sendToTarget();
-        }
-    }
-
-    /**
-     * Verify if user exist
-     * @param email     user email enter in login
-     * @param hash      user password hash
-     * @return user if success,<br>
-     *         null if not.
-     */
-    private DBModelUser verify(String email, String hash){
-        DBModelUser user = databaseHelper.getUserByEmail(email);
-        // if user exist
-        if(user.getPassword() != null){
-            // Compare passwords, if hash_password == hash
-            if(hash.equals(user.getPassword())) return user;    // Ok
-        }
-        // If password and email are different: Not ok
-        return null;
-    }
-
-    /**
-     * When Click on register button
-     * @param fullName      input name
-     * @param email         input email
-     * @param phoneNumber   input phone number
-     * @param password      input password
-     */
-    @JavascriptInterface
-    public void AuthenticationRegister(String fullName, String email, String phoneNumber, String password){
-        // Hash password
-        String hash = hashPassword(password, SHAHash.DOMAIN);
-        Log.d(TAG_Web, "pw= \"" + password + "\", hash= \"" + hash + "\"");
-
-        // Create user
-        DBModelUser user = new DBModelUser(-1, fullName, email, phoneNumber, hash);
-
-        // Add user into user table
-        boolean success = databaseHelper.addUser(user);
-        Log.d(TAG_Database, "success=" + success);
-        if (!success) {
-            Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Retrieve user id
-        DBModelUser user_refresh = databaseHelper.getUserByEmail(email);
-
-        // Set user in app & Save user for the application (user id)
-        userPreferences.setUser(user_refresh);
-
-        // Load home page
-        fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
-        fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) HexColor.TRANSPARENT).sendToTarget();
-    }
-
-    @JavascriptInterface
-    public void verifyEmail(String email, int successCode, int errorCode){
-        // Check in database if email exist
-        DBModelUser user = databaseHelper.getUserByEmail(email);
-        Log.d(TAG_Auth, "verifyEmail: " + user.toString());
-
-        // If exist -> error
-        if (user.getEmail() == null) // not exist
-            androidToWeb("success", String.valueOf(successCode));
-        else
-            androidToWeb("errorAuthenticationRegistration", String.valueOf(errorCode));
-    }
-
-    @JavascriptInterface
-    public void verifyPhone(String phone, int successCode, int errorCode){
-        DBModelUser user = databaseHelper.getUserByPhone(phone);
-        Log.d(TAG_Auth, "verifyPhone: " + user.toString());
-
-        // If exist -> error
-        if (user.getPhoneNumber() == null) // not exist
-            androidToWeb("success", String.valueOf(successCode));
-        else
-            androidToWeb("errorAuthenticationRegistration", String.valueOf(errorCode));
-    }
 
     /*  ---------------------------------- *
      *  --           home.html          -- *
      *  ---------------------------------- */
 
+    /**
+     * Can block to home fragment during driving
+     */
+    boolean isDriving;
+
+    /**
+     * Request data:
+     * Name of the actual user
+     * Get vehicles booked by the user
+     * Set switch activated or not from bluetooth
+     */
     @JavascriptInterface
-    public void requestDrive(){
+    public void requestData(){
+        requestUserName();
+
+        // List booked vehicle for this user
+        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userPreferences.getUserID());
+        androidToWeb("setVehicleBooked", vehicles.toString());
+
+        // Set state of switch
+        bluetoothHandler.obtainMessage(BT_REQUEST_STATE).sendToTarget();
+    }
+
+    /**
+     * Ask to app do connect to the bluetooth
+     * Verify connection
+     * Check bluetooth enabled
+     * Check location enabled
+     * @param vehicleID id vehicle to drive
+     */
+    @JavascriptInterface
+    public void requestDrive(int vehicleID){
         Log.d(TAG_Web, "requestDrive: ");
         // Check if coarse location must be asked
         if (!checkPermission(activity)){
@@ -205,10 +134,63 @@ public class WebInterface {
             return;
         }
 
+        // Block user to home fragment during the journey (yes)
+        isDriving = true;
+
         //Intent enableBtIntent
         bluetoothHandler.obtainMessage(BT_STATE_DISCOVERING).sendToTarget();
     }
 
+    @JavascriptInterface
+    public void requestStopDrive(){
+        isDriving = false;
+        bluetoothHandler.obtainMessage(BT_STATE_DISCONNECTING).sendToTarget();
+    }
+
+    @JavascriptInterface
+    public void requestCancelJourney(int vehicleID){
+        boolean isUpdate = databaseHelper.setBookedVehicle(vehicleID, 0, false);
+
+        if(!isUpdate) Toast.makeText(context, "ERROR: Can't cancel.", Toast.LENGTH_SHORT).show();
+        else androidToWeb("journeyDelete", "true");
+    }
+
+    /*  ---------------------------------- *
+     *  --          drive.html          -- *
+     *  ---------------------------------- */
+
+    @JavascriptInterface
+    public void requestDatabase(){
+        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userPreferences.getUserID());
+        Log.d(TAG_Web, "requestDatabase: " + vehicles.toString());
+        androidToWeb("setDatabase", vehicles.toString());
+    }
+
+    @JavascriptInterface
+    public void requestOpenBook(String vehicle){
+        Log.d(TAG_Web, "requestOpenBook: " + vehicle);
+        fragmentHandler.obtainMessage(GOTO_BOOK_VEHICLE_FRAGMENT, vehicle).sendToTarget();
+    }
+
+    /* -- drive Book -- */
+
+    @JavascriptInterface
+    public void requestReturnToDrive(){
+        fragmentHandler.obtainMessage(GOTO_DRIVE_FRAGMENT).sendToTarget();
+    }
+
+    @JavascriptInterface
+    public void requestBookVehicle(int vehicleID, String pickupDate, String dropDate, int capacity){
+        Log.d(TAG_Web, "requestBookVehicle: " + vehicleID + ", " + pickupDate + ", " + dropDate + ", " + capacity);
+
+        // Check if the vehicle is available for these dates
+
+        // If everything is ok, update database
+        boolean isUpdate = databaseHelper.setBookedVehicle(vehicleID, userPreferences.getUserID(), true);
+
+        if(!isUpdate) Toast.makeText(context, "ERROR: Can't update.", Toast.LENGTH_SHORT).show();
+        else fragmentHandler.obtainMessage(GOTO_DRIVE_FRAGMENT).sendToTarget();
+    }
 
     /*  ---------------------------------- *
      *  --        vehicles.html         -- *
@@ -417,45 +399,14 @@ public class WebInterface {
         fragmentHandler.obtainMessage(GOTO_LOGIN_FRAGMENT).sendToTarget();
     }
 
-    // -----
-
-    @JavascriptInterface
-    public void changeBackground(String webColor){
-        Log.d(TAG_Web, "changeBackground : " + webColor);
-
-        // Convert Color
-        HexColor hexColor = new HexColor(webColor);
-        hexColor.convertToAndroidColor();
-        long colorSigned = hexColor.getDecSigned();
-
-        // Request to change the color
-        fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) colorSigned).sendToTarget();
-    }
-
-    @JavascriptInterface
-    public void openPopupBook(int id_vehicle){
-        Log.d(TAG_Web, "id vehicle: " + id_vehicle);
-
-        DBModelVehicle vehicle = databaseHelper.getVehicleById(id_vehicle);
-
-        androidToWeb("openPopupBook", vehicle.getModel(), vehicle.getAddress());
-    }
-
-
-    @JavascriptInterface
-    public void requestDatabase(){
-        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userPreferences.getUserID());
-        Log.d(TAG_Web, "requestDatabase: " + vehicles.toString());
-        androidToWeb("setDatabase", vehicles.toString());
-    }
-
     /*  ---------------------------------- *
      *  --          Navigation          -- *
      *  ---------------------------------- */
 
     @JavascriptInterface
     public void changePage(String page){
-        loadNewPage(page);
+        if (!isDriving)
+            loadNewPage(page);
     }
 
     /*  ---------------------------------- *
