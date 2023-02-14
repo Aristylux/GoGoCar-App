@@ -1,11 +1,15 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_Auth;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +33,7 @@ public class FragmentLogin extends Fragment {
     public FragmentLogin(Connection SQLConnection, UserPreferences userPreferences, Handler [] handlers){
         this.SQLConnection = SQLConnection;
         this.userPreferences = userPreferences;
-        this.handlers = handlers;
+        //this.handlers = handlers;
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -49,5 +53,18 @@ public class FragmentLogin extends Fragment {
         web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, handlers), "Android");
 
         return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            HandlerWrapper handlerWrapperFRG = (HandlerWrapper) getArguments().getSerializable("FRGHandler");
+            Handler fragmentHandler = handlerWrapperFRG.getHandler();
+            //Log.d(TAG_Auth, "onCreate: handler: " + fragmentHandler);
+            HandlerWrapper handlerWrapperBLE = (HandlerWrapper) getArguments().getSerializable("BLEHandler");
+            Handler bluetoothHandler = handlerWrapperBLE.getHandler();
+            handlers = new Handler[]{fragmentHandler, bluetoothHandler};
+        }
     }
 }

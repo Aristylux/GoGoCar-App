@@ -71,6 +71,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -110,6 +111,10 @@ public class MainActivity extends AppCompatActivity {
 
         handlers = new Handler[]{fragmentHandler, bluetoothHandler};
 
+        Bundle args = new Bundle();
+        args.putSerializable("FRGHandler", new HandlerWrapper(fragmentHandler));
+        args.putSerializable("BLEHandler", new HandlerWrapper(bluetoothHandler));
+
         // If the user is not logged
         if(!isLogged)
             selectedFragment = new FragmentLogin(SQLConnection, userPreferences, handlers);
@@ -117,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, HOME);
             selectedFragment = fragmentApp;
         }
+
+        selectedFragment.setArguments(args);
 
         // Set Fragment
         setFragment(selectedFragment, ANIMATE_SLIDE_LEFT);
