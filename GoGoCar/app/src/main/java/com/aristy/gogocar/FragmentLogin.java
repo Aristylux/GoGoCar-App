@@ -1,7 +1,5 @@
 package com.aristy.gogocar;
 
-import static com.aristy.gogocar.CodesTAG.TAG_Auth;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
@@ -9,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +32,19 @@ public class FragmentLogin extends Fragment {
         this.SQLConnection = SQLConnection;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            // Get handler
+            HandlerWrapper handlerWrapper = (HandlerWrapper) getArguments().getSerializable("FRGHandler");
+            this.fragmentHandler = handlerWrapper.getHandler();
+
+            // Get user preferences
+            this.userPreferences = getArguments().getParcelable("userPreferences");
+        }
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,18 +62,5 @@ public class FragmentLogin extends Fragment {
         web.addJavascriptInterface(new WIAuthentication(getContext(), web, SQLConnection, userPreferences, fragmentHandler), "Android");
 
         return view;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            // Get handler
-            HandlerWrapper handlerWrapperFRG = (HandlerWrapper) getArguments().getSerializable("FRGHandler");
-            this.fragmentHandler = handlerWrapperFRG.getHandler();
-
-            // Get user preferences
-            this.userPreferences = getArguments().getParcelable("userPreferences");
-        }
     }
 }

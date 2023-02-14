@@ -1,6 +1,5 @@
 package com.aristy.gogocar;
 
-import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_DOWN;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_LEFT;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_UP;
@@ -71,7 +70,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -84,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
     UserPreferences userPreferences;
 
     ActivityResultLauncher<Intent> activityResult;
-
-    Handler [] handlers;
 
     Fragment selectedFragment;
     FragmentApp fragmentApp;
@@ -109,18 +105,18 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG_SPLASH, "onCreate: user " + userPreferences.toString());
         // ----
 
-        handlers = new Handler[]{fragmentHandler, bluetoothHandler};
-
         Bundle args = new Bundle();
         args.putSerializable("FRGHandler", new HandlerWrapper(fragmentHandler));
-        //args.putSerializable("BLEHandler", new HandlerWrapper(bluetoothHandler));
         args.putParcelable("userPreferences", userPreferences);
 
         // If the user is not logged
         if(!isLogged)
             selectedFragment = new FragmentLogin(SQLConnection);
         else {
-            fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, HOME);
+            args.putSerializable("BLEHandler", new HandlerWrapper(bluetoothHandler));
+            args.putString("fragmentLink", HOME);
+
+            fragmentApp = new FragmentApp(SQLConnection);
             selectedFragment = fragmentApp;
         }
 
@@ -306,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
                     Log.d(TAG_BT, "handleMessage: received: " + message.obj);
                     // TODO (test)
-                    //bluetoothConnection.messageReceived((String) message.obj);
+                    // -> bluetoothConnection.messageReceived((String) message.obj);
                     //sendDataToFragment(bluetoothConnection.getMessageFunction(), bluetoothConnection.getMessageParams());
                     break;
                 case BT_STATE_DISCONNECTED:
@@ -359,6 +355,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Move to old fragment from new fragment and add arguments
+     * @param fragment      new fragment
+     * @param animation     animation type
+     * @param bundle        arguments
+     */
+    public void setFragment(Fragment fragment, int animation, Bundle bundle){
+        fragment.setArguments(bundle);
+        setFragment(fragment, animation);
+    }
+
+    /**
+     * Add argument to fragment
+     * @param link 4th argument
+     * @return arguments
+     */
+    public Bundle addArguments(String link){
+        Bundle args = new Bundle();
+        args.putSerializable("FRGHandler", new HandlerWrapper(fragmentHandler));
+        args.putSerializable("BLEHandler", new HandlerWrapper(bluetoothHandler));
+        args.putParcelable("userPreferences", userPreferences);
+        args.putString("fragmentLink", link);
+        return args;
+    }
+
+    /**
      * @param function function name to call in web
      * @param params parameters in that function
      */
@@ -386,30 +407,30 @@ public class MainActivity extends AppCompatActivity {
                     setFragment(fragmentLogin, ANIMATE_SLIDE_LEFT);
                     break;
                 case GOTO_HOME_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, HOME);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT);
+                    fragmentApp = new FragmentApp(SQLConnection);
+                    setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT, addArguments(HOME));
                     break;
                 case GOTO_DRIVE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, DRIVE);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_LEFT);
+                    fragmentApp = new FragmentApp(SQLConnection);
+                    setFragment(fragmentApp, ANIMATE_SLIDE_LEFT, addArguments(DRIVE));
                     break;
                 case GOTO_BOOK_VEHICLE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, BOOK_VEHICLE);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT);
+                    fragmentApp = new FragmentApp(SQLConnection);
+                    setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT, addArguments(BOOK_VEHICLE));
                     vehicle = String.valueOf(message.obj);
                     break;
                 case GOTO_ADD_VEHICLE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, ADD_VEHICLE);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_UP);
+                    fragmentApp = new FragmentApp(SQLConnection);
+                    setFragment(fragmentApp, ANIMATE_SLIDE_UP, addArguments(ADD_VEHICLE));
                     break;
                 case GOTO_EDIT_VEHICLE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, EDIT_VEHICLE);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_LEFT);
+                    fragmentApp = new FragmentApp(SQLConnection);
+                    setFragment(fragmentApp, ANIMATE_SLIDE_LEFT, addArguments(EDIT_VEHICLE));
                     vehicle = String.valueOf(message.obj);
                     break;
                 case GOTO_VEHICLE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection, userPreferences, handlers, VEHICLE);
-                    setFragment(fragmentApp, (Integer) message.obj);
+                    fragmentApp = new FragmentApp(SQLConnection);
+                    setFragment(fragmentApp, (Integer) message.obj, addArguments(VEHICLE));
                     break;
                 case STATUS_BAR_COLOR:
                     // Set color background

@@ -3,6 +3,7 @@ package com.aristy.gogocar;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -34,11 +35,30 @@ public class FragmentApp extends Fragment {
 
     WebView web;
 
-    public FragmentApp(Connection SQLConnection, UserPreferences userPreferences, Handler [] handlers, String link){
+    public FragmentApp(Connection SQLConnection){
         this.SQLConnection = SQLConnection;
-        this.userPreferences = userPreferences;
-        this.handlers = handlers;
-        this.link = link;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            // Get handler for fragments
+            HandlerWrapper handlerWrapperFRG = (HandlerWrapper) getArguments().getSerializable("FRGHandler");
+            Handler fragmentHandler = handlerWrapperFRG.getHandler();
+
+            // Get handler for bluetooth
+            HandlerWrapper handlerWrapperBLE = (HandlerWrapper) getArguments().getSerializable("BLEHandler");
+            Handler bluetoothHandler = handlerWrapperBLE.getHandler();
+
+            this.handlers = new Handler[]{fragmentHandler, bluetoothHandler};
+
+            // Get user preferences
+            this.userPreferences = getArguments().getParcelable("userPreferences");
+
+            // Get web link
+            this.link = getArguments().getString("fragmentLink");
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
