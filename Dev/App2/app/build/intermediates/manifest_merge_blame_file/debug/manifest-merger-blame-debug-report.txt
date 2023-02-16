@@ -1,0 +1,118 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.app2"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+8-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="32" />
+9-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.BLUETOOTH" />
+11-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:5:5-68
+11-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:5:22-65
+12    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+12-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:6:5-74
+12-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:6:22-71
+13    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+13-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:7:5-76
+13-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:7:22-73
+14
+15    <application
+15-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:9:5-45:19
+16        android:allowBackup="true"
+16-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:10:9-35
+17        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+17-->[androidx.core:core:1.8.0] /home/axel/.gradle/caches/transforms-3/87a796fe63836d99a2198ac6a6284cb3/transformed/core-1.8.0/AndroidManifest.xml:24:18-86
+18        android:dataExtractionRules="@xml/data_extraction_rules"
+18-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:11:9-65
+19        android:debuggable="true"
+20        android:extractNativeLibs="false"
+21        android:fullBackupContent="@xml/backup_rules"
+21-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:12:9-54
+22        android:icon="@mipmap/ic_launcher"
+22-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:13:9-43
+23        android:label="@string/app_name"
+23-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:14:9-41
+24        android:roundIcon="@mipmap/ic_launcher_round"
+24-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:15:9-54
+25        android:supportsRtl="true"
+25-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:16:9-35
+26        android:testOnly="true"
+27        android:theme="@style/Theme.App2" >
+27-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:17:9-42
+28        <activity
+28-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:19:9-31:20
+29            android:name="com.example.app2.SplashActivity"
+29-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:20:13-43
+30            android:exported="true" >
+30-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:21:13-36
+31            <intent-filter>
+31-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:22:13-26:29
+32                <action android:name="android.intent.action.MAIN" />
+32-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:23:17-69
+32-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:23:25-66
+33
+34                <category android:name="android.intent.category.LAUNCHER" />
+34-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:25:17-77
+34-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:25:27-74
+35            </intent-filter>
+36
+37            <meta-data
+37-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:28:13-30:36
+38                android:name="android.app.lib_name"
+38-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:29:17-52
+39                android:value="" />
+39-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:30:17-33
+40        </activity>
+41        <activity
+41-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:32:9-44:20
+42            android:name="com.example.app2.MainActivity"
+42-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:33:13-41
+43            android:exported="true" >
+43-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:34:13-36
+44            <intent-filter>
+44-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:22:13-26:29
+45                <action android:name="android.intent.action.MAIN" />
+45-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:23:17-69
+45-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:23:25-66
+46
+47                <category android:name="android.intent.category.LAUNCHER" />
+47-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:25:17-77
+47-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:25:27-74
+48            </intent-filter>
+49
+50            <meta-data
+50-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:28:13-30:36
+51                android:name="android.app.lib_name"
+51-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:29:17-52
+52                android:value="" />
+52-->/home/axel/Documents/ISEN/GoGoCar/Git/GoGoCar-App/App2/app/src/main/AndroidManifest.xml:30:17-33
+53        </activity>
+54
+55        <provider
+55-->[androidx.emoji2:emoji2:1.2.0] /home/axel/.gradle/caches/transforms-3/c03fa7bc00a04a375204b573f0966d9f/transformed/emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+56            android:name="androidx.startup.InitializationProvider"
+56-->[androidx.emoji2:emoji2:1.2.0] /home/axel/.gradle/caches/transforms-3/c03fa7bc00a04a375204b573f0966d9f/transformed/emoji2-1.2.0/AndroidManifest.xml:25:13-67
+57            android:authorities="com.example.app2.androidx-startup"
+57-->[androidx.emoji2:emoji2:1.2.0] /home/axel/.gradle/caches/transforms-3/c03fa7bc00a04a375204b573f0966d9f/transformed/emoji2-1.2.0/AndroidManifest.xml:26:13-68
+58            android:exported="false" >
+58-->[androidx.emoji2:emoji2:1.2.0] /home/axel/.gradle/caches/transforms-3/c03fa7bc00a04a375204b573f0966d9f/transformed/emoji2-1.2.0/AndroidManifest.xml:27:13-37
+59            <meta-data
+59-->[androidx.emoji2:emoji2:1.2.0] /home/axel/.gradle/caches/transforms-3/c03fa7bc00a04a375204b573f0966d9f/transformed/emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+60                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+60-->[androidx.emoji2:emoji2:1.2.0] /home/axel/.gradle/caches/transforms-3/c03fa7bc00a04a375204b573f0966d9f/transformed/emoji2-1.2.0/AndroidManifest.xml:30:17-75
+61                android:value="androidx.startup" />
+61-->[androidx.emoji2:emoji2:1.2.0] /home/axel/.gradle/caches/transforms-3/c03fa7bc00a04a375204b573f0966d9f/transformed/emoji2-1.2.0/AndroidManifest.xml:31:17-49
+62            <meta-data
+62-->[androidx.lifecycle:lifecycle-process:2.4.1] /home/axel/.gradle/caches/transforms-3/0ce9e5f033589fdf0ab757f82f7808ec/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:31:13-33:52
+63                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+63-->[androidx.lifecycle:lifecycle-process:2.4.1] /home/axel/.gradle/caches/transforms-3/0ce9e5f033589fdf0ab757f82f7808ec/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:32:17-78
+64                android:value="androidx.startup" />
+64-->[androidx.lifecycle:lifecycle-process:2.4.1] /home/axel/.gradle/caches/transforms-3/0ce9e5f033589fdf0ab757f82f7808ec/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:33:17-49
+65        </provider>
+66    </application>
+67
+68</manifest>
