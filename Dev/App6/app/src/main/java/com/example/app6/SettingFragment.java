@@ -2,11 +2,14 @@ package com.example.app6;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +26,8 @@ public class SettingFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private View rootView;
 
     public SettingFragment() {
         // Required empty public constructor
@@ -59,6 +64,37 @@ public class SettingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_setting, container, false);
+        rootView = inflater.inflate(R.layout.fragment_setting, container, false);
+
+        Button button = rootView.findViewById(R.id.button_return);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().popBackStack();
+            }
+        });
+
+        OnSwipeTouchListener swipeTouchListener = new OnSwipeTouchListener(getActivity(), rootView) {
+            @Override
+            public void onSwipeRight() {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        };
+        rootView.setOnTouchListener(swipeTouchListener);
+
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+/*
+        view.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+            @Override
+            public void onSwipeRight() {
+                getFragmentManager().popBackStack();
+            }
+        });
+ */
     }
 }
