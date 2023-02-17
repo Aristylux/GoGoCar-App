@@ -73,7 +73,7 @@ public class SettingFragment extends Fragment {
                 getFragmentManager().popBackStack();
             }
         });
-
+/*
         OnSwipeTouchListener swipeTouchListener = new OnSwipeTouchListener(getActivity(), rootView) {
             @Override
             public void onSwipeRight() {
@@ -81,7 +81,7 @@ public class SettingFragment extends Fragment {
             }
         };
         rootView.setOnTouchListener(swipeTouchListener);
-
+*/
         return rootView;
     }
 
