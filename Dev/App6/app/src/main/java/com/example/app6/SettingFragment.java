@@ -17,6 +17,8 @@ import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrInterface;
 import com.r0adkll.slidr.model.SlidrPosition;
 
+import java.util.Objects;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SettingFragment#newInstance} factory method to
@@ -93,7 +95,7 @@ public class SettingFragment extends Fragment {
                 .build();
 
         // Create a new Slidr instance with customization options
-        slidr = Slidr.attach(getActivity(), config);
+        slidr = Slidr.attach(requireActivity(), config);
 /*
         OnSwipeTouchListener swipeTouchListener = new OnSwipeTouchListener(getActivity(), rootView) {
             @Override
