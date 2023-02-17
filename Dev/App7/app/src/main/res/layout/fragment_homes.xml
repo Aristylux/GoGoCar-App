@@ -18,4 +18,33 @@
         app:layout_constraintTop_toTopOf="parent"
         android:textSize="40dp"/>
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="count"
+        app:layout_constraintBottom_toTopOf="@+id/fg_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="cnt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/fg_name"
+        app:layout_constraintStart_toStartOf="@+id/fg_name"
+        app:layout_constraintTop_toBottomOf="@+id/fg_name" />
+
+    <Button
+        android:id="@+id/button_block"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Block"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

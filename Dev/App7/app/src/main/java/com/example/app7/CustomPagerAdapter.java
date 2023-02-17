@@ -1,24 +1,51 @@
 package com.example.app7;
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class CustomPagerAdapter extends FragmentPagerAdapter {
+import java.util.List;
 
-    public CustomPagerAdapter(@NonNull FragmentManager fragmentManager) {
-        super(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+public class CustomPagerAdapter extends RecyclerView.Adapter<CustomPagerAdapter.CustomPagerViewHolder> {
+
+    private List<String> titles;
+
+    public CustomPagerAdapter(List<String> titles) {
+        this.titles = titles;
     }
 
     @NonNull
     @Override
-    public Fragment getItem(int position) {
-        return FragmentHomes.newInstance("Fragment " + (position+1));
+    public CustomPagerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_homes, parent, false);
+        return new CustomPagerViewHolder(view);
     }
 
     @Override
-    public int getCount() {
-        return 4;
+    public void onBindViewHolder(@NonNull CustomPagerViewHolder holder, int position) {
+        holder.bind(titles.get(position));
+    }
+
+    @Override
+    public int getItemCount() {
+        return titles.size();
+    }
+
+    public class CustomPagerViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView titleTextView;
+
+        public CustomPagerViewHolder(@NonNull View itemView) {
+            super(itemView);
+            titleTextView = itemView.findViewById(R.id.fg_name);
+        }
+
+        public void bind(String title) {
+            titleTextView.setText(title);
+        }
     }
 }

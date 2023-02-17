@@ -13,26 +13,12 @@ import com.r0adkll.slidr.model.SlidrPosition;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SlidrInterface slidr;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        SlidrConfig config = new SlidrConfig.Builder()
-                .position(SlidrPosition.LEFT)
-                .sensitivity(1f)
-                .scrimColor(Color.TRANSPARENT)
-                .scrimStartAlpha(0f)
-                .scrimEndAlpha(0f)
-                .velocityThreshold(2400)
-                .distanceThreshold(0.25f)
-                .edge(false)
-                .build();
-
-        // Create a new Slidr instance with customization options
-        slidr = Slidr.attach(this, config);
 
         MainFragment fragment = MainFragment.newInstance("Main Fragment");
 
@@ -42,11 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(slidr == null)
-            slidr = Slidr.replace(this.findViewById(R.id.main_container), new SlidrConfig.Builder().position(SlidrPosition.LEFT).build());
-    }
+
 
 }

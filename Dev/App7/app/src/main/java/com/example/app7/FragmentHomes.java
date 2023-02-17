@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -20,6 +21,8 @@ public class FragmentHomes extends Fragment {
     private static final String ARG_FG_NAME = "name";
 
     private String fgName;
+    int ctn = 0;
+    boolean isEn = false;
 
     public FragmentHomes() {
         // Required empty public constructor
@@ -57,6 +60,26 @@ public class FragmentHomes extends Fragment {
         TextView text = view.findViewById(R.id.fg_name);
         text.setText(fgName);
 
+        TextView counter = view.findViewById(R.id.counter);
+        counter.setText(String.valueOf(ctn));
+
+        Button button = view.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ctn++;
+                counter.setText(String.valueOf(ctn));
+            }
+        });
+
+        Button buttonBlock = view.findViewById(R.id.button_block);
+        buttonBlock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isEn = !isEn;
+                //.setEnabled(isEn);
+            }
+        });
 
         return view;
     }

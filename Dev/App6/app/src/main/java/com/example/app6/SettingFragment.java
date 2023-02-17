@@ -1,5 +1,6 @@
 package com.example.app6;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrInterface;
+import com.r0adkll.slidr.model.SlidrPosition;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +34,7 @@ public class SettingFragment extends Fragment {
     private String mParam2;
 
     private View rootView;
+    private SlidrInterface slidr;
 
     public SettingFragment() {
         // Required empty public constructor
@@ -73,6 +80,20 @@ public class SettingFragment extends Fragment {
                 getFragmentManager().popBackStack();
             }
         });
+
+        SlidrConfig config = new SlidrConfig.Builder()
+                .position(SlidrPosition.LEFT)
+                .sensitivity(1f)
+                .scrimColor(Color.TRANSPARENT)
+                .scrimStartAlpha(0f)
+                .scrimEndAlpha(0f)
+                .velocityThreshold(2400)
+                .distanceThreshold(0.25f)
+                .edge(false)
+                .build();
+
+        // Create a new Slidr instance with customization options
+        slidr = Slidr.attach(getActivity(), config);
 /*
         OnSwipeTouchListener swipeTouchListener = new OnSwipeTouchListener(getActivity(), rootView) {
             @Override
@@ -96,5 +117,12 @@ public class SettingFragment extends Fragment {
             }
         });
  */
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(rootView != null && slidr == null)
+            slidr = Slidr.replace(rootView.findViewById(R.id.content_container), new SlidrConfig.Builder().position(SlidrPosition.LEFT).build());
     }
 }
