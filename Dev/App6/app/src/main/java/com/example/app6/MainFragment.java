@@ -70,7 +70,7 @@ public class MainFragment extends Fragment {
         Button button = view.findViewById(R.id.button_set);
         button.setOnClickListener(view1 -> {
 
-            SettingFragment fragmentB = new SettingFragment();
+            SettingFragment fragmentB = SettingFragment.newInstance("setting");
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             //transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
             transaction.replace(R.id.fragment_container, fragmentB);
