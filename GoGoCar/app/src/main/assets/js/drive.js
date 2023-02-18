@@ -70,12 +70,35 @@
             var vehicles = [vehicle_1, vehicle_2];
             setDatabase(vehicles);
 */
+
+// Global Variable
+var vehicles;
+var vehicle_selected;
+
 // Request database
 if (androidConnected()) Android.requestDatabase();
+else{
+    vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
+    
+    vehicles.forEach((vehicle) => {
+        addElement(vehicle);
+    });
+
+    const vehicles_container = document.querySelectorAll(".vehicle_container");
+    vehicles_container.forEach(function (container, index) {
+        container.addEventListener("click", (event) => {
+            // Open popup 'book'
+            console.log(index);
+            //if (androidConnected()) Android.openPopupBook(vehicles[index].id);
+            vehicle_selected = vehicles[index];
+            openPopupBook();
+        });
+    });
+}
 
 // [ANDROID CALLBACK] Retrive databases from android (result)
 function setDatabase(_table_vehicle) {
-    var vehicles = JSON.parse(_table_vehicle);
+    vehicles = JSON.parse(_table_vehicle);
 
     vehicles.forEach((vehicle) => {
         addElement(vehicle);
@@ -86,16 +109,15 @@ function setDatabase(_table_vehicle) {
         container.addEventListener("click", (event) => {
             // Open popup 'book'
             console.log(index);
-            if (androidConnected()) Android.openPopupBook(vehicles[index].id);
+            vehicle_selected = vehicles[index];
+            openPopupBook();
         });
     });
 }
 
 // Add element to ul list
 function addElement(vehicle) {
-    console.log(vehicle.name);
-    console.log(vehicle.address);
-    let vehicle_info = [vehicle.name, vehicle.address];
+    const vehicle_info = [vehicle.name, vehicle.address];
 
     // Create Container
     let li = document.createElement("li");

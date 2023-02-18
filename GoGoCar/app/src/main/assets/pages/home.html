@@ -10,7 +10,13 @@
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
         <link rel="stylesheet" href="../css/style_button.css"/>
 
+        <link rel="stylesheet" href="../css/popup.css" />
+        <link rel="stylesheet" href="../css/modal.css" />
+
         <link rel="stylesheet" href="../css/home.css" />
+        <link rel="stylesheet" href="../css/navigation_box.css" />
+        <link rel="stylesheet" href="../css/journey_list.css" />
+
         <link rel="stylesheet" href="../css/switch.css" />
     </head>
     <body>
@@ -21,47 +27,74 @@
                 <h2>Welcome home!</h2>
                 <h3 id="user_name">Full name</div>
             </div>
-            
 
-            <h2 class="title_container">Your trip:</h2>
-            <div id="container">
-                <div id="info_vehicle">
-                    <ul>
-                        <li>
-                            <h2>Isen's car</h2>
-                        </li>
-                        <li class="info">
-                            <i class="fi fi-rr-map-marker"></i>
-                            <span>23 Avenue du Champs de Mars</span>
-                        </li>
-                        <li class="info">
-                            <i class="fi fi-rr-rectangle-barcode"></i>
-                            <span>Licence plate: TR-524-ZY</span>
-                        </li>
-                    </ul>
+            <div class="box-nav" id="box_nav_drive">
+                <i id="box-cl-drive" class="fi fi-rr-search box-ico cl"></i>
+                <div class="box-desc">
+                    <h1>Drive</h1>
+                    <p>Book a vehicle</p>
                 </div>
-                <div id="drive_vehicle">
+                <i class="fi fi-rr-angle-small-right box-ico go"></i>
+            </div>
+
+            <div class="box-nav" id="box_nav_vehicles">
+                <i id="box-cl-vehicles" class="fi fi-rr-car box-ico cl"></i>
+                <div class="box-desc">
+                    <h1>Vehicles</h1>
+                    <p>Your cars</p>
+                </div>
+                <i class="fi fi-rr-angle-small-right box-ico go"></i>
+            </div>
+            
+            <ul id="journey_list"></ul>
+            
+            <!--
+            <div class="journey-container">
+                <ul>
+                    <li>
+                        <h2>Your trip with Isen's car</h2>
+                    </li>
+                    <li class="info">
+                        <i class="fi fi-rr-map-marker"></i>
+                        <span>23 Avenue du Champs de Mars</span>
+                    </li>
+                    <li class="info">
+                        <i class="fi fi-rr-rectangle-barcode"></i>
+                        <span>Licence plate:</span>
+                        <span class="lp">TR-524-ZY</span>
+                    </li>
+                </ul>
+                <div class="drive_vehicle">
                     <h3>Ready to drive?</h3>             
-                    <div id="switch_container">
+                    <div class="switch_container">
                         <label class="switch">
-                            <input id="switch" type="checkbox" class="switch_input"  >
+                            <input id="switch" type="checkbox" class="switch_input">
                             <span class="slider"></span>
                         </label>
                     </div>
                 </div>
-                
+                <div class="buttons">
+                    <button class="bt_cancel border-button">Cancel</button>
+                </div>
             </div>
+            -->
 
-            <!-- Debug -->
-            <div hidden>
-                <button id="button_change_color">Change Back</button>
-        
-                <button id="button_reset_color">Reset Back</button>
-            
-                <button id="button_toast">Toast</button>
-            </div>
         </section>
 
+        <!-- Popup message for cancel a reservation -->
+        <div id="modal_popup" class="modal">
+            <div id="popup" class="popup">
+                <h1 id="vehicle_name">Cancel?</h1>
+                <div id="popup_vehicle_information">
+                    <i class="fi fi-rr-exclamation"></i>
+                    <span id="vehicle_position">This operation will cancel the vehicle</span>
+                </div>
+                <div id="popup_vehicle_buttons">
+                    <button id="but_pop_back">No, go back</button>
+                    <button id="but_pop_cancel" class="border-button">Yes, cancel</button>
+                </div>
+            </div>
+        </div>
         
 
         <nav id="navigation" class="nav">
@@ -87,69 +120,7 @@
         <script src="../js/home.js"></script>
         <script src="../js/nav.js"></script>
 
-        <script>
-            // On load page:
-            if(androidConnected()) Android.requestUserName();
-
-            // [ANDROID CALLBACK]
-            function setUserName(name){
-                let nameElmt = document.getElementById("user_name");
-                nameElmt.textContent = name;
-            }
-
-
-            // Get all car booked for the user
-
-            let switchElement = document.getElementById('switch');
-
-            switchElement.addEventListener('change', function () {
-                if (switchElement.checked) {
-                    console.log("Checked");
-                    // Verify if user can drive car
-
-                    if(androidConnected()) Android.requestDrive();
-                    
-                } else {
-                    console.log("Not checked");
-                    // User finish to drive
-
-                }
-            });
-
-            // [ANDROID CALLBACK]
-            /*
-             *
-             * allowedToDrive 'true', 'error_code'
-             */
-            function requestDriveCallback(allowedToDrive){
-
-                if(allowedToDrive === "true"){
-                    // Open Popup : you can drive.
-
-                    if(androidConnected()) Android.showToast("You can drive :-)");
-                } else {
-                    switchElement.checked = false;
-                    console.log(allowedToDrive);
-                    if (typeof allowedToDrive == "string") allowedToDrive = parseInt(allowedToDrive);
-
-                    switch (allowedToDrive) {
-                        case 4: //DRIVING_REQUEST_CAR_NOT_FOUND
-                            if(androidConnected()) Android.showToast("You cannot drive, car not found.");
-                            break;
-                    
-                        default:
-                            break;
-                    }
-                    // Open Popup : you cannot drive.
-                    // You're not allowed to drive this car...
-
-                    
-
-                    //if(androidConnected()) Android.showToast("You cannot drive :-(");
-                }
-            }
-
-        </script>
-
+        <script src="../js/popup.js"></script>
+        <script src="../js/popup_home_cancel.js"></script>
     </body>   
 </html>

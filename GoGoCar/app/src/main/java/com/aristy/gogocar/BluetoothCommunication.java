@@ -1,5 +1,6 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_COM;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
@@ -11,6 +12,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 public class BluetoothCommunication extends Thread {
     private InputStream inputStream = null;
@@ -20,7 +22,7 @@ public class BluetoothCommunication extends Thread {
     private BluetoothSocket bluetoothSocket;
     private final Handler handler;
 
-    private String textMessage = "";
+    private StringBuilder message = new StringBuilder();
 
     public BluetoothCommunication(BluetoothConnection bluetoothConnection, Handler handler){
         this.bluetoothConnection = bluetoothConnection;
@@ -43,15 +45,22 @@ public class BluetoothCommunication extends Thread {
         // when bluetooth is connected, read buffer
         while(bluetoothSocket.isConnected()){
             try {
+                // Message size
                 bytes = inputStream.read(buffer);
+
+                // Get Message
                 String tempMessage = new String(buffer,0, bytes);
+                //Log.d(TAG_BT, "run: " + bytes + " | " + Arrays.toString(buffer));
+
+                //$VA:data\n
+
+                // Format message
                 for (int i = 0; i < tempMessage.length(); i++){
-                    //Log.d(TAG_B,  i + " [" + message.charAt(i) + "]");
-                    textMessage += tempMessage.charAt(i);
                     if(tempMessage.charAt(i) == '\n') {
-                        //Log.d(TAG_B, count + "\t" + textMessage);
-                        handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, textMessage).sendToTarget();
-                        textMessage = "";
+                        handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, message).sendToTarget();
+                        message = new StringBuilder();
+                    } else {
+                        message.append(tempMessage.charAt(i));
                     }
                 }
             } catch (IOException exception) {

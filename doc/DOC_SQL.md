@@ -65,6 +65,7 @@ CREATE TABLE modules (
     mac_address VARCHAR(129) UNIQUE NOT NULL
     );
 ```
+
 ### Marques et Modeles voitures
 ```sql
 CREATE TABLE `modeles` (
@@ -73,6 +74,7 @@ CREATE TABLE `modeles` (
   `modele` varchar(255) NOT NULL
 );
 ```
+
 # Insert
 
 ## User
@@ -103,6 +105,15 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
 INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES 
     ('Mini Cooper', 'ST-425-ZE', '10 Avenue Francois Cuzin', 3, 7),
     ('Fiat 500', 'PN-671-DT', '18 Boulevard Jules Ferry', 4, 8);
+
+```sql
+INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
+    ('Citroën c3', 'QS-523-EE', '5 Boulevard des Arènes' , 4, 7),
+    ('Chevrolet Camaro', 'DE-431-AD', '12 rue Picot' , 2, 8),
+    ('Fiat 500', 'WS-856-CE', '268 rue du Dr Paradis' , 5, 9),
+    ('Mini Cooper', 'DL-727-HS', ' 6 Avenue du 11 novembre' , 2, 10),
+    ('Peugeot 208', 'CQ-154-IU', '270 rue jean monnet' , 5, 11),
+    ('Renault Mégane', 'MF-476-NX', '34 Avenue Francois Cuzin', 6, 12);
 ```
 
 ## Modules gogocar
@@ -111,8 +122,12 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
 INSERT INTO modules (name, mac_address) VALUES
     ('#01-01-0001', 'e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9'),
     ('#01-01-0002', '29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4'),
-    ('#01-01-0003', '1'),
-    ('#01-01-0004', '2'),
-    ('#01-01-0005', '3'),
-    ('#01-01-0006', '4');
+    ('#01-01-0003', '3'),
+    ('#01-01-0004', '4'),
+    ('#01-01-0005', '5'),
+    ('#01-01-0006', '6'),
+    ('#01-01-0007', '7'),
+    ('#01-01-0008', '8'),
+    ('#01-01-0009', '9'),
+    ('#01-01-0010', '10');
 ```

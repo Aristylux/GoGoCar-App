@@ -1,19 +1,3 @@
-# Documentation
-
-## SQL
-
-[JDBC Postgres](https://jdbc.postgresql.org/documentation)
-
-## Local
-
-[DOC Oracle Cloud Tutorial](./DOC_Oracle_Cloud.md)
-
-[DOC SQL Queries](./DOC_SQL.md)
-
-[DOC Docker](./DOC_Docker.md)
-
-[DOC Archive code](./DOC_Code_Archive.md)
-
 # Login:
 
 Expectation:

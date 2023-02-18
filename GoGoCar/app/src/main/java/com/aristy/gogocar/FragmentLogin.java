@@ -3,6 +3,7 @@ package com.aristy.gogocar;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -23,13 +24,25 @@ import java.sql.Connection;
 public class FragmentLogin extends Fragment {
 
     Connection SQLConnection;
-    UserPreferences userPreferences;
-    Handler [] handlers;
 
-    public FragmentLogin(Connection SQLConnection, UserPreferences userPreferences, Handler [] handlers){
+    UserPreferences userPreferences;
+    Handler fragmentHandler;
+
+    public FragmentLogin(Connection SQLConnection){
         this.SQLConnection = SQLConnection;
-        this.userPreferences = userPreferences;
-        this.handlers = handlers;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            // Get handler
+            HandlerWrapper handlerWrapper = (HandlerWrapper) getArguments().getSerializable("FRGHandler");
+            this.fragmentHandler = handlerWrapper.getHandler();
+
+            // Get user preferences
+            this.userPreferences = getArguments().getParcelable("userPreferences");
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -46,7 +59,7 @@ public class FragmentLogin extends Fragment {
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, handlers), "Android");
+        web.addJavascriptInterface(new WIAuthentication(getContext(), web, SQLConnection, userPreferences, fragmentHandler), "Android");
 
         return view;
     }

@@ -2,63 +2,84 @@
 
 Android Application for GoGoCar
 
-## Useful links
-
 [Description GoGoCar](./GoGoCar)
 
 [HTML Code](./GoGoCar/app/src/main/assets/)
 
-[Documentation postgres/Docker](./GoGoCar/Doc.md)
-
-[Documentation Oracle Cloud](./GoGoCar/Oracle_cloud.md)
-
-[Documentation SQL Queries](./GoGoCar/SQLQuery.md)
-
-## Table of Content
+# Table of Content
 
 - [GoGoCar-App](#gogocar-app)
-  - [GoGoCar](#gogocar)
-  - [Table of Content](#table-of-content)
-  - [App 1](#app-1)
-  - [App 2](#app-2)
-  - [App 3](#app-3)
-  - [App 4](#app-4)
-  - [App 5](#app-5)
+- [Table of Content](#table-of-content)
+- [Documentation](#documentation)
+  - [SQL](#sql)
+  - [Local](#local)
+- [Dev](#dev)
+    - [App 1](#app-1)
+    - [App 2](#app-2)
+    - [App 3](#app-3)
+    - [App 4](#app-4)
+    - [App 5](#app-5)
+    - [App 6](#app-6)
+    - [App 7](#app-7)
+    - [App 8](#app-8)
 
 
-## App 1
+# Documentation
 
-App 1 is an app test for bluetooth 
+## SQL
 
-### App1 Functionnalities:
+[JDBC Postgres](https://jdbc.postgresql.org/documentation)
+
+## Local
+
+[Documentation Oracle Cloud Tutorial](./doc/DOC_Oracle_Cloud.md)
+
+[Documentation SQL Queries](./doc/DOC_SQL.md)
+
+[Documentation Docker](./doc/DOC_Docker.md)
+
+[Documentation Archive code](./doc/DOC_Code_Archive.md)
+
+
+# Dev
+
+App 1, 2, 3, 4 and 5 are app test for bluetooth 
+
+| Name |   Spec    |        List        |        Scan        |     Connection     |        Send        |      Recieve       |
+| :--- | :-------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| App1 | Bluetooth | :heavy_check_mark: |        :x:         | :heavy_check_mark: |        :x:         | :heavy_check_mark: |
+| App2 | Bluetooth | :heavy_check_mark: |        :x:         | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
+| App3 | Bluetooth | :heavy_check_mark: |        :x:         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| App4 | Bluetooth |        :x:         | :heavy_check_mark: |        :x:         |        :x:         |        :x:         |
+| App5 | Bluetooth |        :x:         | :heavy_check_mark: | :heavy_check_mark: |        :x:         |        :x:         |
+
+App 6, 7 and 8 are app test for structure app
+
+| Name |     Spec      |
+| :--- | :-----------: |
+| App6 |    Slider     |
+| App7 | Home Fragment |
+| App8 |    Slider     |
+
+### App 1
 
 * List bluetooth devices
 * Connect to bluetooth
 * Displays the data received by the smartphone
 
-[Description App1](./App1)
+[Description App1](./dev/App1)
 
-[Code Java App1](./App1/app/src/main/java/com/example/app1/)
+[Code Java App1](./dev/App1/app/src/main/java/com/example/app1/)
 
-## App 2
-
-App 2 is an app test for bluetooth
-
-### App2 Functionnalities:
+### App 2
 
 * List bluetooth devices
 * Connect to bluetooth
 * Send data with a button.
 
-[Description App2](./App2)
+[Code Java App2](./dev/App2/app/src/main/java/com/example/app2/)
 
-[Code Java App2](./App2/app/src/main/java/com/example/app2/)
-
-## App 3
-
-App 3 is an app test for bluetooth
-
-### App3 Functionnalities:
+### App 3
 
 * List bluetooth devices
 * Connect to bluetooth
@@ -67,27 +88,32 @@ App 3 is an app test for bluetooth
 
 App3 ~= App2 + App1
 
-[Description App3](./App3)
+[Code Java App3](./dev/App3/app/src/main/java/com/example/app3/)
 
-[Code Java App3](./App3/app/src/main/java/com/example/app3/)
-
-## App 4
-
-App 4 is an app test for bluetooth
-
-### App4 Functionnalities:
+### App 4
 
 * Scan bluetooth devices in search
 
-[Code Java App4](./App4/app/src/main/java/com/aristy/app4/)
+[Code Java App4](./dev/App4/app/src/main/java/com/aristy/app4/)
 
-## App 5
-
-App 5 is an app test for bluetooth
-
-### App5 Functionnalities:
+### App 5
 
 * Scan bluetooth devices in search
 * Connect to the selected device
 
-[Code Java App5](./App5/app/src/main/java/com/aristy/app5)
+[Code Java App5](./dev/App5/app/src/main/java/com/aristy/app5)
+
+### App 6
+
+* Try to implement Slidr lib for fragment
+* ***Doesn't work***
+
+### App 7
+
+* Try to implement viewPager2
+* ***Doesn't work***
+
+### App 8
+
+* Try to implement Slidr lib for activity
+* (work)
