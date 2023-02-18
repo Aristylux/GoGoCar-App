@@ -20,6 +20,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void openActivity2(View view){
         Intent intent = new Intent(this, Activity2.class);
-        startActivity(intent);
+        this.startActivity(intent);
+        this.overridePendingTransition(
+                R.anim.animate_slide_left_enter,
+                R.anim.animate_slide_left_exit
+        );
+
     }
 }
