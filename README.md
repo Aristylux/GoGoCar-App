@@ -53,6 +53,14 @@ App 1, 2, 3, 4 and 5 are app test for bluetooth
 | App4 | Bluetooth |        :x:         | :heavy_check_mark: |        :x:         |        :x:         |        :x:         |
 | App5 | Bluetooth |        :x:         | :heavy_check_mark: | :heavy_check_mark: |        :x:         |        :x:         |
 
+App 6, 7 and 8 are app test for structure app
+
+| Name |     Spec      |
+| :--- | :-----------: |
+| App6 |    Slider     |
+| App7 | Home Fragment |
+| App8 |    Slider     |
+
 ### App 1
 
 * List bluetooth devices
@@ -97,6 +105,15 @@ App3 ~= App2 + App1
 
 ### App 6
 
+* Try to implement Slidr lib for fragment
+* ***Doesn't work***
+
 ### App 7
 
+* Try to implement viewPager2
+* ***Doesn't work***
+
 ### App 8
+
+* Try to implement Slidr lib for activity
+* (work)
