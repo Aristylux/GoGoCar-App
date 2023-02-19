@@ -134,3 +134,103 @@ st.close();
         */
 
 ```
+
+
+# js moving
+
+```html
+!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="moving.css"/>
+    </head>
+    <body>
+        <section id="moving-screen">
+            <!-- content -->
+            
+        </section>
+        <script src="moving.js"></script>
+    </body>
+```
+
+```css
+#moving-screen {
+    position: fixed;
+    top: 0;
+    left: 101vw;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--background-color);
+    
+    transition: var(--touch-transistion) ease-in-out;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 2;
+}
+
+#moving-screen.active {
+    left: 0;
+}
+```
+
+```js
+const setting_page_pp = document.getElementById("moving-screen");
+
+setting_page_pp.addEventListener('touchstart', touchStart);
+setting_page_pp.addEventListener('touchmove', touchMove);
+setting_page_pp.addEventListener('touchend', touchEnd);
+var startingX, count;
+
+function touchStart(event) {
+    startingX = event.touches[0].clientX;
+    //console.log("start " + startingX);
+    count = 0;
+    setting_page_pp.style.transition = '0s';
+}
+
+function touchMove(event) {
+    let change = event.touches[0].clientX - startingX;
+    count++;
+    // If move to right to left
+    if(change < 0)
+        return;
+    
+    if(change > 50)
+        setting_page_pp.style.left = change - 50 + 'px';
+    event.preventDefault();
+}
+
+function touchEnd(event) {
+    let endedX = event.changedTouches[0].clientX;
+    let change = endedX - startingX;
+     setting_page_pp.style.transition = '0.3s ease-in-out';
+     // If user move is < to 20px, ignore
+    if (change < 20) {
+        return;
+    }
+     if(determinateChange(startingX, endedX, change, count)){
+        //console.log("rest");
+        setting_page_pp.style.left = '0px';
+    } else {
+        //console.log("leave");
+        setting_page_pp.style.left = '101vw';
+    }
+}
+
+function determinateChange(start, end, change, sample) {
+    let speed =  change / sample;
+    //console.log("-> start=" + start + "px, end=" + end + "px, diff=" + change + "px, nbr=" + sample + ", speed=" + speed);
+    
+    if(speed > 10){
+        //console.log("speed")
+        return false;
+    }
+     let threshold = screen.width / 2;
+    if(change < threshold){
+        //console.log("threshold");
+        return true;
+    }
+        
+    return false;
+}
+```
