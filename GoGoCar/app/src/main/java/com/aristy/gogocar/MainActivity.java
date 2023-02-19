@@ -57,7 +57,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -69,9 +68,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -108,22 +104,13 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG_SPLASH, "onCreate: user " + userPreferences.toString());
         // ----
 
-        Bundle args = new Bundle();
-        args.putSerializable("FRGHandler", new HandlerWrapper(fragmentHandler));
-        args.putParcelable("userPreferences", userPreferences);
-
         // If the user is not logged
         if(!isLogged)
-            selectedFragment = new FragmentLogin(SQLConnection);
+            selectedFragment = FragmentLogin.newInstance(userPreferences, fragmentHandler, SQLConnection);
         else {
-            args.putSerializable("BLEHandler", new HandlerWrapper(bluetoothHandler));
-            args.putString("fragmentLink", HOME);
-
-            fragmentApp = new FragmentApp(SQLConnection);
+            fragmentApp = FragmentApp.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME, SQLConnection);
             selectedFragment = fragmentApp;
         }
-
-        selectedFragment.setArguments(args);
 
         // Set Fragment
         setFragment(selectedFragment, ANIMATE_SLIDE_LEFT);
@@ -346,27 +333,12 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Move to old fragment from new fragment and add arguments
-     * @param fragment      new fragment
      * @param animation     animation type
-     * @param bundle        arguments
+     * @param link          arguments
      */
-    public void setFragment(Fragment fragment, int animation, Bundle bundle){
-        fragment.setArguments(bundle);
-        setFragment(fragment, animation);
-    }
-
-    /**
-     * Add argument to fragment
-     * @param link 4th argument
-     * @return arguments
-     */
-    public Bundle addArguments(String link){
-        Bundle args = new Bundle();
-        args.putSerializable("FRGHandler", new HandlerWrapper(fragmentHandler));
-        args.putSerializable("BLEHandler", new HandlerWrapper(bluetoothHandler));
-        args.putParcelable("userPreferences", userPreferences);
-        args.putString("fragmentLink", link);
-        return args;
+    public void setFragment(int animation, String link){
+        fragmentApp = FragmentApp.newInstance(userPreferences, fragmentHandler, bluetoothHandler, link, SQLConnection);
+        setFragment(fragmentApp, animation);
     }
 
     /**
@@ -388,39 +360,28 @@ public class MainActivity extends AppCompatActivity {
         public boolean handleMessage(@NonNull Message message) {
             switch (message.what){
                 case GOTO_LOGIN_FRAGMENT:
-                    Bundle args = new Bundle();
-                    args.putSerializable("FRGHandler", new HandlerWrapper(fragmentHandler));
-                    args.putParcelable("userPreferences", userPreferences);
-
-                    FragmentLogin fragmentLogin = new FragmentLogin(SQLConnection);
-                    fragmentLogin.setArguments(args);
+                    FragmentLogin fragmentLogin = FragmentLogin.newInstance(userPreferences, fragmentHandler, SQLConnection);
                     setFragment(fragmentLogin, ANIMATE_SLIDE_LEFT);
                     break;
                 case GOTO_HOME_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT, addArguments(HOME));
+                    setFragment(ANIMATE_SLIDE_RIGHT, HOME);
                     break;
                 case GOTO_DRIVE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_LEFT, addArguments(DRIVE));
+                    setFragment(ANIMATE_SLIDE_LEFT, DRIVE);
                     break;
                 case GOTO_BOOK_VEHICLE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT, addArguments(BOOK_VEHICLE));
+                    setFragment(ANIMATE_SLIDE_RIGHT, BOOK_VEHICLE);
                     vehicle = String.valueOf(message.obj);
                     break;
                 case GOTO_ADD_VEHICLE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_UP, addArguments(ADD_VEHICLE));
+                    setFragment(ANIMATE_SLIDE_UP, ADD_VEHICLE);
                     break;
                 case GOTO_EDIT_VEHICLE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_LEFT, addArguments(EDIT_VEHICLE));
+                    setFragment(ANIMATE_SLIDE_LEFT, EDIT_VEHICLE);
                     vehicle = String.valueOf(message.obj);
                     break;
                 case GOTO_VEHICLE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection);
-                    setFragment(fragmentApp, (Integer) message.obj, addArguments(VEHICLE));
+                    setFragment((Integer) message.obj, VEHICLE);
                     break;
                 case STATUS_BAR_COLOR:
                     // Set color background

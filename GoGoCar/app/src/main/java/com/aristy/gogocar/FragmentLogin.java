@@ -23,25 +23,53 @@ import java.sql.Connection;
  */
 public class FragmentLogin extends Fragment {
 
+    // The fragment initialization parameters
+    private static final String ARG_USER_PREF = "userPref";
+    private static final String ARG_FRG_HANDLER = "FRGHandler";
+
     Connection SQLConnection;
 
-    UserPreferences userPreferences;
-    Handler fragmentHandler;
+    private UserPreferences userPreferences;
+    private Handler fragmentHandler;
 
     public FragmentLogin(Connection SQLConnection){
+        // Required empty public constructor
         this.SQLConnection = SQLConnection;
     }
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param userPreferences user preferences
+     * @param fragmentHandler fragment handler
+     * @param SQLConnection sql connection
+     * @return A new instance of fragment FragmentLogin.
+     */
+    public static FragmentLogin newInstance(UserPreferences userPreferences, Handler fragmentHandler, Connection SQLConnection){
+        FragmentLogin fragment = new FragmentLogin(SQLConnection);
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_FRG_HANDLER, new HandlerWrapper(fragmentHandler));
+        args.putParcelable(ARG_USER_PREF, userPreferences);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    /**
+     * Get arguments
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             // Get handler
-            HandlerWrapper handlerWrapper = (HandlerWrapper) getArguments().getSerializable("FRGHandler");
+            HandlerWrapper handlerWrapper = (HandlerWrapper) getArguments().getSerializable(ARG_FRG_HANDLER);
             this.fragmentHandler = handlerWrapper.getHandler();
 
             // Get user preferences
-            this.userPreferences = getArguments().getParcelable("userPreferences");
+            this.userPreferences = getArguments().getParcelable(ARG_USER_PREF);
         }
     }
 

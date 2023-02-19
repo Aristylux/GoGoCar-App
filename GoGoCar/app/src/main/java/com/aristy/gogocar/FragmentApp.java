@@ -25,6 +25,14 @@ import java.sql.Connection;
  */
 public class FragmentApp extends Fragment {
 
+    // The fragment initialization parameters
+    private static final String ARG_USER_PREF = "userPref";
+    private static final String ARG_FRG_HANDLER = "FRGHandler";
+    private static final String ARG_BLE_HANDLER = "BLEHandler";
+    private static final String ARG_LINK = "webLink";
+
+
+    // the fragment parameters name for execute javascript function on web
     public final static String ARG_FUNCTION_NAME = "func_name";
     public final static String ARG_FUNCTION_PARAMS = "func_param";
 
@@ -36,7 +44,30 @@ public class FragmentApp extends Fragment {
     WebView web;
 
     public FragmentApp(Connection SQLConnection){
+        // Required empty public constructor
         this.SQLConnection = SQLConnection;
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param userPreferences user preferences
+     * @param fragmentHandler fragment handler
+     * @param bluetoothHandler bluetooth handler
+     * @param webLink link web page
+     * @param SQLConnection sql connection
+     * @return A new instance of fragment FragmentApp.
+     */
+    public static FragmentApp newInstance(UserPreferences userPreferences, Handler fragmentHandler, Handler bluetoothHandler, String webLink, Connection SQLConnection){
+        FragmentApp fragment = new FragmentApp(SQLConnection);
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_FRG_HANDLER, new HandlerWrapper(fragmentHandler));
+        args.putSerializable(ARG_BLE_HANDLER, new HandlerWrapper(bluetoothHandler));
+        args.putParcelable(ARG_USER_PREF, userPreferences);
+        args.putString(ARG_LINK, webLink);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -44,20 +75,20 @@ public class FragmentApp extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             // Get handler for fragments
-            HandlerWrapper handlerWrapperFRG = (HandlerWrapper) getArguments().getSerializable("FRGHandler");
+            HandlerWrapper handlerWrapperFRG = (HandlerWrapper) getArguments().getSerializable(ARG_FRG_HANDLER);
             Handler fragmentHandler = handlerWrapperFRG.getHandler();
 
             // Get handler for bluetooth
-            HandlerWrapper handlerWrapperBLE = (HandlerWrapper) getArguments().getSerializable("BLEHandler");
+            HandlerWrapper handlerWrapperBLE = (HandlerWrapper) getArguments().getSerializable(ARG_BLE_HANDLER);
             Handler bluetoothHandler = handlerWrapperBLE.getHandler();
 
             this.handlers = new Handler[]{fragmentHandler, bluetoothHandler};
 
             // Get user preferences
-            this.userPreferences = getArguments().getParcelable("userPreferences");
+            this.userPreferences = getArguments().getParcelable(ARG_USER_PREF);
 
             // Get web link
-            this.link = getArguments().getString("fragmentLink");
+            this.link = getArguments().getString(ARG_LINK);
         }
     }
 
