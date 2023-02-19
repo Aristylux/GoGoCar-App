@@ -25,6 +25,7 @@ import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import static com.aristy.gogocar.PermissionHelper.REQUEST_ACCESS_COARSE_LOCATION;
 import static com.aristy.gogocar.PermissionHelper.checkCoarseLocationPermission;
@@ -440,8 +441,7 @@ public class MainActivity extends AppCompatActivity {
                 case DATA_SET_VEHICLE:
                     sendDataToFragment(SET_VEHICLE_EDIT, vehicle);
                     break;
-                case 800:
-                    //Intent intent = new Intent(this, SliderActivity.class);
+                case OPEN_SLIDER:
                     Intent intent = new Intent(MainActivity.this, SliderActivity.class);
                     intent.putExtra(ARG_LINK, message.obj.toString());
                     MainActivity.this.startActivity(intent);

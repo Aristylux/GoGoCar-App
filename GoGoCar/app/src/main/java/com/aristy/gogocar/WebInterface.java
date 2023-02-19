@@ -3,7 +3,6 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_DOWN;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_LEFT;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
-import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
@@ -17,15 +16,12 @@ import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_DRIVE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
-import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_VEHICLE_FRAGMENT;
-import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
+import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
 import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
-import static com.aristy.gogocar.SHAHash.hashPassword;
-import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
 
 import android.app.Activity;
@@ -41,12 +37,13 @@ import java.util.List;
 
 public class WebInterface {
 
-    public static final String HOME = "file:///android_asset/pages/home.html";
-    public static final String DRIVE = "file:///android_asset/pages/drive.html";
-    public static final String BOOK_VEHICLE = "file:///android_asset/pages/drive_book.html";
-    public static final String VEHICLE = "file:///android_asset/pages/vehicles.html";
-    public static final String ADD_VEHICLE = "file:///android_asset/pages/vehicles_add.html";
-    public static final String EDIT_VEHICLE = "file:///android_asset/pages/vehicles_edit.html";
+    private static final String path = "file:///android_asset/pages/";
+    public static final String HOME = path + "home.html";
+    public static final String DRIVE = path + "drive.html";
+    public static final String BOOK_VEHICLE = path + "drive_book.html";
+    public static final String VEHICLE = path + "vehicles.html";
+    public static final String ADD_VEHICLE = path + "vehicles_add.html";
+    public static final String EDIT_VEHICLE = path + "vehicles_edit.html";
 
     Activity activity;
     Context context;
@@ -72,8 +69,6 @@ public class WebInterface {
         this.fragmentHandler = handlers[FRAGMENT_HANDLER_POS];
         this.bluetoothHandler = handlers[BLUETOOTH_HANDLER_POS];
     }
-
-
 
     /*  ---------------------------------- *
      *  --           home.html          -- *
@@ -374,8 +369,9 @@ public class WebInterface {
     }
 
     @JavascriptInterface
-    public void openSlider() {
-        fragmentHandler.obtainMessage(800, HOME).sendToTarget();
+    public void openSlider(String containerName) {
+        //Log.d(TAG_Web, "openSlider: " + path + containerName + ".html");
+        fragmentHandler.obtainMessage(OPEN_SLIDER, path + containerName + ".html").sendToTarget();
     }
 
     // ----

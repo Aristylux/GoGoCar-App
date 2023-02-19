@@ -37,7 +37,7 @@
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
-    <style name="Theme.GoGoCar.SlidrActivityTheme" parent="Theme.GoGoCar">
+    <style name="Theme.GoGoCar.SlidrActivityTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
