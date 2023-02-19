@@ -31,6 +31,7 @@ import static com.aristy.gogocar.PermissionHelper.checkCoarseLocationPermission;
 import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 import static com.aristy.gogocar.Security.getPinKey;
+import static com.aristy.gogocar.SliderActivity.ARG_LINK;
 import static com.aristy.gogocar.WebInterface.ADD_VEHICLE;
 import static com.aristy.gogocar.WebInterface.BOOK_VEHICLE;
 import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
@@ -438,6 +439,16 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case DATA_SET_VEHICLE:
                     sendDataToFragment(SET_VEHICLE_EDIT, vehicle);
+                    break;
+                case 800:
+                    //Intent intent = new Intent(this, SliderActivity.class);
+                    Intent intent = new Intent(MainActivity.this, SliderActivity.class);
+                    intent.putExtra(ARG_LINK, message.obj.toString());
+                    startActivity(intent);
+                    overridePendingTransition(
+                            R.anim.animate_slide_left_enter,
+                            R.anim.animate_slide_left_exit
+                    );
                     break;
             }
             return true;
