@@ -704,6 +704,10 @@
 
             buttons.forEach((btn, index) => {
                 btn.addEventListener("click", function () {
+
+                    if(androidConnected()) Android.openSlider();
+
+                    /*
                     setting_page_pp.style.display = 'block';
                     setTimeout(function () {
                         setting_page_pp.style.left = '0px';
@@ -735,7 +739,7 @@
                         default:
                             break;
                     }
-
+*/
                 });
             });
                         

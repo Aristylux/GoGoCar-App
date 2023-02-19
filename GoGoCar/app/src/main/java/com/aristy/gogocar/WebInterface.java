@@ -373,6 +373,11 @@ public class WebInterface {
         androidToWeb("setUserInformation", userPreferences.toString());
     }
 
+    @JavascriptInterface
+    public void openSlider() {
+        fragmentHandler.obtainMessage(800, HOME).sendToTarget();
+    }
+
     // ----
 
     @JavascriptInterface

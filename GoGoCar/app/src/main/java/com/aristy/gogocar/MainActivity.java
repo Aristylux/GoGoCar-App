@@ -444,8 +444,8 @@ public class MainActivity extends AppCompatActivity {
                     //Intent intent = new Intent(this, SliderActivity.class);
                     Intent intent = new Intent(MainActivity.this, SliderActivity.class);
                     intent.putExtra(ARG_LINK, message.obj.toString());
-                    startActivity(intent);
-                    overridePendingTransition(
+                    MainActivity.this.startActivity(intent);
+                    MainActivity.this.overridePendingTransition(
                             R.anim.animate_slide_left_enter,
                             R.anim.animate_slide_left_exit
                     );
