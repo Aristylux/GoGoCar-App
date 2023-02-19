@@ -371,7 +371,7 @@ public class WebInterface {
     @JavascriptInterface
     public void openSlider(String containerName) {
         //Log.d(TAG_Web, "openSlider: " + path + containerName + ".html");
-        fragmentHandler.obtainMessage(OPEN_SLIDER, path + containerName + ".html").sendToTarget();
+        fragmentHandler.obtainMessage(OPEN_SLIDER, path + "settings_" + containerName + ".html").sendToTarget();
     }
 
     // ----
