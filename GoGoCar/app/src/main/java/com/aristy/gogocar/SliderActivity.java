@@ -1,8 +1,14 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.WindowHelper.setWindowVersion;
+
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -51,6 +57,10 @@ public class SliderActivity extends AppCompatActivity {
                 .edge(false)
                 .build();
 
-        Slidr.attach(this, config);
+        Slidr.attach(SliderActivity.this, config);
+
+        setWindowVersion(SliderActivity.this, getWindow());
     }
+
+
 }
