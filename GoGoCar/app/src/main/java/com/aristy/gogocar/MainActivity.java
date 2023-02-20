@@ -32,9 +32,6 @@ import static com.aristy.gogocar.PermissionHelper.checkCoarseLocationPermission;
 import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 import static com.aristy.gogocar.Security.getPinKey;
-import static com.aristy.gogocar.SliderActivity.ARG_LINK;
-import static com.aristy.gogocar.SliderActivity.ARG_MESSENGER_HANDLER;
-import static com.aristy.gogocar.SliderActivity.ARG_USER_PREF;
 import static com.aristy.gogocar.WebInterface.ADD_VEHICLE;
 import static com.aristy.gogocar.WebInterface.BOOK_VEHICLE;
 import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
@@ -69,7 +66,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Messenger;
 import android.util.Log;
 
 import java.sql.Connection;
@@ -111,8 +107,9 @@ public class MainActivity extends AppCompatActivity {
         if(!isLogged)
             selectedFragment = FragmentLogin.newInstance(userPreferences, fragmentHandler, SQLConnection);
         else {
-            fragmentApp = FragmentApp.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME, SQLConnection);
-            selectedFragment = fragmentApp;
+            //fragmentApp = FragmentApp.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME, SQLConnection);
+            //selectedFragment = fragmentApp;
+            selectedFragment = FragmentNav.newInstance();
         }
 
         // Set Fragment

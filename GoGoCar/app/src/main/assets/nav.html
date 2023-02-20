@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="./css/main_theme.css" />
+
+    <link rel="stylesheet" href="./ico/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+    <link rel="stylesheet" href="./ico/uicons-solid-rounded/css/uicons-solid-rounded.css" />
+    <!--
+    <link rel="stylesheet" href="./css/style_navigation_bar.css"/>
+    -->
+    <style>
+        .nav {
+            margin-top: 3px;
+            width: 100%;
+            height: 55px;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+            background-color: var(--background-color);
+            /*
+            display: flex;
+            overflow-x: auto;
+            justify-content: center;
+            */
+            display: grid;
+            grid-template-columns: 25% 25% 25% 25%;
+        }
+
+        .nav__link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            min-width: 50px;
+            /*    max-width: 120px; */
+            overflow: hidden;
+            white-space: nowrap;
+            font-family: sans-serif;
+            font-size: 13px;
+            color: #444444;
+            text-decoration: none;
+
+            -webkit-tap-highlight-color: transparent;
+            transition: 0.1s ease-in-out;
+            /*
+            transition: background-color 0.1s ease-in-out;
+            */
+        }
+
+        .nav__link:active {
+            background-color: #eeeeee;
+            border-radius: 30px;
+        }
+
+        .nav__link--active {
+            color: var(--primary-color);
+        }
+
+        .nav__icon {
+            font-size: 18px;
+        }
+    </style>
+
+</head>
+<body>
+    <nav id="navigation" class="nav">
+        <a id="nav_home" href="#" class="nav__link nav__link__ripple">
+            <i id="ico_home" class="nav__icon fi fi-rr-home"></i>
+            <span class="nav__text">Home</span>
+        </a>
+        <a id="nav_drive" href="#" class="nav__link nav__link__ripple">
+            <i id="ico_drive" class="nav__icon fi fi-rr-search"></i>
+            <span class="nav__text">Drive</span>
+        </a>
+        <a id="nav_vehicles" href="#" class="nav__link nav__link__ripple">
+            <i id="ico_vehicles" class="nav__icon fi fi-rr-car"></i>
+            <span class="nav__text">Vehicles</span>
+        </a>
+        <a id="nav_settings" href="#" class="nav__link nav__link__ripple nav__link--active">
+            <i id="ico_settings" class="nav__icon fi fi-sr-settings"></i>
+            <span class="nav__text">Settings</span>
+        </a>
+    </nav>
+
+    <script src="./js/androidInterface.js"></script>
+    <script>
+        let nav_buttons = document.querySelectorAll(".nav__link");
+        let nav_icons = document.querySelectorAll(".nav__icon");
+
+        nav_buttons.forEach((button) => {
+            button.addEventListener("click", (event) => {
+                // Get content page name
+                //let src = document.getElementById("content").src;
+                let src = document.location.href;
+
+                // If the user clicks on a button other than the current page
+                if(!src.includes('/pages/' + button.id.slice(4) + '.html')){
+                    if(androidConnected()) Android.changePage(button.id.slice(4));
+                }
+            });
+        });
+    </script>
+</body>
+</html>

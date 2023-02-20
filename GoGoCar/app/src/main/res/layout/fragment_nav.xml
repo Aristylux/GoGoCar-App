@@ -8,14 +8,14 @@
         android:id="@+id/web_view_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="150px"
+        android:layout_marginBottom="55dp"
         android:overScrollMode="never"
         android:fitsSystemWindows="false"/>
 
     <WebView
         android:id="@+id/web_view_nav"
         android:layout_width="match_parent"
-        android:layout_height="150px"
+        android:layout_height="wrap_content"
         android:fitsSystemWindows="false"
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent" />
