@@ -22,6 +22,7 @@ public class WINavigation extends WICommon {
     public void setPage(){
         loadNewPage(webViewContent, newWebPage);
         // inform success
+        androidToWeb("pageChanged");
     }
 
 

@@ -15,11 +15,7 @@
             height: 55px;
             box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
             background-color: var(--background-color);
-            /*
-            display: flex;
-            overflow-x: auto;
-            justify-content: center;
-            */
+
             display: grid;
             grid-template-columns: 25% 25% 25% 25%;
         }
@@ -40,10 +36,7 @@
             text-decoration: none;
 
             -webkit-tap-highlight-color: transparent;
-            transition: 0.1s ease-in-out;
-            /*
-            transition: background-color 0.1s ease-in-out;
-            */
+            transition: all 0.1s ease-in-out;
         }
 
         .nav__link:active {
@@ -52,6 +45,8 @@
         }
 
         .nav__link--active {
+            /* .nav__link bug */
+            /*transition: color 0.2s ease-in-out;*/
             color: var(--primary-color);
         }
 
@@ -63,8 +58,8 @@
 </head>
 <body>
     <nav id="navigation" class="nav">
-        <a id="nav_home" href="#" class="nav__link nav__link__ripple">
-            <i id="ico_home" class="nav__icon fi fi-rr-home"></i>
+        <a id="nav_home" href="#" class="nav__link nav__link__ripple nav__link--active">
+            <i id="ico_home" class="nav__icon fi fi-sr-home"></i>
             <span class="nav__text">Home</span>
         </a>
         <a id="nav_drive" href="#" class="nav__link nav__link__ripple">
@@ -75,8 +70,8 @@
             <i id="ico_vehicles" class="nav__icon fi fi-rr-car"></i>
             <span class="nav__text">Vehicles</span>
         </a>
-        <a id="nav_settings" href="#" class="nav__link nav__link__ripple nav__link--active">
-            <i id="ico_settings" class="nav__icon fi fi-sr-settings"></i>
+        <a id="nav_settings" href="#" class="nav__link nav__link__ripple">
+            <i id="ico_settings" class="nav__icon fi fi-rr-settings"></i>
             <span class="nav__text">Settings</span>
         </a>
     </nav>
@@ -86,18 +81,48 @@
         let nav_buttons = document.querySelectorAll(".nav__link");
         let nav_icons = document.querySelectorAll(".nav__icon");
 
+        var selectedButton;
+
         nav_buttons.forEach((button) => {
             button.addEventListener("click", (event) => {
                 // Get content page name
                 //let src = document.getElementById("content").src;
                 let src = document.location.href;
 
-                // If the user clicks on a button other than the current page
+                // If the user clicks on a button other than the current page (doesn't work)
                 if(!src.includes('/pages/' + button.id.slice(4) + '.html')){
+                    selectedButton = button;
                     if(androidConnected()) Android.requestChangePage(button.id.slice(4));
                 }
             });
         });
+
+        function pageChanged () {
+            // Remove color for all buttons
+            nav_buttons.forEach((btn) => btn.classList.remove("nav__link--active"));
+
+            // Reset the icon
+            nav_icons.forEach((icon) => {
+                let classIco = icon.classList[2];
+                if(classIco.includes('fi-sr-')){
+                    icon.classList.remove(classIco);
+                    icon.classList.add('fi-rr-' + classIco.slice(6));
+                }
+            });
+
+            // Set color for the specified button
+            selectedButton.classList.add("nav__link--active");
+
+            // Set icon
+            nav_icons.forEach((icon) => {
+                if(icon.id.slice(4) === selectedButton.id.slice(4)){
+                    let classIco = icon.classList[2];
+                    icon.classList.remove(classIco);
+                    icon.classList.add('fi-sr-' + classIco.slice(6));
+                }   
+            });
+        }
+
     </script>
 </body>
 </html>

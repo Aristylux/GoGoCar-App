@@ -55,7 +55,7 @@ public class FragmentNav extends Fragment {
         webNav.loadUrl("file:///android_asset/nav.html");
         web.loadUrl(HOME);
 
-        // Enable javascript
+        // Enable javascript and set Web Interface for Navigation
         WebSettings webSettingsNav = webNav.getSettings();
         webSettingsNav.setJavaScriptEnabled(true);
         webInterfaceWeb = new WINavigation(webNav, web, handlerNavigation);
