@@ -394,11 +394,7 @@ public class MainActivity extends AppCompatActivity {
                     sendDataToFragment(SET_VEHICLE_EDIT, vehicle);
                     break;
                 case OPEN_SLIDER:
-                    Intent intent = new Intent(MainActivity.this, SliderActivity.class);
-                    Messenger messenger = new Messenger(fragmentHandler);
-                    intent.putExtra(ARG_MESSENGER_HANDLER, messenger);
-                    intent.putExtra(ARG_USER_PREF, userPreferences);
-                    intent.putExtra(ARG_LINK, message.obj.toString());
+                    Intent intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, message.obj.toString());
                     MainActivity.this.startActivity(intent);
                     MainActivity.this.overridePendingTransition(
                             R.anim.animate_slide_left_enter,

@@ -4,6 +4,8 @@ import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
 import static com.aristy.gogocar.WindowHelper.setWindowVersion;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +29,25 @@ public class SliderActivity extends AppCompatActivity {
     String link;
     UserPreferences userPreferences;
     Messenger messenger;
+
+    /**
+     * Use this factory method to create a new instance of
+     * this activity using the provided parameters.
+     *
+     * @param mainActivity principal activity
+     * @param fragmentHandler handler
+     * @param userPreferences user preferences
+     * @param link web link
+     * @return A new intent of this activity.
+     */
+    public static Intent newInstance(Activity mainActivity, Handler fragmentHandler, UserPreferences userPreferences, String link){
+        Intent intent = new Intent(mainActivity, SliderActivity.class);
+        Messenger messenger = new Messenger(fragmentHandler);
+        intent.putExtra(ARG_MESSENGER_HANDLER, messenger);
+        intent.putExtra(ARG_USER_PREF, userPreferences);
+        intent.putExtra(ARG_LINK, link);
+        return intent;
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
