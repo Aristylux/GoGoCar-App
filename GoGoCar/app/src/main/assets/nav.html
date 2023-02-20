@@ -94,7 +94,7 @@
 
                 // If the user clicks on a button other than the current page
                 if(!src.includes('/pages/' + button.id.slice(4) + '.html')){
-                    if(androidConnected()) Android.changePage(button.id.slice(4));
+                    if(androidConnected()) Android.requestChangePage(button.id.slice(4));
                 }
             });
         });

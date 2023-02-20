@@ -1,6 +1,7 @@
 package com.aristy.gogocar;
 
 
+import static com.aristy.gogocar.WINavigation.SET_PAGE;
 import static com.aristy.gogocar.WebInterface.HOME;
 
 import android.annotation.SuppressLint;
@@ -17,12 +18,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.sql.Connection;
 
 public class FragmentNav extends Fragment {
 
 
     WebView web;
+    boolean isDriving;
+    WINavigation webInterfaceWeb;
 
     public FragmentNav () {
         // Required empty public constructor
@@ -38,6 +40,7 @@ public class FragmentNav extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        isDriving = false;
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -55,7 +58,8 @@ public class FragmentNav extends Fragment {
         // Enable javascript
         WebSettings webSettingsNav = webNav.getSettings();
         webSettingsNav.setJavaScriptEnabled(true);
-        //webNav.addJavascriptInterface(, "Android");
+        webInterfaceWeb = new WINavigation(webNav, web, handlerNavigation);
+        webNav.addJavascriptInterface(webInterfaceWeb, "Android");
 
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -64,9 +68,13 @@ public class FragmentNav extends Fragment {
         return view;
     }
 
-    Handler handler = new Handler(new Handler.Callback() {
+    Handler handlerNavigation = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
+            if (message.what == SET_PAGE) {
+                if (!isDriving)
+                    webInterfaceWeb.setPage();
+            }
             return false;
         }
     });

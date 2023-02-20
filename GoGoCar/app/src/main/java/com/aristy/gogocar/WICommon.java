@@ -26,7 +26,16 @@ public class WICommon {
                 builder.append(data[i]);
             }
         }
-
         webView.post(() -> webView.loadUrl("javascript:" + functionName + "('" + builder + "')"));
     }
+
+    /**
+     * Load a new page
+     * @param webView custom webView
+     * @param page page name to load
+     */
+    public void loadNewPage(WebView webView, String page){
+        webView.post(() -> webView.loadUrl("file:///android_asset/pages/" + page + ".html"));
+    }
+
 }
