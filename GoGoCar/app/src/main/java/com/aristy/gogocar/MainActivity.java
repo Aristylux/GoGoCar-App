@@ -17,7 +17,6 @@ import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
-import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
 import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
 import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
@@ -34,6 +33,8 @@ import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 import static com.aristy.gogocar.Security.getPinKey;
 import static com.aristy.gogocar.SliderActivity.ARG_LINK;
+import static com.aristy.gogocar.SliderActivity.ARG_MESSENGER_HANDLER;
+import static com.aristy.gogocar.SliderActivity.ARG_USER_PREF;
 import static com.aristy.gogocar.WebInterface.ADD_VEHICLE;
 import static com.aristy.gogocar.WebInterface.BOOK_VEHICLE;
 import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
@@ -68,6 +69,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Messenger;
 import android.util.Log;
 
 import java.sql.Connection;
@@ -393,15 +395,15 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case OPEN_SLIDER:
                     Intent intent = new Intent(MainActivity.this, SliderActivity.class);
+                    Messenger messenger = new Messenger(fragmentHandler);
+                    intent.putExtra(ARG_MESSENGER_HANDLER, messenger);
+                    intent.putExtra(ARG_USER_PREF, userPreferences);
                     intent.putExtra(ARG_LINK, message.obj.toString());
                     MainActivity.this.startActivity(intent);
                     MainActivity.this.overridePendingTransition(
                             R.anim.animate_slide_left_enter,
                             R.anim.animate_slide_left_exit
                     );
-                    break;
-                case CLOSE_SLIDER:
-                    Log.d(TAG_Debug, "handleMessage: close");
                     break;
             }
             return true;

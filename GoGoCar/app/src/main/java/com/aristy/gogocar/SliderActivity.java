@@ -1,14 +1,13 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
 import static com.aristy.gogocar.WindowHelper.setWindowVersion;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.os.Handler;
+import android.os.Messenger;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -20,7 +19,14 @@ import com.r0adkll.slidr.model.SlidrPosition;
 
 public class SliderActivity extends AppCompatActivity {
 
-    public static final String ARG_LINK = "link";
+    // The activity initialization parameters
+    public static final String ARG_LINK = "webLink";
+    public static final String ARG_USER_PREF = "userPref";
+    public static final String ARG_MESSENGER_HANDLER = "messenger";
+
+    String link;
+    UserPreferences userPreferences;
+    Messenger messenger;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -28,7 +34,13 @@ public class SliderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slider);
 
-        String link = getIntent().getStringExtra(ARG_LINK);
+
+        if (getIntent() != null) {
+            // communication between activity (not used for the moment)
+            this.messenger = getIntent().getParcelableExtra(ARG_MESSENGER_HANDLER);
+            this.userPreferences = getIntent().getParcelableExtra(ARG_USER_PREF);
+            this.link = getIntent().getStringExtra(ARG_LINK);
+        }
 
         // Set web content
         WebView web = findViewById(R.id.web_view);
@@ -42,8 +54,7 @@ public class SliderActivity extends AppCompatActivity {
         // Result state page
         web.setWebViewClient(new FragmentApp.Callback());
 
-        //web.addJavascriptInterface(new WIPanels(web), "Android");
-
+        web.addJavascriptInterface(new WIPanels(web, userPreferences, handler), "Android");
 
         // Set slider
         SlidrConfig config = new SlidrConfig.Builder()
@@ -62,5 +73,16 @@ public class SliderActivity extends AppCompatActivity {
         setWindowVersion(SliderActivity.this, getWindow());
     }
 
+    Handler handler = new Handler(message -> {
+        if (message.what == CLOSE_SLIDER) {
+            onBackPressed();
+        }
+        return true;
+    });
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.animate_slide_right_enter, R.anim.animate_slide_right_exit);
+    }
 }

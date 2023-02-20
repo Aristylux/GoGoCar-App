@@ -9,18 +9,29 @@ import android.webkit.WebView;
 public class WIPanels extends WICommon {
 
     UserPreferences userPreferences;
-    Handler fragmentHandler;
+    Handler handler;
 
-    public WIPanels(WebView webView, UserPreferences userPreferences, Handler fragmentHandler) {
+    public WIPanels(WebView webView, UserPreferences userPreferences, Handler handler) {
         super(webView);
 
         this.userPreferences = userPreferences;
-        this.fragmentHandler = fragmentHandler;
+        this.handler = handler;
     }
 
     @JavascriptInterface
     public void requestClosePanel(){
-        fragmentHandler.obtainMessage(CLOSE_SLIDER).sendToTarget();
+        /*
+        Message message = Message.obtain();
+        message.replyTo = messenger;
+        message.what = CLOSE_SLIDER;
+
+        try {
+            messenger.send(message);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }*/
+
+        handler.obtainMessage(CLOSE_SLIDER).sendToTarget();
     }
 
     // ---- Personal information container ----
