@@ -17,7 +17,10 @@ import java.sql.Connection;
 /**
  * Web Interface for Authentication screen
  */
-public class WIAuthentication extends WICommon{
+public class WIAuthentication extends WICommon {
+
+    private static final String path = "file:///android_asset/";
+    public static final String LOGIN = path + "login.html";
 
     Context context;
     UserPreferences userPreferences;

@@ -1,5 +1,7 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.WIAuthentication.LOGIN;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
@@ -81,7 +83,7 @@ public class FragmentLogin extends Fragment {
 
         // Find items
         WebView web = view.findViewById(R.id.web_view);
-        web.loadUrl("file:///android_asset/login.html");
+        web.loadUrl(LOGIN);
 
         // Enable javascript
         WebSettings webSettings = web.getSettings();

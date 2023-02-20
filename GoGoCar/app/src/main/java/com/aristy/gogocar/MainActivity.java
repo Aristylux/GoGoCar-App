@@ -17,6 +17,7 @@ import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
+import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
 import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
 import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
@@ -398,6 +399,9 @@ public class MainActivity extends AppCompatActivity {
                             R.anim.animate_slide_left_enter,
                             R.anim.animate_slide_left_exit
                     );
+                    break;
+                case CLOSE_SLIDER:
+                    Log.d(TAG_Debug, "handleMessage: close");
                     break;
             }
             return true;

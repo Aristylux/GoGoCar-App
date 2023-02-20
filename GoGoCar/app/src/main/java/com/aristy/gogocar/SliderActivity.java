@@ -42,7 +42,7 @@ public class SliderActivity extends AppCompatActivity {
         // Result state page
         web.setWebViewClient(new FragmentApp.Callback());
 
-        //web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, handlers), "Android");
+        //web.addJavascriptInterface(new WIPanels(web), "Android");
 
 
         // Set slider

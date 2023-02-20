@@ -16,7 +16,8 @@ public class HandlerCodes {
     public static final int GOTO_EDIT_VEHICLE_FRAGMENT = 42;
     public static final int DATA_SET_VEHICLE = 421;
     public static final int STATUS_BAR_COLOR = 20;
-    public static final int OPEN_SLIDER = 5;
+    public static final int OPEN_SLIDER = 50;
+    public static final int CLOSE_SLIDER = 51;
 
     // Bluetooth codes
     public static final int BT_STATE_DISCOVERING = 1;

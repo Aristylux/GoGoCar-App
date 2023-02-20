@@ -361,13 +361,6 @@ public class WebInterface {
         androidToWeb("setUserName", userPreferences.getUserName());
     }
 
-    // ---- Personal information container ----
-
-    @JavascriptInterface
-    public void requestPersonalInformation() {
-        androidToWeb("setUserInformation", userPreferences.toString());
-    }
-
     @JavascriptInterface
     public void openSlider(String panelName) {
         //Log.d(TAG_Web, "openSlider: " + path + containerName + ".html");
