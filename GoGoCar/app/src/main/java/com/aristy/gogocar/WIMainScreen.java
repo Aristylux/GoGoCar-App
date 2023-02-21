@@ -156,8 +156,7 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestDatabase(){
-        // Simulation
-        List<DBModelVehicle> vehicles = new ArrayList<>();
+        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userPreferences.getUserID());
         androidToWeb("setDatabase", vehicles.toString());
     }
 
@@ -169,7 +168,7 @@ public class WIMainScreen extends WICommon {
     @JavascriptInterface
     public void requestOpenBook(String vehicle){
         Log.d(TAG_Web, "requestOpenBook: " + vehicle);
-        //fragmentHandler.obtainMessage(GOTO_BOOK_VEHICLE_FRAGMENT, vehicle).sendToTarget();
+        fragmentHandler.obtainMessage(GOTO_BOOK_VEHICLE_FRAGMENT, vehicle).sendToTarget();
     }
 
     /*  ---------------------------------- *
@@ -182,9 +181,25 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestUserVehicles(){
-        // Simulation
-        List<DBModelVehicle> vehicles = new ArrayList<>();
+        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userPreferences.getUserID());
         androidToWeb("setDatabase", vehicles.toString());
+    }
+
+    /**
+     * Remove a vehicle
+     * @param vehicleID id vehicle for identification<br>
+     * <br>
+     * return: true to webView if success<br>
+     *         else, show error
+     */
+    @JavascriptInterface
+    public void requestRemoveVehicle(int vehicleID){
+        DBModelVehicle vehicle = new DBModelVehicle();
+        vehicle.setId(vehicleID);
+        boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
+
+        if (!isDeleted) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
+        else androidToWeb("vehicleDelete", "true");
     }
 
     /*  ---------------------------------- *

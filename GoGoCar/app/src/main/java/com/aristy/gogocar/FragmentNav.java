@@ -29,10 +29,12 @@ public class FragmentNav extends Fragment {
     private static final String ARG_USER_PREF = "userPref";
     private static final String ARG_FRG_HANDLER = "FRGHandler";
     private static final String ARG_BLE_HANDLER = "BLEHandler";
+    private static final String ARG_LINK = "webLink";
 
     Connection SQLConnection;
     private UserPreferences userPreferences;
     private Handler[] handlers;
+    private String link;
 
     WebView web;
     boolean isDriving;
@@ -43,12 +45,13 @@ public class FragmentNav extends Fragment {
         this.SQLConnection = SQLConnection;
     }
 
-    public static FragmentNav newInstance(UserPreferences userPreferences, Handler fragmentHandler, Handler bluetoothHandler, Connection SQLConnection){
+    public static FragmentNav newInstance(UserPreferences userPreferences, Handler fragmentHandler, Handler bluetoothHandler, String webLink, Connection SQLConnection){
         FragmentNav fragment = new FragmentNav(SQLConnection);
         Bundle args = new Bundle();
         args.putParcelable(ARG_USER_PREF, userPreferences);
         args.putSerializable(ARG_FRG_HANDLER, new HandlerWrapper(fragmentHandler));
         args.putSerializable(ARG_BLE_HANDLER, new HandlerWrapper(bluetoothHandler));
+        args.putString(ARG_LINK, webLink);
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,6 +72,9 @@ public class FragmentNav extends Fragment {
             Handler bluetoothHandler = handlerWrapperBLE.getHandler();
 
             this.handlers = new Handler[]{fragmentHandler, bluetoothHandler, navigationHandler};
+
+            // Get web link
+            this.link = getArguments().getString(ARG_LINK);
         }
         isDriving = false;
     }
@@ -83,7 +89,7 @@ public class FragmentNav extends Fragment {
         WebView webNav = view.findViewById(R.id.web_view_nav);
         web = view.findViewById(R.id.web_view_content);
         webNav.loadUrl("file:///android_asset/nav.html");
-        web.loadUrl(HOME);
+        web.loadUrl(link);
 
         // Enable javascript and set Web Interface for Navigation
         WebSettings webSettingsNav = webNav.getSettings();

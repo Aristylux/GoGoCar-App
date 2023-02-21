@@ -191,7 +191,7 @@ public class WebInterface {
      *  --        vehicles.html         -- *
      *  ---------------------------------- */
 
-    /**
+    /** NOT USE
      * Ask all vehicles owned by the current user
      */
     @JavascriptInterface
@@ -200,7 +200,7 @@ public class WebInterface {
         androidToWeb("setDatabase", vehicles.toString());
     }
 
-    /**
+    /** NOT USE
      * Remove a vehicle
      * @param vehicleID id vehicle for identification<br>
      * <br>
@@ -216,6 +216,8 @@ public class WebInterface {
         if (!isDeleted) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
         else androidToWeb("vehicleDelete", "true");
     }
+
+    // -- vehicle edit & add --
 
     /**
      * Return to the main fragment

@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         else {
             //fragmentApp = FragmentApp.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME, SQLConnection);
             //selectedFragment = fragmentApp;
-            selectedFragment = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, SQLConnection);
+            selectedFragment = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME, SQLConnection);
         }
 
         // Set Fragment
@@ -367,7 +367,9 @@ public class MainActivity extends AppCompatActivity {
                     setFragment(ANIMATE_SLIDE_RIGHT, HOME);
                     break;
                 case GOTO_DRIVE_FRAGMENT:
-                    setFragment(ANIMATE_SLIDE_LEFT, DRIVE);
+                    FragmentNav fragmentNav =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, DRIVE, SQLConnection);
+                    setFragment(fragmentNav, ANIMATE_SLIDE_LEFT);
+                    //setFragment(ANIMATE_SLIDE_LEFT, DRIVE);
                     break;
                 case GOTO_BOOK_VEHICLE_FRAGMENT:
                     setFragment(ANIMATE_SLIDE_RIGHT, BOOK_VEHICLE);
@@ -381,7 +383,9 @@ public class MainActivity extends AppCompatActivity {
                     vehicle = String.valueOf(message.obj);
                     break;
                 case GOTO_VEHICLE_FRAGMENT:
-                    setFragment((Integer) message.obj, VEHICLE);
+                    FragmentNav fragmentNav1 =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, VEHICLE, SQLConnection);
+                    setFragment(fragmentNav1, (Integer) message.obj);
+                    //setFragment((Integer) message.obj, VEHICLE);
                     break;
                 case STATUS_BAR_COLOR:
                     // Set color background
