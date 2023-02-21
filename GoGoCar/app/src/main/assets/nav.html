@@ -81,18 +81,19 @@
         let nav_buttons = document.querySelectorAll(".nav__link");
         let nav_icons = document.querySelectorAll(".nav__icon");
 
+        // Contain the active button
+        var currentButton = document.querySelector(".nav__link--active");
+        // Contain the clicked button
         var selectedButton;
 
         nav_buttons.forEach((button) => {
             button.addEventListener("click", (event) => {
-                // Get content page name
-                //let src = document.getElementById("content").src;
-                let src = document.location.href;
-
-                // If the user clicks on a button other than the current page (doesn't work)
-                if(!src.includes('/pages/' + button.id.slice(4) + '.html')){
+                // If the user clicks on a button other than the current page 
+                if(currentButton.id.slice(4) !== button.id.slice(4)){
                     selectedButton = button;
                     if(androidConnected()) Android.requestChangePage(button.id.slice(4));
+                    // For debug
+                    else pageChanged();
                 }
             });
         });
@@ -112,6 +113,9 @@
 
             // Set color for the specified button
             selectedButton.classList.add("nav__link--active");
+
+            // Update current button
+            currentButton = document.querySelector(".nav__link--active");
 
             // Set icon
             nav_icons.forEach((icon) => {
