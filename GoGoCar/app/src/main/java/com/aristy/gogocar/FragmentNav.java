@@ -24,8 +24,11 @@ public class FragmentNav extends Fragment {
 
     // The fragment initialization parameters
     private static final String ARG_USER_PREF = "userPref";
+    private static final String ARG_FRG_HANDLER = "FRGHandler";
+    private static final String ARG_BLE_HANDLER = "BLEHandler";
 
     private UserPreferences userPreferences;
+    private Handler[] handlers;
 
     WebView web;
     boolean isDriving;
@@ -35,10 +38,12 @@ public class FragmentNav extends Fragment {
         // Required empty public constructor
     }
 
-    public static FragmentNav newInstance(UserPreferences userPreferences){
+    public static FragmentNav newInstance(UserPreferences userPreferences, Handler fragmentHandler, Handler bluetoothHandler){
         FragmentNav fragment = new FragmentNav();
         Bundle args = new Bundle();
         args.putParcelable(ARG_USER_PREF, userPreferences);
+        args.putSerializable(ARG_FRG_HANDLER, new HandlerWrapper(fragmentHandler));
+        args.putSerializable(ARG_BLE_HANDLER, new HandlerWrapper(bluetoothHandler));
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,6 +54,16 @@ public class FragmentNav extends Fragment {
         if (getArguments() != null) {
             // Get user preferences
             this.userPreferences = getArguments().getParcelable(ARG_USER_PREF);
+
+            // Get handler for fragments
+            HandlerWrapper handlerWrapperFRG = (HandlerWrapper) getArguments().getSerializable(ARG_FRG_HANDLER);
+            Handler fragmentHandler = handlerWrapperFRG.getHandler();
+
+            // Get handler for bluetooth
+            HandlerWrapper handlerWrapperBLE = (HandlerWrapper) getArguments().getSerializable(ARG_BLE_HANDLER);
+            Handler bluetoothHandler = handlerWrapperBLE.getHandler();
+
+            this.handlers = new Handler[]{fragmentHandler, bluetoothHandler, navigationHandler};
         }
         isDriving = false;
     }
@@ -68,18 +83,18 @@ public class FragmentNav extends Fragment {
         // Enable javascript and set Web Interface for Navigation
         WebSettings webSettingsNav = webNav.getSettings();
         webSettingsNav.setJavaScriptEnabled(true);
-        webInterfaceWeb = new WINavigation(webNav, web, handlerNavigation);
+        webInterfaceWeb = new WINavigation(webNav, web, navigationHandler);
         webNav.addJavascriptInterface(webInterfaceWeb, "Android");
 
         //
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        web.addJavascriptInterface(new WIMainScreen(web, userPreferences, handlerNavigation), "Android");
+        web.addJavascriptInterface(new WIMainScreen(web, userPreferences, handlers), "Android");
 
         return view;
     }
 
-    Handler handlerNavigation = new Handler(new Handler.Callback() {
+    Handler navigationHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
             switch (message.what) {

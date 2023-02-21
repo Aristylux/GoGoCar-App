@@ -1,7 +1,11 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
+import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
+import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.NAVIGATION_HANDLER_POS;
+import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
 import static com.aristy.gogocar.WINavigation.SET_PAGE_FROM_HOME;
 
 import android.os.Handler;
@@ -21,13 +25,17 @@ public class WIMainScreen extends WICommon {
     public static final String HOME = path + "home.html";
 
     UserPreferences userPreferences;
-    Handler handlerNavigation;
+    Handler fragmentHandler;
+    Handler bluetoothHandler;
+    Handler navigationHandler;
 
-    public WIMainScreen(WebView webView, UserPreferences userPreferences, Handler handlerNavigation) {
+    public WIMainScreen(WebView webView, UserPreferences userPreferences, Handler [] handlers) {
         super(webView);
 
         this.userPreferences = userPreferences;
-        this.handlerNavigation = handlerNavigation;
+        this.fragmentHandler = handlers[FRAGMENT_HANDLER_POS];
+        this.bluetoothHandler = handlers[BLUETOOTH_HANDLER_POS];
+        this.navigationHandler = handlers[NAVIGATION_HANDLER_POS];
     }
 
 
@@ -54,7 +62,7 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestChangePage(String page){
-        handlerNavigation.obtainMessage(SET_PAGE_FROM_HOME, page).sendToTarget();
+        navigationHandler.obtainMessage(SET_PAGE_FROM_HOME, page).sendToTarget();
     }
 
     /*  ---------------------------------- *
@@ -109,6 +117,16 @@ public class WIMainScreen extends WICommon {
     @JavascriptInterface
     public void requestUserName(){
         androidToWeb("setUserName", userPreferences.getUserName());
+    }
+
+    /**
+     * Request to open the panel
+     * @param panelName specified panel name
+     */
+    @JavascriptInterface
+    public void openSlider(String panelName) {
+        //Log.d(TAG_Web, "openSlider: " + path + containerName + ".html");
+        fragmentHandler.obtainMessage(OPEN_SLIDER, path + "settings_" + panelName + ".html").sendToTarget();
     }
 
 }
