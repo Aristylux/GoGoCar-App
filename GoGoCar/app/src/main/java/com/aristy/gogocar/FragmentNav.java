@@ -74,9 +74,6 @@ public class FragmentNav extends Fragment {
         //
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
-
-        web.addJavascriptInterface(new WINavigation(webNav, web, handlerNavigation), "Android");
-
         web.addJavascriptInterface(new WIMainScreen(web, userPreferences, handlerNavigation), "Android");
 
         return view;

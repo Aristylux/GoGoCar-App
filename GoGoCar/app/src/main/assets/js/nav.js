@@ -6,8 +6,7 @@ var currentButton = document.querySelector(".nav__link--active");
 // Contain the clicked button
 var selectedButton;
 
-pageChanged("drive");
-
+// Set event listener for each buttons
 nav_buttons.forEach((button) => {
     button.addEventListener("click", (event) => {
         // If the user clicks on a button other than the current page
@@ -20,6 +19,7 @@ nav_buttons.forEach((button) => {
     });
 });
 
+// [ANDROID CALLBACK] the new page is loaded. 
 function pageChanged(newPageName) {
     if (newPageName !== "") selectedButton = selectButton(newPageName);
 
@@ -51,12 +51,11 @@ function pageChanged(newPageName) {
     });
 }
 
-
+// Select a button using the name of a page
 function selectButton(page) {
     var findedButton;
     nav_buttons.forEach((button) => {
         if (button.id.slice(4) === page) {
-            console.log(button);
             findedButton = button;
         }
     });

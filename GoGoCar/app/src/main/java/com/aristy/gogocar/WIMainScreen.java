@@ -6,6 +6,9 @@ import android.os.Handler;
 import android.webkit.WebView;
 import android.webkit.JavascriptInterface;
 
+/**
+ * Web Interface for Screen (home, vehicles, drive, settings)
+ */
 public class WIMainScreen extends WICommon {
 
     private static final String path = "file:///android_asset/pages/";
@@ -27,15 +30,22 @@ public class WIMainScreen extends WICommon {
      *  ---------------------------------- */
 
     /**
-     * Request data:
-     * Name of the actual user
-     * Get vehicles booked by the user
+     * [LOADER METHOD]<br>
+     * Request data:<br>
+     * - Name of the actual user <br>
+     * - Get vehicles booked by the user
      */
     @JavascriptInterface
     public void requestData(){
         androidToWeb("setUserName", userPreferences.getUserName());
+
+        // TODO 'Get vehicles booked by the user'
     }
 
+    /**
+     * Request to change the page from home.html
+     * @param page new page to load ('drive' or 'vehicle')
+     */
     @JavascriptInterface
     public void requestChangePage(String page){
         handlerNavigation.obtainMessage(SET_PAGE_FROM_HOME, page).sendToTarget();

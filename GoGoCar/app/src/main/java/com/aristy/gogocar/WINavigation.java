@@ -4,6 +4,9 @@ import android.os.Handler;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
+/**
+ * Web Interface for Navigation screen
+ */
 public class WINavigation extends WICommon {
 
     public static final int SET_PAGE = 1;
@@ -20,25 +23,35 @@ public class WINavigation extends WICommon {
         this.webViewContent = webViewContent;
     }
 
-    // SET_PAGE
+    /**
+     * The user want to change the page
+     * @param page new page
+     */
+    @JavascriptInterface
+    public void requestChangePage(String page){
+        this.newWebPage = page;
+        handlerNavigation.obtainMessage(SET_PAGE).sendToTarget();
+    }
+
+    /**
+     * Handler response from SET_PAGE code
+     * -> response from the navigation bar
+     */
     public void setPage(){
         loadNewPage(webViewContent, newWebPage);
         // inform success
         androidToWeb("pageChanged");
     }
 
-    // SET_PAGE_FROM_HOME
+    /**
+     * Handler response from SET_PAGE_FROM_HOME code
+     * -> response from the home fragment
+     * @param page new page for button identification
+     */
     public void setPage(String page){
         loadNewPage(webViewContent, page);
         // inform success
         androidToWeb("pageChanged", page);
-    }
-
-
-    @JavascriptInterface
-    public void requestChangePage(String page){
-        this.newWebPage = page;
-        handlerNavigation.obtainMessage(SET_PAGE).sendToTarget();
     }
 
 }
