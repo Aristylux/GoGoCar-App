@@ -1,9 +1,10 @@
 package com.aristy.gogocar;
 
 
+import static com.aristy.gogocar.HandlerCodes.SET_DRIVING;
+import static com.aristy.gogocar.HandlerCodes.SET_PAGE;
+import static com.aristy.gogocar.HandlerCodes.SET_PAGE_FROM_HOME;
 import static com.aristy.gogocar.WIMainScreen.HOME;
-import static com.aristy.gogocar.WINavigation.SET_PAGE;
-import static com.aristy.gogocar.WINavigation.SET_PAGE_FROM_HOME;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.sql.Connection;
+
 
 public class FragmentNav extends Fragment {
 
@@ -27,6 +30,7 @@ public class FragmentNav extends Fragment {
     private static final String ARG_FRG_HANDLER = "FRGHandler";
     private static final String ARG_BLE_HANDLER = "BLEHandler";
 
+    Connection SQLConnection;
     private UserPreferences userPreferences;
     private Handler[] handlers;
 
@@ -34,12 +38,13 @@ public class FragmentNav extends Fragment {
     boolean isDriving;
     WINavigation webInterfaceWeb;
 
-    public FragmentNav () {
+    public FragmentNav (Connection SQLConnection) {
         // Required empty public constructor
+        this.SQLConnection = SQLConnection;
     }
 
-    public static FragmentNav newInstance(UserPreferences userPreferences, Handler fragmentHandler, Handler bluetoothHandler){
-        FragmentNav fragment = new FragmentNav();
+    public static FragmentNav newInstance(UserPreferences userPreferences, Handler fragmentHandler, Handler bluetoothHandler, Connection SQLConnection){
+        FragmentNav fragment = new FragmentNav(SQLConnection);
         Bundle args = new Bundle();
         args.putParcelable(ARG_USER_PREF, userPreferences);
         args.putSerializable(ARG_FRG_HANDLER, new HandlerWrapper(fragmentHandler));
@@ -89,7 +94,7 @@ public class FragmentNav extends Fragment {
         //
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        web.addJavascriptInterface(new WIMainScreen(web, userPreferences, handlers), "Android");
+        web.addJavascriptInterface(new WIMainScreen(web, getContext(), getActivity(), userPreferences, handlers, SQLConnection), "Android");
 
         return view;
     }
@@ -103,6 +108,9 @@ public class FragmentNav extends Fragment {
                     break;
                 case SET_PAGE_FROM_HOME:
                     if (!isDriving) webInterfaceWeb.setPage(String.valueOf(message.obj));
+                    break;
+                case SET_DRIVING:
+                    isDriving = (boolean) message.obj;
                     break;
             }
             return false;

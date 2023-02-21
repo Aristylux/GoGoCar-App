@@ -31,4 +31,9 @@ public class HandlerCodes {
     public static final int BT_REQUEST_ENABLE = 11;
     public static final int BT_REQUEST_STATE = 12;
 
+    // Navigation Code
+    public static final int SET_PAGE = 1;
+    public static final int SET_PAGE_FROM_HOME = 2;
+    public static final int SET_DRIVING = 3;
+
 }

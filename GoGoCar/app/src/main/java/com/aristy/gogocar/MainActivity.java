@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         else {
             //fragmentApp = FragmentApp.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME, SQLConnection);
             //selectedFragment = fragmentApp;
-            selectedFragment = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler);
+            selectedFragment = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, SQLConnection);
         }
 
         // Set Fragment
