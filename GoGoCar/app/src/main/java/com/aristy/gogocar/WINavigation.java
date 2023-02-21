@@ -7,6 +7,7 @@ import android.webkit.WebView;
 public class WINavigation extends WICommon {
 
     public static final int SET_PAGE = 1;
+    public static final int SET_PAGE_FROM_HOME = 2;
 
     Handler handlerNavigation;
     WebView webViewContent;
@@ -19,10 +20,18 @@ public class WINavigation extends WICommon {
         this.webViewContent = webViewContent;
     }
 
+    // SET_PAGE
     public void setPage(){
         loadNewPage(webViewContent, newWebPage);
         // inform success
         androidToWeb("pageChanged");
+    }
+
+    // SET_PAGE_FROM_HOME
+    public void setPage(String page){
+        loadNewPage(webViewContent, page);
+        // inform success
+        androidToWeb("pageChanged", page);
     }
 
 

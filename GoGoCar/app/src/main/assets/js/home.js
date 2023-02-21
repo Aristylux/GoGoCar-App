@@ -242,6 +242,6 @@ function requestDriveCallback(allowedToDrive){
 const box_nav = document.querySelectorAll(".box-nav");
 box_nav.forEach((box) => {
     box.addEventListener('click', (event) => {
-        if (!isDriving && androidConnected()) Android.changePage(box.id.slice(8));
+        if (!isDriving && androidConnected()) Android.requestChangePage(box.id.slice(8));
     })
 });

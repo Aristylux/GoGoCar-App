@@ -6,6 +6,8 @@ var currentButton = document.querySelector(".nav__link--active");
 // Contain the clicked button
 var selectedButton;
 
+pageChanged("drive");
+
 nav_buttons.forEach((button) => {
     button.addEventListener("click", (event) => {
         // If the user clicks on a button other than the current page
@@ -18,7 +20,9 @@ nav_buttons.forEach((button) => {
     });
 });
 
-function pageChanged() {
+function pageChanged(newPageName) {
+    if (newPageName !== "") selectedButton = selectButton(newPageName);
+
     // Remove color for all buttons
     nav_buttons.forEach((btn) => btn.classList.remove("nav__link--active"));
 
@@ -45,4 +49,16 @@ function pageChanged() {
             icon.classList.add("fi-sr-" + classIco.slice(6));
         }
     });
+}
+
+
+function selectButton(page) {
+    var findedButton;
+    nav_buttons.forEach((button) => {
+        if (button.id.slice(4) === page) {
+            console.log(button);
+            findedButton = button;
+        }
+    });
+    return findedButton;
 }
