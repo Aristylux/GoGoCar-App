@@ -5,56 +5,8 @@
 
     <link rel="stylesheet" href="./ico/uicons-regular-rounded/css/uicons-regular-rounded.css" />
     <link rel="stylesheet" href="./ico/uicons-solid-rounded/css/uicons-solid-rounded.css" />
-    <!--
+    
     <link rel="stylesheet" href="./css/style_navigation_bar.css"/>
-    -->
-    <style>
-        .nav {
-            margin-top: 3px;
-            width: 100%;
-            height: 55px;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-            background-color: var(--background-color);
-
-            display: grid;
-            grid-template-columns: 25% 25% 25% 25%;
-        }
-
-        .nav__link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-grow: 1;
-            min-width: 50px;
-            /*    max-width: 120px; */
-            overflow: hidden;
-            white-space: nowrap;
-            font-family: sans-serif;
-            font-size: 13px;
-            color: #444444;
-            text-decoration: none;
-
-            -webkit-tap-highlight-color: transparent;
-            transition: all 0.1s ease-in-out;
-        }
-
-        .nav__link:active {
-            background-color: #eeeeee;
-            border-radius: 30px;
-        }
-
-        .nav__link--active {
-            /* .nav__link bug */
-            /*transition: color 0.2s ease-in-out;*/
-            color: var(--primary-color);
-        }
-
-        .nav__icon {
-            font-size: 18px;
-        }
-    </style>
-
 </head>
 <body>
     <nav id="navigation" class="nav">
@@ -77,56 +29,6 @@
     </nav>
 
     <script src="./js/androidInterface.js"></script>
-    <script>
-        let nav_buttons = document.querySelectorAll(".nav__link");
-        let nav_icons = document.querySelectorAll(".nav__icon");
-
-        // Contain the active button
-        var currentButton = document.querySelector(".nav__link--active");
-        // Contain the clicked button
-        var selectedButton;
-
-        nav_buttons.forEach((button) => {
-            button.addEventListener("click", (event) => {
-                // If the user clicks on a button other than the current page 
-                if(currentButton.id.slice(4) !== button.id.slice(4)){
-                    selectedButton = button;
-                    if(androidConnected()) Android.requestChangePage(button.id.slice(4));
-                    // For debug
-                    else pageChanged();
-                }
-            });
-        });
-
-        function pageChanged () {
-            // Remove color for all buttons
-            nav_buttons.forEach((btn) => btn.classList.remove("nav__link--active"));
-
-            // Reset the icon
-            nav_icons.forEach((icon) => {
-                let classIco = icon.classList[2];
-                if(classIco.includes('fi-sr-')){
-                    icon.classList.remove(classIco);
-                    icon.classList.add('fi-rr-' + classIco.slice(6));
-                }
-            });
-
-            // Set color for the specified button
-            selectedButton.classList.add("nav__link--active");
-
-            // Update current button
-            currentButton = document.querySelector(".nav__link--active");
-
-            // Set icon
-            nav_icons.forEach((icon) => {
-                if(icon.id.slice(4) === selectedButton.id.slice(4)){
-                    let classIco = icon.classList[2];
-                    icon.classList.remove(classIco);
-                    icon.classList.add('fi-sr-' + classIco.slice(6));
-                }   
-            });
-        }
-
-    </script>
+    <script src="./js/nav.js"></script>
 </body>
 </html>
