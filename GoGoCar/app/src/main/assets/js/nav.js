@@ -6,6 +6,8 @@ var currentButton = document.querySelector(".nav__link--active");
 // Contain the clicked button
 var selectedButton;
 
+if (androidConnected()) Android.initNavigation();
+
 // Set event listener for each buttons
 nav_buttons.forEach((button) => {
     button.addEventListener("click", (event) => {

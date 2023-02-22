@@ -1,11 +1,9 @@
 package com.aristy.gogocar;
 
-import static com.aristy.gogocar.CodesTAG.TAG;
 import static com.aristy.gogocar.HandlerCodes.REMOVE_MODAL;
 import static com.aristy.gogocar.HandlerCodes.SET_PAGE;
 
 import android.os.Handler;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
@@ -17,12 +15,26 @@ public class WINavigation extends WICommon {
     Handler handlerNavigation;
     WebView webViewContent;
     private String newWebPage;
+    private final String initLink;
 
-    public WINavigation(WebView webViewNav, WebView webViewContent, Handler handlerNavigation) {
+    public WINavigation(WebView webViewNav, WebView webViewContent, Handler handlerNavigation, String initLink) {
         super(webViewNav);
 
         this.handlerNavigation = handlerNavigation;
         this.webViewContent = webViewContent;
+        this.initLink = initLink;
+    }
+
+    @JavascriptInterface
+    public void initNavigation(){
+        androidToWeb( "pageChanged", getPageName(initLink));
+    }
+
+    private String getPageName(String path){
+        String[] parts = path.split("/");
+        String filename = parts[parts.length - 1];
+        String[] nameParts = filename.split("\\.");
+        return nameParts[0];
     }
 
     /**
