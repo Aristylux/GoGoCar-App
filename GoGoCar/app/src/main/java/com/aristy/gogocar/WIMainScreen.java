@@ -7,6 +7,7 @@ import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.NAVIGATION_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
 import static com.aristy.gogocar.HandlerCodes.SET_DRIVING;
@@ -79,6 +80,7 @@ public class WIMainScreen extends WICommon {
     }
 
     /**
+     * [MOVER METHOD]<br>
      * Request to change the page from home.html
      * @param page new page to load ('drive' or 'vehicle')
      */
@@ -140,6 +142,7 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestCancelJourney(int vehicleID){
+        // Reset
         boolean isUpdate = databaseHelper.setBookedVehicle(vehicleID, 0, false);
 
         if(!isUpdate) Toast.makeText(context, "ERROR: Can't cancel.", Toast.LENGTH_SHORT).show();
@@ -161,6 +164,7 @@ public class WIMainScreen extends WICommon {
     }
 
     /**
+     * [MOVER METHOD]<br>
      * Called when the user want to book a vehicle<br>
      * In: <code>popup.js</code><br>
      * @param vehicle the vehicle wanted parsed in json format
@@ -216,6 +220,7 @@ public class WIMainScreen extends WICommon {
     }
 
     /**
+     * [MOVER METHOD]<br>
      * Request to open the panel
      * @param panelName specified panel name
      */
@@ -223,6 +228,38 @@ public class WIMainScreen extends WICommon {
     public void openSlider(String panelName) {
         //Log.d(TAG_Web, "openSlider: " + path + containerName + ".html");
         fragmentHandler.obtainMessage(OPEN_SLIDER, path + "settings_" + panelName + ".html").sendToTarget();
+    }
+
+    /**
+     * Remove data from database<br>
+     * Check that the user is deleted<br>
+     * Log out
+     */
+    @JavascriptInterface
+    public void deleteUserAccount() {
+        // Get user
+        DBModelUser user = userPreferences.getUser();
+        Log.d(TAG_Web, "deleteUserAccount: user=" + user);
+
+        // Remove user from database
+        boolean isDeleted = databaseHelper.deleteUser(user);
+
+        // Logout
+        if (isDeleted) logout();
+        else Log.d(TAG_Web, "deleteUserAccount: error");
+    }
+
+    /**
+     * Remove user from data application<br>
+     * And move to login screen
+     */
+    @JavascriptInterface
+    public void logout(){
+        // Reset user to default
+        userPreferences.resetUser();
+
+        // Load page of login
+        fragmentHandler.obtainMessage(GOTO_LOGIN_FRAGMENT).sendToTarget();
     }
 
 }
