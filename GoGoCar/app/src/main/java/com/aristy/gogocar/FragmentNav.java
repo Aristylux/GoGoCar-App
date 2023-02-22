@@ -1,10 +1,11 @@
 package com.aristy.gogocar;
 
 
+import static com.aristy.gogocar.HandlerCodes.REMOVE_MODAL;
 import static com.aristy.gogocar.HandlerCodes.SET_DRIVING;
+import static com.aristy.gogocar.HandlerCodes.SET_MODAL;
 import static com.aristy.gogocar.HandlerCodes.SET_PAGE;
 import static com.aristy.gogocar.HandlerCodes.SET_PAGE_FROM_HOME;
-import static com.aristy.gogocar.WIMainScreen.HOME;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class FragmentNav extends Fragment {
     WebView web;
     boolean isDriving;
     WINavigation webInterfaceWeb;
+    WIMainScreen webInterfaceMS;
 
     public FragmentNav (Connection SQLConnection) {
         // Required empty public constructor
@@ -100,7 +102,8 @@ public class FragmentNav extends Fragment {
         //
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        web.addJavascriptInterface(new WIMainScreen(web, getContext(), getActivity(), userPreferences, handlers, SQLConnection), "Android");
+        webInterfaceMS = new WIMainScreen(web, getContext(), getActivity(), userPreferences, handlers, SQLConnection);
+        web.addJavascriptInterface(webInterfaceMS, "Android");
 
         return view;
     }
@@ -117,6 +120,12 @@ public class FragmentNav extends Fragment {
                     break;
                 case SET_DRIVING:
                     isDriving = (boolean) message.obj;
+                    break;
+                case SET_MODAL:
+                    webInterfaceWeb.setModal((boolean) message.obj);
+                    break;
+                case REMOVE_MODAL:
+                    webInterfaceMS.removeModal();
                     break;
             }
             return false;

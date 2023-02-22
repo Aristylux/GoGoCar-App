@@ -37,12 +37,13 @@ modal.addEventListener("click", function (event) {
     } while (targetClickedElement);
     if (clicked == false) {
         //console.log("clicked ouside");
+        if (androidConnected()) Android.setModal(false);
         closePopup(popup);
     }
 });
 
 function openPopup(_popup) {
-    //console.log("open");
+    if (androidConnected()) Android.setModal(true);
     modal.style.visibility = "visible";
     modal.classList.add("open-modal");
     _popup.classList.add("open-popup");
@@ -50,7 +51,7 @@ function openPopup(_popup) {
 
 function closePopup(_popup) {
     modal.classList.remove("open-modal");
-    _popup.classList.remove("open-popup");
+    if (_popup) _popup.classList.remove("open-popup");
     setTimeout(function () {
         modal.style.visibility = "hidden";
     }, 350);

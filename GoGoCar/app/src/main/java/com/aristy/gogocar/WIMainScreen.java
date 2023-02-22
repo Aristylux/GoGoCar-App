@@ -1,5 +1,6 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
@@ -13,6 +14,7 @@ import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.NAVIGATION_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
 import static com.aristy.gogocar.HandlerCodes.SET_DRIVING;
+import static com.aristy.gogocar.HandlerCodes.SET_MODAL;
 import static com.aristy.gogocar.HandlerCodes.SET_PAGE_FROM_HOME;
 import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
@@ -60,6 +62,22 @@ public class WIMainScreen extends WICommon {
         this.databaseHelper = new DatabaseHelper(connection);
     }
 
+    /**
+     * <i>Call in</i>: <code>popup.js</code><br>
+     * <i>Call in</i>: <code>popup_home_cancel.js</code><br>
+     * @param isActive true or false
+     */
+    @JavascriptInterface
+    public void setModal(boolean isActive){
+        navigationHandler.obtainMessage(SET_MODAL, isActive).sendToTarget();
+    }
+
+    /**
+     * The user has clicked inside Nav,
+     */
+    public void removeModal(){
+        androidToWeb("setModal", "close");
+    }
 
     /*  ---------------------------------- *
      *  --           home.html          -- *

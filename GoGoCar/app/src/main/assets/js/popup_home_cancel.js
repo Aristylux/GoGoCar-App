@@ -14,12 +14,14 @@ let but_pop_cancel = document.getElementById("but_pop_cancel");
 // Return nothing
 but_pop_back.addEventListener("click", function () {
     console.log("close");
+    if (androidConnected()) Android.setModal(false);
     closePopup(popup);
 });
 
 // Cancel the journey
 but_pop_cancel.addEventListener("click", function () {
     console.log("cancel");
+    if (androidConnected()) Android.setModal(false);
     closePopup(popup);
     // Remove vehicle
     if (androidConnected()) Android.requestCancelJourney(vehicle_selected.id);

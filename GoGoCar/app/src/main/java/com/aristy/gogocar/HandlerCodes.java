@@ -35,5 +35,7 @@ public class HandlerCodes {
     public static final int SET_PAGE = 1;
     public static final int SET_PAGE_FROM_HOME = 2;
     public static final int SET_DRIVING = 3;
+    public static final int SET_MODAL = 4;
+    public static final int REMOVE_MODAL = 5;
 
 }
