@@ -1,6 +1,5 @@
 package com.aristy.gogocar;
 
-import static com.aristy.gogocar.CodesTAG.TAG;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
@@ -73,7 +72,8 @@ public class WIMainScreen extends WICommon {
     }
 
     /**
-     * The user has clicked inside Nav,
+     * The user has clicked inside Navigation fragment<br>
+     * remove modal in th main screen fragment too.
      */
     public void removeModal(){
         androidToWeb("setModal", "close");

@@ -8,28 +8,7 @@
         
         <link rel="stylesheet" href="./css/style_navigation_bar.css"/>
 
-        <style>
-            /* Background popup */
-            .modal {
-                height: 100%;
-                width: 100%;
-                position: fixed;
-                top: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: #2223;
-                z-index: 2;
-                
-                visibility: hidden;
-                opacity: 0%;
-                transition: top 0.4s, opacity 0.4s;
-            }
-
-            .open-modal {
-                opacity: 100%;
-            }
-        </style>
+        <link rel="stylesheet" href="../css/modal.css" />
     </head>
     <body>
         <nav id="navigation" class="nav">
@@ -56,35 +35,6 @@
         <script src="./js/androidInterface.js"></script>
         <script src="./js/nav.js"></script>
 
-        <script>
-            // Background
-            let modal = document.getElementById("modal_popup");
-
-            // Remove popup when cliked ouside
-            modal.addEventListener("click", function (event) {
-                closeModal();
-            });
-
-            function setModal(isActive) {
-                if (isActive === "true")
-                    openModal();
-                else
-                    closeModal();
-            }
-
-            function openModal() {
-                modal.style.visibility = "visible";
-                modal.classList.add("open-modal");
-            }
-
-            function closeModal() {
-                if (androidConnected()) Android.removeModal();
-                modal.classList.remove("open-modal");
-                setTimeout(function () {
-                    modal.style.visibility = "hidden";
-                }, 350);
-            }
-        </script>
-
+        <script src="./js/nav_modal.js"></script>
     </body>
 </html>
