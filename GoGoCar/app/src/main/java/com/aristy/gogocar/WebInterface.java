@@ -79,12 +79,6 @@ public class WebInterface {
      */
     boolean isDriving;
 
-    /**
-     * Request data:
-     * Name of the actual user
-     * Get vehicles booked by the user
-     * Set switch activated or not from bluetooth
-     */
     @JavascriptInterface
     public void requestData(){
         requestUserName();
@@ -97,13 +91,6 @@ public class WebInterface {
         bluetoothHandler.obtainMessage(BT_REQUEST_STATE).sendToTarget();
     }
 
-    /**
-     * Ask to app do connect to the bluetooth
-     * Verify connection
-     * Check bluetooth enabled
-     * Check location enabled
-     * @param vehicleID id vehicle to drive
-     */
     @JavascriptInterface
     public void requestDrive(int vehicleID){
         Log.d(TAG_Web, "requestDrive: ");

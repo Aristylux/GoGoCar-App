@@ -6,7 +6,9 @@ import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
+import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.NAVIGATION_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
@@ -26,7 +28,6 @@ import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,7 +69,8 @@ public class WIMainScreen extends WICommon {
      * [LOADER METHOD]<br>
      * Request data:<br>
      * - Name of the actual user <br>
-     * - Get vehicles booked by the user
+     * - Get vehicles booked by the user<br>
+     * <i>Call in</i>: <code>home.js</code><br>
      */
     @JavascriptInterface
     public void requestData(){
@@ -81,7 +83,8 @@ public class WIMainScreen extends WICommon {
 
     /**
      * [MOVER METHOD]<br>
-     * Request to change the page from home.html
+     * Request to change the page from home.html<br>
+     * <i>Call in</i>: <code>home.js</code><br>
      * @param page new page to load ('drive' or 'vehicle')
      */
     @JavascriptInterface
@@ -93,7 +96,8 @@ public class WIMainScreen extends WICommon {
      * Ask to app do connect to the bluetooth
      * Verify connection
      * Check bluetooth enabled
-     * Check location enabled
+     * Check location enabled<br>
+     * <i>Call in</i>: <code>home.js</code><br>
      * @param vehicleID id vehicle to drive
      */
     @JavascriptInterface
@@ -128,7 +132,8 @@ public class WIMainScreen extends WICommon {
     }
 
     /**
-     * When the user want to stop driving
+     * When the user want to stop driving<br>
+     * <i>Call in</i>: <code>home.js</code><br>
      */
     @JavascriptInterface
     public void requestStopDrive(){
@@ -137,7 +142,8 @@ public class WIMainScreen extends WICommon {
     }
 
     /**
-     * When the user want to remove his trip
+     * When the user want to remove his trip<br>
+     * <i>Call in</i>: <code>home_popup_cancel.js</code><br>
      * @param vehicleID vehicle id
      */
     @JavascriptInterface
@@ -204,6 +210,25 @@ public class WIMainScreen extends WICommon {
 
         if (!isDeleted) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
         else androidToWeb("vehicleDelete", "true");
+    }
+
+    /**
+     * [MOVER METHOD]<br>
+     * Open Edit fragment & save vehicle for
+     * @param vehicle String JSON vehicle
+     */
+    @JavascriptInterface
+    public void requestOpenEditVehicle(String vehicle){
+        fragmentHandler.obtainMessage(GOTO_EDIT_VEHICLE_FRAGMENT, vehicle).sendToTarget();
+    }
+
+    /**
+     * [MOVER METHOD]<br>
+     * Open Add a vehicle fragment
+     */
+    @JavascriptInterface
+    public void requestOpenAddVehicle(){
+        fragmentHandler.obtainMessage(GOTO_ADD_VEHICLE_FRAGMENT).sendToTarget();
     }
 
     /*  ---------------------------------- *
