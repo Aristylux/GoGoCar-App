@@ -27,7 +27,6 @@ let popup = document.getElementById("popup");
 modal.addEventListener("click", function (event) {
     let clicked = false;
     let targetClickedElement = event.target;
-    let i = 0;
     do {
         if (targetClickedElement == popup) {
             //console.log("clicked inside");
@@ -52,6 +51,7 @@ function openPopup(_popup) {
 function closePopup(_popup) {
     modal.classList.remove("open-modal");
     if (_popup) _popup.classList.remove("open-popup");
+    else popup.classList.remove("open-popup");
     setTimeout(function () {
         modal.style.visibility = "hidden";
     }, 350);
