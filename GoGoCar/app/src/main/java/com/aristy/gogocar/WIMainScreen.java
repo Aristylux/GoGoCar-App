@@ -76,7 +76,7 @@ public class WIMainScreen extends WICommon {
      * remove modal in th main screen fragment too.
      */
     public void removeModal(){
-        androidToWeb("setModal", "close");
+        androidToWeb("closePopup");
     }
 
     /*  ---------------------------------- *

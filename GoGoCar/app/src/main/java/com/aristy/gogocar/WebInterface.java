@@ -79,6 +79,7 @@ public class WebInterface {
      */
     boolean isDriving;
 
+    // Transferred
     @JavascriptInterface
     public void requestData(){
         requestUserName();
@@ -91,6 +92,7 @@ public class WebInterface {
         bluetoothHandler.obtainMessage(BT_REQUEST_STATE).sendToTarget();
     }
 
+    // Transferred
     @JavascriptInterface
     public void requestDrive(int vehicleID){
         Log.d(TAG_Web, "requestDrive: ");
@@ -123,12 +125,14 @@ public class WebInterface {
         bluetoothHandler.obtainMessage(BT_STATE_DISCOVERING).sendToTarget();
     }
 
+    // Transferred
     @JavascriptInterface
     public void requestStopDrive(){
         isDriving = false;
         bluetoothHandler.obtainMessage(BT_STATE_DISCONNECTING).sendToTarget();
     }
 
+    // Transferred
     @JavascriptInterface
     public void requestCancelJourney(int vehicleID){
         boolean isUpdate = databaseHelper.setBookedVehicle(vehicleID, 0, false);
@@ -141,6 +145,7 @@ public class WebInterface {
      *  --          drive.html          -- *
      *  ---------------------------------- */
 
+    // Transferred
     @JavascriptInterface
     public void requestDatabase(){
         List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userPreferences.getUserID());
@@ -148,6 +153,7 @@ public class WebInterface {
         androidToWeb("setDatabase", vehicles.toString());
     }
 
+    // Transferred
     @JavascriptInterface
     public void requestOpenBook(String vehicle){
         Log.d(TAG_Web, "requestOpenBook: " + vehicle);
@@ -178,22 +184,14 @@ public class WebInterface {
      *  --        vehicles.html         -- *
      *  ---------------------------------- */
 
-    /** NOT USE
-     * Ask all vehicles owned by the current user
-     */
+    // Transferred
     @JavascriptInterface
     public void requestUserVehicles(){
         List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userPreferences.getUserID());
         androidToWeb("setDatabase", vehicles.toString());
     }
 
-    /** NOT USE
-     * Remove a vehicle
-     * @param vehicleID id vehicle for identification<br>
-     * <br>
-     * return: true to webView if success<br>
-     *         else, show error
-     */
+    // Transferred
     @JavascriptInterface
     public void requestRemoveVehicle(int vehicleID){
         DBModelVehicle vehicle = new DBModelVehicle();
@@ -222,10 +220,7 @@ public class WebInterface {
 
     /* -- vehicle edit -- */
 
-    /**
-     * Open Edit fragment
-     * @param vehicle String JSON vehicle
-     */
+    // Transferred
     @JavascriptInterface
     public void requestOpenEditVehicle(String vehicle){
         fragmentHandler.obtainMessage(GOTO_EDIT_VEHICLE_FRAGMENT, vehicle).sendToTarget();
@@ -280,9 +275,7 @@ public class WebInterface {
 
     /* -- vehicle add -- */
 
-    /**
-     * Open Add a vehicle fragment
-     */
+    // Transferred
     @JavascriptInterface
     public void requestOpenAddVehicle(){
         fragmentHandler.obtainMessage(GOTO_ADD_VEHICLE_FRAGMENT).sendToTarget();
@@ -345,11 +338,13 @@ public class WebInterface {
      *  --        settings.html         -- *
      *  ---------------------------------- */
 
+    // Transferred
     @JavascriptInterface
     public void requestUserName(){
         androidToWeb("setUserName", userPreferences.getUserName());
     }
 
+    // Transferred
     @JavascriptInterface
     public void openSlider(String panelName) {
         //Log.d(TAG_Web, "openSlider: " + path + containerName + ".html");
@@ -358,6 +353,7 @@ public class WebInterface {
 
     // ----
 
+    // Transferred
     @JavascriptInterface
     public void deleteUserAccount() {
         // Get user
@@ -372,6 +368,7 @@ public class WebInterface {
         else Log.d(TAG_Web, "deleteUserAccount: error");
     }
 
+    // Transferred
     @JavascriptInterface
     public void logout(){
         // Reset user to default
