@@ -43,12 +43,14 @@ modal.addEventListener("click", function (event) {
 
 function openPopup(_popup) {
     if (androidConnected()) Android.setModal(true);
+    document.body.style.overflow = 'hidden';
     modal.style.visibility = "visible";
     modal.classList.add("open-modal");
     _popup.classList.add("open-popup");
 }
 
 function closePopup(_popup) {
+    document.body.style.overflow = 'auto';
     modal.classList.remove("open-modal");
     if (_popup) _popup.classList.remove("open-popup");
     else popup.classList.remove("open-popup");

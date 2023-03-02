@@ -15,6 +15,7 @@ function openPopupBook() {
 
 popup_vehicle_button_close.addEventListener("click", function () {
     console.log("close");
+    if (androidConnected()) Android.setModal(false);
     closePopup(popup);
 });
 
