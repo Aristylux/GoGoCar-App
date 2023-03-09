@@ -395,7 +395,9 @@ public class MainActivity extends AppCompatActivity {
                     sendDataToFragment(SET_VEHICLE_EDIT, vehicle);
                     break;
                 case OPEN_SLIDER:
-                    Intent intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, message.obj.toString());
+                    // Open second activity (Which is a slider)
+                    // Call in : openSlider() -> WIMainScreen class
+                    Intent intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, message.obj.toString(), false);
                     MainActivity.this.startActivity(intent);
                     MainActivity.this.overridePendingTransition(
                             R.anim.animate_slide_left_enter,

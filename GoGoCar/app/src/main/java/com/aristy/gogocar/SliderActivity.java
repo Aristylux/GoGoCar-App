@@ -17,18 +17,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrInterface;
 import com.r0adkll.slidr.model.SlidrPosition;
 
 public class SliderActivity extends AppCompatActivity {
 
     // The activity initialization parameters
-    public static final String ARG_LINK = "webLink";
-    public static final String ARG_USER_PREF = "userPref";
-    public static final String ARG_MESSENGER_HANDLER = "messenger";
+    private static final String ARG_MESSENGER_HANDLER = "messenger";
+    private static final String ARG_USER_PREF = "userPref";
+    private static final String ARG_LINK = "webLink";
+    private static final String ARG_LOCKED = "locked";
 
-    String link;
-    UserPreferences userPreferences;
     Messenger messenger;
+    private UserPreferences userPreferences;
+    private String link;
+    private boolean locked;
 
     /**
      * Use this factory method to create a new instance of
@@ -40,12 +43,13 @@ public class SliderActivity extends AppCompatActivity {
      * @param link web link
      * @return A new intent of this activity.
      */
-    public static Intent newInstance(Activity mainActivity, Handler fragmentHandler, UserPreferences userPreferences, String link){
+    public static Intent newInstance(Activity mainActivity, Handler fragmentHandler, UserPreferences userPreferences, String link, boolean locked){
         Intent intent = new Intent(mainActivity, SliderActivity.class);
         Messenger messenger = new Messenger(fragmentHandler);
         intent.putExtra(ARG_MESSENGER_HANDLER, messenger);
         intent.putExtra(ARG_USER_PREF, userPreferences);
         intent.putExtra(ARG_LINK, link);
+        intent.putExtra(ARG_LOCKED, locked);
         return intent;
     }
 
@@ -57,15 +61,15 @@ public class SliderActivity extends AppCompatActivity {
 
 
         if (getIntent() != null) {
-            // communication between activity (not used for the moment)
+            // messenger: communication between activity (not used for the moment)
             this.messenger = getIntent().getParcelableExtra(ARG_MESSENGER_HANDLER);
             this.userPreferences = getIntent().getParcelableExtra(ARG_USER_PREF);
             this.link = getIntent().getStringExtra(ARG_LINK);
+            this.locked = getIntent().getBooleanExtra(ARG_LOCKED, false);
         }
 
         // Set web content
         WebView web = findViewById(R.id.web_view);
-
         web.loadUrl(link);
 
         // Enable javascript
@@ -73,8 +77,7 @@ public class SliderActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);
 
         // Result state page
-        web.setWebViewClient(new FragmentApp.Callback());
-
+        //web.setWebViewClient(new FragmentApp.Callback());
         web.addJavascriptInterface(new WIPanels(web, userPreferences, handler), "Android");
 
         // Set slider
@@ -89,7 +92,9 @@ public class SliderActivity extends AppCompatActivity {
                 .edge(false)
                 .build();
 
-        Slidr.attach(SliderActivity.this, config);
+        SlidrInterface slidrInterface = Slidr.attach(SliderActivity.this, config);
+        // unlocked by default
+        if (this.locked) slidrInterface.lock();
 
         setWindowVersion(SliderActivity.this, getWindow());
     }
