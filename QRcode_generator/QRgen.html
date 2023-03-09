@@ -1,12 +1,14 @@
+
+<!DOCTYPE html>
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@0.18.0/build/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   </head>
   <body>
     <div id="qrcode"></div>
     <script>
-      var qrcode = new QRCode("qrcode", {
-        text: "Your raw data in HTML",
+      var qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: "ouho",
         width: 128,
         height: 128,
         colorDark : "#000000",
@@ -16,3 +18,4 @@
     </script>
   </body>
 </html>
+
