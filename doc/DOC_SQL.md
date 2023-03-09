@@ -68,7 +68,7 @@ CREATE TABLE modules (
 
 ### Marques et Modeles voitures
 ```sql
-CREATE TABLE `modeles` (
+CREATE TABLE `carmodel` (
   `id` int(11) NOT NULL,
   `brandname` varchar(255) NOT NULL,
   `carmodel` varchar(255) NOT NULL
@@ -118,7 +118,7 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
 ```
 
 ```sql
-INSERT INTO `modeles` (`id`, `brandname`, `carmodel`) VALUES
+INSERT INTO `carmodel` (`id`, `brandname`, `carmodel`) VALUES
 (1, 'AIWAYS', 'U5'),
 (2, 'ALEKO', '2141'),
 (3, 'ALFA ROMEO', '1300'),
