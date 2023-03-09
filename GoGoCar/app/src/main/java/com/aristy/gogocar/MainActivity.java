@@ -5,6 +5,7 @@ import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_UP;
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
+import static com.aristy.gogocar.CodesTAG.TAG_FRAGMENT;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.ConnectionHelper.connectionValid;
 import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_NAME;
@@ -70,6 +71,7 @@ import android.util.Log;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -397,7 +399,8 @@ public class MainActivity extends AppCompatActivity {
                 case OPEN_SLIDER:
                     // Open second activity (Which is a slider)
                     // Call in : openSlider() -> WIMainScreen class
-                    Intent intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, message.obj.toString(), false);
+                    Object[] arg = (Object[]) message.obj;
+                    Intent intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, String.valueOf(arg[0]), (boolean) arg[1]);
                     MainActivity.this.startActivity(intent);
                     MainActivity.this.overridePendingTransition(
                             R.anim.animate_slide_left_enter,

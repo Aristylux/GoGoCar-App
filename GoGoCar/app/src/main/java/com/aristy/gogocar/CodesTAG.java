@@ -15,4 +15,5 @@ public class CodesTAG {
     static final String TAG_BT = TAG + "_BT";
     static final String TAG_BT_CON = TAG_BT + "_Connection";
     static final String TAG_BT_COM = TAG_BT + "_Communication";
+    static final String TAG_FRAGMENT = TAG + "_F";
 }

@@ -29,6 +29,7 @@ import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
 import java.sql.Connection;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -269,8 +270,11 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void openSlider(String panelName) {
-        //Log.d(TAG_Web, "openSlider: " + path + containerName + ".html");
-        fragmentHandler.obtainMessage(OPEN_SLIDER, path + "settings_" + panelName + ".html").sendToTarget();
+        String pageSource = "settings";
+
+        Object[] param = {path + pageSource + "_" + panelName + ".html", false};
+        Log.d(TAG_Web, "openSlider: " + param[0]);
+        fragmentHandler.obtainMessage(OPEN_SLIDER, param).sendToTarget();
     }
 
     /**
