@@ -70,8 +70,8 @@ CREATE TABLE modules (
 ```sql
 CREATE TABLE `modeles` (
   `id` int(11) NOT NULL,
-  `marque` varchar(255) NOT NULL,
-  `modele` varchar(255) NOT NULL
+  `brandname` varchar(255) NOT NULL,
+  `carmodel` varchar(255) NOT NULL
 );
 ```
 
@@ -118,7 +118,7 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
 ```
 
 ```sql
-INSERT INTO `modeles` (`id`, `marque`, `modele`) VALUES
+INSERT INTO `modeles` (`id`, `brandname`, `carmodel`) VALUES
 (1, 'AIWAYS', 'U5'),
 (2, 'ALEKO', '2141'),
 (3, 'ALFA ROMEO', '1300'),
