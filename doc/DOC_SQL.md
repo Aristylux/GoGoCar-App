@@ -105,6 +105,7 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
 INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES 
     ('Mini Cooper', 'ST-425-ZE', '10 Avenue Francois Cuzin', 3, 7),
     ('Fiat 500', 'PN-671-DT', '18 Boulevard Jules Ferry', 4, 8);
+```
 
 ```sql
 INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
