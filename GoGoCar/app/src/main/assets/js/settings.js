@@ -38,7 +38,7 @@ buttons.forEach((btn, index) => {
                 page = "bank_cards";
                 break;
         }
-        if(androidConnected()) Android.openSlider(page);
+        if(androidConnected()) Android.openSlider("settings", page);
     });
 });
 

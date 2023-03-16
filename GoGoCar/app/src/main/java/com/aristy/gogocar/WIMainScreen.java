@@ -269,11 +269,22 @@ public class WIMainScreen extends WICommon {
      * @param panelName specified panel name
      */
     @JavascriptInterface
-    public void openSlider(String panelName) {
-        String pageSource = "settings";
-
-        Object[] param = {path + pageSource + "_" + panelName + ".html", false};
+    public void openSlider(String pageSource, String panelName) {
+        // If the page source is 'settings', enable swipe
+        boolean activeSwipe = !pageSource.equals("settings");
+        Object[] param = {path + pageSource + "_" + panelName + ".html", activeSwipe};
         Log.d(TAG_Web, "openSlider: " + param[0]);
+        fragmentHandler.obtainMessage(OPEN_SLIDER, param).sendToTarget();
+    }
+
+    @JavascriptInterface
+    public void openSlider(String pageSource, String panelName, String data) {
+        // If the page source is 'settings', enable swipe
+        boolean activeSwipe = !pageSource.equals("settings");
+        Object[] param = {path + pageSource + "_" + panelName + ".html", activeSwipe, data};
+        Log.d(TAG_Web, "openSlider + data: " + param[0]);
+        Log.d(TAG_Web, "openSlider + data: " + param[1]);
+        Log.d(TAG_Web, "openSlider + data: " + param[2]);
         fragmentHandler.obtainMessage(OPEN_SLIDER, param).sendToTarget();
     }
 

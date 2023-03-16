@@ -229,6 +229,7 @@ public class WebInterface {
     /**
      * Send vehicle (in main) to the new fragment
      */
+    // Transferred
     @JavascriptInterface
     public void requestGetVehicle(){
         fragmentHandler.obtainMessage(DATA_SET_VEHICLE).sendToTarget();

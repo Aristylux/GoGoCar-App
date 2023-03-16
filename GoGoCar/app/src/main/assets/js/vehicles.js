@@ -52,7 +52,8 @@ function setDatabase(_table_vehicle) {
                 // Open window edit
                 console.log(index);
                 console.log(JSON.stringify(vehicles[index]));
-                if (androidConnected()) Android.requestOpenEditVehicle(JSON.stringify(vehicles[index]));
+                if (androidConnected()) Android.openSlider("vehicles", "edit", JSON.stringify(vehicles[index]));
+                //if (androidConnected()) Android.requestOpenEditVehicle(JSON.stringify(vehicles[index]));
             });
         });
     }
@@ -155,5 +156,6 @@ const addVehicleButton = document.getElementById("add_vehicle_button");
 addVehicleButton.addEventListener("click", (event) => {
     // Open new window for add new vehicle
     console.log("add vehicle");
-    if (androidConnected()) Android.requestOpenAddVehicle();
+    //if (androidConnected()) Android.requestOpenAddVehicle();
+    if(androidConnected()) Android.openSlider("vehicles", "add");
 });

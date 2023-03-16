@@ -27,11 +27,13 @@ public class SliderActivity extends AppCompatActivity {
     private static final String ARG_USER_PREF = "userPref";
     private static final String ARG_LINK = "webLink";
     private static final String ARG_LOCKED = "locked";
+    private static final String ARG_DATA = "data";
 
     Messenger messenger;
     private UserPreferences userPreferences;
     private String link;
     private boolean locked;
+    private String data;
 
     /**
      * Use this factory method to create a new instance of
@@ -50,6 +52,18 @@ public class SliderActivity extends AppCompatActivity {
         intent.putExtra(ARG_USER_PREF, userPreferences);
         intent.putExtra(ARG_LINK, link);
         intent.putExtra(ARG_LOCKED, locked);
+        intent.putExtra(ARG_DATA, "");
+        return intent;
+    }
+
+    public static Intent newInstance(Activity mainActivity, Handler fragmentHandler, UserPreferences userPreferences, String link, boolean locked, String data){
+        Intent intent = new Intent(mainActivity, SliderActivity.class);
+        Messenger messenger = new Messenger(fragmentHandler);
+        intent.putExtra(ARG_MESSENGER_HANDLER, messenger);
+        intent.putExtra(ARG_USER_PREF, userPreferences);
+        intent.putExtra(ARG_LINK, link);
+        intent.putExtra(ARG_LOCKED, locked);
+        intent.putExtra(ARG_DATA, data);
         return intent;
     }
 
@@ -66,6 +80,7 @@ public class SliderActivity extends AppCompatActivity {
             this.userPreferences = getIntent().getParcelableExtra(ARG_USER_PREF);
             this.link = getIntent().getStringExtra(ARG_LINK);
             this.locked = getIntent().getBooleanExtra(ARG_LOCKED, false);
+            this.data = getIntent().getStringExtra(ARG_DATA);
         }
 
         // Set web content
@@ -78,7 +93,7 @@ public class SliderActivity extends AppCompatActivity {
 
         // Result state page
         //web.setWebViewClient(new FragmentApp.Callback());
-        web.addJavascriptInterface(new WIPanels(web, userPreferences, handler), "Android");
+        web.addJavascriptInterface(new WIPanels(web, userPreferences, handler, data), "Android");
 
         // Set slider
         SlidrConfig config = new SlidrConfig.Builder()
