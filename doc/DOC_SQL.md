@@ -95,6 +95,10 @@ UPDATE users SET password = pgp_sym_encrypt(password, 'my_secret_key');
 SELECT pgp_sym_decrypt(password, 'my_secret_key') FROM users;
 ```
 
+```sql
+SELECT proname FROM pg_proc WHERE proname = 'decrypt';
+```
+
 # Insert
 
 ## User
