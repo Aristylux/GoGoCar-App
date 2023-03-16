@@ -84,7 +84,7 @@ password: 'admin'
 hash: `hash = hashPassword("admin");`
 
 ```sql
-INSERT INTO users(name, email, phone, password) VALUES
+INSERT INTO users(name, email, phone, password, salt) VALUES
   ('Admin Admin', 'admin@admin.com', '06 05 04 03 02', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918');
 ```
 
