@@ -111,6 +111,10 @@ SELECT proname FROM pg_proc WHERE proname = 'decrypt';
 SELECT * FROM pg_extension WHERE extname = 'pgcrypto';
 ```
 
+```sql
+SELECT pgp_sym_decrypt(decode('base64_encoded_text', 'base64'), 'my_secret_key');
+```sql
+
 # Insert
 
 ## User
