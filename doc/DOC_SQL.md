@@ -22,7 +22,15 @@ This file save all big query for re-create GoGoCar database.
 ## Create extension
 
 ```sql
+CREATE EXTENSION pgcrypto;
+```
+
+```sql
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+```
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 ```
 
 ## Create database
@@ -97,6 +105,10 @@ SELECT pgp_sym_decrypt(password, 'my_secret_key') FROM users;
 
 ```sql
 SELECT proname FROM pg_proc WHERE proname = 'decrypt';
+```
+
+```sql
+SELECT * FROM pg_extension WHERE extname = 'pgcrypto';
 ```
 
 # Insert
