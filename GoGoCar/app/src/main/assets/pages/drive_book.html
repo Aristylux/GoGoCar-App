@@ -224,7 +224,8 @@ dd {
             // Header button
             const button_return = document.getElementById("button_return");
             button_return.addEventListener('click', function () {
-                if(androidConnected()) Android.requestReturnToDrive();
+                if (androidConnected()) Android.requestClosePanel();
+                //if(androidConnected()) Android.requestReturnToDrive();
             });
 
             // Radio group
