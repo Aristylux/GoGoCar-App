@@ -36,8 +36,9 @@ CREATE TABLE users (
     email VARCHAR(40) UNIQUE NOT NULL,
     phone VARCHAR(14) UNIQUE NOT NULL,
     password VARCHAR(129) UNIQUE NOT NULL,
-    id_identity INTEGER UNIQUE,
-    salt VARCHAR(40) NOT NULL
+    salt VARCHAR(40) NOT NULL,
+    id_identity INTEGER UNIQUE
+    
     );
 ```
 
