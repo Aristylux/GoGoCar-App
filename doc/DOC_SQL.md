@@ -19,6 +19,11 @@ This file save all big query for re-create GoGoCar database.
 
 # Create
 
+## Create extension
+```sql
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+```
+
 ## Create database
 
 ```sql
@@ -75,6 +80,15 @@ CREATE TABLE `carmodel` (
   `brandname` varchar(255) NOT NULL,
   `carmodel` varchar(255) NOT NULL
 );
+```
+# Update
+```sql
+UPDATE User SET password = pgp_sym_encrypt(password, 'my_secret_key');
+```
+
+# Select
+```sql
+SELECT pgp_sym_decrypt(password, 'my_secret_key') FROM user;
 ```
 
 # Insert
