@@ -24,5 +24,19 @@ section{
      box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
 }
 label{
-    
+    padding-bottom: 10px;
+    font-weight: bold;
+    font-size: 18px;
+}
+input{
+    width: 308px;
+    font-size: 16px;
+    padding: 5px;
+    margin-bottom: 20px;
+}
+.qr_code{
+    padding: 25px;
+    width: fit-content;
+    background-color: red;
+    display: none;
 }

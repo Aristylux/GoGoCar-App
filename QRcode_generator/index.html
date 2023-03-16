@@ -13,5 +13,18 @@
         <input type="text" class="qr_texte">
         <div class="qr_code"></div>
     </section>
+
+    <!--code javascript-->
+    <script src="qrcode.min.js"></script>
+    <script type="text/javascript">
+        var qr_texte=document.querySelector(".qr_texte");
+        
+        function generateur(){
+            var qrcode = document.querySelector(".qr_code");
+            qrcode.style.display="flex";
+            qrcode.innerHTML="";
+            new QRCode(qrcode, qr_texte.value);
+        }
+    </script>
 </body>
 </html>
