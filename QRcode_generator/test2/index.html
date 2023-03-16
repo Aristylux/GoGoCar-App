@@ -10,7 +10,7 @@
 <body>
     <section>
         <label>Entrez un texte ou un lien.</label>
-        <input type="text" class="qr_texte">
+        <input type="text" class="qr_texte" onchange="generateur()">
         <div class="qr_code"></div>
     </section>
 
@@ -24,6 +24,7 @@
             qrcode.style.display="flex";
             qrcode.innerHTML="";
             new QRCode(qrcode, qr_texte.value);
+            qr_texte.value="";
         }
     </script>
 </body>

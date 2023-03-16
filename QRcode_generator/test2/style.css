@@ -37,6 +37,6 @@ input{
 .qr_code{
     padding: 25px;
     width: fit-content;
-    background-color: red;
+
     display: none;
 }
