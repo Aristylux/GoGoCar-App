@@ -55,6 +55,8 @@ public class WIMainScreen extends WICommon {
         this.activity = activity;
 
         this.userPreferences = userPreferences;
+        this.userPreferences.setContext(context);
+
         this.fragmentHandler = handlers[FRAGMENT_HANDLER_POS];
         this.bluetoothHandler = handlers[BLUETOOTH_HANDLER_POS];
         this.navigationHandler = handlers[NAVIGATION_HANDLER_POS];
