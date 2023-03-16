@@ -20,6 +20,7 @@ This file save all big query for re-create GoGoCar database.
 # Create
 
 ## Create extension
+
 ```sql
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 ```
@@ -74,6 +75,7 @@ CREATE TABLE modules (
 ```
 
 ### Marques et Modeles voitures
+
 ```sql
 CREATE TABLE `carmodel` (
   `id` int(11) NOT NULL,
@@ -82,13 +84,15 @@ CREATE TABLE `carmodel` (
 );
 ```
 # Update
+
 ```sql
-UPDATE User SET password = pgp_sym_encrypt(password, 'my_secret_key');
+UPDATE users SET password = pgp_sym_encrypt(password, 'my_secret_key');
 ```
 
 # Select
+
 ```sql
-SELECT pgp_sym_decrypt(password, 'my_secret_key') FROM user;
+SELECT pgp_sym_decrypt(password, 'my_secret_key') FROM users;
 ```
 
 # Insert
