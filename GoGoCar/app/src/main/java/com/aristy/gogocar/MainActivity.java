@@ -5,6 +5,7 @@ import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_UP;
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
+import static com.aristy.gogocar.CodesTAG.TAG_FRAGMENT;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.ConnectionHelper.connectionValid;
 import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_NAME;
@@ -410,6 +411,9 @@ public class MainActivity extends AppCompatActivity {
                             R.anim.animate_slide_left_enter,
                             R.anim.animate_slide_left_exit
                     );
+                    break;
+                case 100:
+                    Log.d(TAG_FRAGMENT, "handleMessage: 100 ");
                     break;
             }
             return true;

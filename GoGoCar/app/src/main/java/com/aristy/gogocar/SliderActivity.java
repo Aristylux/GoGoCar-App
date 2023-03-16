@@ -1,6 +1,7 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
+import static com.aristy.gogocar.HandlerCodes.QUERY;
 import static com.aristy.gogocar.WindowHelper.setWindowVersion;
 
 import android.annotation.SuppressLint;
@@ -9,7 +10,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Messenger;
+import android.os.RemoteException;
+import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -117,6 +121,9 @@ public class SliderActivity extends AppCompatActivity {
     Handler handler = new Handler(message -> {
         if (message.what == CLOSE_SLIDER) {
             onBackPressed();
+        } else if (message.what == QUERY){
+            Log.d("GoGoCar_Slider", "handler: query");
+            requestDatabase((int) message.obj);
         }
         return true;
     });
@@ -125,5 +132,19 @@ public class SliderActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.animate_slide_right_enter, R.anim.animate_slide_right_exit);
+    }
+
+    private boolean requestDatabase(int queryCode){
+        Message message = Message.obtain();
+        message.replyTo = messenger;
+        message.what = queryCode;
+
+        try {
+            messenger.send(message);
+            return true;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

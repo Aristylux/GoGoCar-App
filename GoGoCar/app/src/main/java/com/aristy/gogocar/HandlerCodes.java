@@ -19,6 +19,7 @@ public class HandlerCodes {
     public static final int STATUS_BAR_COLOR = 20;
     public static final int OPEN_SLIDER = 50;
     public static final int CLOSE_SLIDER = 51;
+    public static final int QUERY = 52;
 
     // Bluetooth codes
     public static final int BT_STATE_DISCOVERING = 1;

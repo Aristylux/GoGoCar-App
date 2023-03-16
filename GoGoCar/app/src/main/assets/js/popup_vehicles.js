@@ -22,6 +22,7 @@ popup_vehicle_button_close.addEventListener("click", (event) => {
 });
 
 popup_vehicle_button_remove.addEventListener("click", function () {
+    if (androidConnected()) Android.setModal(false);
     closePopup(popup);
     if (androidConnected()) Android.requestRemoveVehicle(vehicle_selected.id);
 });
