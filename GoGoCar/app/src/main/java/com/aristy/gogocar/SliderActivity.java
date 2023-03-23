@@ -1,5 +1,7 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_SLIDER;
+import static com.aristy.gogocar.CodesTAG.TAG_THREAD;
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
 import static com.aristy.gogocar.HandlerCodes.QUERY;
 import static com.aristy.gogocar.WindowHelper.setWindowVersion;
@@ -77,6 +79,18 @@ public class SliderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slider);
 
+        /*
+        Log.d(TAG_SLIDER, "onCreate: ");
+        ThreadManager thread = ThreadManager.getInstance();
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultModule(DBModelModule modelModule) {
+                // Send result to Activity 2
+                Log.d(TAG_THREAD, "onResultCalculated: " + modelModule);
+            }
+        });
+        thread.startThread();
+         */
 
         if (getIntent() != null) {
             // messenger: communication between activity (not used for the moment)
@@ -122,7 +136,7 @@ public class SliderActivity extends AppCompatActivity {
         if (message.what == CLOSE_SLIDER) {
             onBackPressed();
         } else if (message.what == QUERY){
-            Log.d("GoGoCar_Slider", "handler: query");
+            Log.d(TAG_SLIDER, "handler: query");
             requestDatabase((int) message.obj);
         }
         return true;
