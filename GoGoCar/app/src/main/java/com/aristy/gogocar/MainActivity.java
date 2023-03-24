@@ -91,13 +91,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Start connection
-        //ThreadManager.getInstance().setConnection();
+        ThreadManager.getInstance().setConnection();
         //ThreadManager.getInstance().startThread();
 
         // Connect to database (do it in other thread)
+        /*
         ConnectionHelper connectionHelper = new ConnectionHelper();
         connectionHelper.openConnection();
-        SQLConnection = connectionHelper.getConnection();
+        SQLConnection = connectionHelper.getConnection();*/
 
         // ----
         Intent intent = getIntent();

@@ -1,5 +1,7 @@
 package com.aristy.gogocar;
 
+import java.util.List;
+
 public interface ThreadResultCallback {
 
     // Test
@@ -7,5 +9,9 @@ public interface ThreadResultCallback {
     }
 
     default void onResultModule(DBModelModule module){
+    }
+
+    default void onResultVehicles(List<DBModelVehicle> vehicles){
+
     }
 }

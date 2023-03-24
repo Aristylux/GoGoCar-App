@@ -1,5 +1,6 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_THREAD;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
@@ -18,6 +19,7 @@ import static com.aristy.gogocar.HandlerCodes.SET_PAGE_FROM_HOME;
 import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
+import static com.aristy.gogocar.ThreadManager.GET_BOOKED_VEHICLES;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
 
 import android.app.Activity;
@@ -98,8 +100,18 @@ public class WIMainScreen extends WICommon {
         androidToWeb("setUserName", userPreferences.getUserName());
 
         // List booked vehicle for this user
-        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userPreferences.getUserID());
-        androidToWeb("setVehicleBooked", vehicles.toString());
+        //List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userPreferences.getUserID());
+        //androidToWeb("setVehicleBooked", vehicles.toString());
+        
+        ThreadManager thread = ThreadManager.getInstance();
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultVehicles(List<DBModelVehicle> vehicles) {
+                androidToWeb("setVehicleBooked", vehicles.toString());
+            }
+        });
+        thread.getVehiclesBooked(userPreferences.getUserID());
+
     }
 
     /**
