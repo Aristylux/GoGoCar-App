@@ -5,13 +5,16 @@ import java.util.List;
 public interface ThreadResultCallback {
 
     // Test
-    default void onResultCalculated(int result){
+    default void onResultCalculated(int result) {
     }
 
-    default void onResultModule(DBModelModule module){
+    default void onResultModule(DBModelModule module) {
     }
 
-    default void onResultVehicles(List<DBModelVehicle> vehicles){
-
+    default void onResultVehicles(List<DBModelVehicle> vehicles) {
     }
+
+    default void onResultTableUpdated(boolean isUpdated) {
+    }
+
 }

@@ -1,6 +1,5 @@
 package com.aristy.gogocar;
 
-import static com.aristy.gogocar.CodesTAG.TAG_THREAD;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
@@ -19,7 +18,6 @@ import static com.aristy.gogocar.HandlerCodes.SET_PAGE_FROM_HOME;
 import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
-import static com.aristy.gogocar.ThreadManager.GET_BOOKED_VEHICLES;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
 
 import android.app.Activity;
@@ -31,7 +29,6 @@ import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
 import java.sql.Connection;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,7 +45,6 @@ public class WIMainScreen extends WICommon {
     Handler fragmentHandler;
     Handler bluetoothHandler;
     Handler navigationHandler;
-    DatabaseHelper databaseHelper;
 
     public WIMainScreen(WebView webView, Context context, Activity activity, UserPreferences userPreferences, Handler [] handlers, Connection connection) {
         super(webView);
@@ -62,8 +58,6 @@ public class WIMainScreen extends WICommon {
         this.fragmentHandler = handlers[FRAGMENT_HANDLER_POS];
         this.bluetoothHandler = handlers[BLUETOOTH_HANDLER_POS];
         this.navigationHandler = handlers[NAVIGATION_HANDLER_POS];
-
-        this.databaseHelper = new DatabaseHelper(connection);
     }
 
     /**
@@ -99,10 +93,6 @@ public class WIMainScreen extends WICommon {
     public void requestData(){
         androidToWeb("setUserName", userPreferences.getUserName());
 
-        // List booked vehicle for this user
-        //List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userPreferences.getUserID());
-        //androidToWeb("setVehicleBooked", vehicles.toString());
-        
         ThreadManager thread = ThreadManager.getInstance();
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
@@ -111,7 +101,6 @@ public class WIMainScreen extends WICommon {
             }
         });
         thread.getVehiclesBooked(userPreferences.getUserID());
-
     }
 
     /**
@@ -182,10 +171,18 @@ public class WIMainScreen extends WICommon {
     @JavascriptInterface
     public void requestCancelJourney(int vehicleID){
         // Reset
-        boolean isUpdate = databaseHelper.setBookedVehicle(vehicleID, 0, false);
+        //boolean isUpdate = databaseHelper.setBookedVehicle(vehicleID, 0, false);
 
-        if(!isUpdate) Toast.makeText(context, "ERROR: Can't cancel.", Toast.LENGTH_SHORT).show();
-        else androidToWeb("journeyDelete", "true");
+        ThreadManager thread = ThreadManager.getInstance();
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultTableUpdated(boolean isUpdate) {
+                if(!isUpdate) Toast.makeText(context, "ERROR: Can't cancel.", Toast.LENGTH_SHORT).show();
+                else androidToWeb("journeyDelete", "true");
+            }
+        });
+        //Reset vehicle
+        thread.setBookedVehicle(vehicleID, 0, false);
     }
 
     /*  ---------------------------------- *
@@ -198,8 +195,14 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestDatabase(){
-        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userPreferences.getUserID());
-        androidToWeb("setDatabase", vehicles.toString());
+        ThreadManager thread = ThreadManager.getInstance();
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultVehicles(List<DBModelVehicle> vehicles) {
+                androidToWeb("setDatabase", vehicles.toString());
+            }
+        });
+        thread.getVehiclesAvailable(userPreferences.getUserID());
     }
 
     /**
@@ -224,8 +227,14 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestUserVehicles(){
-        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userPreferences.getUserID());
-        androidToWeb("setDatabase", vehicles.toString());
+        ThreadManager thread = ThreadManager.getInstance();
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultVehicles(List<DBModelVehicle> vehicles) {
+                androidToWeb("setDatabase", vehicles.toString());
+            }
+        });
+        thread.getVehiclesByUser(userPreferences.getUserID());
     }
 
     /**
@@ -237,12 +246,19 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestRemoveVehicle(int vehicleID){
-        DBModelVehicle vehicle = new DBModelVehicle();
-        vehicle.setId(vehicleID);
-        boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
+        //DBModelVehicle vehicle = new DBModelVehicle();
+        //vehicle.setId(vehicleID);
+        //boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
 
-        if (!isDeleted) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
-        else androidToWeb("vehicleDelete", "true");
+        ThreadManager thread = ThreadManager.getInstance();
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultTableUpdated(boolean isUpdate) {
+                if (!isUpdate) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
+                else androidToWeb("vehicleDelete", "true");
+            }
+        });
+        thread.deleteVehicle(vehicleID);
     }
 
     /**
@@ -313,12 +329,17 @@ public class WIMainScreen extends WICommon {
         DBModelUser user = userPreferences.getUser();
         Log.d(TAG_Web, "deleteUserAccount: user=" + user);
 
+        ThreadManager thread = ThreadManager.getInstance();
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultTableUpdated(boolean isDeleted) {
+                // Logout
+                if (isDeleted) logout();
+                else Log.d(TAG_Web, "deleteUserAccount: error");
+            }
+        });
         // Remove user from database
-        boolean isDeleted = databaseHelper.deleteUser(user);
-
-        // Logout
-        if (isDeleted) logout();
-        else Log.d(TAG_Web, "deleteUserAccount: error");
+        thread.deleteUser(user);
     }
 
     /**

@@ -65,13 +65,56 @@ public class ThreadManager {
         thread.start();
     }
 
-    public void getVehiclesBooked(int idUser){
+    public void getVehiclesBooked(int userID){
         thread = new Thread(() -> {
-            Log.d(TAG_THREAD, "run: GET_BOOKED_VEHICLES");
-            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(idUser);
+            Log.d(TAG_THREAD, "run: getVehiclesBooked");
+            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userID);
             callback.onResultVehicles(vehicles);
         });
         thread.start();
+    }
+
+    public void getVehiclesAvailable(int userID){
+        thread = new Thread(() -> {
+            Log.d(TAG_THREAD, "run: getVehiclesAvailable");
+            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userID);
+            callback.onResultVehicles(vehicles);
+        });
+        thread.start();
+    }
+
+    public void getVehiclesByUser(int userID){
+        thread = new Thread(() -> {
+            Log.d(TAG_THREAD, "run: getVehiclesByUser");
+            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userID);
+            callback.onResultVehicles(vehicles);
+        });
+        thread.start();
+    }
+
+    public void setBookedVehicle(int vehicleID, int userID, boolean isBooked){
+        thread = new Thread(() -> {
+            Log.d(TAG_THREAD, "run: setBookedVehicle");
+            boolean isUpdated = databaseHelper.setBookedVehicle(vehicleID, userID, isBooked);
+            callback.onResultTableUpdated(isUpdated);
+        });
+        thread.start();
+    }
+
+    public void deleteVehicle(int vehicleID){
+        thread = new Thread(() -> {
+            DBModelVehicle vehicle = new DBModelVehicle();
+            vehicle.setId(vehicleID);
+            boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
+            callback.onResultTableUpdated(isDeleted);
+        });
+    }
+
+    public void deleteUser(DBModelUser user){
+        thread = new Thread(() -> {
+            boolean isDeleted = databaseHelper.deleteUser(user);
+            callback.onResultTableUpdated(isDeleted);
+        });
     }
 
     public Thread getThread() {
