@@ -370,11 +370,12 @@ public class MainActivity extends AppCompatActivity {
                     setFragment(fragmentLogin, ANIMATE_SLIDE_LEFT);
                     break;
                 case GOTO_HOME_FRAGMENT:
-                    setFragment(ANIMATE_SLIDE_RIGHT, HOME);
+                    FragmentNav fragmentNav =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
+                    setFragment(fragmentNav, ANIMATE_SLIDE_RIGHT);
                     break;
                 case GOTO_DRIVE_FRAGMENT:
-                    FragmentNav fragmentNav =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, DRIVE);
-                    setFragment(fragmentNav, ANIMATE_SLIDE_LEFT);
+                    FragmentNav fragmentNav1 =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, DRIVE);
+                    setFragment(fragmentNav1, ANIMATE_SLIDE_LEFT);
                     //setFragment(ANIMATE_SLIDE_LEFT, DRIVE);
                     break;
                 case GOTO_BOOK_VEHICLE_FRAGMENT:
@@ -389,8 +390,8 @@ public class MainActivity extends AppCompatActivity {
                     vehicle = String.valueOf(message.obj);
                     break;
                 case GOTO_VEHICLE_FRAGMENT:
-                    FragmentNav fragmentNav1 =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, VEHICLE);
-                    setFragment(fragmentNav1, (Integer) message.obj);
+                    FragmentNav fragmentNav2 =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, VEHICLE);
+                    setFragment(fragmentNav2, (Integer) message.obj);
                     //setFragment((Integer) message.obj, VEHICLE);
                     break;
                 case STATUS_BAR_COLOR:
