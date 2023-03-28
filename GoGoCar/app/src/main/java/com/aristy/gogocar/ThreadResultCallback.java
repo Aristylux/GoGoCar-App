@@ -8,6 +8,9 @@ public interface ThreadResultCallback {
     default void onResultCalculated(int result) {
     }
 
+    default void onResultUser(DBModelUser user){
+    }
+
     default void onResultModule(DBModelModule module) {
     }
 

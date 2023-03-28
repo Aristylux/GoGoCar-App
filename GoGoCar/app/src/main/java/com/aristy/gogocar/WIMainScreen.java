@@ -60,7 +60,7 @@ public class WIMainScreen extends WICommon {
         this.bluetoothHandler = handlers[BLUETOOTH_HANDLER_POS];
         this.navigationHandler = handlers[NAVIGATION_HANDLER_POS];
 
-        thread = ThreadManager.getInstance();
+        this.thread = ThreadManager.getInstance();
     }
 
     /**

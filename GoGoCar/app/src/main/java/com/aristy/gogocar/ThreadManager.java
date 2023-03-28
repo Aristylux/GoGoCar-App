@@ -1,5 +1,6 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_THREAD;
 
 import android.util.Log;
@@ -39,6 +40,7 @@ public class ThreadManager {
         ConnectionHelper connectionHelper = new ConnectionHelper();
         connectionHelper.openConnection();
         databaseHelper = new DatabaseHelper(connectionHelper.getConnection());
+        Log.d(TAG_THREAD, "setConnection: " + connectionHelper.getConnection());
     }
 
     public void startThread() {
@@ -108,6 +110,15 @@ public class ThreadManager {
             boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
             callback.onResultTableUpdated(isDeleted);
         });
+        thread.start();
+    }
+
+    public void addUser(DBModelUser user){
+        thread = new Thread(() -> {
+            boolean success = databaseHelper.addUser(user);
+            callback.onResultTableUpdated(success);
+        });
+        thread.start();
     }
 
     public void deleteUser(DBModelUser user){
@@ -115,6 +126,25 @@ public class ThreadManager {
             boolean isDeleted = databaseHelper.deleteUser(user);
             callback.onResultTableUpdated(isDeleted);
         });
+        thread.start();
+    }
+
+    public void getUserByEmail(String email){
+        Log.d(TAG_THREAD, "getUserByEmail: get");
+        thread = new Thread(() -> {
+            DBModelUser user = databaseHelper.getUserByEmail(email);
+            Log.d(TAG_THREAD, "getUserByEmail: " + user);
+            callback.onResultUser(user);
+        });
+        thread.start();
+    }
+
+    public void getUserByPhone(String phone){
+        thread = new Thread(() -> {
+            DBModelUser user = databaseHelper.getUserByPhone(phone);
+            callback.onResultUser(user);
+        });
+        thread.start();
     }
 
     public Thread getThread() {

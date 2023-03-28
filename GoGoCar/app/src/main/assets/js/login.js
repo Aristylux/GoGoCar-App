@@ -292,6 +292,7 @@ function checkNames(fullName) {
 function errorAuthenticationRegistration(cause) {
     // When function called by Android (cause is a string, not a number)
     if (typeof cause == "string") cause = parseInt(cause);
+    else console.log("from web");
 
     console.info("Register failed: " + cause);
     let selectElement;
