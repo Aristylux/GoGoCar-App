@@ -26,6 +26,7 @@ public class DatabaseHelper {
     private static final String COLUMN_USER_EMAIL = "email";
     private static final String COLUMN_USER_PHONE_NUMBER = "phone";
     private static final String COLUMN_USER_PASSWORD = "password";
+    private static final String COLUMN_USER_SALT = "salt";
     // id person (identity card table) (if null => not approved)
 
     /* VEHICLE */
@@ -107,9 +108,9 @@ public class DatabaseHelper {
      */
     public boolean addUser(DBModelUser userModel){
         String query = "INSERT INTO " + TABLE_USER +
-                "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + ") " +
-                "VALUES (?,?,?,?)";
-        return executeQuery(query, userModel.getFullName(), userModel.getEmail(), userModel.getPhoneNumber(), userModel.getPassword());
+                "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + "," + COLUMN_USER_SALT + ") " +
+                "VALUES (?,?,?,?,?)";
+        return executeQuery(query, userModel.getFullName(), userModel.getEmail(), userModel.getPhoneNumber(), userModel.getPassword(), userModel.getSalt());
     }
 
     /**
@@ -488,6 +489,7 @@ class DBModelUser {
     private String email;
     private String phoneNumber;
     private String password;
+    private String salt;
 
     // Constructor
     public DBModelUser(int id, String fullName, String email, String phoneNumber, String password) {
@@ -496,6 +498,15 @@ class DBModelUser {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
+    }
+
+    public DBModelUser(String fullName, String email, String phoneNumber, String password, String salt){
+        this.id = -1;
+        this.fullName = fullName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.salt = salt;
     }
 
     public DBModelUser(){}
@@ -510,6 +521,7 @@ class DBModelUser {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", password='" + password + '\'' +
+                ", salt='" + salt + '\'' +
                 '}';
     }
 
@@ -552,6 +564,14 @@ class DBModelUser {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 }
 

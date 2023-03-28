@@ -3,6 +3,7 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
+import static com.aristy.gogocar.SHAHash.generateSalt;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.content.Context;
@@ -107,10 +108,13 @@ public class WIAuthentication extends WICommon {
     public void AuthenticationRegister(String fullName, String email, String phoneNumber, String password){
         // Hash password
         String hash = hashPassword(password, SHAHash.DOMAIN);
-        Log.d(TAG_Auth, "pw= \"" + password + "\", hash= \"" + hash + "\"");
+
+        // Generate salt
+        String salt = generateSalt();
+        Log.d(TAG_Auth, "pw= \"" + password + "\", hash= \"" + hash + "\", salt= \"" + salt + "\"");
 
         // Create user
-        DBModelUser user = new DBModelUser(-1, fullName, email, phoneNumber, hash);
+        DBModelUser user = new DBModelUser(fullName, email, phoneNumber, hash, salt);
 
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
