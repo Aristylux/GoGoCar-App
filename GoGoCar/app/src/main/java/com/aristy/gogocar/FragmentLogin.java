@@ -15,8 +15,6 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import java.sql.Connection;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FragmentLogin#} factory method to
@@ -29,14 +27,11 @@ public class FragmentLogin extends Fragment {
     private static final String ARG_USER_PREF = "userPref";
     private static final String ARG_FRG_HANDLER = "FRGHandler";
 
-    Connection SQLConnection;
-
     private UserPreferences userPreferences;
     private Handler fragmentHandler;
 
-    public FragmentLogin(Connection SQLConnection){
+    public FragmentLogin(){
         // Required empty public constructor
-        this.SQLConnection = SQLConnection;
     }
 
     /**
@@ -45,11 +40,10 @@ public class FragmentLogin extends Fragment {
      *
      * @param userPreferences user preferences
      * @param fragmentHandler fragment handler
-     * @param SQLConnection sql connection
      * @return A new instance of fragment FragmentLogin.
      */
-    public static FragmentLogin newInstance(UserPreferences userPreferences, Handler fragmentHandler, Connection SQLConnection){
-        FragmentLogin fragment = new FragmentLogin(SQLConnection);
+    public static FragmentLogin newInstance(UserPreferences userPreferences, Handler fragmentHandler){
+        FragmentLogin fragment = new FragmentLogin();
         Bundle args = new Bundle();
         args.putSerializable(ARG_FRG_HANDLER, new HandlerWrapper(fragmentHandler));
         args.putParcelable(ARG_USER_PREF, userPreferences);
@@ -89,7 +83,7 @@ public class FragmentLogin extends Fragment {
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        web.addJavascriptInterface(new WIAuthentication(getContext(), web, SQLConnection, userPreferences, fragmentHandler), "Android");
+        web.addJavascriptInterface(new WIAuthentication(getContext(), web, userPreferences, fragmentHandler), "Android");
 
         return view;
     }

@@ -11,9 +11,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
-import android.widget.Toast;
-
-import java.sql.Connection;
 
 /**
  * Web Interface for Authentication screen
@@ -28,7 +25,7 @@ public class WIAuthentication extends WICommon {
     Handler fragmentHandler;
     ThreadManager thread;
 
-    public WIAuthentication(Context context, WebView webView, Connection connection, UserPreferences userPreferences, Handler fragmentHandler) {
+    public WIAuthentication(Context context, WebView webView, UserPreferences userPreferences, Handler fragmentHandler) {
         super(webView);
 
         this.context = context;

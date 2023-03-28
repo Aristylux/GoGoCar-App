@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
         // If the user is not logged
         if(!isLogged)
-            selectedFragment = FragmentLogin.newInstance(userPreferences, fragmentHandler, SQLConnection);
+            selectedFragment = FragmentLogin.newInstance(userPreferences, fragmentHandler);
         else {
             //fragmentApp = FragmentApp.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME, SQLConnection);
             //selectedFragment = fragmentApp;
@@ -366,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean handleMessage(@NonNull Message message) {
             switch (message.what){
                 case GOTO_LOGIN_FRAGMENT:
-                    FragmentLogin fragmentLogin = FragmentLogin.newInstance(userPreferences, fragmentHandler, SQLConnection);
+                    FragmentLogin fragmentLogin = FragmentLogin.newInstance(userPreferences, fragmentHandler);
                     setFragment(fragmentLogin, ANIMATE_SLIDE_LEFT);
                     break;
                 case GOTO_HOME_FRAGMENT:
