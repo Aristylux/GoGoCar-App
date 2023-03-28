@@ -28,7 +28,6 @@ import android.webkit.WebView;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
-import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -46,7 +45,9 @@ public class WIMainScreen extends WICommon {
     Handler bluetoothHandler;
     Handler navigationHandler;
 
-    public WIMainScreen(WebView webView, Context context, Activity activity, UserPreferences userPreferences, Handler [] handlers, Connection connection) {
+    ThreadManager thread;
+
+    public WIMainScreen(WebView webView, Context context, Activity activity, UserPreferences userPreferences, Handler [] handlers) {
         super(webView);
 
         this.context = context;
@@ -58,6 +59,8 @@ public class WIMainScreen extends WICommon {
         this.fragmentHandler = handlers[FRAGMENT_HANDLER_POS];
         this.bluetoothHandler = handlers[BLUETOOTH_HANDLER_POS];
         this.navigationHandler = handlers[NAVIGATION_HANDLER_POS];
+
+        thread = ThreadManager.getInstance();
     }
 
     /**
@@ -93,7 +96,6 @@ public class WIMainScreen extends WICommon {
     public void requestData(){
         androidToWeb("setUserName", userPreferences.getUserName());
 
-        ThreadManager thread = ThreadManager.getInstance();
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultVehicles(List<DBModelVehicle> vehicles) {
@@ -173,7 +175,6 @@ public class WIMainScreen extends WICommon {
         // Reset
         //boolean isUpdate = databaseHelper.setBookedVehicle(vehicleID, 0, false);
 
-        ThreadManager thread = ThreadManager.getInstance();
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultTableUpdated(boolean isUpdate) {
@@ -195,7 +196,6 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestDatabase(){
-        ThreadManager thread = ThreadManager.getInstance();
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultVehicles(List<DBModelVehicle> vehicles) {
@@ -227,7 +227,6 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestUserVehicles(){
-        ThreadManager thread = ThreadManager.getInstance();
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultVehicles(List<DBModelVehicle> vehicles) {
@@ -250,7 +249,6 @@ public class WIMainScreen extends WICommon {
         //vehicle.setId(vehicleID);
         //boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
 
-        ThreadManager thread = ThreadManager.getInstance();
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultTableUpdated(boolean isUpdate) {
@@ -329,7 +327,6 @@ public class WIMainScreen extends WICommon {
         DBModelUser user = userPreferences.getUser();
         Log.d(TAG_Web, "deleteUserAccount: user=" + user);
 
-        ThreadManager thread = ThreadManager.getInstance();
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultTableUpdated(boolean isDeleted) {
