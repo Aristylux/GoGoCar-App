@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         else {
             //fragmentApp = FragmentApp.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME, SQLConnection);
             //selectedFragment = fragmentApp;
-            selectedFragment = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME, SQLConnection);
+            selectedFragment = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
         }
 
         // Set Fragment
@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
                     setFragment(ANIMATE_SLIDE_RIGHT, HOME);
                     break;
                 case GOTO_DRIVE_FRAGMENT:
-                    FragmentNav fragmentNav =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, DRIVE, SQLConnection);
+                    FragmentNav fragmentNav =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, DRIVE);
                     setFragment(fragmentNav, ANIMATE_SLIDE_LEFT);
                     //setFragment(ANIMATE_SLIDE_LEFT, DRIVE);
                     break;
@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
                     vehicle = String.valueOf(message.obj);
                     break;
                 case GOTO_VEHICLE_FRAGMENT:
-                    FragmentNav fragmentNav1 =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, VEHICLE, SQLConnection);
+                    FragmentNav fragmentNav1 =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, VEHICLE);
                     setFragment(fragmentNav1, (Integer) message.obj);
                     //setFragment((Integer) message.obj, VEHICLE);
                     break;

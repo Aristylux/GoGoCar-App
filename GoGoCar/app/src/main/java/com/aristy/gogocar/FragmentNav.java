@@ -21,7 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.sql.Connection;
 
 
 public class FragmentNav extends Fragment {
@@ -32,7 +31,6 @@ public class FragmentNav extends Fragment {
     private static final String ARG_BLE_HANDLER = "BLEHandler";
     private static final String ARG_LINK = "webLink";
 
-    Connection SQLConnection;
     private UserPreferences userPreferences;
     private Handler[] handlers;
     private String link;
@@ -42,13 +40,12 @@ public class FragmentNav extends Fragment {
     WINavigation webInterfaceWeb;
     WIMainScreen webInterfaceMS;
 
-    public FragmentNav (Connection SQLConnection) {
+    public FragmentNav () {
         // Required empty public constructor
-        this.SQLConnection = SQLConnection;
     }
 
-    public static FragmentNav newInstance(UserPreferences userPreferences, Handler fragmentHandler, Handler bluetoothHandler, String webLink, Connection SQLConnection){
-        FragmentNav fragment = new FragmentNav(SQLConnection);
+    public static FragmentNav newInstance(UserPreferences userPreferences, Handler fragmentHandler, Handler bluetoothHandler, String webLink){
+        FragmentNav fragment = new FragmentNav();
         Bundle args = new Bundle();
         args.putParcelable(ARG_USER_PREF, userPreferences);
         args.putSerializable(ARG_FRG_HANDLER, new HandlerWrapper(fragmentHandler));

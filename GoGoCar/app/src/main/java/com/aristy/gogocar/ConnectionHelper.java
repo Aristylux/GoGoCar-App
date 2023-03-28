@@ -50,6 +50,7 @@ public class ConnectionHelper{
         } catch (Exception exception) {
             // No connection!
             Log.e(TAG_Database, "openConnection: ", exception);
+            Log.e(TAG_Database, "openConnection: " + exception.getMessage());
             exception.printStackTrace();
         }
     }
