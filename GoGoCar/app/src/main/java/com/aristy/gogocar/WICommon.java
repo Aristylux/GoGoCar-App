@@ -6,6 +6,10 @@ import android.webkit.WebView;
  * Web Interface Common regroup all common methods for Web Interfaces
  */
 public class WICommon {
+
+    private static final String path = "file:///android_asset/";
+    public static final String LOGIN = path + "login.html";
+
     private final WebView webView;
 
     public WICommon (WebView webView){

@@ -14,6 +14,10 @@ Android Application for GoGoCar
   - [SQL](#sql)
   - [Local](#local)
 - [Dev](#dev)
+  - [Tests check](#tests-check)
+    - [Authentification (Login)](#authentification-login)
+    - [Home](#home)
+  - [Dev apps](#dev-apps)
     - [App 1](#app-1)
     - [App 2](#app-2)
     - [App 3](#app-3)
@@ -42,6 +46,21 @@ Android Application for GoGoCar
 
 
 # Dev
+
+## Tests check
+
+### Authentification (Login)
+
+| From           | Action            | Result              |       Pass?        |
+| :------------- | :---------------- | :------------------ | :----------------: |
+| ***Login***    | login             | Move to ***Home***  | :heavy_check_mark: |
+| ***Login***    | register          | Move to ***Home***  | :heavy_check_mark: |
+| ***Settings*** | Log out           | Move to ***Login*** | :heavy_check_mark: |
+| ***Settings*** | Delete my account | Move to ***Login*** | :heavy_check_mark: |
+
+### Home
+
+## Dev apps
 
 App 1, 2, 3, 4 and 5 are app test for bluetooth 
 

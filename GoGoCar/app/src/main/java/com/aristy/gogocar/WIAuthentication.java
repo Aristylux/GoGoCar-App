@@ -17,18 +17,19 @@ import android.webkit.WebView;
  */
 public class WIAuthentication extends WICommon {
 
-    private static final String path = "file:///android_asset/";
-    public static final String LOGIN = path + "login.html";
+    private final UserPreferences userPreferences;
+    private final Handler fragmentHandler;
+    private final ThreadManager thread;
 
-    Context context;
-    UserPreferences userPreferences;
-    Handler fragmentHandler;
-    ThreadManager thread;
-
+    /**
+     * Constructor
+     * @param context           context
+     * @param webView           current web view
+     * @param userPreferences   user preference object
+     * @param fragmentHandler   handler to navigate between fragment
+     */
     public WIAuthentication(Context context, WebView webView, UserPreferences userPreferences, Handler fragmentHandler) {
         super(webView);
-
-        this.context = context;
 
         this.thread = ThreadManager.getInstance();
 
@@ -132,6 +133,10 @@ public class WIAuthentication extends WICommon {
         thread.addUser(user);
     }
 
+    /**
+     * Retrieve the new user, (for his id)
+     * @param email get user by his email
+     */
     private void saveUserInApp(String email){
         // Retrieve user id
         thread.setResultCallback(new ThreadResultCallback() {
