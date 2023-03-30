@@ -418,9 +418,6 @@ public class MainActivity extends AppCompatActivity {
                             R.anim.animate_slide_left_exit
                     );
                     break;
-                case 100:
-                    Log.d(TAG_FRAGMENT, "handleMessage: 100 ");
-                    break;
             }
             return true;
         }

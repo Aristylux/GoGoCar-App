@@ -103,6 +103,14 @@ public class ThreadManager {
         thread.start();
     }
 
+    public void addVehicle(DBModelVehicle vehicle){
+        thread = new Thread(() -> {
+            boolean success = databaseHelper.addVehicle(vehicle);
+            callback.onResultTableUpdated(success);
+        });
+        thread.start();
+    }
+
     public void deleteVehicle(int vehicleID){
         thread = new Thread(() -> {
             DBModelVehicle vehicle = new DBModelVehicle();
@@ -112,6 +120,8 @@ public class ThreadManager {
         });
         thread.start();
     }
+
+    // ---- User ----
 
     public void addUser(DBModelUser user){
         thread = new Thread(() -> {
@@ -143,6 +153,16 @@ public class ThreadManager {
         thread = new Thread(() -> {
             DBModelUser user = databaseHelper.getUserByPhone(phone);
             callback.onResultUser(user);
+        });
+        thread.start();
+    }
+
+    // ---- Modules ----
+
+    public void getModuleByName(String moduleCode){
+        thread = new Thread(() -> {
+            DBModelModule module = databaseHelper.getModuleByName(moduleCode);
+            callback.onResultModule(module);
         });
         thread.start();
     }

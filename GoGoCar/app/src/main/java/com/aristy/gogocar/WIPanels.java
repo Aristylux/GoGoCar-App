@@ -3,14 +3,12 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
-import static com.aristy.gogocar.HandlerCodes.GOTO_DRIVE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.QUERY;
 
 import android.os.Handler;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 public class WIPanels extends WICommon {
 
@@ -33,6 +31,25 @@ public class WIPanels extends WICommon {
     @JavascriptInterface
     public void requestClosePanel(){
         handler.obtainMessage(CLOSE_SLIDER).sendToTarget();
+    }
+
+    // ---- Book ----
+
+    @JavascriptInterface
+    public void requestBookVehicle(int vehicleID, String pickupDate, String dropDate, int capacity){
+        Log.d(TAG_Web, "requestBookVehicle: " + vehicleID + ", " + pickupDate + ", " + dropDate + ", " + capacity);
+
+        // Check if the vehicle is available for these dates
+
+        // If everything is ok, update database
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultTableUpdated(boolean isUpdated) {
+                if(!isUpdated) Log.e(TAG_Web, "onResultTableUpdated: ERROR: Can't update.");
+                else handler.obtainMessage(CLOSE_SLIDER).sendToTarget();
+            }
+        });
+        thread.setBookedVehicle(vehicleID, userPreferences.getUserID(), true);
     }
 
     // ---- Personal information container ----
@@ -65,9 +82,6 @@ public class WIPanels extends WICommon {
     @JavascriptInterface
     public void requestAddVehicle(String model, String licencePlate, String address, String moduleCode, boolean isAvailable){
 
-        handler.obtainMessage(QUERY, 100).sendToTarget();
-
-        /*
         // Check address
         if (address.isEmpty()){
             androidToWeb("addVehicleResult", "4");  // Error code 4
@@ -79,14 +93,20 @@ public class WIPanels extends WICommon {
         //androidToWeb("addVehicleResult", "1");  // Error code 1
 
         // Check if the module code is correct
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultModule(DBModelModule module) {
+                if(module.getId() == 0){
+                    //Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
+                    androidToWeb("addVehicleResult", "2");  // Error code 2
+                } else
+                    addVehicle(model, licencePlate, address, module.getId(), isAvailable);
+            }
+        });
+        thread.getModuleByName(moduleCode);
+    }
 
-        DBModelModule module = databaseHelper.getModuleByName(moduleCode);
-        if(module.getId() == 0){
-            //Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
-            androidToWeb("addVehicleResult", "2");  // Error code 2
-            return;
-        }
-
+    private void addVehicle(String model, String licencePlate, String address, int moduleID, boolean isAvailable){
         // Success: add vehicle & quit page
         // Create vehicle
         DBModelVehicle vehicle = new DBModelVehicle();
@@ -96,40 +116,23 @@ public class WIPanels extends WICommon {
         vehicle.setIdOwner(userPreferences.getUserID());
         vehicle.setAvailable(isAvailable);
         vehicle.setBooked(false);
-        vehicle.setIdModule(module.getId());
+        vehicle.setIdModule(moduleID);
 
         // Add vehicle into vehicle table
-        boolean success = databaseHelper.addVehicle(vehicle);
-        Log.d(TAG_Database, "success=" + success);
-        if (!success) {
-            //Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
-            androidToWeb("addVehicleResult", "3");  // Error code 3
-            return;
-        }
-
-        // Return top vehicle fragment
-        handler.obtainMessage(CLOSE_SLIDER).sendToTarget();
-
-         */
-    }
-
-    // Book
-
-    @JavascriptInterface
-    public void requestBookVehicle(int vehicleID, String pickupDate, String dropDate, int capacity){
-        Log.d(TAG_Web, "requestBookVehicle: " + vehicleID + ", " + pickupDate + ", " + dropDate + ", " + capacity);
-
-        // Check if the vehicle is available for these dates
-
-        // If everything is ok, update database
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
-            public void onResultTableUpdated(boolean isUpdated) {
-                if(!isUpdated) Log.e(TAG_Web, "onResultTableUpdated: ERROR: Can't update.");
-                else handler.obtainMessage(CLOSE_SLIDER).sendToTarget();
+            public void onResultTableUpdated(boolean success) {
+                Log.d(TAG_Database, "success=" + success);
+                if (!success) {
+                    //Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
+                    androidToWeb("addVehicleResult", "3");  // Error code 3
+                } else {
+                    // Return top vehicle fragment
+                    handler.obtainMessage(CLOSE_SLIDER).sendToTarget();
+                }
             }
         });
-        thread.setBookedVehicle(vehicleID, userPreferences.getUserID(), true);
+        thread.addVehicle(vehicle);
     }
 
 }

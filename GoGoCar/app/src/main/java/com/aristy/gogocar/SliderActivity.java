@@ -135,9 +135,6 @@ public class SliderActivity extends AppCompatActivity {
     Handler handler = new Handler(message -> {
         if (message.what == CLOSE_SLIDER) {
             onBackPressed();
-        } else if (message.what == QUERY){
-            Log.d(TAG_SLIDER, "handler: query");
-            requestDatabase((int) message.obj);
         }
         return true;
     });
@@ -146,19 +143,5 @@ public class SliderActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.animate_slide_right_enter, R.anim.animate_slide_right_exit);
-    }
-
-    private boolean requestDatabase(int queryCode){
-        Message message = Message.obtain();
-        message.replyTo = messenger;
-        message.what = queryCode;
-
-        try {
-            messenger.send(message);
-            return true;
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 }

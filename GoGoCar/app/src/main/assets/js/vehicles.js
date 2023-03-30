@@ -1,7 +1,7 @@
 // Request database
 if (androidConnected()) Android.requestUserVehicles();
 // For debug on PC
-/*
+
 else{
     var vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
     console.log(vehicles.length);
@@ -22,7 +22,7 @@ else{
         });
     }
 }
-*/
+
 
 
 // [ANDROID CALLBACK] Retrive databases from android (result)
@@ -57,6 +57,19 @@ function setDatabase(_table_vehicle) {
             });
         });
     }
+}
+
+// [ANDROID] Reset database for update
+function resetDatabase(){
+
+    var ul = document.getElementById("vehicles_list"); 
+    var liElements = ul.getElementsByTagName("li"); // get all the li elements
+
+    // loop through all the li elements in reverse order
+    for (var i = liElements.length - 1; i >= 0; i--) { 
+        ul.removeChild(liElements[i]); // remove the li element from the ul element
+    }
+    if (androidConnected()) Android.requestUserVehicles();
 }
 
 // Add element to ul list

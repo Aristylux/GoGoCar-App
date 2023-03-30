@@ -8,6 +8,7 @@ import static com.aristy.gogocar.HandlerCodes.SET_MODAL;
 import static com.aristy.gogocar.HandlerCodes.SET_PAGE;
 import static com.aristy.gogocar.HandlerCodes.SET_PAGE_FROM_HOME;
 import static com.aristy.gogocar.WebInterface.DRIVE;
+import static com.aristy.gogocar.WebInterface.VEHICLE;
 import static com.aristy.gogocar.WebInterface.path;
 
 import android.annotation.SuppressLint;
@@ -113,9 +114,8 @@ public class FragmentNav extends Fragment {
     public void onResume() {
         super.onResume();
 
-        Log.d(TAG_FRAGMENT, "onResume: Frag: " + link + " - " + DRIVE);
         // If on fragment drive, refresh the data.
-        if (link.equals(DRIVE)){
+        if (link.equals(DRIVE) || link.equals(VEHICLE)){
             Log.d(TAG_FRAGMENT, "onResume: Refresh");
             webInterfaceMS.refresh();
         }
