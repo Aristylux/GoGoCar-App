@@ -116,11 +116,11 @@ SELECT pgp_sym_decrypt(decode('base64_encoded_text', 'base64'), 'my_secret_key')
 ```
 
 ```sql
-SELECT password FROM users WHERE username = 'Admin Admin';
+SELECT password FROM users WHERE name = 'Admin Admin';
 ```
 
 ```sql
-SELECT decrypt(password, 'bf') FROM users WHERE username = 'Admin Admin';
+SELECT decrypt(password, 'bf') FROM users WHERE name = 'Admin Admin';
 ```
 
 # Insert
