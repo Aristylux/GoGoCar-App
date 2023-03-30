@@ -115,6 +115,14 @@ SELECT * FROM pg_extension WHERE extname = 'pgcrypto';
 SELECT pgp_sym_decrypt(decode('base64_encoded_text', 'base64'), 'my_secret_key');
 ```
 
+```sql
+SELECT password FROM users WHERE username = 'Admin Admin';
+```
+
+```sql
+SELECT decrypt(password, 'bf') FROM users WHERE username = 'Admin Admin';
+```
+
 # Insert
 
 ## User
@@ -124,7 +132,7 @@ hash: `hash = hashPassword("admin");`
 
 ```sql
 INSERT INTO users(name, email, phone, password, salt) VALUES
-  ('Admin Admin', 'admin@admin.com', '06 05 04 03 02', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','');
+  ('Admin Admin', 'admin@admin.com', '06 05 04 03 02', crypt('8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',gen_salt('bf'));
 ```
 
 ## Vehicles
