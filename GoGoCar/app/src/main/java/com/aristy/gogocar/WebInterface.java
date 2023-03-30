@@ -37,7 +37,7 @@ import java.util.List;
 
 public class WebInterface {
 
-    private static final String path = "file:///android_asset/pages/";
+    public static final String path = "file:///android_asset/pages/";
     public static final String HOME = path + "home.html";
     public static final String DRIVE = path + "drive.html";
     public static final String BOOK_VEHICLE = path + "drive_book.html";
@@ -162,11 +162,13 @@ public class WebInterface {
 
     /* -- drive Book -- */
 
+    // Useless
     @JavascriptInterface
     public void requestReturnToDrive(){
         fragmentHandler.obtainMessage(GOTO_DRIVE_FRAGMENT).sendToTarget();
     }
 
+    // Transferred
     @JavascriptInterface
     public void requestBookVehicle(int vehicleID, String pickupDate, String dropDate, int capacity){
         Log.d(TAG_Web, "requestBookVehicle: " + vehicleID + ", " + pickupDate + ", " + dropDate + ", " + capacity);

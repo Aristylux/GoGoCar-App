@@ -1,13 +1,16 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
+import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
+import static com.aristy.gogocar.HandlerCodes.GOTO_DRIVE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.QUERY;
 
 import android.os.Handler;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 public class WIPanels extends WICommon {
 
@@ -15,12 +18,16 @@ public class WIPanels extends WICommon {
     Handler handler;
     String data;
 
+    ThreadManager thread;
+
     public WIPanels(WebView webView, UserPreferences userPreferences, Handler handler, String data) {
         super(webView);
 
         this.userPreferences = userPreferences;
         this.handler = handler;
         this.data = data;
+
+        this.thread = ThreadManager.getInstance();
     }
 
     @JavascriptInterface
@@ -104,6 +111,25 @@ public class WIPanels extends WICommon {
         handler.obtainMessage(CLOSE_SLIDER).sendToTarget();
 
          */
+    }
+
+    // Book
+
+    @JavascriptInterface
+    public void requestBookVehicle(int vehicleID, String pickupDate, String dropDate, int capacity){
+        Log.d(TAG_Web, "requestBookVehicle: " + vehicleID + ", " + pickupDate + ", " + dropDate + ", " + capacity);
+
+        // Check if the vehicle is available for these dates
+
+        // If everything is ok, update database
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultTableUpdated(boolean isUpdated) {
+                if(!isUpdated) Log.e(TAG_Web, "onResultTableUpdated: ERROR: Can't update.");
+                else handler.obtainMessage(CLOSE_SLIDER).sendToTarget();
+            }
+        });
+        thread.setBookedVehicle(vehicleID, userPreferences.getUserID(), true);
     }
 
 }

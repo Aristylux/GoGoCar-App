@@ -1,16 +1,20 @@
 package com.aristy.gogocar;
 
 
+import static com.aristy.gogocar.CodesTAG.TAG_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.REMOVE_MODAL;
 import static com.aristy.gogocar.HandlerCodes.SET_DRIVING;
 import static com.aristy.gogocar.HandlerCodes.SET_MODAL;
 import static com.aristy.gogocar.HandlerCodes.SET_PAGE;
 import static com.aristy.gogocar.HandlerCodes.SET_PAGE_FROM_HOME;
+import static com.aristy.gogocar.WebInterface.DRIVE;
+import static com.aristy.gogocar.WebInterface.path;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,12 +109,27 @@ public class FragmentNav extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Log.d(TAG_FRAGMENT, "onResume: Frag: " + link + " - " + DRIVE);
+        // If on fragment drive, refresh the data.
+        if (link.equals(DRIVE)){
+            Log.d(TAG_FRAGMENT, "onResume: Refresh");
+            webInterfaceMS.refresh();
+        }
+    }
+
     Handler navigationHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
             switch (message.what) {
                 case SET_PAGE:
-                    if (!isDriving) webInterfaceWeb.setPage();
+                    if (!isDriving) {
+                        link = path + message.obj + ".html";
+                        webInterfaceWeb.setPage();
+                    }
                     break;
                 case SET_PAGE_FROM_HOME:
                     if (!isDriving) webInterfaceWeb.setPage(String.valueOf(message.obj));

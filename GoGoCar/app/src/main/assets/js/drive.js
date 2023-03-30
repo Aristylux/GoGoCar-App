@@ -115,6 +115,18 @@ function setDatabase(_table_vehicle) {
     });
 }
 
+// [ANDROID] Reset database for update
+function resetDatabase(){
+    var ul = document.getElementById("vehicles_list");
+    // loop through all its child nodes
+    while (ul.firstChild) { 
+        if (ul.firstChild.nodeName == "LI") { 
+            ul.removeChild(ul.firstChild); // remove the child node from the ul element
+        }
+    }
+    if (androidConnected()) Android.requestDatabase();
+}
+
 // Add element to ul list
 function addElement(vehicle) {
     const vehicle_info = [vehicle.name, vehicle.address];

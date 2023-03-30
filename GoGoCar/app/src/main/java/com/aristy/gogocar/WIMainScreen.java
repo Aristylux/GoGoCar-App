@@ -190,6 +190,11 @@ public class WIMainScreen extends WICommon {
      *  --          drive.html          -- *
      *  ---------------------------------- */
 
+    public void refresh(){
+        // Only for drive.html
+        androidToWeb("resetDatabase");
+    }
+
     /**
      * [LOADER METHOD]<br>
      * Request available vehicle

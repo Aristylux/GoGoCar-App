@@ -17,6 +17,7 @@ Android Application for GoGoCar
   - [Tests check](#tests-check)
     - [Authentification (Login)](#authentification-login)
     - [Home](#home)
+    - [Drive](#drive)
   - [Dev apps](#dev-apps)
     - [App 1](#app-1)
     - [App 2](#app-2)
@@ -59,6 +60,18 @@ Android Application for GoGoCar
 | ***Settings*** | Delete my account | Move to ***Login*** | :heavy_check_mark: |
 
 ### Home
+
+| From       | Action         | Result                 |       Pass?        |
+| :--------- | :------------- | :--------------------- | :----------------: |
+| ***Home*** | go to drive    | Move to ***Drive***    | :heavy_check_mark: |
+| ***Home*** | go to Vehicles | Move to ***Vehicles*** | :heavy_check_mark: |
+| ***Home*** | Cancel journey | Remove vehicle         | :heavy_check_mark: |
+
+### Drive
+
+| From        | Action             | Result             |       Pass?        |
+| :---------- | :----------------- | :----------------- | :----------------: |
+| ***Drive*** | Click on a vehicle | Open popup booking | :heavy_check_mark: |
 
 ## Dev apps
 
