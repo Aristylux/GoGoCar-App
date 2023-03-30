@@ -123,6 +123,11 @@ SELECT password FROM users WHERE name = 'Admin Admin';
 SELECT decrypt(password, 'bf') FROM users WHERE name = 'Admin Admin';
 ```
 
+```sql
+SELECT id, name, convert_from(decrypt(password, 'bf', 'aes'), 'SQL_ASCII') FROM users;
+
+```
+
 # Insert
 
 ## User
@@ -132,7 +137,7 @@ hash: `hash = hashPassword("admin");`
 
 ```sql
 INSERT INTO users(name, email, phone, password, salt) VALUES
-  ('Admin Admin', 'admin@admin.com', '06 05 04 03 02', crypt('8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', gen_salt('bf')));
+  ('Admin Admin', 'admin@admin.com', '06 05 04 03 02', encrypt('8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', gen_salt('bf'), 'aes'));
 ```
 
 ## Vehicles
