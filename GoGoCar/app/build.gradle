@@ -23,8 +23,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
@@ -33,6 +33,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    //implementation files('libs/bcprov-jdk18on-172.jar')
     //implementation files('./libs/postgresql-42.5.1.jar')
     implementation 'com.r0adkll:slidableactivity:2.1.0'
     implementation 'org.postgresql:postgresql:42.2.9'

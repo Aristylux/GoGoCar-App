@@ -22,6 +22,7 @@ public class SHAHash {
         MessageDigest sha;
         byte[] byteData;
         try {
+            // TODO SHA3-256 preferred
             sha = MessageDigest.getInstance("SHA-512"); //SHA3-512 is not working
             byteData = sha.digest(pw.getBytes(StandardCharsets.UTF_8));
             return convertHex(byteData);
