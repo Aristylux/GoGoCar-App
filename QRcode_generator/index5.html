@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de QRcodes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section>
+        <label>Entrez un texte ou un lien :</label>
+        <input type="text" id="qr_input">
+        <button onclick="ajouterElement()">Ajouter</button>
+    </section>
+    <section>
+        <h2>Liste</h2>
+        <ul id="qr_liste"></ul>
+        <button onclick="genererTableau()">Générer</button>
+    </section>
+    <section>
+        <h2>QR Codes</h2>
+        <div id="qr_tableau"></div>
+    </section>
+    <script src="qrcode.min.js"></script>
+    <script type="text/javascript">
+        var qr_liste = [];
+
+        function ajouterElement() {
+            var qr_input = document.getElementById("qr_input");
+            var qr_liste_ul = document.getElementById("qr_liste");
+            var qr_liste_li = document.createElement("li");
+            qr_liste_li.textContent = qr_input.value;
+            qr_liste_ul.appendChild(qr_liste_li);
+            qr_liste.push(qr_input.value);
+            qr_input.value = "";
+        }
+        /*
+        function genererTableau(){
+            var qr_tableau_div = document.getElementById("qr_tableau");
+            qr_tableau_div.innerHTML = "<table><thead><tr><th>#</th><th>QR Code</th></tr></thead><tbody></tbody></table>";
+            var qrcodes = document.querySelectorAll(".qr_code");
+            var tbody = qr_tableau_div.querySelector("tbody");
+            for (var i = 0; i < qrcodes.length; i++) {
+                var qr_code_data = qrcodes[i].innerHTML;
+                var qr_code_element = document.createElement("div");
+                new QRCode(qr_code_element, qr_code_data);
+                qrcodes[i].appendChild(qr_code_element.firstChild);
+                var row = "<tr><td>" + (i+1) + "</td><td>" + qr_code_data + "</td></tr>";
+                tbody.insertAdjacentHTML("beforeend", row);
+            }
+        }*/
+        function genererTableau(){
+            var qr_tableau_div = document.getElementById("qr_tableau");
+            qr_tableau_div.innerHTML = "<table><thead><tr><th>#</th><th>Code QR</th><th>Texte</th></tr></thead><tbody></tbody></table>";
+            var tbody = qr_tableau_div.querySelector("tbody");
+            for (var i = 0; i < qr_liste.length; i++) {
+                
+                var qr_code_element = document.createElement("div");
+                new QRCode(qr_code_element, qr_liste[i]);
+                var cell = "<td>" + qr_code_element.innerHTML + "</td>";
+                var row = "<tr><td>" + (i+1) + "</td>" + cell + "<td>" + qr_liste[i] + "</td></tr>";
+                tbody.insertAdjacentHTML("beforeend", row);
+            }
+        } //Ce code affiche bien les 3 sections et la liste des id mais pas
+        //la liste des qr codes, il doit y avoir un soucis dans la derniere fonction
+    </script>
+</body>
+  </html>

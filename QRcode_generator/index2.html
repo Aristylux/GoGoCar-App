@@ -14,10 +14,17 @@
         <div class="qr_code"></div>
     </section>
 
+    <section>
+        <label>2eme texte ou lien</label>
+        <input type="text" class="qr_text" onchange="generator()">
+        <div class="qr_cod"></div>
+    </section>
+
     <!--code javascript-->
     <script src="qrcode.min.js"></script>
     <script type="text/javascript">
         var qr_texte=document.querySelector(".qr_texte");
+        var qr_text=document.querySelector(".qr_text");
         
         function generateur(){
             var qrcode = document.querySelector(".qr_code");
@@ -26,9 +33,13 @@
             new QRCode(qrcode, qr_texte.value);
             qr_texte.value="";
         }
-//Ce code fonctionne mais pour une seule valeur, on va essayer de faire 
-//une liste de qr code pour une liste de valeur (index5) puis de génerer
-//un pdf contenant cette liste de qr codes.
+        function generator(){
+            var qrcod = document.querySelector(".qr_cod");
+            qrcod.style.display="flex";
+            qrcod.innerHTML="";
+            new QRCode(qrcod, qr_text.value);
+            qr_text.value="";
+        }
     </script>
 </body>
 </html>

@@ -34,15 +34,25 @@ input{
     padding: 5px;
     margin-bottom: 20px;
 }
-.qr_code{
+.qr_input{
+    
     padding: 25px;
     width: fit-content;
 
     display: none;
 }
-.qr_cod{
+.qr_liste{
     padding: 25px;
     width: fit-content;
 
     display: none;
+}
+.qr_tableau{
+    padding: 25px;
+    width:auto;
+
+    display: none;
+}
+.prim{
+    height: auto;
 }
