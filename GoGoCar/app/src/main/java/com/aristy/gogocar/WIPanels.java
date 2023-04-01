@@ -3,7 +3,6 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
-import static com.aristy.gogocar.HandlerCodes.QUERY;
 
 import android.os.Handler;
 import android.util.Log;
@@ -34,6 +33,7 @@ public class WIPanels extends WICommon {
     }
 
     // ---- Book ----
+    // Parent screen : drive.html
 
     @JavascriptInterface
     public void requestBookVehicle(int vehicleID, String pickupDate, String dropDate, int capacity){
@@ -60,6 +60,7 @@ public class WIPanels extends WICommon {
     }
 
     // ---- Add ----
+    // Parent screen: vehicles.html
 
     /**
      * Send vehicle (in main) to the new fragment
@@ -133,6 +134,89 @@ public class WIPanels extends WICommon {
             }
         });
         thread.addVehicle(vehicle);
+    }
+
+    // ---- Edit vehicle ----
+    // Parent screen: vehicle.html
+
+    /**
+     * Request an update to the database<br>
+     * Verify the module code is correct (exist)<br>
+     * Verify the module code is available (not used by another vehicle)<br>
+     *
+     * @param id vehicle id
+     * @param model vehicle model
+     * @param licencePlate vehicle licence plate
+     * @param address main address
+     * @param moduleCode code mi carro es tu carro module
+     * @param isAvailable if vehicle is available for booking
+     */
+    @JavascriptInterface
+    public void requestUpdateVehicle(int id, String model, String licencePlate, String address, String moduleCode, boolean isAvailable){
+        // Check if the module code is correct
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultModule(DBModelModule module) {
+                if (module.getId() == 0){
+                    //Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG_Web, "onResultModule: module code incorrect");
+                    androidToWeb("updateVehicleResult", "2");  // Error code 2
+                } else {
+                    // Modify the vehicle
+                    DBModelVehicle vehicle = new DBModelVehicle();
+                    vehicle.setId(id);
+                    vehicle.setModel(model);
+                    vehicle.setLicencePlate(licencePlate);
+                    vehicle.setAddress(address);
+                    vehicle.setIdModule(module.getId());
+                    vehicle.setAvailable(isAvailable);
+
+                    // Check if the module code is available
+                    verifyAvailability(vehicle);
+                }
+            }
+        });
+        thread.getModuleByName(moduleCode);
+    }
+
+    /**
+     * Verify the module code is not used by an another vehicle
+     * @param vehicle vehicle updated
+     */
+    private void verifyAvailability(DBModelVehicle vehicle){
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultVehicle(DBModelVehicle vehicleResulted) {
+                if (vehicleResulted.getId() != vehicle.getId()){
+                    Log.e(TAG_Web, "onResultVehicles: module code already used");
+                    androidToWeb("updateVehicleResult", "3");  // Error code 3
+                } else {
+                    updateVehicle(vehicle);
+                }
+            }
+        });
+        thread.getVehicleByModule(vehicle.getIdModule());
+    }
+
+    /**
+     * Update the vehicle in the database
+     * @param vehicle vehicle updated
+     */
+    private void updateVehicle(DBModelVehicle vehicle){
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultTableUpdated(boolean success) {
+                if (!success) {
+                    //Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG_Web, "onResultVehicles: An error occured during update.");
+                    androidToWeb("updateVehicleResult", "4");  // Error code 4
+                } else {
+                    // Return top vehicle fragment
+                    handler.obtainMessage(CLOSE_SLIDER).sendToTarget();
+                }
+            }
+        });
+        thread.updateVehicle(vehicle);
     }
 
 }

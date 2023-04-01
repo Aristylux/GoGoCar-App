@@ -367,6 +367,11 @@ public class DatabaseHelper {
         return getVehicles(query).get(0);
     }
 
+    public DBModelVehicle getVehicleByModule(int moduleID){
+        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID_MODULE + " = " + moduleID;
+        return getVehicles(query).get(0);
+    }
+
     /**
      * @param query sql query
      * @return list of vehicles

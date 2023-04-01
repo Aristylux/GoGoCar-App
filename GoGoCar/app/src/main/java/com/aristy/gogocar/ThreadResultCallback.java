@@ -17,6 +17,9 @@ public interface ThreadResultCallback {
     default void onResultVehicles(List<DBModelVehicle> vehicles) {
     }
 
+    default void onResultVehicle(DBModelVehicle vehicle){
+    }
+
     default void onResultTableUpdated(boolean isUpdated) {
     }
 

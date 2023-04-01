@@ -246,6 +246,7 @@ public class WebInterface {
      * @param moduleCode code mi carro es tu carro module
      * @param isAvailable if vehicle is available for booking
      */
+    // Transferred
     @JavascriptInterface
     public void requestUpdateVehicle(int id, String model, String licencePlate, String address, String moduleCode, boolean isAvailable){
 

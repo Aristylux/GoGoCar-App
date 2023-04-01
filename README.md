@@ -18,6 +18,7 @@ Android Application for GoGoCar
     - [Authentification (Login)](#authentification-login)
     - [Home](#home)
     - [Drive](#drive)
+    - [Vehicles](#vehicles)
   - [Dev apps](#dev-apps)
     - [App 1](#app-1)
     - [App 2](#app-2)
@@ -72,6 +73,19 @@ Android Application for GoGoCar
 | From        | Action             | Result             |       Pass?        |
 | :---------- | :----------------- | :----------------- | :----------------: |
 | ***Drive*** | Click on a vehicle | Open popup booking | :heavy_check_mark: |
+
+
+### Vehicles
+
+| From                | Action          | Result                     |       Pass?        |
+| :------------------ | :-------------- | :------------------------- | :----------------: |
+| ***Vehicles***      | Click on Edit   | Move to ***Vehicle Edit*** | :heavy_check_mark: |
+| ***Vehicles***      | Click on Add    | Move to ***Vehicle Add***  | :heavy_check_mark: |
+| ***Vehicles Edit*** | Click on Exit   | Move to ***Vehicles***     | :heavy_check_mark: |
+| ***Vehicles Edit*** | Click on Return | Move to ***Vehicles***     | :heavy_check_mark: |
+| ***Vehicles Edit*** | Click on Save   | Move to ***Vehicles***     | :heavy_check_mark: |
+| ***Vehicles Add***  | Click on Return | Move to ***Vehicles***     | :heavy_check_mark: |
+| ***Vehicles Add***  | Click on Add    | Move to ***Vehicles***     | :heavy_check_mark: |
 
 ## Dev apps
 

@@ -115,6 +115,7 @@ public class FragmentNav extends Fragment {
         super.onResume();
 
         // If on fragment drive, refresh the data.
+        Log.d(TAG_FRAGMENT, "onResume: Frag: " + link + " - " + DRIVE + " - " + VEHICLE);
         if (link.equals(DRIVE) || link.equals(VEHICLE)){
             Log.d(TAG_FRAGMENT, "onResume: Refresh");
             webInterfaceMS.refresh();

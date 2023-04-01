@@ -1,6 +1,5 @@
 package com.aristy.gogocar;
 
-import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.CodesTAG.TAG_THREAD;
 
 import android.util.Log;
@@ -67,6 +66,43 @@ public class ThreadManager {
         thread.start();
     }
 
+    // ---- User ----
+
+    public void addUser(DBModelUser user){
+        thread = new Thread(() -> {
+            boolean success = databaseHelper.addUser(user);
+            callback.onResultTableUpdated(success);
+        });
+        thread.start();
+    }
+
+    public void deleteUser(DBModelUser user){
+        thread = new Thread(() -> {
+            boolean isDeleted = databaseHelper.deleteUser(user);
+            callback.onResultTableUpdated(isDeleted);
+        });
+        thread.start();
+    }
+
+    public void getUserByEmail(String email){
+        thread = new Thread(() -> {
+            DBModelUser user = databaseHelper.getUserByEmail(email);
+            Log.d(TAG_THREAD, "getUserByEmail: " + user);
+            callback.onResultUser(user);
+        });
+        thread.start();
+    }
+
+    public void getUserByPhone(String phone){
+        thread = new Thread(() -> {
+            DBModelUser user = databaseHelper.getUserByPhone(phone);
+            callback.onResultUser(user);
+        });
+        thread.start();
+    }
+
+    // ---- Vehicle ----
+
     public void getVehiclesBooked(int userID){
         thread = new Thread(() -> {
             Log.d(TAG_THREAD, "run: getVehiclesBooked");
@@ -94,10 +130,25 @@ public class ThreadManager {
         thread.start();
     }
 
+    public void getVehicleByModule(int moduleID){
+        thread = new Thread(() -> {
+            DBModelVehicle vehicle = databaseHelper.getVehicleByModule(moduleID);
+            callback.onResultVehicle(vehicle);
+        });
+        thread.start();
+    }
+
     public void setBookedVehicle(int vehicleID, int userID, boolean isBooked){
         thread = new Thread(() -> {
-            Log.d(TAG_THREAD, "run: setBookedVehicle");
             boolean isUpdated = databaseHelper.setBookedVehicle(vehicleID, userID, isBooked);
+            callback.onResultTableUpdated(isUpdated);
+        });
+        thread.start();
+    }
+
+    public void updateVehicle(DBModelVehicle vehicle){
+        thread = new Thread(() -> {
+            boolean isUpdated = databaseHelper.updateVehicle(vehicle);
             callback.onResultTableUpdated(isUpdated);
         });
         thread.start();
@@ -117,42 +168,6 @@ public class ThreadManager {
             vehicle.setId(vehicleID);
             boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
             callback.onResultTableUpdated(isDeleted);
-        });
-        thread.start();
-    }
-
-    // ---- User ----
-
-    public void addUser(DBModelUser user){
-        thread = new Thread(() -> {
-            boolean success = databaseHelper.addUser(user);
-            callback.onResultTableUpdated(success);
-        });
-        thread.start();
-    }
-
-    public void deleteUser(DBModelUser user){
-        thread = new Thread(() -> {
-            boolean isDeleted = databaseHelper.deleteUser(user);
-            callback.onResultTableUpdated(isDeleted);
-        });
-        thread.start();
-    }
-
-    public void getUserByEmail(String email){
-        Log.d(TAG_THREAD, "getUserByEmail: get");
-        thread = new Thread(() -> {
-            DBModelUser user = databaseHelper.getUserByEmail(email);
-            Log.d(TAG_THREAD, "getUserByEmail: " + user);
-            callback.onResultUser(user);
-        });
-        thread.start();
-    }
-
-    public void getUserByPhone(String phone){
-        thread = new Thread(() -> {
-            DBModelUser user = databaseHelper.getUserByPhone(phone);
-            callback.onResultUser(user);
         });
         thread.start();
     }
