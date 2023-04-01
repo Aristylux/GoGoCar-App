@@ -34,11 +34,14 @@ function vehicleDelete(success) {
         const vehicles_container_info = document.querySelectorAll(".info");
         vehicles_container_info.forEach((Element) => {
             if (Element.innerText === vehicle_selected.licencePlate) {
-                //Element.parentElement.parentElement.style.display = "none";
                 Element.parentElement.parentElement.classList.add(
                     "vehicle_container--hidden"
                 );
             }
         });
+        // Add no vehicle background if list equal to 0 
+        if (vehicles_container_info.length - 2 == 0){
+            document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
+        }
     }
 }

@@ -7,7 +7,7 @@ else{
     console.log(vehicles.length);
 
     if (vehicles.length == 0){
-        document.getElementById("no_vehicles").style.display = 'flex';
+        document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
     } else {
         vehicles.forEach((vehicle) => {
             addElement(vehicle);
@@ -32,7 +32,7 @@ function setDatabase(_table_vehicle) {
     console.log(vehicles.length);
 
     if (vehicles.length == 0){
-        document.getElementById("no_vehicles").style.display = 'flex';
+        document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
     } else {
         vehicles.forEach((vehicle) => {
             addElement(vehicle);
@@ -61,6 +61,7 @@ function setDatabase(_table_vehicle) {
 
 // [ANDROID] Reset database for update
 function resetDatabase(){
+    document.getElementById("no_vehicles").classList.add('logo_no_veh-hidden');
 
     var ul = document.getElementById("vehicles_list"); 
     var liElements = ul.getElementsByTagName("li"); // get all the li elements

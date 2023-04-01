@@ -1,6 +1,7 @@
-#no_vehicles {
+.logo_no_veh {
     color: #e0e0e0;
-    display: none; /*flex when active*/
+    /*display: none;*/ /*flex when active*/
+    display: flex;
     flex-direction: column;
     align-items: center;
     margin: auto;
@@ -8,8 +9,14 @@
     font-size: 2em;
     font-weight: 600;
     /*text-shadow: 1px 5px 10px rgba(0, 0, 0, 0.2);*/
+
+    transition: 0.5s ease-in-out;
 }
 
-#no_vehicles i {
+.logo_no_veh i {
     font-size: 3em;
+}
+
+.logo_no_veh-hidden {
+    opacity: 0;
 }
