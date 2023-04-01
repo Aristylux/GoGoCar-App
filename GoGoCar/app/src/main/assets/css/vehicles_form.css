@@ -8,6 +8,16 @@
     color: #57606a;
 }
 
+.form-group .error {
+    opacity: 0;
+    color: red;
+    transition: 0.3s ease-in;
+}
+
+.form-group .error-visible {
+    opacity: 1;
+}
+
 /* switch */
 
 .form-group+.switch-container {
