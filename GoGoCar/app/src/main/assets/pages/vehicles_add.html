@@ -39,27 +39,28 @@
                     <dt>Model</dt>
                     <dd>
                         <input id="vehicle_model" class="form-control" type="text" name="" >
-                        <p id="err_vm" class="note error">This vehicle does not exist</p>
+                        <p id="err_vm" class="note error">This vehicle does not exist.</p>
                     </dd>
                 </div>
                 <div class="form-group">
                     <dt>Licence plate</dt>
                     <dd>
                         <input id="vehicle_licence_plate" class="form-control" type="text" name="" placeholder="XX-123-XX" maxlength="9" >
-                        <p id="err_lp" class="note error">This does not match a license plate</p>
+                        <p id="err_lp" class="note error">This does not match a license plate.</p>
                     </dd>
                 </div>
                 <div class="form-group">
                     <dt>Address</dt>
                     <dd>
                         <input id="vehicle_address" class="form-control" type="text" name="" >
-                        <p id="err_va" class="note error">This address does not exist</p>
+                        <p id="err_va" class="note error">This address does not exist.</p>
                     </dd>
                 </div>
                 <div class="form-group">
                     <dt>Module Mi Carro Es Tu Carro Code</dt>
                     <dd>
                         <input id="vehicle_module_code" class="form-control" type="text" name="" value="#" placeholder="#00-00-0000" maxlength="11">
+                        <p id="err_mc" class="note error">This does not match a module code.</p>
                         <p class="note">You can find the code in the module.</p>
                     </dd>
                 </div>
@@ -136,16 +137,8 @@
             const input_mc = document.getElementById('vehicle_module_code');
 
             input_mc.addEventListener('input', () => {
-                //document.getElementById('err_mc').classList.remove("error-visible");
-                /*
-                const value = event.target.value;
-                const sanitizedValue = value.replace(/[^\d]/g, '').slice(0, 8);
-                const formattedValue = '#' + sanitizedValue.slice(0, 2) + '-' + sanitizedValue.slice(2, 4) + '-' + sanitizedValue.slice(4, 8);
-                event.target.value = formattedValue;
-                */
-
+                document.getElementById('err_mc').classList.remove("error-visible");
                 input_mc.value = moduleCodeFormater(input_mc.value);
-
             });
 
             input_mc.addEventListener('blur', () => {
@@ -155,6 +148,7 @@
                     console.log('Input is valid!');
                 } else {
                     console.log('Input is invalid!');
+                    document.getElementById('err_mc').classList.add("error-visible");
                 }
             });
 

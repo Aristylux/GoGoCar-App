@@ -10,12 +10,14 @@
 
 .form-group .error {
     opacity: 0;
+    height: 0;
     color: red;
-    transition: 0.3s ease-in;
+    transition: 0.3s ease-in-out;
 }
 
 .form-group .error-visible {
     opacity: 1;
+    height: 14px;
 }
 
 /* switch */
