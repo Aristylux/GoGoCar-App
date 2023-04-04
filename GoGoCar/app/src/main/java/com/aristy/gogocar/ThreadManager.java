@@ -10,23 +10,23 @@ import java.util.List;
 
 public class ThreadManager {
 
-    public static final int GET_BOOKED_VEHICLES = 1;
-    public static final int GET_MODULE_BY_NAME = 2;
-
-
+    // Thread objects
     private static ThreadManager instance;
+
     private Thread thread;
-
     private ThreadResultCallback callback;
-    private int type;
-    private Object param;
 
+    // Database
     private DatabaseHelper databaseHelper;
 
     // Constructor
     private ThreadManager() {
     }
 
+    /**
+     * Get thread from all activities
+     * @return Thread instance
+     */
     public static synchronized ThreadManager getInstance() {
         if (instance == null) {
             Log.d(TAG_THREAD, "getInstance: null");
@@ -35,6 +35,9 @@ public class ThreadManager {
         return instance;
     }
 
+    /**
+     * Set and create new connection to the database
+     */
     public void setConnection() {
         ConnectionHelper connectionHelper = new ConnectionHelper();
         connectionHelper.openConnection();
@@ -42,156 +45,8 @@ public class ThreadManager {
         Log.d(TAG_THREAD, "setConnection: " + connectionHelper.getConnection());
     }
 
-    public void startThread() {
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (checkArguments()) return;
-                Log.d(TAG_THREAD, "run: " + ThreadManager.this);
-
-                switch (type) {
-                    case GET_BOOKED_VEHICLES:
-                        Log.d(TAG_THREAD, "run: GET_BOOKED_VEHICLES");
-                        List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked((int) param);
-                        callback.onResultVehicles(vehicles);
-                        break;
-                    case GET_MODULE_BY_NAME:
-                        Log.d(TAG_THREAD, "run: GET_MODULE_BY_NAME");
-                        DBModelModule module = databaseHelper.getModuleByName("#01-01-0001");
-                        callback.onResultModule(module);
-                        break;
-                }
-            }
-        });
-        thread.start();
-    }
-
-    // ---- User ----
-
-    public void addUser(DBModelUser user){
-        thread = new Thread(() -> {
-            boolean success = databaseHelper.addUser(user);
-            callback.onResultTableUpdated(success);
-        });
-        thread.start();
-    }
-
-    public void deleteUser(DBModelUser user){
-        thread = new Thread(() -> {
-            boolean isDeleted = databaseHelper.deleteUser(user);
-            callback.onResultTableUpdated(isDeleted);
-        });
-        thread.start();
-    }
-
-    public void getUserByEmail(String email){
-        thread = new Thread(() -> {
-            DBModelUser user = databaseHelper.getUserByEmail(email);
-            Log.d(TAG_THREAD, "getUserByEmail: " + user);
-            callback.onResultUser(user);
-        });
-        thread.start();
-    }
-
-    public void getUserByPhone(String phone){
-        thread = new Thread(() -> {
-            DBModelUser user = databaseHelper.getUserByPhone(phone);
-            callback.onResultUser(user);
-        });
-        thread.start();
-    }
-
-    // ---- Vehicle ----
-
-    public void getVehiclesBooked(int userID){
-        thread = new Thread(() -> {
-            Log.d(TAG_THREAD, "run: getVehiclesBooked");
-            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userID);
-            callback.onResultVehicles(vehicles);
-        });
-        thread.start();
-    }
-
-    public void getVehiclesAvailable(int userID){
-        thread = new Thread(() -> {
-            Log.d(TAG_THREAD, "run: getVehiclesAvailable");
-            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userID);
-            callback.onResultVehicles(vehicles);
-        });
-        thread.start();
-    }
-
-    public void getVehiclesByUser(int userID){
-        thread = new Thread(() -> {
-            Log.d(TAG_THREAD, "run: getVehiclesByUser");
-            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userID);
-            callback.onResultVehicles(vehicles);
-        });
-        thread.start();
-    }
-
-    public void getVehicleByModule(int moduleID){
-        thread = new Thread(() -> {
-            DBModelVehicle vehicle = databaseHelper.getVehicleByModule(moduleID);
-            callback.onResultVehicle(vehicle);
-        });
-        thread.start();
-    }
-
-    public void setBookedVehicle(int vehicleID, int userID, boolean isBooked){
-        thread = new Thread(() -> {
-            boolean isUpdated = databaseHelper.setBookedVehicle(vehicleID, userID, isBooked);
-            callback.onResultTableUpdated(isUpdated);
-        });
-        thread.start();
-    }
-
-    public void updateVehicle(DBModelVehicle vehicle){
-        thread = new Thread(() -> {
-            boolean isUpdated = databaseHelper.updateVehicle(vehicle);
-            callback.onResultTableUpdated(isUpdated);
-        });
-        thread.start();
-    }
-
-    public void addVehicle(DBModelVehicle vehicle){
-        thread = new Thread(() -> {
-            boolean success = databaseHelper.addVehicle(vehicle);
-            callback.onResultTableUpdated(success);
-        });
-        thread.start();
-    }
-
-    public void deleteVehicle(int vehicleID){
-        thread = new Thread(() -> {
-            DBModelVehicle vehicle = new DBModelVehicle();
-            vehicle.setId(vehicleID);
-            boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
-            callback.onResultTableUpdated(isDeleted);
-        });
-        thread.start();
-    }
-
-    // ---- Modules ----
-
-    public void getModuleByName(String moduleCode){
-        thread = new Thread(() -> {
-            DBModelModule module = databaseHelper.getModuleByName(moduleCode);
-            callback.onResultModule(module);
-        });
-        thread.start();
-    }
-
     public Thread getThread() {
         return thread;
-    }
-
-    public void setQueryType(int type) {
-        this.type = type;
-    }
-
-    public void setQueryParameters(Object param) {
-        this.param = param;
     }
 
     public void setResultCallback(ThreadResultCallback callback) {
@@ -203,17 +58,6 @@ public class ThreadManager {
             Log.e(TAG_THREAD, "run: [ERROR]: no callback");
             return true;
         }
-
-        if (type == 0) {
-            Log.e(TAG_THREAD, "run: [ERROR]: no action selected");
-            return true;
-        }
-
-        if (param == null) {
-            Log.e(TAG_THREAD, "run: [ERROR]: no action parameters");
-            return true;
-        }
-
         return false;
     }
 
@@ -222,8 +66,197 @@ public class ThreadManager {
     public String toString() {
         return "ThreadManager {" +
                 "callback=" + callback.toString() +
-                ", type='" + type + '\'' +
-                ", param='" + param + '\'' +
                 '}';
+    }
+
+    /*  ---------------------------------- *
+     *  --             USER             -- *
+     *  ---------------------------------- */
+
+    /**
+     * Add user to the database<br>
+     * <strong>CALLBACK: <i>onResultTableUpdated()</i></strong>
+     * @param user user to add
+     */
+    public void addUser(DBModelUser user){
+        thread = new Thread(() -> {
+            boolean success = databaseHelper.addUser(user);
+            callback.onResultTableUpdated(success);
+        });
+        thread.start();
+    }
+
+    /**
+     * Delete a user
+     * <strong>CALLBACK: <i>onResultTableUpdated()</i></strong>
+     * @param user user to delete
+     */
+    public void deleteUser(DBModelUser user){
+        thread = new Thread(() -> {
+            boolean isDeleted = databaseHelper.deleteUser(user);
+            callback.onResultTableUpdated(isDeleted);
+        });
+        thread.start();
+    }
+
+    /**
+     * Get user by email
+     * <strong>CALLBACK: <i>onResultUser()</i></strong>
+     * @param email user email
+     */
+    public void getUserByEmail(String email){
+        thread = new Thread(() -> {
+            DBModelUser user = databaseHelper.getUserByEmail(email);
+            callback.onResultUser(user);
+        });
+        thread.start();
+    }
+
+    /**
+     * Get user by phone number
+     * <strong>CALLBACK: <i>onResultUser()</i></strong>
+     * @param phone user phone number
+     */
+    public void getUserByPhone(String phone){
+        thread = new Thread(() -> {
+            DBModelUser user = databaseHelper.getUserByPhone(phone);
+            callback.onResultUser(user);
+        });
+        thread.start();
+    }
+
+    /*  ---------------------------------- *
+     *  --            VEHICLES          -- *
+     *  ---------------------------------- */
+
+    /**
+     * Add a vehicle to the database
+     * <strong>CALLBACK: <i>onResultTableUpdated()</i></strong>
+     * @param vehicle vehicle to add
+     */
+    public void addVehicle(DBModelVehicle vehicle){
+        thread = new Thread(() -> {
+            boolean success = databaseHelper.addVehicle(vehicle);
+            callback.onResultTableUpdated(success);
+        });
+        thread.start();
+    }
+
+    /**
+     * Delete a vehicle
+     * <strong>CALLBACK: <i>onResultTableUpdated()</i></strong>
+     * @param vehicleID vehicle id to delete
+     */
+    public void deleteVehicle(int vehicleID){
+        thread = new Thread(() -> {
+            DBModelVehicle vehicle = new DBModelVehicle();
+            vehicle.setId(vehicleID);
+            boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
+            callback.onResultTableUpdated(isDeleted);
+        });
+        thread.start();
+    }
+
+    /**
+     * Update vehicle's information
+     * <strong>CALLBACK: <i>onResultTableUpdated()</i></strong>
+     * @param vehicle vehicle with new information
+     */
+    public void updateVehicle(DBModelVehicle vehicle){
+        thread = new Thread(() -> {
+            boolean isUpdated = databaseHelper.updateVehicle(vehicle);
+            callback.onResultTableUpdated(isUpdated);
+        });
+        thread.start();
+    }
+
+    /**
+     * Set a vehicle booked or not
+     * <strong>CALLBACK: <i>onResultTableUpdated()</i></strong>
+     * @param vehicleID vehicle id
+     * @param userID    user id
+     * @param isBooked  booked (true -> yes, false -> no)
+     */
+    public void setBookedVehicle(int vehicleID, int userID, boolean isBooked){
+        thread = new Thread(() -> {
+            boolean isUpdated = databaseHelper.setBookedVehicle(vehicleID, userID, isBooked);
+            callback.onResultTableUpdated(isUpdated);
+        });
+        thread.start();
+    }
+
+    // Todo make it individual with multiple call of callback [onResultVehicle()]
+    /**
+     * Get vehicles available
+     * <strong>CALLBACK: <i>onResultVehicles()</i></strong>
+     * @param userID user id (to avoid duplicata)
+     */
+    public void getVehiclesAvailable(int userID){
+        thread = new Thread(() -> {
+            Log.d(TAG_THREAD, "run: getVehiclesAvailable");
+            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userID);
+            callback.onResultVehicles(vehicles);
+        });
+        thread.start();
+    }
+
+    // Todo make it individual with multiple call of callback [onResultVehicle()]
+    /**
+     * Get only the vehicles booked by the user
+     * <strong>CALLBACK: <i>onResultVehicles()</i></strong>
+     * @param userID user id
+     */
+    public void getVehiclesBooked(int userID){
+        thread = new Thread(() -> {
+            Log.d(TAG_THREAD, "run: getVehiclesBooked");
+            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userID);
+            callback.onResultVehicles(vehicles);
+        });
+        thread.start();
+    }
+
+    // Todo make it individual with multiple call of callback [onResultVehicle()]
+    /**
+     * Get user vehicles
+     * <strong>CALLBACK: <i>onResultVehicles()</i></strong>
+     * @param userID user id
+     */
+    public void getVehiclesByUser(int userID){
+        thread = new Thread(() -> {
+            Log.d(TAG_THREAD, "run: getVehiclesByUser");
+            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userID);
+            callback.onResultVehicles(vehicles);
+        });
+        thread.start();
+    }
+
+    /**
+     * Get a vehicle by a module
+     * <strong>CALLBACK: <i>onResultVehicle()</i></strong>
+     * @param moduleID module id
+     */
+    public void getVehicleByModule(int moduleID){
+        thread = new Thread(() -> {
+            DBModelVehicle vehicle = databaseHelper.getVehicleByModule(moduleID);
+            callback.onResultVehicle(vehicle);
+        });
+        thread.start();
+    }
+
+    /*  ---------------------------------- *
+     *  --            MODULES           -- *
+     *  ---------------------------------- */
+
+    /**
+     * Get module by name (by code "#XX-XX-XXXX")
+     * <strong>CALLBACK: <i>onResultModule()</i></strong>
+     * @param moduleCode module code
+     */
+    public void getModuleByName(String moduleCode){
+        thread = new Thread(() -> {
+            DBModelModule module = databaseHelper.getModuleByName(moduleCode);
+            callback.onResultModule(module);
+        });
+        thread.start();
     }
 }
