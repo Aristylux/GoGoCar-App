@@ -36,7 +36,6 @@ import java.util.List;
 public class WIMainScreen extends WICommon {
 
     private static final String path = "file:///android_asset/pages/";
-    public static final String HOME = path + "home.html";
 
     Context context;
     Activity activity;
@@ -79,6 +78,48 @@ public class WIMainScreen extends WICommon {
      */
     public void removeModal(){
         androidToWeb("closePopup");
+    }
+
+    /**
+     * Call when return from a panel, refresh the page (or data)<br>
+     * <i>Call in</i>: <code>drive.html</code><br>
+     * <i>Call in</i>: <code>vehicle.js</code><br>
+     */
+    public void refresh(){
+        androidToWeb("resetDatabase");
+    }
+
+    /**
+     * [MOVER METHOD]<br>
+     * Request to open the panel<br>
+     * <i>Call in</i>: <code>vehicle.js</code><br>
+     * @param pageSource    source
+     * @param panelName     specified panel name
+     */
+    @JavascriptInterface
+    public void openSlider(String pageSource, String panelName) {
+        // If the page source is 'settings', enable swipe
+        boolean activeSwipe = !pageSource.equals("settings");
+        Object[] param = {path + pageSource + "_" + panelName + ".html", activeSwipe};
+        Log.d(TAG_Web, "openSlider: " + param[0]);
+        fragmentHandler.obtainMessage(OPEN_SLIDER, param).sendToTarget();
+    }
+
+    /**
+     * [MOVER METHOD]<br>
+     * Request to open the panel, transfer data.<br>
+     * <i>Call in</i>: <code>vehicle.js</code><br>
+     * <i>Call in</i>: <code>popup_drive.js</code><br>
+     * @param pageSource    source
+     * @param panelName     specified panel name
+     * @param data          data in json
+     */
+    @JavascriptInterface
+    public void openSlider(String pageSource, String panelName, String data) {
+        // If the page source is 'settings', enable swipe
+        boolean activeSwipe = !pageSource.equals("settings");
+        Object[] param = {path + pageSource + "_" + panelName + ".html", activeSwipe, data};
+        fragmentHandler.obtainMessage(OPEN_SLIDER, param).sendToTarget();
     }
 
     /*  ---------------------------------- *
@@ -190,11 +231,6 @@ public class WIMainScreen extends WICommon {
      *  --          drive.html          -- *
      *  ---------------------------------- */
 
-    public void refresh(){
-        // Only for drive.html
-        androidToWeb("resetDatabase");
-    }
-
     /**
      * [LOADER METHOD]<br>
      * Request available vehicle
@@ -210,6 +246,7 @@ public class WIMainScreen extends WICommon {
         thread.getVehiclesAvailable(userPreferences.getUserID());
     }
 
+    // [NEVER USED] -> openSlider()
     /**
      * [MOVER METHOD]<br>
      * Called when the user want to book a vehicle<br>
@@ -250,20 +287,17 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestRemoveVehicle(int vehicleID){
-        //DBModelVehicle vehicle = new DBModelVehicle();
-        //vehicle.setId(vehicleID);
-        //boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
-
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
-            public void onResultTableUpdated(boolean isUpdate) {
-                if (!isUpdate) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
+            public void onResultTableUpdated(boolean isDeleted) {
+                if (!isDeleted) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
                 else androidToWeb("vehicleDelete", "true");
             }
         });
         thread.deleteVehicle(vehicleID);
     }
 
+    // [NEVER USED] -> openSlider()
     /**
      * [MOVER METHOD]<br>
      * Open Edit fragment & save vehicle for
@@ -274,6 +308,7 @@ public class WIMainScreen extends WICommon {
         fragmentHandler.obtainMessage(GOTO_EDIT_VEHICLE_FRAGMENT, vehicle).sendToTarget();
     }
 
+    // [NEVER USED] -> openSlider()
     /**
      * [MOVER METHOD]<br>
      * Open Add a vehicle fragment
@@ -294,31 +329,6 @@ public class WIMainScreen extends WICommon {
     @JavascriptInterface
     public void requestUserName(){
         androidToWeb("setUserName", userPreferences.getUserName());
-    }
-
-    /**
-     * [MOVER METHOD]<br>
-     * Request to open the panel
-     * @param panelName specified panel name
-     */
-    @JavascriptInterface
-    public void openSlider(String pageSource, String panelName) {
-        // If the page source is 'settings', enable swipe
-        boolean activeSwipe = !pageSource.equals("settings");
-        Object[] param = {path + pageSource + "_" + panelName + ".html", activeSwipe};
-        Log.d(TAG_Web, "openSlider: " + param[0]);
-        fragmentHandler.obtainMessage(OPEN_SLIDER, param).sendToTarget();
-    }
-
-    @JavascriptInterface
-    public void openSlider(String pageSource, String panelName, String data) {
-        // If the page source is 'settings', enable swipe
-        boolean activeSwipe = !pageSource.equals("settings");
-        Object[] param = {path + pageSource + "_" + panelName + ".html", activeSwipe, data};
-        Log.d(TAG_Web, "openSlider + data: " + param[0]);
-        Log.d(TAG_Web, "openSlider + data: " + param[1]);
-        Log.d(TAG_Web, "openSlider + data: " + param[2]);
-        fragmentHandler.obtainMessage(OPEN_SLIDER, param).sendToTarget();
     }
 
     /**

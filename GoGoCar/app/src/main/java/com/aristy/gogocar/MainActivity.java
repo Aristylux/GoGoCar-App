@@ -92,13 +92,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Start connection
         ThreadManager.getInstance().setConnection();
-        //ThreadManager.getInstance().startThread();
 
         // Connect to database (do it in other thread)
         /*
         ConnectionHelper connectionHelper = new ConnectionHelper();
         connectionHelper.openConnection();
-        SQLConnection = connectionHelper.getConnection();*/
+        SQLConnection = connectionHelper.getConnection();
+        */
 
         // ----
         Intent intent = getIntent();
@@ -370,27 +370,33 @@ public class MainActivity extends AppCompatActivity {
                     setFragment(fragmentLogin, ANIMATE_SLIDE_LEFT);
                     break;
                 case GOTO_HOME_FRAGMENT:
-                    FragmentNav fragmentNav =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
+                    FragmentNav fragmentNav = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
                     setFragment(fragmentNav, ANIMATE_SLIDE_RIGHT);
                     break;
                 case GOTO_DRIVE_FRAGMENT:
-                    FragmentNav fragmentNav1 =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, DRIVE);
+                    FragmentNav fragmentNav1 = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, DRIVE);
                     setFragment(fragmentNav1, ANIMATE_SLIDE_LEFT);
                     //setFragment(ANIMATE_SLIDE_LEFT, DRIVE);
                     break;
+                    // NEVER USED
                 case GOTO_BOOK_VEHICLE_FRAGMENT:
+                    Log.e(TAG_FRAGMENT, "handleMessage: OLD VIEW");
                     setFragment(ANIMATE_SLIDE_RIGHT, BOOK_VEHICLE);
                     vehicle = String.valueOf(message.obj);
                     break;
+                    // NEVER USED
                 case GOTO_ADD_VEHICLE_FRAGMENT:
+                    Log.e(TAG_FRAGMENT, "handleMessage: OLD VIEW");
                     setFragment(ANIMATE_SLIDE_UP, ADD_VEHICLE);
                     break;
+                    // NEVER USED
                 case GOTO_EDIT_VEHICLE_FRAGMENT:
+                    Log.e(TAG_FRAGMENT, "handleMessage: OLD VIEW");
                     setFragment(ANIMATE_SLIDE_LEFT, EDIT_VEHICLE);
                     vehicle = String.valueOf(message.obj);
                     break;
                 case GOTO_VEHICLE_FRAGMENT:
-                    FragmentNav fragmentNav2 =  FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, VEHICLE);
+                    FragmentNav fragmentNav2 = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, VEHICLE);
                     setFragment(fragmentNav2, (Integer) message.obj);
                     //setFragment((Integer) message.obj, VEHICLE);
                     break;
@@ -398,7 +404,9 @@ public class MainActivity extends AppCompatActivity {
                     // Set color background
                     getWindow().setStatusBarColor((Integer) message.obj);
                     break;
+                    // NEVER USED
                 case DATA_SET_VEHICLE:
+                    Log.e(TAG_FRAGMENT, "handleMessage: OLD VIEW");
                     sendDataToFragment(SET_VEHICLE_EDIT, vehicle);
                     break;
                 case OPEN_SLIDER:
