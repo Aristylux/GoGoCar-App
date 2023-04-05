@@ -1,6 +1,12 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_THREAD;
+import static com.aristy.gogocar.DatabaseHelper.ADD_USER_QUERY;
+import static com.aristy.gogocar.DatabaseHelper.ADD_VEHICLE_QUERY;
+import static com.aristy.gogocar.DatabaseHelper.DELETE_USER_QUERY;
+import static com.aristy.gogocar.DatabaseHelper.DELETE_VEHICLE_QUERY;
+import static com.aristy.gogocar.DatabaseHelper.SET_VEHICLE_BOOKED_QUERY;
+import static com.aristy.gogocar.DatabaseHelper.UPDATE_VEHICLE_QUERY;
 
 import android.util.Log;
 
@@ -80,7 +86,8 @@ public class ThreadManager {
      */
     public void addUser(DBModelUser user){
         thread = new Thread(() -> {
-            boolean success = databaseHelper.addUser(user);
+            //boolean success = databaseHelper.addUser(user);
+            boolean success = databaseHelper.executeQuery(ADD_USER_QUERY, user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getPassword(), user.getSalt());
             callback.onResultTableUpdated(success);
         });
         thread.start();
@@ -93,7 +100,8 @@ public class ThreadManager {
      */
     public void deleteUser(DBModelUser user){
         thread = new Thread(() -> {
-            boolean isDeleted = databaseHelper.deleteUser(user);
+            //boolean isDeleted = databaseHelper.deleteUser(user);
+            boolean isDeleted = databaseHelper.executeQuery(DELETE_USER_QUERY, user.getId());
             callback.onResultTableUpdated(isDeleted);
         });
         thread.start();
@@ -136,7 +144,8 @@ public class ThreadManager {
      */
     public void addVehicle(DBModelVehicle vehicle){
         thread = new Thread(() -> {
-            boolean success = databaseHelper.addVehicle(vehicle);
+            //boolean success = databaseHelper.addVehicle(vehicle);
+            boolean success = databaseHelper.executeQuery(ADD_VEHICLE_QUERY, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.getIdOwner(), vehicle.isAvailable(), vehicle.getIdModule());
             callback.onResultTableUpdated(success);
         });
         thread.start();
@@ -149,9 +158,10 @@ public class ThreadManager {
      */
     public void deleteVehicle(int vehicleID){
         thread = new Thread(() -> {
-            DBModelVehicle vehicle = new DBModelVehicle();
-            vehicle.setId(vehicleID);
-            boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
+            //DBModelVehicle vehicle = new DBModelVehicle();
+            //vehicle.setId(vehicleID);
+            //boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
+            boolean isDeleted = databaseHelper.executeQuery(DELETE_VEHICLE_QUERY, vehicleID);
             callback.onResultTableUpdated(isDeleted);
         });
         thread.start();
@@ -164,7 +174,8 @@ public class ThreadManager {
      */
     public void updateVehicle(DBModelVehicle vehicle){
         thread = new Thread(() -> {
-            boolean isUpdated = databaseHelper.updateVehicle(vehicle);
+            //boolean isUpdated = databaseHelper.updateVehicle(vehicle);
+            boolean isUpdated = databaseHelper.executeQuery(UPDATE_VEHICLE_QUERY, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.isAvailable(), vehicle.getIdModule(), vehicle.getId());
             callback.onResultTableUpdated(isUpdated);
         });
         thread.start();
@@ -179,7 +190,8 @@ public class ThreadManager {
      */
     public void setBookedVehicle(int vehicleID, int userID, boolean isBooked){
         thread = new Thread(() -> {
-            boolean isUpdated = databaseHelper.setBookedVehicle(vehicleID, userID, isBooked);
+            //boolean isUpdated = databaseHelper.setBookedVehicle(vehicleID, userID, isBooked);
+            boolean isUpdated = databaseHelper.executeQuery(SET_VEHICLE_BOOKED_QUERY, userID, isBooked, vehicleID);
             callback.onResultTableUpdated(isUpdated);
         });
         thread.start();

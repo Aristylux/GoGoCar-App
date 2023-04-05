@@ -48,6 +48,28 @@ public class DatabaseHelper {
     private static final String COLUMN_MODULE_NAME = "name";
     private static final String COLUMN_MODULE_MAC_ADDRESS = "mac_address";
 
+    public static final String ADD_USER_QUERY = "INSERT INTO " + TABLE_USER +
+            "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + "," + COLUMN_USER_SALT + ") " +
+            "VALUES (?,?,?,?,?)";
+
+    public static final String DELETE_USER_QUERY = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = ?";
+
+    public static final String ADD_VEHICLE_QUERY = "INSERT INTO " + TABLE_VEHICLE +
+            "( " + COLUMN_VEHICLE_MODEL + "," + COLUMN_VEHICLE_LICENCE_PLATE + "," + COLUMN_VEHICLE_ADDRESS + "," + COLUMN_VEHICLE_ID_OWNER + "," + COLUMN_VEHICLE_IS_AVAILABLE + "," + COLUMN_VEHICLE_ID_MODULE + ") " +
+            "VALUES (?,?,?,?,?,?)";
+
+    public static final String DELETE_VEHICLE_QUERY = "DELETE FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID + " = ?";
+
+    public static final String UPDATE_VEHICLE_QUERY = "UPDATE " + TABLE_VEHICLE + " SET " +
+            COLUMN_VEHICLE_MODEL + " = ?, " + COLUMN_VEHICLE_LICENCE_PLATE + " = ?, " + COLUMN_VEHICLE_ADDRESS + " = ?, " +
+            COLUMN_VEHICLE_IS_AVAILABLE + " = ?, " + COLUMN_VEHICLE_ID_MODULE + " = ? " +
+            "WHERE " + COLUMN_VEHICLE_ID + " = ?";
+
+    public static final String SET_VEHICLE_BOOKED_QUERY = "UPDATE " + TABLE_VEHICLE + " SET " +
+            COLUMN_VEHICLE_ID_USER_BOOK + " = ?, " + COLUMN_VEHICLE_IS_BOOKED + " = ? " +
+            "WHERE " + COLUMN_VEHICLE_ID + " = ?";
+
+
     Connection connection;
 
     // Constructor
