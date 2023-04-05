@@ -113,8 +113,6 @@ public class MainActivity extends AppCompatActivity {
         if(!isLogged)
             selectedFragment = FragmentLogin.newInstance(userPreferences, fragmentHandler);
         else {
-            //fragmentApp = FragmentApp.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME, SQLConnection);
-            //selectedFragment = fragmentApp;
             selectedFragment = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
         }
 
@@ -343,8 +341,8 @@ public class MainActivity extends AppCompatActivity {
      * @param link          arguments
      */
     public void setFragment(int animation, String link){
-        fragmentApp = FragmentApp.newInstance(userPreferences, fragmentHandler, bluetoothHandler, link, SQLConnection);
-        setFragment(fragmentApp, animation);
+        FragmentNav fragmentNav = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, link);
+        setFragment(fragmentNav, animation);
     }
 
     /**
@@ -358,8 +356,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentApp.putArguments(args);
     }
 
-    String vehicle;
-
     Handler fragmentHandler = new Handler(new Handler.Callback() {
         @SuppressLint("MissingPermission")
         @Override
@@ -370,44 +366,17 @@ public class MainActivity extends AppCompatActivity {
                     setFragment(fragmentLogin, ANIMATE_SLIDE_LEFT);
                     break;
                 case GOTO_HOME_FRAGMENT:
-                    FragmentNav fragmentNav = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
-                    setFragment(fragmentNav, ANIMATE_SLIDE_RIGHT);
+                    setFragment(ANIMATE_SLIDE_RIGHT, HOME);
                     break;
                 case GOTO_DRIVE_FRAGMENT:
-                    FragmentNav fragmentNav1 = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, DRIVE);
-                    setFragment(fragmentNav1, ANIMATE_SLIDE_LEFT);
-                    //setFragment(ANIMATE_SLIDE_LEFT, DRIVE);
-                    break;
-                    // NEVER USED
-                case GOTO_BOOK_VEHICLE_FRAGMENT:
-                    Log.e(TAG_FRAGMENT, "handleMessage: OLD VIEW");
-                    setFragment(ANIMATE_SLIDE_RIGHT, BOOK_VEHICLE);
-                    vehicle = String.valueOf(message.obj);
-                    break;
-                    // NEVER USED
-                case GOTO_ADD_VEHICLE_FRAGMENT:
-                    Log.e(TAG_FRAGMENT, "handleMessage: OLD VIEW");
-                    setFragment(ANIMATE_SLIDE_UP, ADD_VEHICLE);
-                    break;
-                    // NEVER USED
-                case GOTO_EDIT_VEHICLE_FRAGMENT:
-                    Log.e(TAG_FRAGMENT, "handleMessage: OLD VIEW");
-                    setFragment(ANIMATE_SLIDE_LEFT, EDIT_VEHICLE);
-                    vehicle = String.valueOf(message.obj);
+                    setFragment(ANIMATE_SLIDE_LEFT, DRIVE);
                     break;
                 case GOTO_VEHICLE_FRAGMENT:
-                    FragmentNav fragmentNav2 = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, VEHICLE);
-                    setFragment(fragmentNav2, (Integer) message.obj);
-                    //setFragment((Integer) message.obj, VEHICLE);
+                    setFragment((Integer) message.obj, VEHICLE);
                     break;
                 case STATUS_BAR_COLOR:
                     // Set color background
                     getWindow().setStatusBarColor((Integer) message.obj);
-                    break;
-                    // NEVER USED
-                case DATA_SET_VEHICLE:
-                    Log.e(TAG_FRAGMENT, "handleMessage: OLD VIEW");
-                    sendDataToFragment(SET_VEHICLE_EDIT, vehicle);
                     break;
                 case OPEN_SLIDER:
                     // Open second activity (Which is a slider)

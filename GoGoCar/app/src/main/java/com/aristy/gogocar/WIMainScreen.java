@@ -19,6 +19,7 @@ import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
+import static com.aristy.gogocar.WebInterface.path;
 
 import android.app.Activity;
 import android.content.Context;
@@ -34,8 +35,6 @@ import java.util.List;
  * Web Interface for Screen (home, vehicles, drive, settings)
  */
 public class WIMainScreen extends WICommon {
-
-    private static final String path = "file:///android_asset/pages/";
 
     Context context;
     Activity activity;
