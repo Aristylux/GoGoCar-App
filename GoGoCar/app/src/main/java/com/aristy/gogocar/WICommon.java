@@ -52,4 +52,27 @@ public class WICommon {
         public static final String EDIT_VEHICLE = pathPage + "vehicles_edit.html";
     }
 
+    /**
+     * List all function available to call in web.
+     */
+    static class JSFunction {
+        public static final String DRIVING_REQUEST = "requestDriveCallback";
+
+        public static final String SET_VEHICLE_EDIT = "setVehicle";
+    }
+
+    static class ErrorCodes {
+        public static final String DRIVING_REQUEST_PERMISSION_ERROR = "1";
+        public static final String DRIVING_REQUEST_BLUETOOTH_DISABLED = "2";
+        public static final String DRIVING_REQUEST_LOCALISATION_DISABLE = "3";
+        public static final String DRIVING_REQUEST_CAR_NOT_FOUND = "4";
+        public static final String DRIVING_CONNECTION_FAILED = "5";
+        public static final String DRIVING_CONNECTION_DISCONNECTED = "6";
+    }
+
+    static class Boolean {
+        public static final String TRUE = "true";
+        //public static final String FALSE = "false";
+    }
+
 }
