@@ -109,7 +109,7 @@ public class FragmentApp extends Fragment {
         // Result state page
         web.setWebViewClient(new Callback());
 
-        web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, handlers), "Android");
+        //web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, handlers), "Android");
 
         return view;
     }
