@@ -148,28 +148,6 @@ public class DatabaseHelper {
      *  ---------------------------------- */
 
     /**
-     * @param userModel user with name, phone, ...
-     * @return the success:<br>
-     *         - true  - if success<br>
-     *         - false - if not connection or exception
-     */
-    public boolean addUser(DBModelUser userModel){
-        String query = "INSERT INTO " + TABLE_USER +
-                "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + "," + COLUMN_USER_SALT + ") " +
-                "VALUES (?,?,?,?,?)";
-        return executeQuery(query, userModel.getFullName(), userModel.getEmail(), userModel.getPhoneNumber(), userModel.getPassword(), userModel.getSalt());
-    }
-
-    /**
-     * @param userModel user to delete
-     * @return the success
-     */
-    public boolean deleteUser(DBModelUser userModel){
-        String query = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = ?";
-        return executeQuery(query, userModel.getId());
-    }
-
-    /**
      * @param ID user id
      * @return the user that matches this ID
      */
@@ -233,55 +211,6 @@ public class DatabaseHelper {
     /*  ---------------------------------- *
      *  --            VEHICLES          -- *
      *  ---------------------------------- */
-
-    /**
-     * add a vehicle into the database
-     * @param modelVehicle the vehicle
-     * @return the success:<br>
-     *         - true  - if success<br>
-     *         - false - if not connection or exception
-     */
-    public boolean addVehicle(DBModelVehicle modelVehicle){
-        String query = "INSERT INTO " + TABLE_VEHICLE +
-                "( " + COLUMN_VEHICLE_MODEL + "," + COLUMN_VEHICLE_LICENCE_PLATE + "," + COLUMN_VEHICLE_ADDRESS + "," + COLUMN_VEHICLE_ID_OWNER + "," + COLUMN_VEHICLE_IS_AVAILABLE + "," + COLUMN_VEHICLE_ID_MODULE + ") " +
-                "VALUES (?,?,?,?,?,?)";
-        return executeQuery(query, modelVehicle.getModel(), modelVehicle.getLicencePlate(), modelVehicle.getAddress(), modelVehicle.getIdOwner(), modelVehicle.isAvailable(), modelVehicle.getIdModule());
-    }
-
-    /**
-     * @param modelVehicle Vehicle to delete
-     * @return success
-     */
-    public boolean deleteVehicle(DBModelVehicle modelVehicle){
-        String query = "DELETE FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID + " = ?";
-        return executeQuery(query, modelVehicle.getId());
-    }
-
-    /**
-     * @param vehicle vehicle to update
-     * @return success
-     */
-    public boolean updateVehicle(DBModelVehicle vehicle){
-        String query = "UPDATE " + TABLE_VEHICLE + " SET " +
-                COLUMN_VEHICLE_MODEL + " = ?, " + COLUMN_VEHICLE_LICENCE_PLATE + " = ?, " + COLUMN_VEHICLE_ADDRESS + " = ?, " +
-                COLUMN_VEHICLE_IS_AVAILABLE + " = ?, " + COLUMN_VEHICLE_ID_MODULE + " = ? " +
-                "WHERE " + COLUMN_VEHICLE_ID + " = ?";
-        return executeQuery(query, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.isAvailable(), vehicle.getIdModule(), vehicle.getId());
-    }
-
-    /**
-     * set or reset a vehicle for booking
-     * @param vehicleID the vehicle id
-     * @param userID the user who book
-     * @param isBooked if the user book or not
-     * @return success
-     */
-    public boolean setBookedVehicle(int vehicleID, int userID, boolean isBooked){
-        String query = "UPDATE " + TABLE_VEHICLE + " SET " +
-                COLUMN_VEHICLE_ID_USER_BOOK + " = ?, " + COLUMN_VEHICLE_IS_BOOKED + " = ? " +
-                "WHERE " + COLUMN_VEHICLE_ID + " = ?";
-        return executeQuery(query, userID, isBooked, vehicleID);
-    }
 
     /**
      * @return List of all vehicles

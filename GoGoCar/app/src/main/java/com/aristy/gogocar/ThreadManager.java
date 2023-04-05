@@ -82,11 +82,13 @@ public class ThreadManager {
     /**
      * Add user to the database<br>
      * <strong>CALLBACK: <i>onResultTableUpdated()</i></strong>
-     * @param user user to add
+     * @param user user to add (user with name, phone, ...)
+     * @Callback-Return: The success:<br>
+     *      - true  - if success<br>
+     *      - false - if not connection or exception
      */
     public void addUser(DBModelUser user){
         thread = new Thread(() -> {
-            //boolean success = databaseHelper.addUser(user);
             boolean success = databaseHelper.executeQuery(ADD_USER_QUERY, user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getPassword(), user.getSalt());
             callback.onResultTableUpdated(success);
         });
@@ -97,10 +99,10 @@ public class ThreadManager {
      * Delete a user
      * <strong>CALLBACK: <i>onResultTableUpdated()</i></strong>
      * @param user user to delete
+     * @Callback-Return: The success
      */
     public void deleteUser(DBModelUser user){
         thread = new Thread(() -> {
-            //boolean isDeleted = databaseHelper.deleteUser(user);
             boolean isDeleted = databaseHelper.executeQuery(DELETE_USER_QUERY, user.getId());
             callback.onResultTableUpdated(isDeleted);
         });
@@ -141,10 +143,12 @@ public class ThreadManager {
      * Add a vehicle to the database
      * <strong>CALLBACK: <i>onResultTableUpdated()</i></strong>
      * @param vehicle vehicle to add
+     * @Callback-Return: The success:<br>
+     *         - true  - if success<br>
+     *         - false - if not connection or exception
      */
     public void addVehicle(DBModelVehicle vehicle){
         thread = new Thread(() -> {
-            //boolean success = databaseHelper.addVehicle(vehicle);
             boolean success = databaseHelper.executeQuery(ADD_VEHICLE_QUERY, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.getIdOwner(), vehicle.isAvailable(), vehicle.getIdModule());
             callback.onResultTableUpdated(success);
         });
@@ -155,12 +159,10 @@ public class ThreadManager {
      * Delete a vehicle
      * <strong>CALLBACK: <i>onResultTableUpdated()</i></strong>
      * @param vehicleID vehicle id to delete
+     * @Callback-Return: The success
      */
     public void deleteVehicle(int vehicleID){
         thread = new Thread(() -> {
-            //DBModelVehicle vehicle = new DBModelVehicle();
-            //vehicle.setId(vehicleID);
-            //boolean isDeleted = databaseHelper.deleteVehicle(vehicle);
             boolean isDeleted = databaseHelper.executeQuery(DELETE_VEHICLE_QUERY, vehicleID);
             callback.onResultTableUpdated(isDeleted);
         });
@@ -171,10 +173,10 @@ public class ThreadManager {
      * Update vehicle's information
      * <strong>CALLBACK: <i>onResultTableUpdated()</i></strong>
      * @param vehicle vehicle with new information
+     * @Callback-Return: The success
      */
     public void updateVehicle(DBModelVehicle vehicle){
         thread = new Thread(() -> {
-            //boolean isUpdated = databaseHelper.updateVehicle(vehicle);
             boolean isUpdated = databaseHelper.executeQuery(UPDATE_VEHICLE_QUERY, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.isAvailable(), vehicle.getIdModule(), vehicle.getId());
             callback.onResultTableUpdated(isUpdated);
         });
@@ -185,12 +187,12 @@ public class ThreadManager {
      * Set a vehicle booked or not
      * <strong>CALLBACK: <i>onResultTableUpdated()</i></strong>
      * @param vehicleID vehicle id
-     * @param userID    user id
+     * @param userID    user id who book
      * @param isBooked  booked (true -> yes, false -> no)
+     * @Callback-Return: The success
      */
     public void setBookedVehicle(int vehicleID, int userID, boolean isBooked){
         thread = new Thread(() -> {
-            //boolean isUpdated = databaseHelper.setBookedVehicle(vehicleID, userID, isBooked);
             boolean isUpdated = databaseHelper.executeQuery(SET_VEHICLE_BOOKED_QUERY, userID, isBooked, vehicleID);
             callback.onResultTableUpdated(isUpdated);
         });
