@@ -9,13 +9,6 @@ import java.sql.Connection;
 
 public class WebInterface {
 
-    public static final String path = "file:///android_asset/pages/";
-    public static final String HOME = path + "home.html";
-    public static final String DRIVE = path + "drive.html";
-    public static final String BOOK_VEHICLE = path + "drive_book.html";
-    public static final String VEHICLE = path + "vehicles.html";
-    public static final String ADD_VEHICLE = path + "vehicles_add.html";
-    public static final String EDIT_VEHICLE = path + "vehicles_edit.html";
 
     // Constructor
     WebInterface(Activity activity, Context context, WebView webView, Connection connection, UserPreferences userPreferences, Handler [] handlers){

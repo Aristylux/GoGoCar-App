@@ -19,7 +19,7 @@ import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
-import static com.aristy.gogocar.WebInterface.path;
+import static com.aristy.gogocar.WICommon.Pages.pathPage;
 
 import android.app.Activity;
 import android.content.Context;
@@ -99,7 +99,7 @@ public class WIMainScreen extends WICommon {
     public void openSlider(String pageSource, String panelName) {
         // If the page source is 'settings', enable swipe
         boolean activeSwipe = !pageSource.equals("settings");
-        Object[] param = {path + pageSource + "_" + panelName + ".html", activeSwipe};
+        Object[] param = {pathPage + pageSource + "_" + panelName + ".html", activeSwipe};
         Log.d(TAG_Web, "openSlider: " + param[0]);
         fragmentHandler.obtainMessage(OPEN_SLIDER, param).sendToTarget();
     }
@@ -117,7 +117,7 @@ public class WIMainScreen extends WICommon {
     public void openSlider(String pageSource, String panelName, String data) {
         // If the page source is 'settings', enable swipe
         boolean activeSwipe = !pageSource.equals("settings");
-        Object[] param = {path + pageSource + "_" + panelName + ".html", activeSwipe, data};
+        Object[] param = {pathPage + pageSource + "_" + panelName + ".html", activeSwipe, data};
         fragmentHandler.obtainMessage(OPEN_SLIDER, param).sendToTarget();
     }
 

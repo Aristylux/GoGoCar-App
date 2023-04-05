@@ -2,10 +2,8 @@ package com.aristy.gogocar;
 
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_LEFT;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
-import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_UP;
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
-import static com.aristy.gogocar.CodesTAG.TAG_FRAGMENT;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.ConnectionHelper.connectionValid;
 import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_NAME;
@@ -18,11 +16,7 @@ import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
-import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
-import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
-import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_DRIVE_FRAGMENT;
-import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_VEHICLE_FRAGMENT;
@@ -33,18 +27,14 @@ import static com.aristy.gogocar.PermissionHelper.checkCoarseLocationPermission;
 import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 import static com.aristy.gogocar.Security.getPinKey;
-import static com.aristy.gogocar.WebInterface.ADD_VEHICLE;
-import static com.aristy.gogocar.WebInterface.BOOK_VEHICLE;
 import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
-import static com.aristy.gogocar.WebInterface.DRIVE;
-import static com.aristy.gogocar.WebInterface.EDIT_VEHICLE;
+import static com.aristy.gogocar.WICommon.Pages.DRIVE;
 import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_CONNECTION_DISCONNECTED;
 import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_CONNECTION_FAILED;
 import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_REQUEST_CAR_NOT_FOUND;
 import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
-import static com.aristy.gogocar.WebInterface.FunctionNames.SET_VEHICLE_EDIT;
-import static com.aristy.gogocar.WebInterface.HOME;
-import static com.aristy.gogocar.WebInterface.VEHICLE;
+import static com.aristy.gogocar.WICommon.Pages.HOME;
+import static com.aristy.gogocar.WICommon.Pages.VEHICLE;
 import static com.aristy.gogocar.WindowHelper.setWindowVersion;
 
 import androidx.activity.result.ActivityResult;
@@ -90,15 +80,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Start connection
+        // Start connection (Connect to database)
         ThreadManager.getInstance().setConnection();
-
-        // Connect to database (do it in other thread)
-        /*
-        ConnectionHelper connectionHelper = new ConnectionHelper();
-        connectionHelper.openConnection();
-        SQLConnection = connectionHelper.getConnection();
-        */
 
         // ----
         Intent intent = getIntent();

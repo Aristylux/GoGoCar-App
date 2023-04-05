@@ -7,9 +7,9 @@ import static com.aristy.gogocar.HandlerCodes.SET_DRIVING;
 import static com.aristy.gogocar.HandlerCodes.SET_MODAL;
 import static com.aristy.gogocar.HandlerCodes.SET_PAGE;
 import static com.aristy.gogocar.HandlerCodes.SET_PAGE_FROM_HOME;
-import static com.aristy.gogocar.WebInterface.DRIVE;
-import static com.aristy.gogocar.WebInterface.VEHICLE;
-import static com.aristy.gogocar.WebInterface.path;
+import static com.aristy.gogocar.WICommon.Pages.DRIVE;
+import static com.aristy.gogocar.WICommon.Pages.VEHICLE;
+import static com.aristy.gogocar.WICommon.Pages.path;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -25,7 +25,6 @@ import android.webkit.WebView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 
 
 public class FragmentNav extends Fragment {

@@ -7,9 +7,6 @@ import android.webkit.WebView;
  */
 public class WICommon {
 
-    private static final String path = "file:///android_asset/";
-    public static final String LOGIN = path + "login.html";
-
     private final WebView webView;
 
     public WICommon (WebView webView){
@@ -40,6 +37,19 @@ public class WICommon {
      */
     public void loadNewPage(WebView webView, String page){
         webView.post(() -> webView.loadUrl("file:///android_asset/pages/" + page + ".html"));
+    }
+
+    static class Pages {
+        public static final String path = "file:///android_asset/";
+        public static final String LOGIN = path + "login.html";
+
+        public static final String pathPage = path + "pages/";
+        public static final String HOME = pathPage + "home.html";
+        public static final String DRIVE = pathPage + "drive.html";
+        public static final String BOOK_VEHICLE = pathPage + "drive_book.html";
+        public static final String VEHICLE = pathPage + "vehicles.html";
+        public static final String ADD_VEHICLE = pathPage + "vehicles_add.html";
+        public static final String EDIT_VEHICLE = pathPage + "vehicles_edit.html";
     }
 
 }
