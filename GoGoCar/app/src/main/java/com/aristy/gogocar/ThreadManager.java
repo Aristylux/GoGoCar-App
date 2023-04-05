@@ -189,7 +189,7 @@ public class ThreadManager {
     /**
      * Get vehicles available
      * <strong>CALLBACK: <i>onResultVehicles()</i></strong>
-     * @param userID user id (to avoid duplicata)
+     * @param userID user id (to avoid duplicate)
      */
     public void getVehiclesAvailable(int userID){
         thread = new Thread(() -> {

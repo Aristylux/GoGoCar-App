@@ -123,7 +123,7 @@ public class WIPanels extends WICommon {
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultTableUpdated(boolean success) {
-                Log.d(TAG_Database, "success=" + success);
+                Log.d(TAG_Database, "addVehicleResult: success=" + success);
                 if (!success) {
                     //Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
                     androidToWeb("addVehicleResult", "3");  // Error code 3

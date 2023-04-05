@@ -60,9 +60,12 @@ public class DatabaseHelper {
      * @param elements element for '?' in preparedQuery
      * @return success
      */
-    private boolean executeQuery(String preparedQuery, Object... elements){
+    public boolean executeQuery(String preparedQuery, Object... elements){
         // Test if the connection is ok
         if (isConnectionError("executeQuery")) return false;
+
+        // Check if the number of element is the same as provided by the prepared query
+        if (!isElementsCorrects(preparedQuery, elements.length)) return false;
 
         try {
             PreparedStatement st = connection.prepareStatement(preparedQuery);
@@ -86,6 +89,11 @@ public class DatabaseHelper {
         }
     }
 
+    /**
+     * Check is the connection is null
+     * @param funcName actual function
+     * @return error or not
+     */
     private boolean isConnectionError(String funcName){
         if (connection == null /*|| connection.isClosed()*/) {
             // Failure. do not add anything to the list
@@ -94,6 +102,23 @@ public class DatabaseHelper {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Check if the prepared query as the correct number of objects
+     * @param preparedQuery     query for prepared statement
+     * @param num_elements      number of elements
+     * @return error or not
+     */
+    private boolean isElementsCorrects(String preparedQuery, int num_elements){
+        int count = 0;
+        for (int i = 0; i < preparedQuery.length(); i++) {
+            if (preparedQuery.charAt(i) == '?') count++;
+        }
+
+        if (count == num_elements) return true;
+        Log.e(TAG_Database, "executeQuery: [NO NUM]: provided(" + num_elements + ") required(" + count + ")");
+        return false;
     }
 
     /*  ---------------------------------- *
@@ -120,41 +145,6 @@ public class DatabaseHelper {
     public boolean deleteUser(DBModelUser userModel){
         String query = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = ?";
         return executeQuery(query, userModel.getId());
-    }
-
-    public List<DBModelUser> getAllUsers(){
-        List<DBModelUser> returnList = new ArrayList<>();
-
-        String query = "SELECT * FROM " + TABLE_USER;
-
-        if (isConnectionError("getAllUsers")) return returnList;
-
-        // Get data from database
-        try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(query);
-
-            while (rs.next()) {
-                // Loop through the cursor (result set) and create new user objects. Put them into the return list.
-                int userID = rs.getInt(1);
-                String userName = rs.getString(2);
-                String userEmail = rs.getString(3);
-                String userPhone = rs.getString(4);
-                String userHash = rs.getString(5);
-                //int userIdentityID = rs.getInt(6);
-
-                DBModelUser user = new DBModelUser(userID, userName, userEmail, userPhone, userHash);
-                Log.i(TAG_Database, user.toString());
-                returnList.add(user);
-            }
-
-            // Close both result and the statement
-            rs.close();
-            st.close();
-        } catch (Exception exception){
-            Log.e(TAG_Database, "getAllUsers: ", exception);
-        }
-        return returnList;
     }
 
     /**
@@ -328,7 +318,7 @@ public class DatabaseHelper {
             while (rs.next()) {
                 // Get values
 
-                //TODO rs.findColumn();
+                //TODO : i = rs.findColumn("column name");
                 int vehicle_id = rs.getInt(1);
                 String model = rs.getString(2);
                 String licencePlate = rs.getString(3);

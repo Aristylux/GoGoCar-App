@@ -388,6 +388,7 @@ public class WebInterface {
      *  --          Navigation          -- *
      *  ---------------------------------- */
 
+    // To used (use requestChangePage())
     @JavascriptInterface
     public void changePage(String page){
         if (!isDriving)

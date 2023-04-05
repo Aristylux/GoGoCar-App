@@ -123,6 +123,45 @@ st.close();
 ```
 
 
+# SQL Unused
+
+```java
+    public List<DBModelUser> getAllUsers(){
+        List<DBModelUser> returnList = new ArrayList<>();
+
+        String query = "SELECT * FROM " + TABLE_USER;
+
+        if (isConnectionError("getAllUsers")) return returnList;
+
+        // Get data from database
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                // Loop through the cursor (result set) and create new user objects. Put them into the return list.
+                int userID = rs.getInt(1);
+                String userName = rs.getString(2);
+                String userEmail = rs.getString(3);
+                String userPhone = rs.getString(4);
+                String userHash = rs.getString(5);
+                //int userIdentityID = rs.getInt(6);
+
+                DBModelUser user = new DBModelUser(userID, userName, userEmail, userPhone, userHash);
+                Log.i(TAG_Database, user.toString());
+                returnList.add(user);
+            }
+
+            // Close both result and the statement
+            rs.close();
+            st.close();
+        } catch (Exception exception){
+            Log.e(TAG_Database, "getAllUsers: ", exception);
+        }
+        return returnList;
+    }
+```
+
 # sql error
 
 
