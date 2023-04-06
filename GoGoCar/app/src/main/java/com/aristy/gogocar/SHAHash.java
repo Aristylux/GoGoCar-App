@@ -3,6 +3,8 @@ package com.aristy.gogocar;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 public class SHAHash {
 
@@ -20,6 +22,7 @@ public class SHAHash {
         MessageDigest sha;
         byte[] byteData;
         try {
+            // TODO SHA3-256 preferred
             sha = MessageDigest.getInstance("SHA-512"); //SHA3-512 is not working
             byteData = sha.digest(pw.getBytes(StandardCharsets.UTF_8));
             return convertHex(byteData);
@@ -43,6 +46,14 @@ public class SHAHash {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+    public static String generateSalt(){
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+
+        return Base64.getEncoder().encodeToString(salt);
     }
 
 }

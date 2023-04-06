@@ -17,128 +17,18 @@
             }
         </style>
 
-<link rel="stylesheet" href="../css/vehicles_form.css"/>
+        <link rel="stylesheet" href="../css/vehicles_form.css"/>
+        <link rel="stylesheet" href="../css/drive_book.css"/>
 
-        <!-- form -->
         <style>
-
-
-.form-group input {
-    padding: 6px 35px;
-    font-size: 1em;
-    transition: all 0.2s ease;
-
-    border: none;
-    outline: none;
-    border-bottom: 2px solid #ccc;
-    border-top: 2px solid transparent;
-}
-
-.form-group input:is(:focus, :valid) {
-    border-bottom-color: var(--primary-color);
-}
-
-.form-group span {
-    color: #524544;    
-}
-
-.form-group i {
-    color: var(--primary-color);
-    display: flex;
-    align-items: center;
-}
-
-
-/* button */
-.button {
-    margin-top: 30px;
-    width: 440px;
-    max-width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.button input {
-    padding: 6px 35px;
-    border: none;
-    color: #FFFFFF;
-    font-size: 1.2em;
-    font-weight: 500;
-    letter-spacing: 1px;
-    border-radius: 25px;
-    background-color: var(--primary-color);
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.button input:active {
-    background-color: var(--secondary-color);
-}
-
-
-dd {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    color: #6d7270;
-    min-height: 20px;
-}
-
-/* buttons group */
-
-.radio-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 5px;
-}
-
-.form-radio {
-    background-color: #f6f8fa;
-    border: 1px solid #d0d7de;
-    border-radius: 20px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-    padding: 10px;
-    color: #242927;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 10px;
-
-    transition: all 0.3s ease;
-
-}
-
-.form-radio i {
-    font-size: 2em;
-}
-
-.form-radio.radio--active {
-    background-color: var(--primary-color);
-    color: #f6f8fa;
-    box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
-}
-
-.form-radio.radio--active i{
-    color: #f6f8fa;
-}
-
-.form-radio.radio--active span{
-    color: inherit;
-}
-
+            #info_form {
+                margin-bottom: 30px;
+                /*
+                border-radius: 20px;
+                box-shadow: 0px 1px 5px rgba(0,0,0,0.2);
+                */
+            }
         </style>
-
-<style>
-    #info_form {
-        margin-bottom: 30px;
-        /*
-        border-radius: 20px;
-        box-shadow: 0px 1px 5px rgba(0,0,0,0.2);
-        */
-    }
-</style>
 
     </head>
     <body>
@@ -219,62 +109,7 @@ dd {
         </section>
 
         <script src="../js/androidInterface.js"></script>
-
-        <script>
-            // Header button
-            const button_return = document.getElementById("button_return");
-            button_return.addEventListener('click', function () {
-                if(androidConnected()) Android.requestReturnToDrive();
-            });
-
-            // Radio group
-            const radio_buttons = document.querySelectorAll(".form-radio");
-            radio_buttons.forEach(function (radio_button, index) {
-                radio_button.addEventListener('click', (event) => {
-                    radio_buttons.forEach( (button) => button.classList.remove("radio--active"));
-                    radio_button.classList.add("radio--active");
-                });
-            });
-
-            // Global var: Selected Vehicle
-            var JSONvehicle; // defined by setVehicle
-
-            // Request selected vehicle
-            if(androidConnected()) Android.requestGetVehicle();
-            else setVehicle('{"name":"tet", "address":"rue", "licencePlate":"5454"}'); // debug PC
-            
-            // [ANDROID CALLBACK]
-            function setVehicle(vehicle){
-                JSONvehicle = JSON.parse(vehicle);
-                const infos = [JSONvehicle.name, JSONvehicle.address, JSONvehicle.licencePlate];
-
-                const formInfo = document.getElementById("info_form");
-                const radio_buttons = formInfo.querySelectorAll("span");
-                radio_buttons.forEach((button, index) => {
-                    button.innerText = infos[index];
-                });
-            }
-
-            // Submit Form
-            const book_vehicle_button = document.getElementById("book_vehicle_button");
-            book_vehicle_button.addEventListener('click', function() {
-                // Get values
-                const form = document.getElementById("book_form");
-                const formPickupDate = form.elements["pickup_date"].value;
-                const formDropDate = form.elements["drop_date"].value;
-                //const formPersons = form.elements["person"].checked;
-            
-                // Sent to android
-                if(androidConnected()) Android.requestBookVehicle(JSONvehicle.id, formPickupDate, formDropDate, 2);
-            });
-
-            //[ANDROID CALLBACK]
-            // Fail
-            // Stay in the current page
-            function updateVehicleResult(code) {
-                console.log("code:" + code);
-            }
-
-        </script>
+        <script src="../js/panels.js"></script>
+        <script src="../js/drive_book.js"></script>
     </body>
 </html>

@@ -25,6 +25,8 @@
   - [Verify our docker image](#verify-our-docker-image)
   - [Verify running container](#verify-running-container-1)
   - [Restart container](#restart-container)
+- [Extension](#extension)
+  - [Verification](#verification)
 
 
 # Database Postgres Server Docker
@@ -286,3 +288,26 @@ ubuntu@ubuntu:~$
 **Note:** the database is now available.
 
 **Note:** We can use `--restart always` (but not tested for the moment)
+
+# Extension
+
+```
+psql -U postgres -d gogocar
+```
+
+```
+CREATE EXTENSION pgcrypto;
+```
+
+## Verification
+
+```
+gogocar=# \dx
+                  List of installed extensions
+   Name   | Version |   Schema   |         Description          
+----------+---------+------------+------------------------------
+ pgcrypto | 1.3     | public     | cryptographic functions
+ plpgsql  | 1.0     | pg_catalog | PL/pgSQL procedural language
+(2 rows)
+
+```

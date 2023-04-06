@@ -1,13 +1,13 @@
 // Request database
 if (androidConnected()) Android.requestUserVehicles();
 // For debug on PC
-/*
+
 else{
     var vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
     console.log(vehicles.length);
 
     if (vehicles.length == 0){
-        document.getElementById("no_vehicles").style.display = 'flex';
+        document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
     } else {
         vehicles.forEach((vehicle) => {
             addElement(vehicle);
@@ -22,7 +22,7 @@ else{
         });
     }
 }
-*/
+
 
 
 // [ANDROID CALLBACK] Retrive databases from android (result)
@@ -32,7 +32,7 @@ function setDatabase(_table_vehicle) {
     console.log(vehicles.length);
 
     if (vehicles.length == 0){
-        document.getElementById("no_vehicles").style.display = 'flex';
+        document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
     } else {
         vehicles.forEach((vehicle) => {
             addElement(vehicle);
@@ -52,10 +52,24 @@ function setDatabase(_table_vehicle) {
                 // Open window edit
                 console.log(index);
                 console.log(JSON.stringify(vehicles[index]));
-                if (androidConnected()) Android.requestOpenEditVehicle(JSON.stringify(vehicles[index]));
+                if (androidConnected()) Android.openSlider("vehicles", "edit", JSON.stringify(vehicles[index]));
             });
         });
     }
+}
+
+// [ANDROID] Reset database for update
+function resetDatabase(){
+    document.getElementById("no_vehicles").classList.add('logo_no_veh-hidden');
+
+    var ul = document.getElementById("vehicles_list"); 
+    var liElements = ul.getElementsByTagName("li"); // get all the li elements
+
+    // loop through all the li elements in reverse order
+    for (var i = liElements.length - 1; i >= 0; i--) { 
+        ul.removeChild(liElements[i]); // remove the li element from the ul element
+    }
+    if (androidConnected()) Android.requestUserVehicles();
 }
 
 // Add element to ul list
@@ -154,6 +168,5 @@ function determineState(vehicle){
 const addVehicleButton = document.getElementById("add_vehicle_button");
 addVehicleButton.addEventListener("click", (event) => {
     // Open new window for add new vehicle
-    console.log("add vehicle");
-    if (androidConnected()) Android.requestOpenAddVehicle();
+    if(androidConnected()) Android.openSlider("vehicles", "add");
 });

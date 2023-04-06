@@ -21,6 +21,7 @@
             }
         </style>
 
+        <link rel="stylesheet" href="../css/github_form.css"/>
         <link rel="stylesheet" href="../css/vehicles_form.css"/>
 
     </head>
@@ -38,24 +39,28 @@
                     <dt>Model</dt>
                     <dd>
                         <input id="vehicle_model" class="form-control" type="text" name="" >
+                        <p id="err_vm" class="note error">This vehicle does not exist.</p>
                     </dd>
                 </div>
                 <div class="form-group">
                     <dt>Licence plate</dt>
                     <dd>
-                        <input id="vehicle_licence_plate" class="form-control" type="text" name="" >
+                        <input id="vehicle_licence_plate" class="form-control" type="text" name="" placeholder="XX-123-XX" maxlength="9" >
+                        <p id="err_lp" class="note error">This does not match a license plate.</p>
                     </dd>
                 </div>
                 <div class="form-group">
                     <dt>Address</dt>
                     <dd>
                         <input id="vehicle_address" class="form-control" type="text" name="" >
+                        <p id="err_va" class="note error">This address does not exist.</p>
                     </dd>
                 </div>
                 <div class="form-group">
                     <dt>Module Mi Carro Es Tu Carro Code</dt>
                     <dd>
-                        <input id="vehicle_module_code" class="form-control" type="text" name="" >
+                        <input id="vehicle_module_code" class="form-control" type="text" name="" value="#" placeholder="#00-00-0000" maxlength="11">
+                        <p id="err_mc" class="note error">This does not match a module code.</p>
                         <p class="note">You can find the code in the module.</p>
                     </dd>
                 </div>
@@ -78,35 +83,8 @@
         </section>
 
         <script src="../js/androidInterface.js"></script>
-
-        <script>
-            const button_return = document.getElementById("button_return");
-            button_return.addEventListener('click', function () {
-                if(androidConnected()) Android.requestReturnToHome("ADD_VEHICLE");
-            });
-
-            const add_vehicle_button = document.getElementById("add_vehicle_button");
-            add_vehicle_button.addEventListener('click', function() {
-                // Get values
-                const formVehicle = document.getElementById("form-add-vehicle");
-                const formVhModel = formVehicle.elements["vehicle_model"].value;
-                const formVhLicencePlate = formVehicle.elements["vehicle_licence_plate"].value;
-                const formVhAddress = formVehicle.elements["vehicle_address"].value;
-                const formVhModuleCode = formVehicle.elements["vehicle_module_code"].value;
-                const formVhIsAvailable = formVehicle.elements["switch"].checked;
-                
-                console.log("vehicle: " + formVhModel + ", " + formVhLicencePlate + ", " + formVhAddress + ", " + formVhModuleCode + ", " + formVhIsAvailable);
-
-                // Sent to android
-                if(androidConnected()) Android.requestAddVehicle(formVhModel, formVhLicencePlate, formVhAddress, formVhModuleCode, formVhIsAvailable);
-            });
-
-            //[ANDROID CALLBACK]
-            // Fail
-            // Stay in the current page
-            function addVehicleResult(code) {
-                console.log("code:" + code);
-            }
-        </script>
+        <script src="../js/panels.js"></script>
+        <script src="../js/vehicles_add.js"></script>
+        <script src="../js/formatter.js"></script>
     </body>
 </html>

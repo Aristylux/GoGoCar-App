@@ -2,13 +2,12 @@ package com.aristy.gogocar;
 
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_LEFT;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
-import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_UP;
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.ConnectionHelper.connectionValid;
-import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_NAME;
-import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_PARAMS;
+import static com.aristy.gogocar.FragmentNav.ARG_FUNCTION_NAME;
+import static com.aristy.gogocar.FragmentNav.ARG_FUNCTION_PARAMS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_STATE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
@@ -17,32 +16,26 @@ import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
-import static com.aristy.gogocar.HandlerCodes.DATA_SET_VEHICLE;
-import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
-import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_DRIVE_FRAGMENT;
-import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_VEHICLE_FRAGMENT;
+import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import static com.aristy.gogocar.PermissionHelper.REQUEST_ACCESS_COARSE_LOCATION;
 import static com.aristy.gogocar.PermissionHelper.checkCoarseLocationPermission;
 import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 import static com.aristy.gogocar.Security.getPinKey;
-import static com.aristy.gogocar.WebInterface.ADD_VEHICLE;
-import static com.aristy.gogocar.WebInterface.BOOK_VEHICLE;
-import static com.aristy.gogocar.WebInterface.Boolean.TRUE;
-import static com.aristy.gogocar.WebInterface.DRIVE;
-import static com.aristy.gogocar.WebInterface.EDIT_VEHICLE;
-import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_CONNECTION_DISCONNECTED;
-import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_CONNECTION_FAILED;
-import static com.aristy.gogocar.WebInterface.ErrorCodes.DRIVING_REQUEST_CAR_NOT_FOUND;
-import static com.aristy.gogocar.WebInterface.FunctionNames.DRIVING_REQUEST;
-import static com.aristy.gogocar.WebInterface.FunctionNames.SET_VEHICLE_EDIT;
-import static com.aristy.gogocar.WebInterface.HOME;
-import static com.aristy.gogocar.WebInterface.VEHICLE;
+import static com.aristy.gogocar.WICommon.Boolean.TRUE;
+import static com.aristy.gogocar.WICommon.Pages.DRIVE;
+import static com.aristy.gogocar.WICommon.ErrorCodes.DRIVING_CONNECTION_DISCONNECTED;
+import static com.aristy.gogocar.WICommon.ErrorCodes.DRIVING_CONNECTION_FAILED;
+import static com.aristy.gogocar.WICommon.ErrorCodes.DRIVING_REQUEST_CAR_NOT_FOUND;
+import static com.aristy.gogocar.WICommon.JSFunction.DRIVING_REQUEST;
+import static com.aristy.gogocar.WICommon.Pages.HOME;
+import static com.aristy.gogocar.WICommon.Pages.VEHICLE;
+import static com.aristy.gogocar.WindowHelper.setWindowVersion;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -54,7 +47,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -66,9 +58,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -83,18 +72,15 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityResultLauncher<Intent> activityResult;
 
-    Fragment selectedFragment;
-    FragmentApp fragmentApp;
+    FragmentNav fragmentNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Connect to database (do it in other thread)
-        ConnectionHelper connectionHelper = new ConnectionHelper();
-        connectionHelper.openConnection();
-        SQLConnection = connectionHelper.getConnection();
+        // Start connection (Connect to database)
+        ThreadManager.getInstance().setConnection();
 
         // ----
         Intent intent = getIntent();
@@ -105,28 +91,19 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG_SPLASH, "onCreate: user " + userPreferences.toString());
         // ----
 
-        Bundle args = new Bundle();
-        args.putSerializable("FRGHandler", new HandlerWrapper(fragmentHandler));
-        args.putParcelable("userPreferences", userPreferences);
-
         // If the user is not logged
+        Fragment selectedFragment;
         if(!isLogged)
-            selectedFragment = new FragmentLogin(SQLConnection);
+            selectedFragment = FragmentLogin.newInstance(userPreferences, fragmentHandler);
         else {
-            args.putSerializable("BLEHandler", new HandlerWrapper(bluetoothHandler));
-            args.putString("fragmentLink", HOME);
-
-            fragmentApp = new FragmentApp(SQLConnection);
-            selectedFragment = fragmentApp;
+            selectedFragment = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
         }
-
-        selectedFragment.setArguments(args);
 
         // Set Fragment
         setFragment(selectedFragment, ANIMATE_SLIDE_LEFT);
 
         // For top bar and navigation bar
-        setWindowVersion();
+        setWindowVersion(MainActivity.this, getWindow());
 
         // -----
 
@@ -327,19 +304,6 @@ public class MainActivity extends AppCompatActivity {
         }
     });
 
-    // ---- WINDOW settings ----
-    public void setWindowVersion(){
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-    }
-
-    public static void setWindowFlag(Activity activity, final int bits) {
-        Window win = activity.getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        winParams.flags &= ~bits;
-        win.setAttributes(winParams);
-    }
-
     // ---- FRAGMENTS ----
 
     /**
@@ -356,27 +320,12 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Move to old fragment from new fragment and add arguments
-     * @param fragment      new fragment
      * @param animation     animation type
-     * @param bundle        arguments
+     * @param link          arguments
      */
-    public void setFragment(Fragment fragment, int animation, Bundle bundle){
-        fragment.setArguments(bundle);
-        setFragment(fragment, animation);
-    }
-
-    /**
-     * Add argument to fragment
-     * @param link 4th argument
-     * @return arguments
-     */
-    public Bundle addArguments(String link){
-        Bundle args = new Bundle();
-        args.putSerializable("FRGHandler", new HandlerWrapper(fragmentHandler));
-        args.putSerializable("BLEHandler", new HandlerWrapper(bluetoothHandler));
-        args.putParcelable("userPreferences", userPreferences);
-        args.putString("fragmentLink", link);
-        return args;
+    public void setFragment(int animation, String link){
+        fragmentNav = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, link);
+        setFragment(fragmentNav, animation);
     }
 
     /**
@@ -387,10 +336,8 @@ public class MainActivity extends AppCompatActivity {
         Bundle args = new Bundle();
         args.putString(ARG_FUNCTION_NAME, function);
         args.putString(ARG_FUNCTION_PARAMS, params);
-        fragmentApp.putArguments(args);
+        fragmentNav.putArguments(args);
     }
-
-    String vehicle;
 
     Handler fragmentHandler = new Handler(new Handler.Callback() {
         @SuppressLint("MissingPermission")
@@ -398,46 +345,38 @@ public class MainActivity extends AppCompatActivity {
         public boolean handleMessage(@NonNull Message message) {
             switch (message.what){
                 case GOTO_LOGIN_FRAGMENT:
-                    Bundle args = new Bundle();
-                    args.putSerializable("FRGHandler", new HandlerWrapper(fragmentHandler));
-                    args.putParcelable("userPreferences", userPreferences);
-
-                    FragmentLogin fragmentLogin = new FragmentLogin(SQLConnection);
-                    fragmentLogin.setArguments(args);
+                    FragmentLogin fragmentLogin = FragmentLogin.newInstance(userPreferences, fragmentHandler);
                     setFragment(fragmentLogin, ANIMATE_SLIDE_LEFT);
                     break;
                 case GOTO_HOME_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT, addArguments(HOME));
+                    setFragment(ANIMATE_SLIDE_RIGHT, HOME);
                     break;
                 case GOTO_DRIVE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_LEFT, addArguments(DRIVE));
-                    break;
-                case GOTO_BOOK_VEHICLE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_RIGHT, addArguments(BOOK_VEHICLE));
-                    vehicle = String.valueOf(message.obj);
-                    break;
-                case GOTO_ADD_VEHICLE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_UP, addArguments(ADD_VEHICLE));
-                    break;
-                case GOTO_EDIT_VEHICLE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection);
-                    setFragment(fragmentApp, ANIMATE_SLIDE_LEFT, addArguments(EDIT_VEHICLE));
-                    vehicle = String.valueOf(message.obj);
+                    setFragment(ANIMATE_SLIDE_LEFT, DRIVE);
                     break;
                 case GOTO_VEHICLE_FRAGMENT:
-                    fragmentApp = new FragmentApp(SQLConnection);
-                    setFragment(fragmentApp, (Integer) message.obj, addArguments(VEHICLE));
+                    setFragment((Integer) message.obj, VEHICLE);
                     break;
                 case STATUS_BAR_COLOR:
                     // Set color background
                     getWindow().setStatusBarColor((Integer) message.obj);
                     break;
-                case DATA_SET_VEHICLE:
-                    sendDataToFragment(SET_VEHICLE_EDIT, vehicle);
+                case OPEN_SLIDER:
+                    // Open second activity (Which is a slider)
+                    // Call in : openSlider() -> WIMainScreen class
+                    Object[] arg = (Object[]) message.obj;
+                    Intent intent;
+                    if(arg.length > 2){
+                        intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, String.valueOf(arg[0]), (boolean) arg[1], (String) arg[2]);
+                    } else {
+                        intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, String.valueOf(arg[0]), (boolean) arg[1]);
+                    }
+
+                    MainActivity.this.startActivity(intent);
+                    MainActivity.this.overridePendingTransition(
+                            R.anim.animate_slide_left_enter,
+                            R.anim.animate_slide_left_exit
+                    );
                     break;
             }
             return true;

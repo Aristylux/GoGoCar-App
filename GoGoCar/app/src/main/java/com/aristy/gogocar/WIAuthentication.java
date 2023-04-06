@@ -3,6 +3,7 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
+import static com.aristy.gogocar.SHAHash.generateSalt;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 
 import android.content.Context;
@@ -10,26 +11,28 @@ import android.os.Handler;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
-import android.widget.Toast;
-
-import java.sql.Connection;
 
 /**
  * Web Interface for Authentication screen
  */
-public class WIAuthentication extends WICommon{
+public class WIAuthentication extends WICommon {
 
-    Context context;
-    UserPreferences userPreferences;
-    Handler fragmentHandler;
-    DatabaseHelper databaseHelper;
+    private final UserPreferences userPreferences;
+    private final Handler fragmentHandler;
+    private final ThreadManager thread;
 
-    public WIAuthentication(Context context, WebView webView, Connection connection, UserPreferences userPreferences, Handler fragmentHandler) {
+    /**
+     * Constructor
+     * @param context           context
+     * @param webView           current web view
+     * @param userPreferences   user preference object
+     * @param fragmentHandler   handler to navigate between fragment
+     */
+    public WIAuthentication(Context context, WebView webView, UserPreferences userPreferences, Handler fragmentHandler) {
         super(webView);
 
-        this.context = context;
+        this.thread = ThreadManager.getInstance();
 
-        this.databaseHelper = new DatabaseHelper(connection);
         this.userPreferences = userPreferences;
         this.userPreferences.setContext(context);   // Update context
 
@@ -50,34 +53,40 @@ public class WIAuthentication extends WICommon{
         // Hash password
         String hash = hashPassword(password, SHAHash.DOMAIN);
 
-        // Verify user exist for this email and password
-        DBModelUser user = verify(email, hash);
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultUser(DBModelUser user) {
+                // Verify user exist for this email and password
+                DBModelUser userVerified = verify(user, hash);
 
-        // If user doesn't exist
-        if (user == null) {
-            Log.e(TAG_Auth, "AuthenticationLogin: this user isn't in our database");
-            // Send error to the page
-            androidToWeb("errorAuthenticationLogin");
-        } else {
-            // Set user in app & Save user for the application (user id)
-            userPreferences.setUser(user);
+                // If user doesn't exist
+                if (userVerified == null) {
+                    Log.e(TAG_Auth, "AuthenticationLogin: this user isn't in our database");
+                    // Send error to the page
+                    androidToWeb("errorAuthenticationLogin");
+                } else {
+                    // Set user in app & Save user for the application (user id)
+                    userPreferences.setUser(user);
 
-            // Go to home
-            fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
-            fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) HexColor.TRANSPARENT).sendToTarget();
-        }
+                    // Go to home
+                    fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
+                    fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) HexColor.TRANSPARENT).sendToTarget();
+                }
+            }
+        });
+        thread.getUserByEmail(email);
     }
 
     /**
      * Verify if user exist
-     * @param email     user email enter in login
+     * @param user      user retrieved
      * @param hash      user password hash
      * @return user if success,<br>
      *         null if not.
      */
-    private DBModelUser verify(String email, String hash){
-        DBModelUser user = databaseHelper.getUserByEmail(email);
-        // if user exist
+    private DBModelUser verify(DBModelUser user, String hash){
+        //DBModelUser user = databaseHelper.getUserByEmail(email);
+        // If user exist
         if(user.getPassword() != null){
             // Compare passwords, if hash_password == hash
             if(hash.equals(user.getPassword())) return user;    // Ok
@@ -97,28 +106,51 @@ public class WIAuthentication extends WICommon{
     public void AuthenticationRegister(String fullName, String email, String phoneNumber, String password){
         // Hash password
         String hash = hashPassword(password, SHAHash.DOMAIN);
-        Log.d(TAG_Auth, "pw= \"" + password + "\", hash= \"" + hash + "\"");
+
+        // Generate salt
+        String salt = generateSalt();
+        Log.d(TAG_Auth, "pw= \"" + password + "\", hash= \"" + hash + "\", salt= \"" + salt + "\"");
 
         // Create user
-        DBModelUser user = new DBModelUser(-1, fullName, email, phoneNumber, hash);
+        DBModelUser user = new DBModelUser(fullName, email, phoneNumber, hash, salt);
 
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultTableUpdated(boolean success) {
+                Log.d(TAG_Auth, "success=" + success);
+                if (!success) {
+                    // print error on web
+                    Log.e(TAG_Auth, "onResultTableUpdated: An error occured.");
+
+                    // crash: Can't toast on a thread that has not called Looper.prepare()
+                    //Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
+                } else {
+                    saveUserInApp(email);
+                }
+            }
+        });
         // Add user into user table
-        boolean success = databaseHelper.addUser(user);
-        Log.d(TAG_Auth, "success=" + success);
-        if (!success) {
-            Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        thread.addUser(user);
+    }
 
+    /**
+     * Retrieve the new user, (for his id)
+     * @param email get user by his email
+     */
+    private void saveUserInApp(String email){
         // Retrieve user id
-        DBModelUser user_refresh = databaseHelper.getUserByEmail(email);
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultUser(DBModelUser user) {
+                // Set user in app & Save user for the application (user id)
+                userPreferences.setUser(user);
 
-        // Set user in app & Save user for the application (user id)
-        userPreferences.setUser(user_refresh);
-
-        // Load home page
-        fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
-        fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) HexColor.TRANSPARENT).sendToTarget();
+                // Load home page
+                fragmentHandler.obtainMessage(GOTO_HOME_FRAGMENT).sendToTarget();
+                fragmentHandler.obtainMessage(STATUS_BAR_COLOR, (int) HexColor.TRANSPARENT).sendToTarget();
+            }
+        });
+        thread.getUserByEmail(email);
     }
 
     /**
@@ -129,15 +161,19 @@ public class WIAuthentication extends WICommon{
      */
     @JavascriptInterface
     public void verifyEmail(String email, int successCode, int errorCode){
-        // Check in database if email exist
-        DBModelUser user = databaseHelper.getUserByEmail(email);
-        Log.d(TAG_Auth, "verifyEmail: " + user.toString());
+        Log.d(TAG_Auth, "verifyEmail: ");
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultUser(DBModelUser user) {
+                Log.d(TAG_Auth, "verifyEmail: " + user.toString());
 
-        // If exist -> error
-        if (user.getEmail() == null) // not exist
-            androidToWeb("success", String.valueOf(successCode));
-        else
-            androidToWeb("errorAuthenticationRegistration", String.valueOf(errorCode));
+                // If != null (exist) -> error
+                if (user.getEmail() == null) androidToWeb("success", String.valueOf(successCode));
+                else androidToWeb("errorAuthenticationRegistration", String.valueOf(errorCode));
+            }
+        });
+        Log.d(TAG_Auth, "verifyEmail: get");
+        thread.getUserByEmail(email);
     }
 
     /**
@@ -148,14 +184,18 @@ public class WIAuthentication extends WICommon{
      */
     @JavascriptInterface
     public void verifyPhone(String phone, int successCode, int errorCode){
-        DBModelUser user = databaseHelper.getUserByPhone(phone);
-        Log.d(TAG_Auth, "verifyPhone: " + user.toString());
+        Log.d(TAG_Auth, "verifyPhone: ");
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultUser(DBModelUser user) {
+                Log.d(TAG_Auth, "verifyPhone: " + user.toString());
 
-        // If exist -> error
-        if (user.getPhoneNumber() == null) // not exist
-            androidToWeb("success", String.valueOf(successCode));
-        else
-            androidToWeb("errorAuthenticationRegistration", String.valueOf(errorCode));
+                // If exist -> error
+                if (user.getPhoneNumber() == null) androidToWeb("success", String.valueOf(successCode));
+                else androidToWeb("errorAuthenticationRegistration", String.valueOf(errorCode));
+            }
+        });
+        thread.getUserByPhone(phone);
     }
 
     /**

@@ -15,6 +15,7 @@ client@user:~$ ssh -i <private-key> <username>@<public_ip_address>
 
 ssh -i ssh-key-2022-12-17-oracle.key ubuntu@129.151.225.59
 
+129.151.251.242
 
 sudo lsof -P -i -n
 COMMAND    PID            USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
