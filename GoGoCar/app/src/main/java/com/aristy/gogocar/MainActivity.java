@@ -6,8 +6,8 @@ import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.ConnectionHelper.connectionValid;
-import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_NAME;
-import static com.aristy.gogocar.FragmentApp.ARG_FUNCTION_PARAMS;
+import static com.aristy.gogocar.FragmentNav.ARG_FUNCTION_NAME;
+import static com.aristy.gogocar.FragmentNav.ARG_FUNCTION_PARAMS;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_STATE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
@@ -72,8 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityResultLauncher<Intent> activityResult;
 
-    Fragment selectedFragment;
-    FragmentApp fragmentApp;
+    FragmentNav fragmentNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         // ----
 
         // If the user is not logged
+        Fragment selectedFragment;
         if(!isLogged)
             selectedFragment = FragmentLogin.newInstance(userPreferences, fragmentHandler);
         else {
@@ -324,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
      * @param link          arguments
      */
     public void setFragment(int animation, String link){
-        FragmentNav fragmentNav = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, link);
+        fragmentNav = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, link);
         setFragment(fragmentNav, animation);
     }
 
@@ -336,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle args = new Bundle();
         args.putString(ARG_FUNCTION_NAME, function);
         args.putString(ARG_FUNCTION_PARAMS, params);
-        fragmentApp.putArguments(args);
+        fragmentNav.putArguments(args);
     }
 
     Handler fragmentHandler = new Handler(new Handler.Callback() {

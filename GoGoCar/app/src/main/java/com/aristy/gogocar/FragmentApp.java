@@ -32,9 +32,7 @@ public class FragmentApp extends Fragment {
     private static final String ARG_LINK = "webLink";
 
 
-    // the fragment parameters name for execute javascript function on web
-    public final static String ARG_FUNCTION_NAME = "func_name";
-    public final static String ARG_FUNCTION_PARAMS = "func_param";
+
 
     Connection SQLConnection;
     UserPreferences userPreferences;
@@ -106,38 +104,13 @@ public class FragmentApp extends Fragment {
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        // Result state page
-        web.setWebViewClient(new Callback());
+
 
         //web.addJavascriptInterface(new WebInterface(getActivity(), getContext(), web, SQLConnection, userPreferences, handlers), "Android");
 
         return view;
     }
 
-    //open in app
-    public static class Callback extends WebViewClient {
-        @Override
-        public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-            return false;
-        }
 
-        public void onPageFinished(WebView view, String url){
-            //Here you want to use .loadUrl again
-            //on the webView object and pass in
-            //"javascript:<your javaScript function"
-            //Set<BluetoothDevice> bluetoothDevice = getBluetoothPairedDevices();
-            //error here when bt is not activated
-            //populateSpinner(bluetoothDevice);
-        }
-    }
-
-    public void putArguments(Bundle args){
-        String functionName = args.getString(ARG_FUNCTION_NAME);
-        String params = args.getString(ARG_FUNCTION_PARAMS);
-        if (web != null)
-            web.post(() -> web.loadUrl("javascript:" + functionName + "('" + params + "')"));
-        else
-            Log.e("GoGoCar_Fragments", "putArguments: error, web = null");
-    }
     
 }

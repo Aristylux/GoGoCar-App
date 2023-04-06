@@ -273,3 +273,33 @@ function determinateChange(start, end, change, sample) {
     return false;
 }
 ```
+
+# web java
+
+```java
+
+oncreate : 
+
+```
+// Result state page
+web.setWebViewClient(new Callback());
+```
+
+//open in app
+    public static class Callback extends WebViewClient {
+        @Override
+        public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
+            return false;
+        }
+
+        public void onPageFinished(WebView view, String url){
+            //Here you want to use .loadUrl again
+            //on the webView object and pass in
+            //"javascript:<your javaScript function"
+            //Set<BluetoothDevice> bluetoothDevice = getBluetoothPairedDevices();
+            //error here when bt is not activated
+            //populateSpinner(bluetoothDevice);
+        }
+    }
+
+```

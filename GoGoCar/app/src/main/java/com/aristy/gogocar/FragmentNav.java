@@ -35,6 +35,10 @@ public class FragmentNav extends Fragment {
     private static final String ARG_BLE_HANDLER = "BLEHandler";
     private static final String ARG_LINK = "webLink";
 
+    // the fragment parameters name for execute javascript function on web
+    public final static String ARG_FUNCTION_NAME = "func_name";
+    public final static String ARG_FUNCTION_PARAMS = "func_param";
+
     private UserPreferences userPreferences;
     private Handler[] handlers;
     private String link;
@@ -147,5 +151,14 @@ public class FragmentNav extends Fragment {
             return false;
         }
     });
+
+    public void putArguments(Bundle args){
+        String functionName = args.getString(ARG_FUNCTION_NAME);
+        String params = args.getString(ARG_FUNCTION_PARAMS);
+        if (web != null)
+            web.post(() -> web.loadUrl("javascript:" + functionName + "('" + params + "')"));
+        else
+            Log.e("GoGoCar_Fragments", "putArguments: error, web = null");
+    }
 
 }
