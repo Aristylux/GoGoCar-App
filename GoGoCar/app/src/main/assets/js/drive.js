@@ -112,6 +112,16 @@ function setDatabase(_table_vehicle) {
     });
 }
 
+// [ANDROID CALLBACK] Add vehicle
+function addVehicle(_vehicle){
+    let vehicle = JSON.parse(_vehicle);
+    addElement(vehicle);
+
+    // add vehciel into vehicles[index]
+
+    // When clicked, open booking
+}
+
 // [ANDROID] Reset database for update
 function resetDatabase(){
     var ul = document.getElementById("vehicles_list");

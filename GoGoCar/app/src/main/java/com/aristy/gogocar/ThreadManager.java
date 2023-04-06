@@ -209,7 +209,9 @@ public class ThreadManager {
         thread = new Thread(() -> {
             Log.d(TAG_THREAD, "run: getVehiclesAvailable");
             List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userID);
-            callback.onResultVehicles(vehicles);
+            for (DBModelVehicle vehicle : vehicles){
+                callback.onResultVehicle(vehicle);
+            }
         });
         thread.start();
     }
