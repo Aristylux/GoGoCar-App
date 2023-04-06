@@ -88,8 +88,6 @@ else{
     vehicles_container.forEach(function (container, index) {
         container.addEventListener("click", (event) => {
             // Open popup 'book'
-            console.log(index);
-            //if (androidConnected()) Android.openPopupBook(vehicles[index].id);
             vehicle_selected = vehicles[index];
             openPopupBook();
         });
@@ -106,9 +104,8 @@ function setDatabase(_table_vehicle) {
 
     const vehicles_container = document.querySelectorAll(".vehicle_container");
     vehicles_container.forEach(function (container, index) {
-        container.addEventListener("click", (event) => {
+        container.addEventListener("click", () => {
             // Open popup 'book'
-            console.log(index);
             vehicle_selected = vehicles[index];
             openPopupBook();
         });
@@ -119,11 +116,11 @@ function setDatabase(_table_vehicle) {
 function resetDatabase(){
     var ul = document.getElementById("vehicles_list");
     // loop through all its child nodes
-    while (ul.firstChild) { 
-        if (ul.firstChild.nodeName == "LI") { 
-            ul.removeChild(ul.firstChild); // remove the child node from the ul element
-        }
+    let liElements = ul.getElementsByTagName("li"); // get all the li elements
+    for (let i = liElements.length - 1; i >= 0; i--) { 
+        ul.removeChild(liElements[i]); // remove the li element from the ul element
     }
+
     if (androidConnected()) Android.requestDatabase();
 }
 

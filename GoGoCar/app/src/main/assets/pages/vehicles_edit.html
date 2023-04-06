@@ -79,20 +79,13 @@
         </section>
 
         <script src="../js/androidInterface.js"></script>
+        <script src="../js/panels.js"></script>
 
         <script>
-            // Header button
-            const button_return = document.getElementById("button_return");
-            button_return.addEventListener('click', function () {
-                if (androidConnected()) Android.requestClosePanel();
-                //if(androidConnected()) Android.requestReturnToHome("EDIT_VEHICLE");
-            });
-
             // Exit form button
             const button_exit = document.getElementById("exit_vehicle_button");
             button_exit.addEventListener('click', function () {
                 if (androidConnected()) Android.requestClosePanel();
-                //if(androidConnected()) Android.requestReturnToHome("EDIT_VEHICLE");
             });
 
             var JSONvehicle;

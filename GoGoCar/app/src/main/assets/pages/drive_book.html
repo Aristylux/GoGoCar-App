@@ -219,15 +219,9 @@ dd {
         </section>
 
         <script src="../js/androidInterface.js"></script>
+        <script src="../js/panels.js"></script>
 
         <script>
-            // Header button
-            const button_return = document.getElementById("button_return");
-            button_return.addEventListener('click', function () {
-                if (androidConnected()) Android.requestClosePanel();
-                //if(androidConnected()) Android.requestReturnToDrive();
-            });
-
             // Radio group
             const radio_buttons = document.querySelectorAll(".form-radio");
             radio_buttons.forEach(function (radio_button, index) {

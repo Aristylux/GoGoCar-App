@@ -54,8 +54,6 @@ function setVehicleBooked(_table_vehicle){
     var vehicles = JSON.parse(_table_vehicle);
     
     if (vehicles.length == 0){
-        // Hide container
-        //document.getElementById("no_vehicles").style.display = 'flex';
         console.log("no vehicle booked");
     } else {
         // Add booked vehicles to the list
@@ -241,7 +239,7 @@ function requestDriveCallback(allowedToDrive){
 // Navigation Boxes
 const box_nav = document.querySelectorAll(".box-nav");
 box_nav.forEach((box) => {
-    box.addEventListener('click', (event) => {
+    box.addEventListener('click', () => {
         if (!isDriving && androidConnected()) Android.requestChangePage(box.id.slice(8));
     })
 });
