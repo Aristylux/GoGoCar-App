@@ -1,3 +1,6 @@
+var vehicles = [];
+var index_vh = 0;
+
 // Request database
 if (androidConnected()) Android.requestUserVehicles();
 // For debug on PC
@@ -6,25 +9,25 @@ else{
     var vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
     console.log(vehicles.length);
 
-    if (vehicles.length == 0){
-        document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
-    } else {
-        vehicles.forEach((vehicle) => {
-            addElement(vehicle);
+    vehicles.forEach((vehicle) => {
+        document.getElementById("no_vehicles").classList.add('logo_no_veh-hidden');
+
+        let elements = addElement(vehicle, index_vh++);
+        vehicles.push(vehicle);
+
+        elements[1].addEventListener('click', () => {
+            console.log(JSON.stringify(vehicles[parseInt(elements[0].id.substring(3))]));
+            //openPopupBook(vehicles[parseInt(elements[0].id.substring(3))]);
         });
 
-        const vehicles_container = document.querySelectorAll(".fi-sr-trash");
-        vehicles_container.forEach(function (container, index) {
-            container.addEventListener("click", (event) => {
-                // Open popup 'book'
-                openPopupBook(vehicles[index]);
-            });
+        elements[2].addEventListener('click', () => {
+            console.log(JSON.stringify(vehicles[parseInt(elements[0].id.substring(3))]));
         });
-    }
+    });
+
 }
 
-
-
+// Not used
 // [ANDROID CALLBACK] Retrive databases from android (result)
 function setDatabase(_table_vehicle) {
     var vehicles = JSON.parse(_table_vehicle);
@@ -40,7 +43,7 @@ function setDatabase(_table_vehicle) {
 
         const vehicles_container_trash = document.querySelectorAll(".fi-sr-trash");
         vehicles_container_trash.forEach(function (container, index) {
-            container.addEventListener('click', (event) => {
+            container.addEventListener('click', () => {
                 // Open popup
                 openPopupBook(vehicles[index]);
             });
@@ -48,7 +51,7 @@ function setDatabase(_table_vehicle) {
 
         const vehicles_container_edit = document.querySelectorAll(".fi-sr-pencil");
         vehicles_container_edit.forEach(function (container, index) {
-            container.addEventListener('click', (event) => {
+            container.addEventListener('click', () => {
                 // Open window edit
                 console.log(index);
                 console.log(JSON.stringify(vehicles[index]));
@@ -58,26 +61,52 @@ function setDatabase(_table_vehicle) {
     }
 }
 
+
+// [ANDROID CALLBACK] Add vehicle
+function addVehicle(_vehicle){
+    if (index_vh != 0){
+        document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
+    }
+
+    let vehicle = JSON.parse(_vehicle);
+    let elements = addElement(vehicle, index_vh++);
+    vehicles.push(vehicle);
+
+    elements[1].addEventListener('click', () => {
+        // Open popup
+        openPopupBook(vehicles[parseInt(elements[0].id.substring(3))]);
+    });
+
+    elements[2].addEventListener('click', () => {
+        // Open window edit
+        console.log(JSON.stringify(vehicles[parseInt(elements[0].id.substring(3))]));
+        if (androidConnected()) Android.openSlider("vehicles", "edit", JSON.stringify(vehicles[index]));
+    });
+}
+
 // [ANDROID] Reset database for update
 function resetDatabase(){
     document.getElementById("no_vehicles").classList.add('logo_no_veh-hidden');
+
+    vehicles = [];
+    index_vh = 0;
 
     var ul = document.getElementById("vehicles_list"); 
 
     // loop through all the li elements in reverse order
     let liElements = ul.getElementsByTagName("li");
     for (let i = liElements.length - 1; i >= 0; i--) {
-        console.log("li removed");
         ul.removeChild(liElements[i]); // remove the li element from the ul element
     }
     if (androidConnected()) Android.requestUserVehicles();
 }
 
 // Add element to ul list
-function addElement(vehicle) {
+function addElement(vehicle, index) {
     // Create Container
     let li = document.createElement("li");
     li.classList.add("vehicle_container");
+    li.id = "vh_" + index;
 
     // Container Left
     let con_left = document.createElement("div");
@@ -148,6 +177,8 @@ function addElement(vehicle) {
 
     const ul = document.getElementById("vehicles_list");
     ul.appendChild(li);
+
+    return [li, remove_icon, edit_icon];
 }
 
 /**

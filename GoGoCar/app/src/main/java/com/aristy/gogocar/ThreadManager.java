@@ -199,7 +199,6 @@ public class ThreadManager {
         thread.start();
     }
 
-    // Todo make it individual with multiple call of callback [onResultVehicle()]
     /**
      * Get vehicles available
      * <strong>CALLBACK: <i>onResultVehicles()</i></strong>
@@ -241,7 +240,9 @@ public class ThreadManager {
         thread = new Thread(() -> {
             Log.d(TAG_THREAD, "run: getVehiclesByUser");
             List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userID);
-            callback.onResultVehicles(vehicles);
+            for (DBModelVehicle vehicle : vehicles){
+                callback.onResultVehicle(vehicle);
+            }
         });
         thread.start();
     }

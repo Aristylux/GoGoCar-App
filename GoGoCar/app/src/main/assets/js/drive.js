@@ -74,8 +74,7 @@
 // Global Variable
 var vehicles = [];
 var vehicle_selected;
-
-var i = 0;
+var index_vh = 0;
 
 // Request database
 if (androidConnected()) Android.requestDatabase();
@@ -83,7 +82,7 @@ else{
     let vehicle_j = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
     
     vehicle_j.forEach((vehicle) => {
-        let element = addElement(vehicle, i++);
+        let element = addElement(vehicle, index_vh++);
         vehicles.push(vehicle);
         element.addEventListener("click", () => {
             console.log(vehicles[parseInt(element.id.substring(3))]);
@@ -93,43 +92,12 @@ else{
             openPopupBook();
         });
     });
-/*
-    const vehicles_container = document.querySelectorAll(".vehicle_container");
-    vehicles_container.forEach(function (container, index) {
-        container.addEventListener("click", (event) => {
-            // Open popup 'book'
-            vehicle_selected = vehicles[index];
-            openPopupBook();
-        });
-    });
-    */
 }
-
-// Not used
-// [ANDROID CALLBACK] Retrive databases from android (result)
-function setDatabase(_table_vehicle) {
-    vehicles = JSON.parse(_table_vehicle);
-
-    vehicles.forEach((vehicle) => {
-        addElement(vehicle);
-    });
-
-    const vehicles_container = document.querySelectorAll(".vehicle_container");
-    vehicles_container.forEach(function (container, index) {
-        container.addEventListener("click", () => {
-            // Open popup 'book'
-            vehicle_selected = vehicles[index];
-            openPopupBook();
-        });
-    });
-}
-
-
 
 // [ANDROID CALLBACK] Add vehicle
 function addVehicle(_vehicle){
     let vehicle = JSON.parse(_vehicle);
-    let element = addElement(vehicle, i++);
+    let element = addElement(vehicle, index_vh++);
     vehicles.push(vehicle);
 
     element.addEventListener("click", () => {
