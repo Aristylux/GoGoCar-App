@@ -63,10 +63,10 @@ function resetDatabase(){
     document.getElementById("no_vehicles").classList.add('logo_no_veh-hidden');
 
     var ul = document.getElementById("vehicles_list"); 
-    var liElements = ul.getElementsByTagName("li"); // get all the li elements
 
     // loop through all the li elements in reverse order
-    for (var i = liElements.length - 1; i >= 0; i--) { 
+    let liElements = ul.getElementsByTagName("li");
+    for (let i = liElements.length - 1; i >= 0; i--) {
         ul.removeChild(liElements[i]); // remove the li element from the ul element
     }
     if (androidConnected()) Android.requestUserVehicles();
