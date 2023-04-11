@@ -238,13 +238,6 @@ public class WIMainScreen extends WICommon {
     @JavascriptInterface
     public void requestDatabase(){
         thread.setResultCallback(new ThreadResultCallback() {
-            // Not called
-            /*
-            @Override
-            public void onResultVehicles(List<DBModelVehicle> vehicles) {
-                androidToWeb("setDatabase", vehicles.toString());
-            }
-            */
             @Override
             public void onResultVehicle(DBModelVehicle vehicle) {
                 androidToWeb("addVehicle", vehicle.toString());

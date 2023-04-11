@@ -67,6 +67,7 @@ function resetDatabase(){
     // loop through all the li elements in reverse order
     let liElements = ul.getElementsByTagName("li");
     for (let i = liElements.length - 1; i >= 0; i--) {
+        console.log("li removed");
         ul.removeChild(liElements[i]); // remove the li element from the ul element
     }
     if (androidConnected()) Android.requestUserVehicles();

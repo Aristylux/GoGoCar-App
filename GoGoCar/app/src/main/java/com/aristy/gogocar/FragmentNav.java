@@ -10,6 +10,7 @@ import static com.aristy.gogocar.HandlerCodes.SET_PAGE_FROM_HOME;
 import static com.aristy.gogocar.WICommon.Pages.DRIVE;
 import static com.aristy.gogocar.WICommon.Pages.VEHICLE;
 import static com.aristy.gogocar.WICommon.Pages.path;
+import static com.aristy.gogocar.WICommon.Pages.pathPage;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -131,7 +132,7 @@ public class FragmentNav extends Fragment {
             switch (message.what) {
                 case SET_PAGE:
                     if (!isDriving) {
-                        link = path + message.obj + ".html";
+                        link = pathPage + message.obj + ".html";
                         webInterfaceWeb.setPage();
                     }
                     break;
