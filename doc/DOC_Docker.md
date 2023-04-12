@@ -276,7 +276,7 @@ ubuntu@ubuntu:~$
 
 ## Restart container 
 
-```
+```bash
 ubuntu@ubuntu:~$ sudo docker restart postgres-0
 postgres-0
 ubuntu@ubuntu:~$ sudo docker ps 
