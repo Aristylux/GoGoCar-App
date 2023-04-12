@@ -74,3 +74,37 @@ function updateVehicleResult(code) {
 }
 
 // ---- Input ----
+
+const input_lp = document.getElementById("vehicle_licence_plate");
+
+input_lp.addEventListener('input', () => {
+    document.getElementById("err_lp").classList.remove("error-visible");
+    input_lp.value = licencePlateFormater(input_lp.value);
+});
+
+input_lp.addEventListener('blur', () => {
+    const value = input_lp.value;
+    const regex = /^[A-Z]{2}-\d{3}-[A-Z]{2}$/;
+    if (!regex.test(value)) {
+        document.getElementById("err_lp").classList.add("error-visible");
+    }
+});
+
+const input_mc = document.getElementById("vehicle_module_code");
+
+input_mc.addEventListener('input', () => {
+    console.log("input: " + input_mc.value)
+
+    document.getElementById("err_mc").classList.remove("error-visible");
+    input_mc.value = moduleCodeFormater(input_mc.value);
+});
+
+input_mc.addEventListener('blur', () => {
+    console.log("blur: " + input_mc.value)
+
+    const value = input_mc.value;
+    const regex = /^#[0-9]{2}-[0-9]{2}-[0-9]{4}$/;
+    if (!regex.test(value)) {
+        document.getElementById("err_mc").classList.add("error-visible");
+    }
+});
