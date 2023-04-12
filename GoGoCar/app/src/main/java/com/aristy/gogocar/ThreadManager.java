@@ -27,6 +27,7 @@ public class ThreadManager {
 
     // Constructor
     private ThreadManager() {
+        databaseHelper = null;
     }
 
     /**
@@ -45,23 +46,26 @@ public class ThreadManager {
      * Set and create new connection to the database
      */
     public void setConnection() {
-        ConnectionHelper connectionHelper = new ConnectionHelper();
-        connectionHelper.openConnection();
-        databaseHelper = new DatabaseHelper(connectionHelper.getConnection());
-        Log.d(TAG_THREAD, "setConnection: " + connectionHelper.getConnection());
-    }
-
-    public Thread getThread() {
-        return thread;
+        thread = new Thread(() -> {
+            ConnectionHelper connectionHelper = new ConnectionHelper();
+            connectionHelper.openConnection();
+            databaseHelper = new DatabaseHelper(connectionHelper.getConnection());
+            Log.d(TAG_THREAD, "setConnection: " + connectionHelper.getConnection());
+        });
+        thread.start();
     }
 
     public void setResultCallback(ThreadResultCallback callback) {
         this.callback = callback;
     }
 
-    private boolean checkArguments() {
+    private boolean checkStateError() {
         if (callback == null) {
             Log.e(TAG_THREAD, "run: [ERROR]: no callback");
+            return true;
+        }
+        if (databaseHelper == null){
+            Log.e(TAG_THREAD, "run: [ERROR]: no database helper");
             return true;
         }
         return false;
@@ -88,6 +92,7 @@ public class ThreadManager {
      *      - false - if not connection or exception
      */
     public void addUser(DBModelUser user){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             boolean success = databaseHelper.executeQuery(ADD_USER_QUERY, user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getPassword(), user.getSalt());
             callback.onResultTableUpdated(success);
@@ -102,6 +107,7 @@ public class ThreadManager {
      * @Callback-Return: The success
      */
     public void deleteUser(DBModelUser user){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             boolean isDeleted = databaseHelper.executeQuery(DELETE_USER_QUERY, user.getId());
             callback.onResultTableUpdated(isDeleted);
@@ -115,6 +121,7 @@ public class ThreadManager {
      * @param email user email
      */
     public void getUserByEmail(String email){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             DBModelUser user = databaseHelper.getUserByEmail(email);
             callback.onResultUser(user);
@@ -128,6 +135,7 @@ public class ThreadManager {
      * @param phone user phone number
      */
     public void getUserByPhone(String phone){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             DBModelUser user = databaseHelper.getUserByPhone(phone);
             callback.onResultUser(user);
@@ -148,6 +156,7 @@ public class ThreadManager {
      *         - false - if not connection or exception
      */
     public void addVehicle(DBModelVehicle vehicle){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             boolean success = databaseHelper.executeQuery(ADD_VEHICLE_QUERY, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.getIdOwner(), vehicle.isAvailable(), vehicle.getIdModule());
             callback.onResultTableUpdated(success);
@@ -162,6 +171,7 @@ public class ThreadManager {
      * @Callback-Return: The success
      */
     public void deleteVehicle(int vehicleID){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             boolean isDeleted = databaseHelper.executeQuery(DELETE_VEHICLE_QUERY, vehicleID);
             callback.onResultTableUpdated(isDeleted);
@@ -176,6 +186,7 @@ public class ThreadManager {
      * @Callback-Return: The success
      */
     public void updateVehicle(DBModelVehicle vehicle){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             boolean isUpdated = databaseHelper.executeQuery(UPDATE_VEHICLE_QUERY, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.isAvailable(), vehicle.getIdModule(), vehicle.getId());
             callback.onResultTableUpdated(isUpdated);
@@ -192,6 +203,7 @@ public class ThreadManager {
      * @Callback-Return: The success
      */
     public void setBookedVehicle(int vehicleID, int userID, boolean isBooked){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             boolean isUpdated = databaseHelper.executeQuery(SET_VEHICLE_BOOKED_QUERY, userID, isBooked, vehicleID);
             callback.onResultTableUpdated(isUpdated);
@@ -205,6 +217,7 @@ public class ThreadManager {
      * @param userID user id (to avoid duplicate)
      */
     public void getVehiclesAvailable(int userID){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             Log.d(TAG_THREAD, "run: getVehiclesAvailable");
             List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userID);
@@ -221,6 +234,7 @@ public class ThreadManager {
      * @param userID user id
      */
     public void getVehiclesBooked(int userID){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             Log.d(TAG_THREAD, "run: getVehiclesBooked");
             List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userID);
@@ -235,6 +249,7 @@ public class ThreadManager {
      * @param userID user id
      */
     public void getVehiclesByUser(int userID){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             Log.d(TAG_THREAD, "run: getVehiclesByUser");
             List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userID);
@@ -251,6 +266,7 @@ public class ThreadManager {
      * @param moduleID module id
      */
     public void getVehicleByModule(int moduleID){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             DBModelVehicle vehicle = databaseHelper.getVehicleByModule(moduleID);
             callback.onResultVehicle(vehicle);
@@ -268,6 +284,7 @@ public class ThreadManager {
      * @param moduleCode module code
      */
     public void getModuleByName(String moduleCode){
+        if (checkStateError()) return;
         thread = new Thread(() -> {
             DBModelModule module = databaseHelper.getModuleByName(moduleCode);
             callback.onResultModule(module);
