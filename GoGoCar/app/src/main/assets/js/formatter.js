@@ -5,8 +5,8 @@ let mc_dot1 = "",
 function moduleCodeFormater(textValue) {
     const sanitizedValue = textValue.replace(/[^\d]/g, "").slice(0, 8);
 
-    console.log("moduleCodeFormater: " + textValue);
-    console.log("moduleCodeFormater: " + sanitizedValue + "(" + sanitizedValue.length + ")");
+    //console.log("moduleCodeFormater: " + textValue);
+    //console.log("moduleCodeFormater: " + sanitizedValue + "(" + sanitizedValue.length + ")");
 
     // Detect is user delete text
     if (sanitizedValue.length > mc_len) {
