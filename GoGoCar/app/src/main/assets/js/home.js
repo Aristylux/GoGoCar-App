@@ -1,3 +1,7 @@
+// Global Variables
+var switch_selected;
+var isDriving = false;
+
 // On load page:
 if(androidConnected()) Android.requestData();
 // For debug
@@ -38,9 +42,6 @@ else {
         });
     });
 }
-
-var switch_selected;
-var isDriving = false;
 
 // [ANDROID CALLBACK]
 function setUserName(name){
@@ -89,6 +90,65 @@ function setVehicleBooked(_table_vehicle){
         });
     }
 }
+
+
+// Switch
+// [ANDROID CALLBACK][main (bluetooth)]
+function setSwitchState(state){
+    if(state === "true"){
+        switch_selected.checked = true;
+    } else
+        switch_selected.checked = false;
+}
+
+// [ANDROID CALLBACK]
+/*
+ *
+ * allowedToDrive = 'true', 'error_code'
+ */
+function requestDriveCallback(allowedToDrive){
+    const box_nav = document.querySelectorAll(".box-nav");
+
+    if(allowedToDrive === "true"){
+        // Open Popup : you can drive.
+        if(androidConnected()) Android.showToast("You can drive :-)");
+
+        // Stay in the home fragment 
+        box_nav.forEach((box) => {
+            box.classList.add("disabled");
+        });
+        isDriving = true;
+    } else {
+        switch_selected.checked = false;
+        console.log("Error callback type: " + allowedToDrive);
+        if (typeof allowedToDrive == "string") allowedToDrive = parseInt(allowedToDrive);
+
+        switch (allowedToDrive) {
+            case 4: //DRIVING_REQUEST_CAR_NOT_FOUND
+                // Open Popup : you cannot drive.
+                // You're not allowed to drive this car...
+                if(androidConnected()) Android.showToast("You cannot drive, car not found.");
+                break;
+            case 6: //DRIVING_CONNECTION_DISCONNECTED (finish to drive)
+                box_nav.forEach((box) => {
+                    box.classList.remove("disabled");
+                })
+                isDriving = false;
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+// Navigation Boxes
+const box_nav = document.querySelectorAll(".box-nav");
+box_nav.forEach((box) => {
+    box.addEventListener('click', () => {
+        if (!isDriving && androidConnected()) Android.requestChangePage(box.id.slice(8));
+    })
+});
+
 
 
 // Add element dynamically
@@ -185,61 +245,3 @@ function addElement(vehicle){
     const ul = document.getElementById("journey_list");
     ul.appendChild(li);
 }
-
-
-// Switch
-// [ANDROID CALLBACK][main (bluetooth)]
-function setSwitchState(state){
-    if(state === "true"){
-        switch_selected.checked = true;
-    } else
-        switch_selected.checked = false;
-}
-
-// [ANDROID CALLBACK]
-/*
- *
- * allowedToDrive = 'true', 'error_code'
- */
-function requestDriveCallback(allowedToDrive){
-    const box_nav = document.querySelectorAll(".box-nav");
-
-    if(allowedToDrive === "true"){
-        // Open Popup : you can drive.
-        if(androidConnected()) Android.showToast("You can drive :-)");
-
-        // Stay in the home fragment 
-        box_nav.forEach((box) => {
-            box.classList.add("disabled");
-        });
-        isDriving = true;
-    } else {
-        switch_selected.checked = false;
-        console.log("Error callback type: " + allowedToDrive);
-        if (typeof allowedToDrive == "string") allowedToDrive = parseInt(allowedToDrive);
-
-        switch (allowedToDrive) {
-            case 4: //DRIVING_REQUEST_CAR_NOT_FOUND
-                // Open Popup : you cannot drive.
-                // You're not allowed to drive this car...
-                if(androidConnected()) Android.showToast("You cannot drive, car not found.");
-                break;
-            case 6: //DRIVING_CONNECTION_DISCONNECTED (finish to drive)
-                box_nav.forEach((box) => {
-                    box.classList.remove("disabled");
-                })
-                isDriving = false;
-                break;
-            default:
-                break;
-        }
-    }
-}
-
-// Navigation Boxes
-const box_nav = document.querySelectorAll(".box-nav");
-box_nav.forEach((box) => {
-    box.addEventListener('click', () => {
-        if (!isDriving && androidConnected()) Android.requestChangePage(box.id.slice(8));
-    })
-});

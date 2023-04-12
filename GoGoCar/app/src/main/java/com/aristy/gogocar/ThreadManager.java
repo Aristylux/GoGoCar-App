@@ -215,7 +215,6 @@ public class ThreadManager {
         thread.start();
     }
 
-    // Todo make it individual with multiple call of callback [onResultVehicle()]
     /**
      * Get only the vehicles booked by the user
      * <strong>CALLBACK: <i>onResultVehicles()</i></strong>
@@ -230,7 +229,6 @@ public class ThreadManager {
         thread.start();
     }
 
-    // Todo make it individual with multiple call of callback [onResultVehicle()]
     /**
      * Get user vehicles
      * <strong>CALLBACK: <i>onResultVehicles()</i></strong>

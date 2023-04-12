@@ -71,7 +71,7 @@
             setDatabase(vehicles);
 */
 
-// Global Variable
+// Global Variables
 var vehicles = [];
 var vehicle_selected;
 var index_vh = 0;
