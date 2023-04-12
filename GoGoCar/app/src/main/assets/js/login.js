@@ -312,6 +312,7 @@ function checkNames(fullName) {
     return true;
 }
 
+// [ANDROID CALLBACK]
 // Error callback
 function errorAuthenticationRegistration(cause) {
     // When function called by Android (cause is a string, not a number)

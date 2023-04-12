@@ -217,7 +217,7 @@ public class WIMainScreen extends WICommon {
             public void onResultTableUpdated(boolean isUpdate) {
                 // TODO : Toast crash (like WIPanel)
                 if(!isUpdate) Toast.makeText(context, "ERROR: Can't cancel.", Toast.LENGTH_SHORT).show();
-                else androidToWeb("journeyDelete", "true");
+                else androidToWeb("journeyDelete", Boolean.TRUE);
             }
         });
         //Reset vehicle
@@ -290,7 +290,7 @@ public class WIMainScreen extends WICommon {
             public void onResultTableUpdated(boolean isDeleted) {
                 // TODO : Toast crash (like WIPanel)
                 if (!isDeleted) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
-                else androidToWeb("vehicleDelete", "true");
+                else androidToWeb("vehicleDelete", Boolean.TRUE);
             }
         });
         thread.deleteVehicle(vehicleID);

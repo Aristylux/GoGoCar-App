@@ -37,9 +37,40 @@ edit_vehicle_button.addEventListener('click', function() {
     if(androidConnected()) Android.requestUpdateVehicle(JSONvehicle.id, formVhModel, formVhLicencePlate, formVhAddress, formVhModuleCode, formVhIsAvailable);
 });
 
+const EDIT_VEHICLE_MODULE_CODE_INCORRECT = 1,
+    EDIT_VEHICLE_MODULE_CODE_USED = 2,
+    EDIT_VEHICLE_FAILED = 3;
+
+const error_messages = {
+    messages: [
+        "",
+        "Module code incorrect",
+        "Module code unavailable",
+        "Register failed"
+    ],
+    getErrorText: function (errorCode) {
+        return this.messages[errorCode];
+    },
+};
+
 //[ANDROID CALLBACK]
 // Fail
 // Stay in the current page
 function updateVehicleResult(code) {
-    console.log("code:" + code);
+    // When function called by Android (cause is a string, not a number)
+    if (typeof code == "string") code = parseInt(code);
+
+    switch (code) {
+        case EDIT_VEHICLE_MODULE_CODE_INCORRECT:
+            console.error("EDIT_VEHICLE_MODULE_CODE_INCORRECT: " + error_messages.getErrorText(code));
+            break;
+        case EDIT_VEHICLE_MODULE_CODE_USED:
+            console.error("EDIT_VEHICLE_MODULE_CODE_USED: " + error_messages.getErrorText(code));
+            break;
+        case EDIT_VEHICLE_FAILED:
+            console.error("EDIT_VEHICLE_FAILED: " + error_messages.getErrorText(code));
+            break;
+    }
 }
+
+// ---- Input ----
