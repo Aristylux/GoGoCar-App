@@ -12,6 +12,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 public class ThreadManager {
@@ -24,10 +27,15 @@ public class ThreadManager {
 
     // Database
     private DatabaseHelper databaseHelper;
+    private boolean connected;
+    private Method method;
+    private Object[] params;
 
     // Constructor
     private ThreadManager() {
         databaseHelper = null;
+        connected = false;
+        method = null;
     }
 
     /**
@@ -51,6 +59,9 @@ public class ThreadManager {
             connectionHelper.openConnection();
             databaseHelper = new DatabaseHelper(connectionHelper.getConnection());
             Log.d(TAG_THREAD, "setConnection: " + connectionHelper.getConnection());
+
+            if (connectionHelper.getConnection() != null) connected = true;
+            getQueueLastMethod();
         });
         thread.start();
     }
@@ -59,17 +70,96 @@ public class ThreadManager {
         this.callback = callback;
     }
 
-    private boolean checkStateError() {
+    
+    private boolean checkStateError(String methodName, Object... params) {
+        if (!connected){
+            // Set last method called
+            setQueueLastMethod(methodName, params);
+            return true;
+        }
         if (callback == null) {
-            Log.e(TAG_THREAD, "run: [ERROR]: no callback");
+            Log.e(TAG_THREAD, "[ERROR THREAD](" + methodName + "): no callback");
             return true;
         }
         if (databaseHelper == null){
-            Log.e(TAG_THREAD, "run: [ERROR]: no database helper");
+            Log.e(TAG_THREAD, "[ERROR THREAD](" + methodName + "): no database helper");
             return true;
         }
         return false;
     }
+
+    /**
+     * Execute last method called
+     */
+    private void getQueueLastMethod(){
+        try {
+            if (method == null) return;
+            Log.d(TAG_THREAD, "getQueueLastMethod: invoke method: " + method.getName() );
+            method.invoke(this, params);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void setQueueLastMethod(String methodName, Object... params){
+        try {
+            // Get the list of declared methods in the class
+            Method[] methods = getClass().getDeclaredMethods();
+
+            // Loop through the methods and find the one with the correct name and parameter types
+            method = null;
+            for (Method method : methods) {
+                if (method.getName().equals(methodName) && parametersMatch(method.getParameterTypes(), params)) {
+                    this.method = method;
+                    break;
+                }
+            }
+
+            if (method == null) {
+                throw new NoSuchMethodException("Method " + methodName + " not found with parameter types " + Arrays.toString(params));
+            }
+
+            // Get the method object using the method name
+            this.params = params;
+
+            // Make the method accessible
+            method.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean parametersMatch(Class<?>[] parameterTypes, Object[] arguments) {
+        if (parameterTypes.length != arguments.length) return false;
+
+        for (int i = 0; i < parameterTypes.length; i++) {
+            if (parameterTypes[i].isPrimitive()) {
+                if (!primitiveTypesMatch(parameterTypes[i], arguments[i])) return false;
+            } else if (!parameterTypes[i].isAssignableFrom(arguments[i].getClass())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean primitiveTypesMatch(Class<?> parameterType, Object argument) {
+        if (parameterType == int.class && argument instanceof Integer) {
+            return true;
+        } else if (parameterType == long.class && argument instanceof Long) {
+            return true;
+        } else if (parameterType == float.class && argument instanceof Float) {
+            return true;
+        } else if (parameterType == double.class && argument instanceof Double) {
+            return true;
+        } else if (parameterType == byte.class && argument instanceof Byte) {
+            return true;
+        } else if (parameterType == short.class && argument instanceof Short) {
+            return true;
+        } else if (parameterType == char.class && argument instanceof Character) {
+            return true;
+        } else return parameterType == boolean.class && argument instanceof Boolean;
+    }
+
 
     @NonNull
     @Override
@@ -92,7 +182,7 @@ public class ThreadManager {
      *      - false - if not connection or exception
      */
     public void addUser(DBModelUser user){
-        if (checkStateError()) return;
+        if (checkStateError("addUser")) return;
         thread = new Thread(() -> {
             boolean success = databaseHelper.executeQuery(ADD_USER_QUERY, user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getPassword(), user.getSalt());
             callback.onResultTableUpdated(success);
@@ -107,7 +197,7 @@ public class ThreadManager {
      * @Callback-Return: The success
      */
     public void deleteUser(DBModelUser user){
-        if (checkStateError()) return;
+        if (checkStateError("deleteUser")) return;
         thread = new Thread(() -> {
             boolean isDeleted = databaseHelper.executeQuery(DELETE_USER_QUERY, user.getId());
             callback.onResultTableUpdated(isDeleted);
@@ -121,7 +211,7 @@ public class ThreadManager {
      * @param email user email
      */
     public void getUserByEmail(String email){
-        if (checkStateError()) return;
+        if (checkStateError("getUserByEmail")) return;
         thread = new Thread(() -> {
             DBModelUser user = databaseHelper.getUserByEmail(email);
             callback.onResultUser(user);
@@ -135,7 +225,7 @@ public class ThreadManager {
      * @param phone user phone number
      */
     public void getUserByPhone(String phone){
-        if (checkStateError()) return;
+        if (checkStateError("getUserByPhone")) return;
         thread = new Thread(() -> {
             DBModelUser user = databaseHelper.getUserByPhone(phone);
             callback.onResultUser(user);
@@ -156,7 +246,7 @@ public class ThreadManager {
      *         - false - if not connection or exception
      */
     public void addVehicle(DBModelVehicle vehicle){
-        if (checkStateError()) return;
+        if (checkStateError("addVehicle")) return;
         thread = new Thread(() -> {
             boolean success = databaseHelper.executeQuery(ADD_VEHICLE_QUERY, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.getIdOwner(), vehicle.isAvailable(), vehicle.getIdModule());
             callback.onResultTableUpdated(success);
@@ -171,7 +261,7 @@ public class ThreadManager {
      * @Callback-Return: The success
      */
     public void deleteVehicle(int vehicleID){
-        if (checkStateError()) return;
+        if (checkStateError("deleteVehicle")) return;
         thread = new Thread(() -> {
             boolean isDeleted = databaseHelper.executeQuery(DELETE_VEHICLE_QUERY, vehicleID);
             callback.onResultTableUpdated(isDeleted);
@@ -186,7 +276,7 @@ public class ThreadManager {
      * @Callback-Return: The success
      */
     public void updateVehicle(DBModelVehicle vehicle){
-        if (checkStateError()) return;
+        if (checkStateError("updateVehicle")) return;
         thread = new Thread(() -> {
             boolean isUpdated = databaseHelper.executeQuery(UPDATE_VEHICLE_QUERY, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.isAvailable(), vehicle.getIdModule(), vehicle.getId());
             callback.onResultTableUpdated(isUpdated);
@@ -203,7 +293,7 @@ public class ThreadManager {
      * @Callback-Return: The success
      */
     public void setBookedVehicle(int vehicleID, int userID, boolean isBooked){
-        if (checkStateError()) return;
+        if (checkStateError("setBookedVehicle")) return;
         thread = new Thread(() -> {
             boolean isUpdated = databaseHelper.executeQuery(SET_VEHICLE_BOOKED_QUERY, userID, isBooked, vehicleID);
             callback.onResultTableUpdated(isUpdated);
@@ -217,7 +307,7 @@ public class ThreadManager {
      * @param userID user id (to avoid duplicate)
      */
     public void getVehiclesAvailable(int userID){
-        if (checkStateError()) return;
+        if (checkStateError("getVehiclesAvailable")) return;
         thread = new Thread(() -> {
             Log.d(TAG_THREAD, "run: getVehiclesAvailable");
             List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userID);
@@ -234,7 +324,7 @@ public class ThreadManager {
      * @param userID user id
      */
     public void getVehiclesBooked(int userID){
-        if (checkStateError()) return;
+        if (checkStateError("getVehiclesBooked", userID)) return;
         thread = new Thread(() -> {
             Log.d(TAG_THREAD, "run: getVehiclesBooked");
             List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userID);
@@ -249,7 +339,7 @@ public class ThreadManager {
      * @param userID user id
      */
     public void getVehiclesByUser(int userID){
-        if (checkStateError()) return;
+        if (checkStateError("getVehiclesByUser")) return;
         thread = new Thread(() -> {
             Log.d(TAG_THREAD, "run: getVehiclesByUser");
             List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userID);
@@ -266,7 +356,7 @@ public class ThreadManager {
      * @param moduleID module id
      */
     public void getVehicleByModule(int moduleID){
-        if (checkStateError()) return;
+        if (checkStateError("getVehicleByModule")) return;
         thread = new Thread(() -> {
             DBModelVehicle vehicle = databaseHelper.getVehicleByModule(moduleID);
             callback.onResultVehicle(vehicle);
@@ -284,7 +374,7 @@ public class ThreadManager {
      * @param moduleCode module code
      */
     public void getModuleByName(String moduleCode){
-        if (checkStateError()) return;
+        if (checkStateError("getModuleByName")) return;
         thread = new Thread(() -> {
             DBModelModule module = databaseHelper.getModuleByName(moduleCode);
             callback.onResultModule(module);
