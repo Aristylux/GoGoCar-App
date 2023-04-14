@@ -1,22 +1,42 @@
-.logo_no_veh {
+/*.logo_no_veh {*/
+#no_vehicles {
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /*transform: translate(-50%, -50%);*/
+    width: 200px;
+    height: 100px;
+    margin-top: -50px; /* half of the height */
+    margin-left: -100px; /* half of the width */
+
+    animation: transitionIn 0.5s;
+}
+/*
+.logo_no_veh-hidden {
+    opacity: 0;
+}*/
+
+.logo {
     color: #e0e0e0;
     /*display: none;*/ /*flex when active*/
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: auto;
-    margin-top: 29%;
+    /*margin: auto;
+    margin-top: 29%;*/
     font-size: 2em;
     font-weight: 600;
     /*text-shadow: 1px 5px 10px rgba(0, 0, 0, 0.2);*/
 
-    transition: 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+    opacity: 0;
 }
 
-.logo_no_veh i {
+.logo i {
     font-size: 3em;
 }
 
-.logo_no_veh-hidden {
-    opacity: 0;
+.logo-visible {
+    opacity: 1;
 }

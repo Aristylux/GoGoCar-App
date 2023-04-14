@@ -2,7 +2,9 @@
 var vehicles = [];
 var index_vh = 0;
 
-const EL_LI = 0, EL_TRASH_ICON = 1, EL_EDIT_ICON = 2;
+const EL_LI = 0, 
+    EL_TRASH_ICON = 1, 
+    EL_EDIT_ICON = 2;
 
 const addVehicleButton = document.getElementById("add_vehicle_button");
 addVehicleButton.addEventListener('click', () => {
@@ -18,7 +20,7 @@ else{
     console.log(vehicles.length);
 
     vehicles.forEach((vehicle) => {
-        document.getElementById("no_vehicles").classList.add('logo_no_veh-hidden');
+        //document.getElementById("no_vh_logo").classList.add('logo-visible');
 
         let elements = addElement(vehicle, index_vh++);
         vehicles.push(vehicle);
@@ -38,11 +40,9 @@ else{
 
 // [ANDROID CALLBACK](requestUserVehicles)
 function setResult(resultEmpty) {
-    console.log("set Result: " + resultEmpty);
-
     // If result empty -> Show 'no vehicle' message
     if (resultEmpty === "true") {
-        document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
+        document.getElementById("no_vh_logo").classList.add('logo-visible');
     }
 }
 
@@ -66,7 +66,7 @@ function addVehicle(_vehicle){
 
 // [ANDROID] Reset database for update
 function resetDatabase(){
-    document.getElementById("no_vehicles").classList.add('logo_no_veh-hidden');
+    document.getElementById("no_vh_logo").classList.add('logo-visible');
 
     vehicles = [];
     index_vh = 0;

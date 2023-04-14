@@ -45,7 +45,7 @@ function vehicleDelete(success) {
         });
         // Add no vehicle background if list equal to 0 
         if (vehicles_container_info.length - 2 == 0){
-            document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
+            document.getElementById("no_vh_logo").classList.add('logo-visible');
         }
     }
 }
