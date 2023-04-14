@@ -96,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
         if(!isLogged)
             selectedFragment = FragmentLogin.newInstance(userPreferences, fragmentHandler);
         else {
-            selectedFragment = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
+            fragmentNav = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
+            selectedFragment = fragmentNav;
         }
 
         // Set Fragment
@@ -184,8 +185,9 @@ public class MainActivity extends AppCompatActivity {
     String lastMacAddress = null;
 
     // Get into database
-    String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
-    //String hashMacAddressModule = "29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4";
+    //String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
+    // Eliphete
+    String hashMacAddressModule = "29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4";
 
     private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
         @SuppressLint("MissingPermission")
@@ -227,9 +229,10 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                if (bluetoothConnection == null) return;
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices FINISHED");
                 // If a connection is not in progress, we don't find the car, prevent user.
-                if(!bluetoothConnection.isConnecting())
+                if (!bluetoothConnection.isConnecting())
                     sendDataToFragment(DRIVING_REQUEST, DRIVING_REQUEST_CAR_NOT_FOUND);
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices STARTED");
