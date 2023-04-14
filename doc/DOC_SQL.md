@@ -91,6 +91,16 @@ CREATE TABLE `carmodel` (
   `carmodel` varchar(255) NOT NULL
 );
 ```
+
+# Adress
+```sql
+CREATE TABLE 'adress'(
+'id' serial primary key,
+'street' varchar(100),
+'city' varchar(100)
+);
+```
+
 # Update
 
 ```sql
@@ -138,6 +148,11 @@ hash: `hash = hashPassword("admin");`
 ```sql
 INSERT INTO users(name, email, phone, password, salt) VALUES
   ('Admin Admin', 'admin@admin.com', '06 05 04 03 02', crypt('8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', gen_salt('bf')),'');
+```
+## Adresse
+
+```sql
+INSERT INTO adress(street, city) VALUES ('14 tue des romarins','Toulon');
 ```
 
 ## Vehicles
