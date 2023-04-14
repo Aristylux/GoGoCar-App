@@ -344,8 +344,7 @@ public class ThreadManager {
             Log.d(TAG_THREAD, "run: getVehiclesByUser");
             List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userID);
 
-            if (vehicles.size() == 0) callback.onResultEmpty(true);
-            else callback.onResultEmpty(false);
+            callback.onResultEmpty(vehicles.size() == 0);
 
             for (DBModelVehicle vehicle : vehicles){
                 callback.onResultVehicle(vehicle);

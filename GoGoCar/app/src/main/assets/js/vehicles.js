@@ -43,15 +43,24 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
 
 */
 
-// [ANDROID CALLBACK] Add vehicle
+// [ANDROID CALLBACK](requestUserVehicles)
+function setResult(resultEmpty) {
+    console.log("set Result: " + resultEmpty);
+
+    // If result empty -> Show 'no vehicle' message
+    if (resultEmpty === "true") {
+        document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
+    }
+}
+
+// [ANDROID CALLBACK](requestUserVehicles) Add vehicle
 function addVehicle(_vehicle){
     console.log("add vehicle")
     console.log(_vehicle);
-    
+    /*
     if (index_vh != 0){
-        // Show 'no vehicle' message
         document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
-    }
+    }*/
 
     let vehicle = JSON.parse(_vehicle);
     let elements = addElement(vehicle, index_vh++);

@@ -269,6 +269,10 @@ public class WIMainScreen extends WICommon {
     public void requestUserVehicles(){
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
+            public void onResultEmpty(boolean resultEmpty) {
+                androidToWeb("setResult", String.valueOf(resultEmpty));
+            }
+            @Override
             public void onResultVehicle(DBModelVehicle vehicle) {
                 androidToWeb("addVehicle", vehicle.toString());
             }
