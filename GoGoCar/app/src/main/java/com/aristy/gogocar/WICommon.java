@@ -88,7 +88,7 @@ public class WICommon {
 
     static class Boolean {
         public static final String TRUE = "true";
-        //public static final String FALSE = "false";
+        public static final String FALSE = "false";
     }
 
 }

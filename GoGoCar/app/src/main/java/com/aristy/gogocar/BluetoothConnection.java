@@ -53,6 +53,10 @@ public class BluetoothConnection extends Thread {
         }
     }
 
+    /**
+     * Get bluetooth socket
+     * @return bluetooth socket
+     */
     public BluetoothSocket getBluetoothSocket(){
         return bluetoothSocket;
     }
@@ -95,6 +99,7 @@ public class BluetoothConnection extends Thread {
         BluetoothCommunication bluetoothCommunication = new BluetoothCommunication(BluetoothConnection.this, handler);
         bluetoothCommunication.start();
 
+        // Test send
         String s = "Salut man";
 
         for (int i = 0; i < 10; i++) {
@@ -106,12 +111,11 @@ public class BluetoothConnection extends Thread {
                 // Handle the interrupted exception if necessary
             }
         }
-
-
-
-        //sendToBluetooth("$P\n");//inform paired succeed to module
     }
 
+    /**
+     * Connection failed
+     */
     public void connectionFailed(){
         Log.e(TAG_BT_CON, "connectionFailed: ");
     }
