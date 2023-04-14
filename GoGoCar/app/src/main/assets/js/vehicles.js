@@ -25,7 +25,8 @@ else{
 
         elements[EL_TRASH_ICON].addEventListener('click', () => {
             console.log(JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
-            //openPopupBook(vehicles[parseInt(elements[0].id.substring(3))]);
+            // Open popup
+            openPopupBook(vehicles[parseInt(elements[EL_LI].id.substring(3))]);
         });
 
         elements[EL_EDIT_ICON].addEventListener('click', () => {
@@ -35,15 +36,29 @@ else{
 
 }
 
+/*
+INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
+    ('Nissan Capri', 'SS-523-DE', '18 Boulevard des Arènes' , 4, 2);
+	
+
+*/
+
 // [ANDROID CALLBACK] Add vehicle
 function addVehicle(_vehicle){
+    console.log("add vehicle")
+    console.log(_vehicle);
+    
     if (index_vh != 0){
+        // Show 'no vehicle' message
         document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
     }
 
     let vehicle = JSON.parse(_vehicle);
     let elements = addElement(vehicle, index_vh++);
     vehicles.push(vehicle);
+
+    console.log( "vh: " + vehicles.length);
+    console.log( "vh: " + vehicles.toString());
 
     elements[EL_TRASH_ICON].addEventListener('click', () => {
         // Open popup
