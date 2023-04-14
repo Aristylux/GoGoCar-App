@@ -65,7 +65,7 @@ function setVehicleBooked(_table_vehicle){
         // Add interruption switch
         const switchs = document.querySelectorAll(".switch_input");
         switchs.forEach(function (switch_input, index) {
-            switch_input.addEventListener('change', (event) => {
+            switch_input.addEventListener('change', () => {
                 if (switch_input.checked) {
                     console.log("Checked");
                     switch_selected = switchs[index];
@@ -82,7 +82,7 @@ function setVehicleBooked(_table_vehicle){
         // Add interruption cancel button
         const button_cancel = document.querySelectorAll(".bt_cancel");
         button_cancel.forEach(function (cancel_input, index) {
-            cancel_input.addEventListener('click', (event) => {
+            cancel_input.addEventListener('click', () => {
                 // Open Popup: Are you sure?
                 console.log("open");
                 openPopupCancelJourney(vehicles[index]);
@@ -101,6 +101,28 @@ function setSwitchState(state){
         switch_selected.checked = false;
 }
 
+const DRIVING_REQUEST_PERMISSION_ERROR = 1,
+    DRIVING_REQUEST_BLUETOOTH_DISABLED = 2,
+    DRIVING_REQUEST_LOCALISATION_DISABLE = 3,
+    DRIVING_REQUEST_CAR_NOT_FOUND = 4,
+    DRIVING_CONNECTION_FAILED = 5,
+    DRIVING_CONNECTION_DISCONNECTED = 6;
+
+const error_messages = {
+    messages: [
+        "",
+        "Permission denied",
+        "Bluetooth disabled",
+        "Location disabled",
+        "You cannot drive, car not found.",
+        "Connection failed",
+        "Disconnected"
+    ],
+    getErrorText: function (errorCode) {
+        return this.messages[errorCode];
+    },
+};
+
 // [ANDROID CALLBACK]
 /*
  *
@@ -111,7 +133,7 @@ function requestDriveCallback(allowedToDrive){
 
     if(allowedToDrive === "true"){
         // Open Popup : you can drive.
-        if(androidConnected()) Android.showToast("You can drive :-)");
+        console.log("You can drive :-)");
 
         // Stay in the home fragment 
         box_nav.forEach((box) => {
@@ -124,12 +146,16 @@ function requestDriveCallback(allowedToDrive){
         if (typeof allowedToDrive == "string") allowedToDrive = parseInt(allowedToDrive);
 
         switch (allowedToDrive) {
-            case 4: //DRIVING_REQUEST_CAR_NOT_FOUND
+            case DRIVING_REQUEST_PERMISSION_ERROR:
+            case DRIVING_REQUEST_BLUETOOTH_DISABLED:
+            case DRIVING_REQUEST_LOCALISATION_DISABLE:
+            case DRIVING_REQUEST_CAR_NOT_FOUND:
                 // Open Popup : you cannot drive.
                 // You're not allowed to drive this car...
-                if(androidConnected()) Android.showToast("You cannot drive, car not found.");
+            case DRIVING_CONNECTION_FAILED:
+                console.error(error_messages.getErrorText(allowedToDrive));
                 break;
-            case 6: //DRIVING_CONNECTION_DISCONNECTED (finish to drive)
+            case DRIVING_CONNECTION_DISCONNECTED: //(finish to drive)
                 box_nav.forEach((box) => {
                     box.classList.remove("disabled");
                 })
@@ -149,12 +175,8 @@ box_nav.forEach((box) => {
     })
 });
 
-
-
 // Add element dynamically
 function addElement(vehicle){
-    const vehicle_info = [vehicle.name, vehicle.address, vehicle.licencePlate];
-
     // Create Container
     let li = document.createElement("li");
     li.classList.add("journey-container");
