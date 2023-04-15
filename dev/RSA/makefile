@@ -29,7 +29,8 @@ OBJ := $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRC))
 EXEC=com
 
 # Libraries used
-LIBS=
+# -lm for math.h
+LIBS=-lm
 
 # --- ---
 

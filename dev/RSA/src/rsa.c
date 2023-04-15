@@ -51,3 +51,21 @@ void print_rsa_keys(t_keys* keys){
 void free_keys(t_keys* keys){
     free(keys);
 }
+
+// ---- ----
+
+uint64_t is_prime(uint64_t number){
+    for (uint64_t i = 2; i <= sqrt(number); i++){
+        if (number%i == 0) return 0;
+    }
+    return 1;
+}
+
+uint64_t generate_prime(void){
+    uint64_t p;
+    do {
+        // Generate a random number between 1 and 100
+        p = rand() % 100 + 1;
+    } while (!is_prime(p));
+    return p;
+}

@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 
+// For sqrt
+#include <math.h>
+
 // Use malloc & free
 #include <stdlib.h>
 
@@ -33,5 +36,8 @@ void generate_rsa_keys(t_keys* keys);
 void print_rsa_keys(t_keys* keys);
 
 void free_keys(t_keys* keys);
+
+uint64_t is_prime(uint64_t number);
+uint64_t generate_prime(void);
 
 #endif
