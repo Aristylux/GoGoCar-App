@@ -12,6 +12,9 @@
 // For uint8_t, ...
 #include <stdint.h>
 
+// For rand
+#include <time.h>
+
 typedef struct public_key
 {
     uint64_t N;  // modulus
@@ -39,5 +42,8 @@ void free_keys(t_keys* keys);
 
 uint64_t is_prime(uint64_t number);
 uint64_t generate_prime(void);
+
+uint64_t gcd(uint64_t a, uint64_t b);
+uint64_t mod_inverse(uint64_t a, uint64_t m);
 
 #endif
