@@ -27,6 +27,7 @@ import static com.aristy.gogocar.PermissionHelper.checkCoarseLocationPermission;
 import static com.aristy.gogocar.SHAHash.DOMAIN;
 import static com.aristy.gogocar.SHAHash.hashPassword;
 import static com.aristy.gogocar.Security.getPinKey;
+import static com.aristy.gogocar.WICommon.Boolean.FALSE;
 import static com.aristy.gogocar.WICommon.Boolean.TRUE;
 import static com.aristy.gogocar.WICommon.Pages.DRIVE;
 import static com.aristy.gogocar.WICommon.ErrorCodes.DRIVING_CONNECTION_DISCONNECTED;
@@ -96,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
         if(!isLogged)
             selectedFragment = FragmentLogin.newInstance(userPreferences, fragmentHandler);
         else {
-            selectedFragment = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
+            fragmentNav = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
+            selectedFragment = fragmentNav;
         }
 
         // Set Fragment
@@ -184,8 +186,9 @@ public class MainActivity extends AppCompatActivity {
     String lastMacAddress = null;
 
     // Get into database
-    String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
-    //String hashMacAddressModule = "29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4";
+    //String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
+    // Eliphete
+    String hashMacAddressModule = "29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4";
 
     private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
         @SuppressLint("MissingPermission")
@@ -227,9 +230,10 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                if (bluetoothConnection == null) return;
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices FINISHED");
                 // If a connection is not in progress, we don't find the car, prevent user.
-                if(!bluetoothConnection.isConnecting())
+                if (!bluetoothConnection.isConnecting())
                     sendDataToFragment(DRIVING_REQUEST, DRIVING_REQUEST_CAR_NOT_FOUND);
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices STARTED");
@@ -260,14 +264,11 @@ public class MainActivity extends AppCompatActivity {
                 case BT_REQUEST_ENABLE:
                     // Create intent
                     Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-
-                    // Launch activity to get result
-                    activityResult.launch(enableIntent);
+                    activityResult.launch(enableIntent);    // Launch activity to get result
                     break;
-                case BT_STATE_CONNECTED:
+                case BT_STATE_CONNECTED:                    //Send pairing success and connection established
                     Log.v(TAG_BT, "BT_STATE_CONNECTED");
                     bluetoothConnection.connectionEstablished();
-                    //Send pairing success and connection established
                     sendDataToFragment(DRIVING_REQUEST, TRUE);
                     break;
                 case BT_STATE_CONNECTION_FAILED:
@@ -293,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case BT_REQUEST_STATE:
                     if (bluetoothConnection == null || bluetoothConnection.getBluetoothSocket() == null) {
-                        sendDataToFragment("setSwitchState", "false");
+                        sendDataToFragment("setSwitchState", FALSE);
                         break;
                     }
                     boolean connected = bluetoothConnection.getBluetoothSocket().isConnected();
@@ -357,29 +358,38 @@ public class MainActivity extends AppCompatActivity {
                 case GOTO_VEHICLE_FRAGMENT:
                     setFragment((Integer) message.obj, VEHICLE);
                     break;
-                case STATUS_BAR_COLOR:
-                    // Set color background
+                case STATUS_BAR_COLOR:      // Set color background
                     getWindow().setStatusBarColor((Integer) message.obj);
                     break;
                 case OPEN_SLIDER:
-                    // Open second activity (Which is a slider)
-                    // Call in : openSlider() -> WIMainScreen class
-                    Object[] arg = (Object[]) message.obj;
-                    Intent intent;
-                    if(arg.length > 2){
-                        intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, String.valueOf(arg[0]), (boolean) arg[1], (String) arg[2]);
-                    } else {
-                        intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, String.valueOf(arg[0]), (boolean) arg[1]);
-                    }
-
-                    MainActivity.this.startActivity(intent);
-                    MainActivity.this.overridePendingTransition(
-                            R.anim.animate_slide_left_enter,
-                            R.anim.animate_slide_left_exit
-                    );
+                    openSlider((Object[]) message.obj);
                     break;
             }
             return true;
         }
     });
+
+    /**
+     * Open second activity (Which is a slider)
+     * Call in : openSlider() -> WIMainScreen class
+     * @param args  args<br>
+     *              0 -> web link<br>
+     *              1 -> slider locked<br>
+     *              2 -> data<br>
+     */
+    private void openSlider(Object[] args){
+        Intent intent;
+        if(args.length > 2){
+            intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, String.valueOf(args[0]), (boolean) args[1], (String) args[2]);
+        } else {
+            intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, String.valueOf(args[0]), (boolean) args[1]);
+        }
+
+        // Start new activity with animation
+        MainActivity.this.startActivity(intent);
+        MainActivity.this.overridePendingTransition(
+                R.anim.animate_slide_left_enter,
+                R.anim.animate_slide_left_exit
+        );
+    }
 }

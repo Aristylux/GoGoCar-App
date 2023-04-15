@@ -11,9 +11,27 @@ li {
     box-shadow: 0 2px 5px #0002;
     border-radius: 15px;
     padding: 15px;
-    transition: 0.3s;
+    transition: all 0.3s;
+
+    animation: fadeInFromNone 0.5s ease-out;
+    opacity: 0;
+}
+
+.vehicle_container {
+    opacity: 1;
 }
 
 .vehicle_container:active {
     background-color: var(--primary-color);
+    
+}
+
+@keyframes fadeInFromNone {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }

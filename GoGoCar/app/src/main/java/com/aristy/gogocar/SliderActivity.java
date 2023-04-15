@@ -44,12 +44,12 @@ public class SliderActivity extends AppCompatActivity {
     /**
      * Use this factory method to create a new instance of
      * this activity using the provided parameters.
-     *
-     * @param mainActivity principal activity
-     * @param fragmentHandler handler
-     * @param userPreferences user preferences
-     * @param link web link
-     * @return A new intent of this activity.
+     * @param mainActivity      principal activity
+     * @param fragmentHandler   handler for fragments
+     * @param userPreferences   user preferences
+     * @param link              web link
+     * @param locked            slider locked (default false)
+     * @return  A new intent of this activity.
      */
     public static Intent newInstance(Activity mainActivity, Handler fragmentHandler, UserPreferences userPreferences, String link, boolean locked){
         Intent intent = new Intent(mainActivity, SliderActivity.class);
@@ -62,6 +62,17 @@ public class SliderActivity extends AppCompatActivity {
         return intent;
     }
 
+    /**
+     * Use this factory method to create a new instance of
+     * this activity using the provided parameters.
+     * @param mainActivity      principal activity
+     * @param fragmentHandler   handler for fragments
+     * @param userPreferences   user preferences
+     * @param link              web link
+     * @param locked            slider locked (default false)
+     * @param data              JSON data
+     * @return  A new intent of this activity.
+     */
     public static Intent newInstance(Activity mainActivity, Handler fragmentHandler, UserPreferences userPreferences, String link, boolean locked, String data){
         Intent intent = new Intent(mainActivity, SliderActivity.class);
         Messenger messenger = new Messenger(fragmentHandler);
@@ -78,19 +89,6 @@ public class SliderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slider);
-
-        /*
-        Log.d(TAG_SLIDER, "onCreate: ");
-        ThreadManager thread = ThreadManager.getInstance();
-        thread.setResultCallback(new ThreadResultCallback() {
-            @Override
-            public void onResultModule(DBModelModule modelModule) {
-                // Send result to Activity 2
-                Log.d(TAG_THREAD, "onResultCalculated: " + modelModule);
-            }
-        });
-        thread.startThread();
-         */
 
         if (getIntent() != null) {
             // messenger: communication between activity (not used for the moment)

@@ -16,7 +16,7 @@ function openPopupBook(vehicle) {
     openPopup(popup);
 }
 
-popup_vehicle_button_close.addEventListener("click", (event) => {
+popup_vehicle_button_close.addEventListener("click", () => {
     if (androidConnected()) Android.setModal(false);
     closePopup(popup);
 });
@@ -37,11 +37,18 @@ function vehicleDelete(success) {
                 Element.parentElement.parentElement.classList.add(
                     "vehicle_container--hidden"
                 );
+                // Remove li from ul
+                setTimeout(() => {
+                    Element.parentElement.parentElement.parentElement.removeChild(Element.parentElement.parentElement);
+                }, 500);
             }
         });
         // Add no vehicle background if list equal to 0 
         if (vehicles_container_info.length - 2 == 0){
-            document.getElementById("no_vehicles").classList.remove('logo_no_veh-hidden');
+            // After remove animation, show no vehicle logo
+            setTimeout(() => {
+                document.getElementById("no_vh_logo").classList.add('logo-visible');
+            }, 500);
         }
     }
 }

@@ -59,20 +59,36 @@ public class WICommon {
         public static final String DRIVING_REQUEST = "requestDriveCallback";
 
         public static final String SET_VEHICLE_EDIT = "setVehicle";
+
+        public static final String ADD_VEHICLE = "addVehicleResult";
+        public static final String EDIT_VEHICLE = "updateVehicleResult";
     }
 
     static class ErrorCodes {
+        // home.js
         public static final String DRIVING_REQUEST_PERMISSION_ERROR = "1";
         public static final String DRIVING_REQUEST_BLUETOOTH_DISABLED = "2";
         public static final String DRIVING_REQUEST_LOCALISATION_DISABLE = "3";
         public static final String DRIVING_REQUEST_CAR_NOT_FOUND = "4";
         public static final String DRIVING_CONNECTION_FAILED = "5";
         public static final String DRIVING_CONNECTION_DISCONNECTED = "6";
+
+        // vehicle_add.js
+        public static final String ADD_VEHICLE_NO_ADDRESS = "1";
+        public static final String ADD_VEHICLE_CAR_UNKNOWN = "2";
+        public static final String ADD_VEHICLE_MODULE_CODE_UNKNOWN = "3";
+        public static final String ADD_VEHICLE_FAILED = "4";
+
+        // vehicle_edit.js
+        public static final String EDIT_VEHICLE_MODULE_CODE_INCORRECT = "1";
+        public static final String EDIT_VEHICLE_MODULE_CODE_USED = "2";
+        public static final String EDIT_VEHICLE_FAILED = "3";
+
     }
 
     static class Boolean {
         public static final String TRUE = "true";
-        //public static final String FALSE = "false";
+        public static final String FALSE = "false";
     }
 
 }

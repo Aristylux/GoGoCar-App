@@ -5,16 +5,16 @@ let mc_dot1 = "",
 function moduleCodeFormater(textValue) {
     const sanitizedValue = textValue.replace(/[^\d]/g, "").slice(0, 8);
 
-    // Remove last letter
-    let originalValue = sanitizedValue.slice(0, -1);
+    //console.log("moduleCodeFormater: " + textValue);
+    //console.log("moduleCodeFormater: " + sanitizedValue + "(" + sanitizedValue.length + ")");
 
     // Detect is user delete text
     if (sanitizedValue.length > mc_len) {
-        if (sanitizedValue.length == 3) mc_dot1 = "-";
-        if (sanitizedValue.length == 5) mc_dot2 = "-";
+        if (sanitizedValue.length >= 3) mc_dot1 = "-";
+        if (sanitizedValue.length >= 5) mc_dot2 = "-";
     } else {
-        if (sanitizedValue.length == 2) mc_dot1 = "";
-        if (sanitizedValue.length == 4) mc_dot2 = "";
+        if (sanitizedValue.length <= 2) mc_dot1 = "";
+        if (sanitizedValue.length <= 4) mc_dot2 = "";
     }
 
     // Update
@@ -62,11 +62,11 @@ function licencePlateFormater(textValue) {
 
     // Detect is user delete text
     if (sanitizedValue.length > lp_len) {
-        if (sanitizedValue.length == 3) lp_dot1 = "-";
-        if (sanitizedValue.length == 6) lp_dot2 = "-";
+        if (sanitizedValue.length >= 3) lp_dot1 = "-";
+        if (sanitizedValue.length >= 6) lp_dot2 = "-";
     } else {
-        if (sanitizedValue.length == 2) lp_dot1 = "";
-        if (sanitizedValue.length == 5) lp_dot2 = "";
+        if (sanitizedValue.length <= 2) lp_dot1 = "";
+        if (sanitizedValue.length <= 5) lp_dot2 = "";
     }
 
     // Update

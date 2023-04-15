@@ -81,7 +81,7 @@ public class WIMainScreen extends WICommon {
 
     /**
      * Call when return from a panel, refresh the page (or data)<br>
-     * <i>Call in</i>: <code>drive.html</code><br>
+     * <i>Call in</i>: <code>drive.js</code><br>
      * <i>Call in</i>: <code>vehicle.js</code><br>
      */
     public void refresh(){
@@ -212,14 +212,12 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestCancelJourney(int vehicleID){
-        // Reset
-        //boolean isUpdate = databaseHelper.setBookedVehicle(vehicleID, 0, false);
-
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultTableUpdated(boolean isUpdate) {
+                // TODO : Toast crash (like WIPanel)
                 if(!isUpdate) Toast.makeText(context, "ERROR: Can't cancel.", Toast.LENGTH_SHORT).show();
-                else androidToWeb("journeyDelete", "true");
+                else androidToWeb("journeyDelete", Boolean.TRUE);
             }
         });
         //Reset vehicle
@@ -233,13 +231,14 @@ public class WIMainScreen extends WICommon {
     /**
      * [LOADER METHOD]<br>
      * Request available vehicle
+     * In: <code>drive.js</code><br>
      */
     @JavascriptInterface
     public void requestDatabase(){
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
-            public void onResultVehicles(List<DBModelVehicle> vehicles) {
-                androidToWeb("setDatabase", vehicles.toString());
+            public void onResultVehicle(DBModelVehicle vehicle) {
+                androidToWeb("addVehicle", vehicle.toString());
             }
         });
         thread.getVehiclesAvailable(userPreferences.getUserID());
@@ -270,8 +269,12 @@ public class WIMainScreen extends WICommon {
     public void requestUserVehicles(){
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
-            public void onResultVehicles(List<DBModelVehicle> vehicles) {
-                androidToWeb("setDatabase", vehicles.toString());
+            public void onResultEmpty(boolean resultEmpty) {
+                androidToWeb("setResult", String.valueOf(resultEmpty));
+            }
+            @Override
+            public void onResultVehicle(DBModelVehicle vehicle) {
+                androidToWeb("addVehicle", vehicle.toString());
             }
         });
         thread.getVehiclesByUser(userPreferences.getUserID());
@@ -289,8 +292,9 @@ public class WIMainScreen extends WICommon {
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultTableUpdated(boolean isDeleted) {
+                // TODO : Toast crash (like WIPanel)
                 if (!isDeleted) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
-                else androidToWeb("vehicleDelete", "true");
+                else androidToWeb("vehicleDelete", Boolean.TRUE);
             }
         });
         thread.deleteVehicle(vehicleID);

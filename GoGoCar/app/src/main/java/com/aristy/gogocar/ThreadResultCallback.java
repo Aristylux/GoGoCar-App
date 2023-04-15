@@ -4,8 +4,7 @@ import java.util.List;
 
 public interface ThreadResultCallback {
 
-    // Test
-    default void onResultCalculated(int result) {
+    default void onResultEmpty(boolean resultEmpty) {
     }
 
     default void onResultUser(DBModelUser user){

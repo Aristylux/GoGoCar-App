@@ -14,6 +14,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class BluetoothConnection extends Thread {
@@ -52,6 +53,10 @@ public class BluetoothConnection extends Thread {
         }
     }
 
+    /**
+     * Get bluetooth socket
+     * @return bluetooth socket
+     */
     public BluetoothSocket getBluetoothSocket(){
         return bluetoothSocket;
     }
@@ -94,9 +99,23 @@ public class BluetoothConnection extends Thread {
         BluetoothCommunication bluetoothCommunication = new BluetoothCommunication(BluetoothConnection.this, handler);
         bluetoothCommunication.start();
 
-        //sendToBluetooth("$P\n");//inform paired succeed to module
+        // Test send
+        String s = "Salut man";
+
+        for (int i = 0; i < 10; i++) {
+            try {
+                bluetoothCommunication.write(s.getBytes(StandardCharsets.UTF_8));
+                Log.d(TAG_BT_CON, "connectionEstablished: write: " + s);
+                Thread.sleep(1000); // Wait for 1 second (1000 milliseconds)
+            } catch (InterruptedException e) {
+                // Handle the interrupted exception if necessary
+            }
+        }
     }
 
+    /**
+     * Connection failed
+     */
     public void connectionFailed(){
         Log.e(TAG_BT_CON, "connectionFailed: ");
     }

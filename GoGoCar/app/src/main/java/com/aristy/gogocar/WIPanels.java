@@ -69,7 +69,6 @@ public class WIPanels extends WICommon {
     public void requestGetVehicle(){
         Log.d("GoGoCar_T", "requestGetVehicle: get vehicle:" + data);
         androidToWeb("setVehicle", data);
-        //fragmentHandler.obtainMessage(DATA_SET_VEHICLE).sendToTarget();
     }
 
     /**
@@ -85,13 +84,13 @@ public class WIPanels extends WICommon {
 
         // Check address
         if (address.isEmpty()){
-            androidToWeb("addVehicleResult", "4");  // Error code 4
+            androidToWeb(JSFunction.ADD_VEHICLE, ErrorCodes.ADD_VEHICLE_NO_ADDRESS);
             return;
         }
 
         // Check if the model exist
         //Toast.makeText(context, "error model doesn't exist", Toast.LENGTH_SHORT).show();
-        //androidToWeb("addVehicleResult", "1");  // Error code 1
+        //androidToWeb("addVehicleResult", "2");
 
         // Check if the module code is correct
         thread.setResultCallback(new ThreadResultCallback() {
@@ -99,7 +98,7 @@ public class WIPanels extends WICommon {
             public void onResultModule(DBModelModule module) {
                 if(module.getId() == 0){
                     //Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
-                    androidToWeb("addVehicleResult", "2");  // Error code 2
+                    androidToWeb(JSFunction.ADD_VEHICLE, ErrorCodes.ADD_VEHICLE_MODULE_CODE_UNKNOWN);
                 } else
                     addVehicle(model, licencePlate, address, module.getId(), isAvailable);
             }
@@ -126,7 +125,7 @@ public class WIPanels extends WICommon {
                 Log.d(TAG_Database, "addVehicleResult: success=" + success);
                 if (!success) {
                     //Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
-                    androidToWeb("addVehicleResult", "3");  // Error code 3
+                    androidToWeb(JSFunction.ADD_VEHICLE, ErrorCodes.ADD_VEHICLE_FAILED);
                 } else {
                     // Return top vehicle fragment
                     handler.obtainMessage(CLOSE_SLIDER).sendToTarget();
@@ -160,7 +159,7 @@ public class WIPanels extends WICommon {
                 if (module.getId() == 0){
                     //Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
                     Log.e(TAG_Web, "onResultModule: module code incorrect");
-                    androidToWeb("updateVehicleResult", "2");  // Error code 2
+                    androidToWeb(JSFunction.EDIT_VEHICLE, ErrorCodes.EDIT_VEHICLE_MODULE_CODE_INCORRECT);  // Error code 2
                 } else {
                     // Modify the vehicle
                     DBModelVehicle vehicle = new DBModelVehicle();
@@ -189,7 +188,7 @@ public class WIPanels extends WICommon {
             public void onResultVehicle(DBModelVehicle vehicleResulted) {
                 if (vehicleResulted.getId() != vehicle.getId()){
                     Log.e(TAG_Web, "onResultVehicles: module code already used");
-                    androidToWeb("updateVehicleResult", "3");  // Error code 3
+                    androidToWeb(JSFunction.EDIT_VEHICLE, ErrorCodes.EDIT_VEHICLE_MODULE_CODE_USED);
                 } else {
                     updateVehicle(vehicle);
                 }
@@ -209,7 +208,7 @@ public class WIPanels extends WICommon {
                 if (!success) {
                     //Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
                     Log.e(TAG_Web, "onResultVehicles: An error occured during update.");
-                    androidToWeb("updateVehicleResult", "4");  // Error code 4
+                    androidToWeb(JSFunction.EDIT_VEHICLE, ErrorCodes.EDIT_VEHICLE_FAILED);
                 } else {
                     // Return top vehicle fragment
                     handler.obtainMessage(CLOSE_SLIDER).sendToTarget();

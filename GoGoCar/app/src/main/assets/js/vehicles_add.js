@@ -15,11 +15,46 @@ add_vehicle_button.addEventListener('click', function() {
     if(androidConnected()) Android.requestAddVehicle(formVhModel, formVhLicencePlate, formVhAddress, formVhModuleCode, formVhIsAvailable);
 });
 
+
+const ADD_VEHICLE_NO_ADDRESS = 1,
+    ADD_VEHICLE_CAR_UNKNOWN = 2,
+    ADD_VEHICLE_MODULE_CODE_UNKNOWN = 3,
+    ADD_VEHICLE_FAILED = 4;
+
+const error_messages = {
+    messages: [
+        "",
+        "Address incorrect",
+        "Car unknown",
+        "Module code unknown",
+        "Register failed"
+    ],
+    getErrorText: function (errorCode) {
+        return this.messages[errorCode];
+    },
+};
+
 //[ANDROID CALLBACK]
 // Fail
 // Stay in the current page
 function addVehicleResult(code) {
-    console.log("addVehicleResult: [ERROR] code:" + code);
+    // When function called by Android (cause is a string, not a number)
+    if (typeof code == "string") code = parseInt(code);
+
+    switch (code) {
+        case ADD_VEHICLE_NO_ADDRESS:
+            console.error("ADD_VEHICLE_NO_ADDRESS: " + error_messages.getErrorText(code));
+            break;
+        case ADD_VEHICLE_CAR_UNKNOWN:
+            console.error("ADD_VEHICLE_CAR_UNKNOWN: " + error_messages.getErrorText(code));
+            break;
+        case ADD_VEHICLE_MODULE_CODE_UNKNOWN:
+            console.error("ADD_VEHICLE_MODULE_CODE_UNKNOWN: " + error_messages.getErrorText(code));
+            break;
+        case ADD_VEHICLE_FAILED:
+            console.error("ADD_VEHICLE_FAILED: " + error_messages.getErrorText(code));
+            break;
+    }
 }
 
 // ---- Input ----
