@@ -1,4 +1,21 @@
 
+To have a bigger ciphertext, you can break the message into blocks of fixed size and encrypt each block separately. This is known as block cipher encryption.
+
+Here is an example of how you can encrypt a message "hello" into a larger ciphertext using a block size of 2:
+
+    Convert the message into numerical format using an encoding scheme such as ASCII. The ASCII code for 'h' is 104, 'e' is 101, 'l' is 108, and 'o' is 111. Therefore, the message in numerical format is: 104 101 108 108 111.
+
+    Choose a block size. For this example, we will use a block size of 2.
+
+    Divide the message into blocks of size 2: 104 101, 108 108, 111.
+
+    Encrypt each block separately using the RSA encryption formula: ciphertext = (plaintext ^ e) mod N. For example, if N=2537 and e=13, then the ciphertext for the first block is (104^13) mod 2537 = 1237.
+
+    Combine the ciphertext blocks to form the final ciphertext. In this example, the ciphertext blocks are: 1237, 2086, 2506. Therefore, the final ciphertext is: 1237 2086 2506.
+
+You can choose a larger block size to increase the size of the ciphertext. However, note that larger block sizes can result in slower encryption and decryption times. Additionally, it is important to ensure that the block size is smaller than the modulus N to avoid encryption errors.
+
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -84,3 +101,5 @@ int main() {
     printf("N: %d\n", N);
     printf("e: %d\n", e);
     printf("d: %d
+    ...
+```

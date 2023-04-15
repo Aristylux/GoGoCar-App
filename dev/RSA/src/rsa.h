@@ -47,10 +47,13 @@ void free_keys(t_keys* keys);
 // ---- ----
 
 uint64_t is_prime(uint64_t number);
+uint64_t miller_rabin(uint64_t n, uint64_t a);
 uint64_t generate_prime(void);
 
 uint64_t gcd(uint64_t a, uint64_t b);
 uint64_t mod_inverse(uint64_t a, uint64_t m);
 uint64_t mod_exp(uint64_t base, uint64_t exp, uint64_t mod);
+
+uint64_t powmod(uint64_t b, uint64_t e, uint64_t m);
 
 #endif

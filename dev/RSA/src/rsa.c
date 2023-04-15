@@ -61,11 +61,11 @@ void rsa_decrypt(uint64_t *ciphertext, uint64_t len, t_private_key private_key, 
 
 // Print the ciphertext
 void print_ciphertext(uint64_t *ciphertext, uint64_t len){
-    printf("Ciphertext: ");
+    printf("Ciphertext: '");
     for(uint64_t i = 0; i < len; i++) {
         printf("%ld ", ciphertext[i]);
     }
-    printf("\n");
+    printf("'\n");
 }
 
 void print_rsa_keys(t_keys* keys){
@@ -84,20 +84,54 @@ void free_keys(t_keys* keys){
 
 // ---- ----
 
+// not optimised for large numbers
 uint64_t is_prime(uint64_t number) {
+    /*
     printf("sqrt %f\n", sqrt(number));
     for (uint64_t i = 2; i <= sqrt(number); i++){
         if (number%i == 0) return 0;
     }
     return 1;
+    */
+    if (number == 2 || number == 3)
+        return 1;
+    if (number < 2 || number % 2 == 0)
+        return 0;
+
+    for (uint64_t i = 0; i < 10; i++) {
+        uint64_t a = rand() % (number - 3) + 2;
+        if (!miller_rabin(number, a))
+            return 0;
+    }
+    return 1;
+}
+
+uint64_t miller_rabin(uint64_t n, uint64_t a) {
+    uint64_t r = 0, d = n - 1;
+    while (d % 2 == 0) {
+        r++;
+        d /= 2;
+    }
+    uint64_t x = powmod(a, d, n);
+    if (x == 1 || x == n - 1)
+        return 1;
+
+    for (uint64_t i = 0; i < r - 1; i++) {
+        x = powmod(x, 2, n);
+        if (x == n - 1)
+            return 1;
+    }
+
+    return 0;
 }
 
 uint64_t generate_prime(void) {
     uint64_t p;
     do {
         // Generate a random number between 1 and 100
-        p = rand() % 100 + 1;
-        printf("p: %ld\n", p);
+        //p = rand() % 100 + 1;
+        // Generate a random number between 1000 and 1999
+        p = rand() % 1000 + 1000;
     } while (!is_prime(p));
     return p;
 }
@@ -116,7 +150,7 @@ uint64_t gcd(uint64_t a, uint64_t b) {
 // Function to find the modular inverse of a number
 uint64_t mod_inverse(uint64_t a, uint64_t m) {
     uint64_t m0 = m, t, q;
-    uint64_t x0 = 0, x1 = 1;
+    int64_t x0 = 0, x1 = 1;
 
     if (m == 1)
         return 0;
@@ -147,5 +181,20 @@ uint64_t mod_exp(uint64_t base, uint64_t exp, uint64_t mod) {
         base = (base * base) % mod;
         exp = exp / 2;
     }
+    return result;
+}
+
+//unsigned long long powmod(unsigned long long base, unsigned long long exponent, unsigned long long modulus);
+uint64_t powmod(uint64_t b, uint64_t e, uint64_t m) {
+    uint64_t result = 1;
+
+    while (e > 0) {
+        if (e & 1) {
+            result = (result * b) % m;
+        }
+        e >>= 1;
+        b = (b * b) % m;
+    }
+
     return result;
 }
