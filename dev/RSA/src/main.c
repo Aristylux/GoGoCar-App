@@ -15,7 +15,6 @@ int main(void) {
     char *text = "hello";
     uint64_t text_len = strlen(text);
     uint64_t ciphertext[text_len];
-    char decrypted[text_len];
 
     // Encrypt the message
     rsa_encrypt(text, text_len, keys->public_key, ciphertext);
@@ -23,6 +22,8 @@ int main(void) {
     // Print the ciphertext
     print_ciphertext(ciphertext, text_len);
 
+    // ---- ----
+    char decrypted[text_len];
     // Decrypt the ciphertext
     rsa_decrypt(ciphertext, text_len, keys->private_key, decrypted);
 
