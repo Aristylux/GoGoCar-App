@@ -43,8 +43,30 @@ void generate_rsa_keys(t_keys* keys){
 }
 
 // ciphertext = (plaintext ^ e) mod N
+// Function to encrypt a message using RSA
+void rsa_encrypt(char* plaintext, uint64_t len, t_public_key public_key, uint64_t *ciphertext){
+    for(uint64_t i = 0; i < len; i++) {
+        ciphertext[i] = mod_exp(plaintext[i], public_key.e, public_key.N);
+    }
+}
+
 
 // plaintext = (ciphertext ^ d) mod N
+// Function to decrypt a message using RSA
+void rsa_decrypt(uint64_t *ciphertext, uint64_t len, t_private_key private_key, char *plaintext){
+    for(uint64_t i = 0; i < len; i++) {
+        plaintext[i] = mod_exp(ciphertext[i], private_key.d, private_key.N);
+    }
+}
+
+// Print the ciphertext
+void print_ciphertext(uint64_t *ciphertext, uint64_t len){
+    printf("Ciphertext: ");
+    for(uint64_t i = 0; i < len; i++) {
+        printf("%ld ", ciphertext[i]);
+    }
+    printf("\n");
+}
 
 void print_rsa_keys(t_keys* keys){
     puts("Public key:");
@@ -113,4 +135,17 @@ uint64_t mod_inverse(uint64_t a, uint64_t m) {
         x1 += m0;
 
     return x1;
+}
+
+// Function to calculate the modular exponentiation of a number
+uint64_t mod_exp(uint64_t base, uint64_t exp, uint64_t mod) {
+    uint64_t result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = (result * base) % mod;
+        }
+        base = (base * base) % mod;
+        exp = exp / 2;
+    }
+    return result;
 }

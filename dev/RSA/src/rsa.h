@@ -36,14 +36,21 @@ typedef struct keys
 t_keys *initialize_keys(void);
 void generate_rsa_keys(t_keys* keys);
 
+void rsa_encrypt(char* plaintext, uint64_t len, t_public_key public_key, uint64_t *ciphertext);
+void rsa_decrypt(uint64_t *ciphertext, uint64_t len, t_private_key private_key, char *plaintext);
+void print_ciphertext(uint64_t *ciphertext, uint64_t len);
+
 void print_rsa_keys(t_keys* keys);
 
 void free_keys(t_keys* keys);
+
+// ---- ----
 
 uint64_t is_prime(uint64_t number);
 uint64_t generate_prime(void);
 
 uint64_t gcd(uint64_t a, uint64_t b);
 uint64_t mod_inverse(uint64_t a, uint64_t m);
+uint64_t mod_exp(uint64_t base, uint64_t exp, uint64_t mod);
 
 #endif
