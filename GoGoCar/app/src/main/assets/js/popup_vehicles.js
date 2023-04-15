@@ -45,7 +45,10 @@ function vehicleDelete(success) {
         });
         // Add no vehicle background if list equal to 0 
         if (vehicles_container_info.length - 2 == 0){
-            document.getElementById("no_vh_logo").classList.add('logo-visible');
+            // After remove animation, show no vehicle logo
+            setTimeout(() => {
+                document.getElementById("no_vh_logo").classList.add('logo-visible');
+            }, 500);
         }
     }
 }
