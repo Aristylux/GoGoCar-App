@@ -28,6 +28,7 @@ Android Application for GoGoCar
     - [App 6](#app-6)
     - [App 7](#app-7)
     - [App 8](#app-8)
+    - [Communication](#communication)
 
 
 # Documentation
@@ -163,3 +164,9 @@ App3 ~= App2 + App1
 
 * Try to implement Slidr lib for activity
 * (work)
+
+### Communication
+
+Detail the RSA and AES encryption
+
+Used for bluetooth communication
