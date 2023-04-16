@@ -18,7 +18,7 @@ import static com.aristy.gogocar.HandlerCodes.SET_PAGE_FROM_HOME;
 import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
-import static com.aristy.gogocar.WICommon.JSFunction.DRIVING_REQUEST;
+import static com.aristy.gogocar.WICommon.Pages.Home.JS.DRIVING_REQUEST;
 import static com.aristy.gogocar.WICommon.Pages.pathPage;
 
 import android.app.Activity;
@@ -171,7 +171,7 @@ public class WIMainScreen extends WICommon {
         if (!checkPermission(activity)){
             // re-init operation
             Toast.makeText(context, "ask.", Toast.LENGTH_SHORT).show();
-            androidToWeb(DRIVING_REQUEST, ErrorCodes.DRIVING_REQUEST_PERMISSION_ERROR);
+            androidToWeb(DRIVING_REQUEST, Pages.Home.ErrorCodes.DRIVING_REQUEST_PERMISSION_ERROR);
             return;
         }
 
@@ -179,13 +179,13 @@ public class WIMainScreen extends WICommon {
         if(!isBluetoothEnabled()){
             Toast.makeText(context, "Please enable bluetooth.", Toast.LENGTH_SHORT).show();
             bluetoothHandler.obtainMessage(BT_REQUEST_ENABLE).sendToTarget();
-            androidToWeb(DRIVING_REQUEST, ErrorCodes.DRIVING_REQUEST_BLUETOOTH_DISABLED);
+            androidToWeb(DRIVING_REQUEST, Pages.Home.ErrorCodes.DRIVING_REQUEST_BLUETOOTH_DISABLED);
             return;
         }
 
         if(!isLocationEnabled(context)) {
             Toast.makeText(context, "Please enable location.", Toast.LENGTH_SHORT).show();
-            androidToWeb(DRIVING_REQUEST, ErrorCodes.DRIVING_REQUEST_LOCALISATION_DISABLE);
+            androidToWeb(DRIVING_REQUEST, Pages.Home.ErrorCodes.DRIVING_REQUEST_LOCALISATION_DISABLE);
             return;
         }
 
