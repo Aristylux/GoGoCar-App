@@ -68,8 +68,6 @@ function cbVehicleAddVehicle(_vehicle){
 
 // [ANDROID] Reset database for update
 function resetDatabase(){
-    document.getElementById("no_vh_logo").classList.add('logo-visible');
-
     vehicles = [];
     index_vh = 0;
 
