@@ -1,6 +1,7 @@
 #ifndef _H_RSA_
 #define _H_RSA_
 
+#include <string.h>
 #include <stdio.h>
 
 // For sqrt
@@ -33,6 +34,13 @@ typedef struct keys
     t_private_key private_key;
 } t_keys;
 
+typedef struct key_bytes
+{
+    uint8_t * byte_array;
+    size_t length;
+} t_key_bytes;
+
+
 t_keys *initialize_keys(void);
 void generate_rsa_keys(t_keys* keys);
 
@@ -42,6 +50,12 @@ void print_ciphertext(uint64_t *ciphertext, uint64_t len);
 
 void print_rsa_keys(t_keys* keys);
 
+t_key_bytes *rsa_public_key(t_keys *keys);
+void print_bytes(const t_key_bytes *bytes);
+
+t_public_key bytes_to_public_key(const t_key_bytes* byte_array);
+
+void free_bytes(t_key_bytes *key_bytes);
 void free_keys(t_keys* keys);
 
 // ---- ----
@@ -55,5 +69,10 @@ uint64_t mod_inverse(uint64_t a, uint64_t m);
 uint64_t mod_exp(uint64_t base, uint64_t exp, uint64_t mod);
 
 uint64_t powmod(uint64_t b, uint64_t e, uint64_t m);
+
+void rsa_to_bytes(t_public_key *public_key, uint8_t *byte_array) ;
+
+uint64_t htonll(uint64_t x);
+uint64_t ntohll(uint64_t value);
 
 #endif

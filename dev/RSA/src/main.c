@@ -16,6 +16,16 @@ int main(void) {
     uint64_t text_len = strlen(text);
     uint64_t ciphertext[text_len];
 
+    // Print Public key (for sending)
+    t_key_bytes* public_key_bytes = rsa_public_key(keys);
+
+    print_bytes(public_key_bytes);
+
+    t_public_key p_k = bytes_to_public_key(public_key_bytes);
+    printf("N: %ld e: %ld\n", p_k.N, p_k.e);
+
+
+
     // Encrypt the message
     rsa_encrypt(text, text_len, keys->public_key, ciphertext);
 
@@ -32,6 +42,7 @@ int main(void) {
 
 
     printf("Free\n");
+    free_bytes(public_key_bytes);
     free_keys(keys);
 
     return 0; // success

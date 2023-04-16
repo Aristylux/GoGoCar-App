@@ -78,6 +78,54 @@ void print_rsa_keys(t_keys* keys){
     printf("\tExponent : %ld\n", keys->private_key.d);
 }
 
+t_key_bytes *rsa_public_key(t_keys *keys){
+    t_key_bytes* key_bytes = (t_key_bytes*)malloc(sizeof(t_key_bytes));
+    if (key_bytes == NULL) return NULL;
+
+    // Calculate the size of the byte array
+    size_t byte_array_size = sizeof(uint64_t) * 2;  // because modulus and exponent
+
+    // Allocate memory for the byte array
+    key_bytes->byte_array = (uint8_t*)malloc(byte_array_size);
+    if (key_bytes->byte_array == NULL) {
+        free(key_bytes);
+        return NULL;
+    }
+
+    key_bytes->length = byte_array_size;
+
+    rsa_to_bytes(&keys->public_key, key_bytes->byte_array);
+    return key_bytes;
+}
+
+void free_bytes(t_key_bytes *key_bytes){
+    free(key_bytes->byte_array);
+    free(key_bytes);
+}
+
+void print_bytes(const t_key_bytes *bytes) {
+    for (size_t i = 0; i < bytes->length; i++) {
+        printf("%02x ", bytes->byte_array[i]);
+    }
+    printf("\n");
+}
+
+t_public_key bytes_to_public_key(const t_key_bytes* byte_array)
+{
+    // Convert the modulus and exponent values from network byte order
+    uint64_t n_network, e_network;
+    memcpy(&n_network, byte_array->byte_array, sizeof(uint64_t));
+    memcpy(&e_network, byte_array->byte_array + sizeof(uint64_t), sizeof(uint64_t));
+    uint64_t n = ntohll(n_network);
+    uint64_t e = ntohll(e_network);
+
+    // Create the public key struct
+    t_public_key key = {n, e};
+
+    return key;
+}
+
+
 void free_keys(t_keys* keys){
     free(keys);
 }
@@ -196,5 +244,38 @@ uint64_t powmod(uint64_t b, uint64_t e, uint64_t m) {
         b = (b * b) % m;
     }
 
+    return result;
+}
+
+void rsa_to_bytes(t_public_key *public_key, uint8_t *byte_array) {
+    // Convert the N and e values to network byte order
+    uint64_t n_network = htonll(public_key->N);
+    uint64_t e_network = htonll(public_key->e);
+
+    // Copy the N and e values to the byte array
+    memcpy(byte_array, &n_network, sizeof(uint64_t));
+    memcpy(byte_array + sizeof(uint64_t), &e_network, sizeof(uint64_t));
+}
+
+uint64_t htonll(uint64_t x)
+{
+    uint64_t result = 0;
+    result |= (x & 0x00000000000000ff) << 56;
+    result |= (x & 0x000000000000ff00) << 40;
+    result |= (x & 0x0000000000ff0000) << 24;
+    result |= (x & 0x00000000ff000000) << 8;
+    result |= (x & 0x000000ff00000000) >> 8;
+    result |= (x & 0x0000ff0000000000) >> 24;
+    result |= (x & 0x00ff000000000000) >> 40;
+    result |= (x & 0xff00000000000000) >> 56;
+    return result;
+}
+
+uint64_t ntohll(uint64_t value)
+{
+    uint64_t result = 0;
+    for (int i = 0; i < 8; i++) {
+        result |= ((value >> (8 * i)) & 0xff) << (56 - 8 * i);
+    }
     return result;
 }
