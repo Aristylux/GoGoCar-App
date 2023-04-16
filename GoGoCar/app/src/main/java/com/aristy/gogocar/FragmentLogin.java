@@ -1,6 +1,6 @@
 package com.aristy.gogocar;
 
-import static com.aristy.gogocar.WICommon.Pages.LOGIN;
+import static com.aristy.gogocar.WICommon.Pages.Login.LOGIN;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
