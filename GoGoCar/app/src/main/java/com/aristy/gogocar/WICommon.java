@@ -41,16 +41,35 @@ public class WICommon {
 
     static class Pages {
         public static final String path = "file:///android_asset/";
-        public static final String LOGIN = path + "login.html";
         public static final String pathPage = path + "pages/";
         public static final String BOOK_VEHICLE = pathPage + "drive_book.html";
+
+        static class JS {
+            public static final String CLOSE_POPUP = "closePopup";
+            public static final String RESET_DATA = "resetDatabase";
+            public static final String SET_USER_INFO = "setUserInformation";
+
+            public static final String CHANGE_PAGE = "pageChanged";
+            public static final String SET_MODAL = "setModal";
+        }
+
+        static class Login {
+            public static final String LOGIN = path + "login.html";
+            static class JS {
+                public static final String ERROR_AUTH_LOGIN = "errorAuthenticationLogin";
+                public static final String ERROR_AUTH_REGIS = "errorAuthenticationRegistration";
+                public static final String SUCCESS = "success";
+            }
+        }
 
         static class Home {
             public static final String HOME = pathPage + "home.html";
             static class JS {
+                public static final String SET_USER_NAME = "setUserName";
+                public static final String SET_VEHICLE_BOOKED = "setVehicleBooked";
                 public static final String DRIVING_REQUEST = "requestDriveCallback";
+                public static final String DELETE_JOURNEY = "journeyDelete";
             }
-
             static class ErrorCodes {
                 // home.js
                 public static final String DRIVING_REQUEST_PERMISSION_ERROR = "1";
@@ -64,18 +83,26 @@ public class WICommon {
 
         static class Drive {
             public static final String DRIVE = pathPage + "drive.html";
+            static class JS {
+                public static final String ADD_VEHICLE = "addVehicle";
+            }
         }
 
         static class Vehicle {
             public static final String VEHICLE = pathPage + "vehicles.html";
+            static class JS {
+                public static final String SET_RESULT = "setResult";
+                public static final String ADD_VEHICLE = "addVehicle";
+                public static final String DELETE_VEHICLE = "vehicleDelete";
+            }
         }
 
         static class VehicleAdd {
             public static final String ADD_VEHICLE = pathPage + "vehicles_add.html";
             static class JS {
+                public static final String SET_VEHICLE = "setVehicle";
                 public static final String ADD_VEHICLE = "addVehicleResult";
             }
-
             static class ErrorCodes {
                 // vehicle_add.js
                 public static final String ADD_VEHICLE_NO_ADDRESS = "1";
@@ -90,12 +117,17 @@ public class WICommon {
             static class JS {
                 public static final String EDIT_VEHICLE = "updateVehicleResult";
             }
-
             static class ErrorCodes {
                 // vehicle_edit.js
                 public static final String EDIT_VEHICLE_MODULE_CODE_INCORRECT = "1";
                 public static final String EDIT_VEHICLE_MODULE_CODE_USED = "2";
                 public static final String EDIT_VEHICLE_FAILED = "3";
+            }
+        }
+
+        static class Setting {
+            static class JS {
+                public static final String SET_USER_NAME = "setUserName";
             }
         }
     }

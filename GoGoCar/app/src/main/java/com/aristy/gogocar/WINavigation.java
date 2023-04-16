@@ -2,6 +2,8 @@ package com.aristy.gogocar;
 
 import static com.aristy.gogocar.HandlerCodes.REMOVE_MODAL;
 import static com.aristy.gogocar.HandlerCodes.SET_PAGE;
+import static com.aristy.gogocar.WICommon.Pages.JS.CHANGE_PAGE;
+import static com.aristy.gogocar.WICommon.Pages.JS.SET_MODAL;
 
 import android.os.Handler;
 import android.webkit.JavascriptInterface;
@@ -27,7 +29,7 @@ public class WINavigation extends WICommon {
 
     @JavascriptInterface
     public void initNavigation(){
-        androidToWeb( "pageChanged", getPageName(initLink));
+        androidToWeb(CHANGE_PAGE, getPageName(initLink));
     }
 
     private String getPageName(String path){
@@ -54,7 +56,7 @@ public class WINavigation extends WICommon {
     public void setPage(){
         loadNewPage(webViewContent, newWebPage);
         // inform success
-        androidToWeb("pageChanged");
+        androidToWeb(CHANGE_PAGE);
     }
 
     /**
@@ -65,7 +67,7 @@ public class WINavigation extends WICommon {
     public void setPage(String page){
         loadNewPage(webViewContent, page);
         // inform success
-        androidToWeb("pageChanged", page);
+        androidToWeb(CHANGE_PAGE, page);
     }
 
     /**
@@ -73,7 +75,7 @@ public class WINavigation extends WICommon {
      * @param isActive true or false
      */
     public void setModal(boolean isActive){
-        androidToWeb("setModal", String.valueOf(isActive));
+        androidToWeb(SET_MODAL, String.valueOf(isActive));
     }
 
     /**

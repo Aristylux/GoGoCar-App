@@ -18,7 +18,15 @@ import static com.aristy.gogocar.HandlerCodes.SET_PAGE_FROM_HOME;
 import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
+import static com.aristy.gogocar.WICommon.Boolean.TRUE;
+import static com.aristy.gogocar.WICommon.Pages.Home.JS.DELETE_JOURNEY;
 import static com.aristy.gogocar.WICommon.Pages.Home.JS.DRIVING_REQUEST;
+import static com.aristy.gogocar.WICommon.Pages.Home.JS.SET_USER_NAME;
+import static com.aristy.gogocar.WICommon.Pages.Home.JS.SET_VEHICLE_BOOKED;
+import static com.aristy.gogocar.WICommon.Pages.JS.CLOSE_POPUP;
+import static com.aristy.gogocar.WICommon.Pages.JS.RESET_DATA;
+import static com.aristy.gogocar.WICommon.Pages.Vehicle.JS.DELETE_VEHICLE;
+import static com.aristy.gogocar.WICommon.Pages.Vehicle.JS.SET_RESULT;
 import static com.aristy.gogocar.WICommon.Pages.pathPage;
 
 import android.app.Activity;
@@ -28,6 +36,9 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
+
+import com.aristy.gogocar.WICommon.Pages.Drive;
+import com.aristy.gogocar.WICommon.Pages.Vehicle;
 
 import java.util.List;
 
@@ -76,7 +87,7 @@ public class WIMainScreen extends WICommon {
      * remove modal in th main screen fragment too.
      */
     public void removeModal(){
-        androidToWeb("closePopup");
+        androidToWeb(CLOSE_POPUP);
     }
 
     /**
@@ -85,7 +96,7 @@ public class WIMainScreen extends WICommon {
      * <i>Call in</i>: <code>vehicle.js</code><br>
      */
     public void refresh(){
-        androidToWeb("resetDatabase");
+        androidToWeb(RESET_DATA);
     }
 
     /**
@@ -134,12 +145,12 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestData(){
-        androidToWeb("setUserName", userPreferences.getUserName());
+        androidToWeb(SET_USER_NAME, userPreferences.getUserName());
 
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultVehicles(List<DBModelVehicle> vehicles) {
-                androidToWeb("setVehicleBooked", vehicles.toString());
+                androidToWeb(SET_VEHICLE_BOOKED, vehicles.toString());
             }
         });
         thread.getVehiclesBooked(userPreferences.getUserID());
@@ -217,7 +228,7 @@ public class WIMainScreen extends WICommon {
             public void onResultTableUpdated(boolean isUpdate) {
                 // TODO : Toast crash (like WIPanel)
                 if(!isUpdate) Toast.makeText(context, "ERROR: Can't cancel.", Toast.LENGTH_SHORT).show();
-                else androidToWeb("journeyDelete", Boolean.TRUE);
+                else androidToWeb(DELETE_JOURNEY, TRUE);
             }
         });
         //Reset vehicle
@@ -238,7 +249,7 @@ public class WIMainScreen extends WICommon {
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultVehicle(DBModelVehicle vehicle) {
-                androidToWeb("addVehicle", vehicle.toString());
+                androidToWeb(Drive.JS.ADD_VEHICLE, vehicle.toString());
             }
         });
         thread.getVehiclesAvailable(userPreferences.getUserID());
@@ -270,11 +281,11 @@ public class WIMainScreen extends WICommon {
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultEmpty(boolean resultEmpty) {
-                androidToWeb("setResult", String.valueOf(resultEmpty));
+                androidToWeb(SET_RESULT, String.valueOf(resultEmpty));
             }
             @Override
             public void onResultVehicle(DBModelVehicle vehicle) {
-                androidToWeb("addVehicle", vehicle.toString());
+                androidToWeb(Vehicle.JS.ADD_VEHICLE, vehicle.toString());
             }
         });
         thread.getVehiclesByUser(userPreferences.getUserID());
@@ -294,7 +305,7 @@ public class WIMainScreen extends WICommon {
             public void onResultTableUpdated(boolean isDeleted) {
                 // TODO : Toast crash (like WIPanel)
                 if (!isDeleted) Toast.makeText(context, "ERROR: Can't delete.", Toast.LENGTH_SHORT).show();
-                else androidToWeb("vehicleDelete", Boolean.TRUE);
+                else androidToWeb(DELETE_VEHICLE, TRUE);
             }
         });
         thread.deleteVehicle(vehicleID);
@@ -331,7 +342,7 @@ public class WIMainScreen extends WICommon {
      */
     @JavascriptInterface
     public void requestUserName(){
-        androidToWeb("setUserName", userPreferences.getUserName());
+        androidToWeb(Pages.Setting.JS.SET_USER_NAME, userPreferences.getUserName());
     }
 
     /**

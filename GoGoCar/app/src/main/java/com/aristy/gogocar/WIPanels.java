@@ -3,7 +3,9 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
+import static com.aristy.gogocar.WICommon.Pages.JS.SET_USER_INFO;
 import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.ADD_VEHICLE;
+import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.SET_VEHICLE;
 import static com.aristy.gogocar.WICommon.Pages.VehicleEdit.JS.EDIT_VEHICLE;
 
 import android.os.Handler;
@@ -58,7 +60,7 @@ public class WIPanels extends WICommon {
 
     @JavascriptInterface
     public void requestPersonalInformation() {
-        androidToWeb("setUserInformation", userPreferences.toString());
+        androidToWeb(SET_USER_INFO, userPreferences.toString());
     }
 
     // ---- Add ----
@@ -70,7 +72,7 @@ public class WIPanels extends WICommon {
     @JavascriptInterface
     public void requestGetVehicle(){
         Log.d("GoGoCar_T", "requestGetVehicle: get vehicle:" + data);
-        androidToWeb("setVehicle", data);
+        androidToWeb(SET_VEHICLE, data);
     }
 
     /**
