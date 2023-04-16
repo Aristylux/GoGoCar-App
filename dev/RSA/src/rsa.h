@@ -73,6 +73,6 @@ uint64_t powmod(uint64_t b, uint64_t e, uint64_t m);
 void rsa_to_bytes(t_public_key *public_key, uint8_t *byte_array) ;
 
 uint64_t htonll(uint64_t x);
-uint64_t ntohll(uint64_t value);
+uint64_t ntohll(uint64_t x);
 
 #endif

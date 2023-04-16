@@ -134,13 +134,6 @@ void free_keys(t_keys* keys){
 
 // not optimised for large numbers
 uint64_t is_prime(uint64_t number) {
-    /*
-    printf("sqrt %f\n", sqrt(number));
-    for (uint64_t i = 2; i <= sqrt(number); i++){
-        if (number%i == 0) return 0;
-    }
-    return 1;
-    */
     if (number == 2 || number == 3)
         return 1;
     if (number < 2 || number % 2 == 0)
@@ -176,8 +169,6 @@ uint64_t miller_rabin(uint64_t n, uint64_t a) {
 uint64_t generate_prime(void) {
     uint64_t p;
     do {
-        // Generate a random number between 1 and 100
-        //p = rand() % 100 + 1;
         // Generate a random number between 1000 and 1999
         p = rand() % 1000 + 1000;
     } while (!is_prime(p));
@@ -257,6 +248,13 @@ void rsa_to_bytes(t_public_key *public_key, uint8_t *byte_array) {
     memcpy(byte_array + sizeof(uint64_t), &e_network, sizeof(uint64_t));
 }
 
+/**
+ * @brief Converts a 64-bit integer from host byte order to network byte order.
+ * @note htonll: "host to network long long"
+ * 
+ * @param x             64-bit integer host byte order
+ * @return uint64_t     64-bit integer network byte order
+ */
 uint64_t htonll(uint64_t x)
 {
     uint64_t result = 0;
@@ -271,11 +269,18 @@ uint64_t htonll(uint64_t x)
     return result;
 }
 
-uint64_t ntohll(uint64_t value)
+/**
+ * @brief Converts a 64-bit integer from network byte order to host byte order.
+ * @note ntohll: "network to host long long"
+ * 
+ * @param x             64-bit integer network byte order
+ * @return uint64_t     64-bit integer host byte order
+ */
+uint64_t ntohll(uint64_t x)
 {
     uint64_t result = 0;
     for (int i = 0; i < 8; i++) {
-        result |= ((value >> (8 * i)) & 0xff) << (56 - 8 * i);
+        result |= ((x >> (8 * i)) & 0xff) << (56 - 8 * i);
     }
     return result;
 }

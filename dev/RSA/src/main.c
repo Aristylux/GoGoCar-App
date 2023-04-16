@@ -19,6 +19,7 @@ int main(void) {
     // Print Public key (for sending)
     t_key_bytes* public_key_bytes = rsa_public_key(keys);
 
+    printf("Public key bytes:\n");
     print_bytes(public_key_bytes);
 
     t_public_key p_k = bytes_to_public_key(public_key_bytes);
