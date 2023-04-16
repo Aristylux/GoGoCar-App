@@ -72,13 +72,18 @@ void print_rsa_keys(t_keys* keys){
     puts("Public key:");
     printf("\tModulus  : %ld\n", keys->public_key.N);
     printf("\tExponent : %ld\n\n", keys->public_key.e);
-
     puts("Private key:");
     printf("\tModulus  : %ld\n", keys->private_key.N);
     printf("\tExponent : %ld\n", keys->private_key.d);
 }
 
-t_key_bytes *rsa_public_key(t_keys *keys){
+void free_keys(t_keys* keys){
+    free(keys);
+}
+
+// ---- ----
+
+t_key_bytes *public_key_to_bytes(t_keys *keys){
     t_key_bytes* key_bytes = (t_key_bytes*)malloc(sizeof(t_key_bytes));
     if (key_bytes == NULL) return NULL;
 
@@ -98,18 +103,6 @@ t_key_bytes *rsa_public_key(t_keys *keys){
     return key_bytes;
 }
 
-void free_bytes(t_key_bytes *key_bytes){
-    free(key_bytes->byte_array);
-    free(key_bytes);
-}
-
-void print_bytes(const t_key_bytes *bytes) {
-    for (size_t i = 0; i < bytes->length; i++) {
-        printf("%02x ", bytes->byte_array[i]);
-    }
-    printf("\n");
-}
-
 t_public_key bytes_to_public_key(const t_key_bytes* byte_array)
 {
     // Convert the modulus and exponent values from network byte order
@@ -125,9 +118,64 @@ t_public_key bytes_to_public_key(const t_key_bytes* byte_array)
     return key;
 }
 
+void print_public_key_bytes(const t_key_bytes *bytes) {
+    for (size_t i = 0; i < bytes->length; i++) {
+        printf("%02x ", bytes->byte_array[i]);
+    }
+    printf("\n");
+}
 
-void free_keys(t_keys* keys){
-    free(keys);
+void free_public_key_bytes(t_key_bytes *key_bytes){
+    free(key_bytes->byte_array);
+    free(key_bytes);
+}
+
+// ---- ----
+
+uint8_t* uint64_array_to_bytes(const uint64_t * array, uint64_t array_size){
+    uint8_t * byte_array = (uint8_t*)malloc(array_size * sizeof(uint64_t));
+
+    for (size_t i = 0; i < array_size; i++) {
+        // Convert the array element to network byte order
+        uint64_t element_network = htonll(array[i]);
+
+        // Copy the array element to the byte array
+        memcpy(byte_array + i * sizeof(uint64_t), &element_network, sizeof(uint64_t));
+    }
+    return byte_array;
+}
+
+uint64_t *bytes_to_uint64_array(uint8_t* byte_array, size_t byte_array_size){
+    if (byte_array_size % sizeof(uint64_t) != 0) {
+        // The byte array size must be a multiple of the uint64_t size
+        return NULL;
+    }
+
+    printf("print array\n");
+    print_bytes(byte_array, byte_array_size);
+
+    size_t array_size = byte_array_size / sizeof(uint64_t);
+
+    printf("array size: %ld - %ld\n", array_size, byte_array_size);
+
+    uint64_t* array = (uint64_t*)malloc(array_size * sizeof(uint64_t));
+    if (array == NULL) return NULL;
+
+    for (size_t i = 0; /*i < array_size*/ i * sizeof(uint64_t) < byte_array_size; i++) {
+        // Copy the byte array element to the array element
+        memcpy(&array[i], byte_array + i * sizeof(uint64_t), sizeof(uint64_t));
+
+        // Convert the array element to host byte order
+        array[i] = ntohll(array[i]);
+    }
+    return array;
+}
+
+void print_bytes(const uint8_t *byte_array, size_t length) {
+    for (size_t i = 0; i < length; i++) {
+        printf("%02x ", byte_array[i]);
+    }
+    printf("\n");
 }
 
 // ---- ----
