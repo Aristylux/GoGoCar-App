@@ -1,6 +1,7 @@
 // Global Variables
 var vehicles = [];
 var index_vh = 0;
+var click_add = 0, click_edit = 0;
 
 const EL_LI = 0, 
     EL_TRASH_ICON = 1, 
@@ -9,7 +10,8 @@ const EL_LI = 0,
 const addVehicleButton = document.getElementById("add_vehicle_button");
 addVehicleButton.addEventListener('click', () => {
     // Open new window for add new vehicle
-    if(androidConnected()) Android.openSlider("vehicles", "add");
+    if (++click_add === 1)
+        if(androidConnected()) Android.openSlider("vehicles", "add");
 });
 
 // Request database
@@ -18,17 +20,9 @@ if (androidConnected()) Android.requestUserVehicles();
 else{
     let vh_test = [
         {"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},
-        {"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0},
-        {"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},
-        {"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0},
-        {"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},
-        {"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0},
-        {"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},
-        {"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},
-        {"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},
         {"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}
     ]
-    var vehicles = vh_test/*JSON.parse(vh_test);*/
+    var vehicles = vh_test/*JSON.parse('[]');*/
     console.log(vehicles.length);
 
     vehicles.forEach((vehicle) => {
@@ -74,7 +68,9 @@ function cbVehicleAddVehicle(_vehicle){
     elements[EL_EDIT_ICON].addEventListener('click', () => {
         // Open window edit
         console.log(JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
-        if (androidConnected()) Android.openSlider("vehicles", "edit", JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
+
+        if (++click_edit === 1)
+            if (androidConnected()) Android.openSlider("vehicles", "edit", JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
     });
 }
 
@@ -82,6 +78,8 @@ function cbVehicleAddVehicle(_vehicle){
 function resetDatabase(){
     vehicles = [];
     index_vh = 0;
+    click_add = 0;
+    click_edit = 0;
 
     var ul = document.getElementById("vehicles_list"); 
 
