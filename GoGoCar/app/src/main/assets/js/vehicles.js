@@ -21,19 +21,21 @@ else{
 
     vehicles.forEach((vehicle) => {
         //document.getElementById("no_vh_logo").classList.add('logo-visible');
+        setTimeout(() => {
+            let elements = addElement(vehicle, index_vh++);
+            vehicles.push(vehicle);
 
-        let elements = addElement(vehicle, index_vh++);
-        vehicles.push(vehicle);
-
-        elements[EL_TRASH_ICON].addEventListener('click', () => {
-            console.log(JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
-            // Open popup
-            openPopupBook(vehicles[parseInt(elements[EL_LI].id.substring(3))]);
-        });
-
-        elements[EL_EDIT_ICON].addEventListener('click', () => {
-            console.log(JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
-        });
+            elements[EL_TRASH_ICON].addEventListener('click', () => {
+                console.log(JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
+                // Open popup
+                openPopupBook(vehicles[parseInt(elements[EL_LI].id.substring(3))]);
+            });
+    
+            elements[EL_EDIT_ICON].addEventListener('click', () => {
+                console.log(JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
+            });
+        }, 1000);
+        
     });
 
 }
