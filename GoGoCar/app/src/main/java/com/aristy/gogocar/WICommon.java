@@ -84,7 +84,7 @@ public class WICommon {
         static class Drive {
             public static final String DRIVE = pathPage + "drive.html";
             static class JS {
-                public static final String ADD_VEHICLE = "addVehicle";
+                public static final String ADD_VEHICLE = "cbDriveAddVehicle";
             }
         }
 
@@ -92,7 +92,7 @@ public class WICommon {
             public static final String VEHICLE = pathPage + "vehicles.html";
             static class JS {
                 public static final String SET_RESULT = "setResult";
-                public static final String ADD_VEHICLE = "addVehicle";
+                public static final String ADD_VEHICLE = "cbVehicleAddVehicle";
                 public static final String DELETE_VEHICLE = "vehicleDelete";
             }
         }

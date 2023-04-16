@@ -47,7 +47,7 @@ function setResult(resultEmpty) {
 }
 
 // [ANDROID CALLBACK](requestUserVehicles) Add vehicle
-function addVehicle(_vehicle){
+function cbVehicleAddVehicle(_vehicle){
     let vehicle = JSON.parse(_vehicle);
     let elements = addElement(vehicle, index_vh++);
     vehicles.push(vehicle);

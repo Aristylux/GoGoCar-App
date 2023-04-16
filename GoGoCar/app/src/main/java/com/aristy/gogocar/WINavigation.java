@@ -46,6 +46,7 @@ public class WINavigation extends WICommon {
     @JavascriptInterface
     public void requestChangePage(String page){
         this.newWebPage = page;
+        ThreadManager.getInstance().verifyThread();
         handlerNavigation.obtainMessage(SET_PAGE, page).sendToTarget();
     }
 
