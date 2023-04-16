@@ -1,3 +1,7 @@
+// Global Variables
+var click = 0;
+var last_index = 5; // none of the screens
+
 // On load page:
 if(androidConnected()) Android.requestUserName();
 
@@ -6,7 +10,6 @@ function setUserName(name){
     let nameElmt = document.getElementById("user_name");
     nameElmt.textContent = name;
 }
-
 
 const PROFILE_PICTURE_SCREEN = 0,
     SELECT_LANGUAGE_SCREEN = 1,
@@ -19,8 +22,17 @@ const buttons = document.querySelectorAll(".settings_button");
 
 buttons.forEach((btn, index) => {
     btn.addEventListener("click", function () {
-        let page;
+        if (last_index != index) click = 0;
 
+        if (++click === 1){
+            last_index = index;
+            setTimeout(function() {
+                click = 0;
+            }, 500);
+        } 
+        else return;
+        
+        let page;
         switch (index) {
             case PROFILE_PICTURE_SCREEN:
                 page = "profile";
