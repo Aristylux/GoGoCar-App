@@ -110,6 +110,15 @@ CREATE TABLE addresses (
 );
 ```
 REMARQUE 4326 dans PostGIS, cela indique que les coordonnées géographiques stockées dans la table sont des coordonnées WGS84
+
+### City
+```sql
+CREATE TABLE city(
+  id SERIAL PRIMARY KEY,
+  city TEXT,
+  location GEOMETRY(Point,4326)
+);
+```
 # Update
 
 ```sql
@@ -185,7 +194,18 @@ INSERT INTO addresses (street_address, city, state, zip_code, location GEOMETRY(
 ('Av. René Couzinet', ' Nice', 'Alpes maritimes', '06200', ST_SetSRID(ST_MakePoint(43.66026966774082, 7.201844224709845), 4326)),
 ('135 Bd Napoléon III', 'Nice', 'Alpes maritimes', '06200', ST_SetSRID(ST_MakePoint(43.68059404906902, 7.220692367038952), 4326));
 ```
+## City
 
+```sql
+INSERT INTO city (city, location GEOMETRY(Point,4326)) VALUES
+('Toulon', ST_SetSRID(ST_MakePoint(43.116669, 5.93333), 4326)),
+('Hyeres', ST_SetSRID(ST_MakePoint(43.116669, 6.11667), 4326)),
+('Nimes',ST_SetSRID(ST_MakePoint(43.833328, 4.35), 4326)),
+('Paris',ST_SetSRID(ST_MakePoint(48.8534, 2.3488), 4326)),
+('Nice',ST_SetSRID(ST_MakePoint(43.700001, 7.25), 4326)),
+('Marseille',ST_SetSRID(ST_MakePoint(43.300000, 5.400000), 4326)),
+('La Valette-du-Var',ST_SetSRID(ST_MakePoint(43.133331,5.98333), 4326));
+```
 ## Vehicles
 
 ```sql
