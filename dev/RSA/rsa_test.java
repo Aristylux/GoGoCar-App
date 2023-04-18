@@ -1,4 +1,5 @@
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Random;
 
 public class rsa_test {
@@ -9,15 +10,33 @@ public class rsa_test {
 
         if(args.length != 0){
             System.out.println(args[0]);
+
+            byte[] bytes = RSA.parseToBytes(args[0]);
+            byte[] bytes8 = RSA.convertTo8ByteArray(bytes);
+            byte[] byte16 = RSA.convertTo16ByteArray(bytes8);
+            System.out.println(RSA.printBytes(bytes));
+            System.out.println(RSA.printBytes(bytes8));
+            System.out.println(RSA.printBytes(byte16));
+           
+
+            String test = "0b 90 6c 03 00 81 0b 2d 00 2c 52 91 00 29 52 1f 0b 2d 00 2c";
+            byte[] bytes_test = RSA.parseToBytes(test);
+            byte[] byte16_test = RSA.convertTo16ByteArray(bytes_test);
+            System.out.println(test);
+            System.out.println(RSA.printBytes(bytes_test));
+            System.out.println(RSA.printBytes(byte16_test));
+
             
             pb_key = new RSA().parsePublicKey(args[0]);
             pb_key.print();
+
+
 
             RSA.RSAKeys keys = new RSA().new RSAKeys();
             keys.publicKey = pb_key;
 
             byte[] publicKeyBytes = new RSA().publicKeyToBytes(keys);
-            String hexString = new RSA().printBytes(publicKeyBytes);
+            String hexString = RSA.printBytes(publicKeyBytes);
             System.out.println(hexString);
         }
         
@@ -36,11 +55,19 @@ public class rsa_test {
 
 
         byte[] publicKeyBytes = rsa.publicKeyToBytes(keys);
-        String hexString = rsa.printBytes(publicKeyBytes);
-        System.out.println(hexString);
+        String hexString = RSA.printBytes(publicKeyBytes);
+        System.out.println("16: " + hexString);
+
+        byte[] publicKeyBytes8 = RSA.convertTo8ByteArray(publicKeyBytes);
+        System.out.println(Arrays.toString(publicKeyBytes));
+        System.out.println(Arrays.toString(publicKeyBytes8));
+
+        String hexString8 = RSA.printBytes(publicKeyBytes8);
+        System.out.println("8: " + hexString8);
 
         pb_key = rsa.parsePublicKey(hexString);
         pb_key.print();
+        
 
         long [] ciphertext = rsa.encrypt("hello", keys.publicKey);
 
@@ -160,7 +187,7 @@ public class rsa_test {
             return byteArray;
         }
 
-        public String printBytes(byte[] bytes){
+        public static String printBytes(byte[] bytes){
             StringBuilder sb = new StringBuilder(bytes.length * 3 - 1);
             for (int i = 0; i < bytes.length; i++) {
                 sb.append(String.format("%02x", bytes[i] & 0xff));
@@ -178,10 +205,66 @@ public class rsa_test {
                 bytes[i] = (byte) Integer.parseInt(hexValues[i], 16);
             }
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
+
             PublicKey publicKey = new RSA().new PublicKey();
-            publicKey.N = buffer.getLong();
-            publicKey.e = buffer.getLong();
+            if (hexValues.length == 16) {
+                publicKey.N = buffer.getLong();
+                publicKey.e = buffer.getLong();
+            } else if (hexValues.length == 8) {
+                publicKey.N = buffer.getInt();
+                publicKey.e = buffer.getInt();
+            } else {
+                throw new IllegalArgumentException("Invalid input string");
+            }
             return publicKey;
+
+        }
+
+        public static byte[] parseToBytes(String hexString){
+            String[] hexValues = hexString.split(" ");
+            byte[] byteArray = new byte[hexValues.length];
+
+            for (int i = 0; i < hexValues.length; i++) {
+                byteArray[i] = (byte) Integer.parseInt(hexValues[i], 16);
+            }
+
+            return byteArray;
+        }
+
+        public static byte[] convertTo8ByteArray(byte[] array16Bytes) {
+            int numChunks = array16Bytes.length / 2;
+            System.out.println("numChunk = " + numChunks);
+
+            byte[] modified = new byte[numChunks];
+            int destPos = 0;
+            for (int i = 0; i < 2; i++){
+                byte[] values = Arrays.copyOfRange(array16Bytes, 4*((i*2) + 1), 8*(i+1));                
+                System.arraycopy(values, 0, modified, destPos, values.length);
+                destPos += values.length;
+            }
+            return modified;
+        }
+
+        public static byte[] convertTo16ByteArray(byte[] array8Bytes){
+            int numChunks = array8Bytes.length * 2;           
+            System.out.println("numChunk= " + numChunks);
+
+            int subArrayLength = 4;
+            int numOfSubArrays = array8Bytes.length / subArrayLength;
+
+            System.out.println("numOfSubArrays= " + numOfSubArrays);
+
+            byte[] modified = new byte[numChunks];
+            int inPos = 0;
+            int destPos = subArrayLength;
+            for (int i = 0; i < numOfSubArrays; i++){
+                byte[] values = Arrays.copyOfRange(array8Bytes, inPos, inPos + 4);
+                System.out.println(Arrays.toString(values));
+                System.arraycopy(values, 0, modified, destPos, subArrayLength);
+                inPos += 4;
+                destPos += (subArrayLength*2);
+            }
+            return modified;
         }
 
         // ---- ----
