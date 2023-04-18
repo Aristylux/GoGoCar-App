@@ -94,16 +94,16 @@ CREATE TABLE `carmodel` (
 );
 ```
 
-### Adresses
-
+### Addresses
 ```sql
-CREATE TABLE 'adress'(
-'id' serial primary key,
-'street' varchar(100),
-'city' varchar(100)
+CREATE TABLE addresses (
+  id SERIAL PRIMARY KEY,
+  street_address TEXT,
+  city TEXT,
+  state TEXT,
+  zip_code TEXT
 );
 ```
-
 # Update
 
 ```sql
@@ -141,7 +141,12 @@ SELECT decrypt(password, 'bf') FROM users WHERE name = 'Admin Admin';
 ```sql
 SELECT id, name, convert_from(decrypt(password, 'bf'), 'SQL_ASCII') FROM users;
 ```
+"
+##Address
 
+```sql
+SELECT * FROM addresses;
+```
 # Insert
 
 ## User
@@ -157,7 +162,8 @@ INSERT INTO users(name, email, phone, password, salt) VALUES
 ## Adresses
 
 ```sql
-INSERT INTO adress(street, city) VALUES ('14 tue des romarins','Toulon');
+INSERT INTO addresses (street_address, city, state, zip_code) VALUES ('123 Main St', 'Anytown', 'CA', '12345');
+
 ```
 
 ## Vehicles
