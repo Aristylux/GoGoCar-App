@@ -5,6 +5,24 @@ public class rsa_test {
 
     public static void main(String[] args) {
 
+        RSA.PublicKey pb_key;
+
+        if(args.length != 0){
+            System.out.println(args[0]);
+            
+            pb_key = new RSA().parsePublicKey(args[0]);
+            pb_key.print();
+
+            RSA.RSAKeys keys = new RSA().new RSAKeys();
+            keys.publicKey = pb_key;
+
+            byte[] publicKeyBytes = new RSA().publicKeyToBytes(keys);
+            String hexString = new RSA().printBytes(publicKeyBytes);
+            System.out.println(hexString);
+        }
+        
+        
+
         RSA rsa = new RSA();
 
         // Init
@@ -21,6 +39,8 @@ public class rsa_test {
         String hexString = rsa.printBytes(publicKeyBytes);
         System.out.println(hexString);
 
+        pb_key = rsa.parsePublicKey(hexString);
+        pb_key.print();
 
         long [] ciphertext = rsa.encrypt("hello", keys.publicKey);
 
@@ -36,6 +56,14 @@ public class rsa_test {
         public class PublicKey {
             public long N; // modulus
             public long e; // public exponent
+
+            public PublicKey() {}
+
+            public void print() {
+                System.out.printf("Public key:\n");
+                System.out.printf("\tModulus  : %d\n", N);
+                System.out.printf("\tExponent : %d\n\n", e);
+            }
         }
 
         public class PrivateKey {
@@ -53,9 +81,7 @@ public class rsa_test {
             }
 
             public void print() {
-                System.out.printf("Public key:\n");
-                System.out.printf("\tModulus  : %d\n", publicKey.N);
-                System.out.printf("\tExponent : %d\n\n", publicKey.e);
+                publicKey.print();
                 System.out.printf("Private key:\n");
                 System.out.printf("\tModulus  : %d\n", privateKey.N);
                 System.out.printf("\tExponent : %d\n", privateKey.d);
@@ -129,17 +155,33 @@ public class rsa_test {
         public byte[] publicKeyToBytes(RSAKeys keys){
             byte[] byteArray = new byte[16]; // 2 uint64_t values = 16 bytes
             ByteBuffer buffer = ByteBuffer.wrap(byteArray);
-            buffer.putLong(Long.reverseBytes(keys.publicKey.N));
-            buffer.putLong(Long.reverseBytes(keys.publicKey.e));
+            buffer.putLong(keys.publicKey.N);
+            buffer.putLong(keys.publicKey.e);
             return byteArray;
         }
 
         public String printBytes(byte[] bytes){
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : bytes) {
-                hexString.append(String.format("%02X", b));
+            StringBuilder sb = new StringBuilder(bytes.length * 3 - 1);
+            for (int i = 0; i < bytes.length; i++) {
+                sb.append(String.format("%02x", bytes[i] & 0xff));
+                if (i != bytes.length - 1) {
+                    sb.append(" ");
+                }
             }
-            return hexString.toString();
+            return sb.toString();
+        }
+
+        public PublicKey parsePublicKey(String publicKeyString) {
+            String[] hexValues = publicKeyString.split(" ");
+            byte[] bytes = new byte[hexValues.length];
+            for (int i = 0; i < hexValues.length; i++) {
+                bytes[i] = (byte) Integer.parseInt(hexValues[i], 16);
+            }
+            ByteBuffer buffer = ByteBuffer.wrap(bytes);
+            PublicKey publicKey = new RSA().new PublicKey();
+            publicKey.N = buffer.getLong();
+            publicKey.e = buffer.getLong();
+            return publicKey;
         }
 
         // ---- ----
