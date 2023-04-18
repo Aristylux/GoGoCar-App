@@ -34,7 +34,11 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 ```sql
 CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 ```
+For location 
 
+```sql
+CREATE EXTENSION postgis;
+```
 ## Create database
 
 ```sql
@@ -101,7 +105,8 @@ CREATE TABLE addresses (
   street_address TEXT,
   city TEXT,
   state TEXT,
-  zip_code TEXT
+  zip_code TEXT,
+  location GEOMETRY(Point,4326)
 );
 ```
 # Update
@@ -145,7 +150,8 @@ SELECT id, name, convert_from(decrypt(password, 'bf'), 'SQL_ASCII') FROM users;
 ##Address
 
 ```sql
-SELECT * FROM addresses;
+SELECT  location GEOMETRY(Point,4326) FROM addresses WHERE ST_Distance('123 Main St', 'Anytown', 'CA', '12345', ST_SetSRID(ST_MakePoint(-122.419416, 37.774929), 4326)) < 1000;
+
 ```
 # Insert
 
@@ -162,7 +168,7 @@ INSERT INTO users(name, email, phone, password, salt) VALUES
 ## Adresses
 
 ```sql
-INSERT INTO addresses (street_address, city, state, zip_code) VALUES ('123 Main St', 'Anytown', 'CA', '12345');
+INSERT INTO addresses (street_address, city, state, zip_code, location GEOMETRY(Point,4326)) VALUES ('123 Main St', 'Anytown', 'CA', '12345', ST_SetSRID(ST_MakePoint(-122.419416, 37.774929), 4326));
 
 ```
 
