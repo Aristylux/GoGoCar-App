@@ -109,6 +109,7 @@ CREATE TABLE addresses (
   location GEOMETRY(Point,4326)
 );
 ```
+REMARQUE 4326 dans PostGIS, cela indique que les coordonnées géographiques stockées dans la table sont des coordonnées WGS84
 # Update
 
 ```sql
@@ -147,7 +148,7 @@ SELECT decrypt(password, 'bf') FROM users WHERE name = 'Admin Admin';
 SELECT id, name, convert_from(decrypt(password, 'bf'), 'SQL_ASCII') FROM users;
 ```
 
-##Address
+## Address
 
 ```sql
 SELECT  location GEOMETRY(Point,4326) FROM addresses WHERE ST_Distance('123 Main St', 'Anytown', 'CA', '12345', ST_SetSRID(ST_MakePoint(-122.419416, 37.774929), 4326)) < 1000;
