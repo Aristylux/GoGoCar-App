@@ -3,27 +3,27 @@
 #include "rsa.h"
 
 int main(void) {
-    printf("Init\n");
-    t_keys *keys = initialize_keys();
+    printf("Generate RSA keys\n");
+    t_keys *keys = generate_rsa_keys();
 
-    printf("Generate\n");
-    generate_rsa_keys(keys);
-
-    printf("Print\n");
+    // Print keys
     print_rsa_keys(keys);
-
-    char *text = "hello";
-    uint64_t text_len = strlen(text);
-    uint64_t ciphertext[text_len];
 
     // Generate public key in byte 
     t_key_bytes* public_key_bytes = public_key_to_bytes(keys);
 
-    printf("Public key bytes:\n");
+    // Print key in bytes
+    printf("\nPublic key bytes: ");
     print_public_key_bytes(public_key_bytes);
 
+    // Recover key
     t_public_key p_k = bytes_to_public_key(public_key_bytes);
-    printf("N: %ld e: %ld\n", p_k.N, p_k.e);
+    printf("\nKey recovery via bytes: N: %ld e: %ld\n", p_k.N, p_k.e);
+
+
+    char *text = "hello";
+    uint64_t text_len = strlen(text);
+    uint64_t ciphertext[text_len];
 
     // Encrypt the message
     rsa_encrypt(text, text_len, keys->public_key, ciphertext);
@@ -56,6 +56,7 @@ int main(void) {
     printf("Free\n");
     free(ciphertext_bytes);
     free_public_key_bytes(public_key_bytes);
+    
     free_keys(keys);
 
     return 0; // success

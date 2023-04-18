@@ -1,3 +1,4 @@
+import java.nio.ByteBuffer;
 import java.util.Random;
 
 public class rsa_test {
@@ -14,6 +15,12 @@ public class rsa_test {
 
         // Print
         keys.print();
+
+
+        byte[] publicKeyBytes = rsa.publicKeyToBytes(keys);
+        String hexString = rsa.printBytes(publicKeyBytes);
+        System.out.println(hexString);
+
 
         long [] ciphertext = rsa.encrypt("hello", keys.publicKey);
 
@@ -114,6 +121,25 @@ public class rsa_test {
                 System.out.printf("%d ", ciphertext[i]);
             }
             System.out.printf("'\n");
+        }
+
+
+        // ---- ----
+
+        public byte[] publicKeyToBytes(RSAKeys keys){
+            byte[] byteArray = new byte[16]; // 2 uint64_t values = 16 bytes
+            ByteBuffer buffer = ByteBuffer.wrap(byteArray);
+            buffer.putLong(Long.reverseBytes(keys.publicKey.N));
+            buffer.putLong(Long.reverseBytes(keys.publicKey.e));
+            return byteArray;
+        }
+
+        public String printBytes(byte[] bytes){
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : bytes) {
+                hexString.append(String.format("%02X", b));
+            }
+            return hexString.toString();
         }
 
         // ---- ----

@@ -1,16 +1,13 @@
 #include "rsa.h"
 
 /**
- * @brief allocate memory for keys structure
+ * @brief Allocate memory for keys structure and generate key
+ * @note Need to call free_keys(t_keys* key)
  * 
  * @return t_keys* key
  */
-t_keys* initialize_keys(void){
-    t_keys* keys = malloc(sizeof(t_keys)); 
-    return keys;
-}
-
-void generate_rsa_keys(t_keys* keys){
+t_keys* generate_rsa_keys(void){
+    t_keys* keys = (t_keys*) malloc(sizeof(t_keys));
     srand(time(NULL));  // Seed the random number generator
 
     // Choose two distinct prime numbers, p and q.
@@ -28,11 +25,11 @@ void generate_rsa_keys(t_keys* keys){
     do {
         e = rand() % (phi - 2) + 2;  // Generate a random number between 2 and phi-1
         gcd_val = gcd(e, phi);
+        //printf("1 e=%ld, gdc_val=%ld, phi=%ld, gdc_val!=1 ? %d\n", e, gcd_val, phi, (gcd_val != 1));
     } while(gcd_val != 1);
 
     // Calculate the modular inverse of e modulo φ(N), denoted as d, such that d * e ≡ 1 (mod φ(N)).
     uint64_t d = mod_inverse(e, phi);
-
 
     keys->private_key.d = d;
     keys->private_key.N = N;
@@ -40,6 +37,7 @@ void generate_rsa_keys(t_keys* keys){
     keys->public_key.e = e;
     keys->public_key.N = N;
 
+    return keys;
 }
 
 // ciphertext = (plaintext ^ e) mod N
@@ -218,7 +216,7 @@ uint64_t generate_prime(void) {
     uint64_t p;
     do {
         // Generate a random number between 1000 and 1999
-        p = rand() % 1000 + 1000;
+        p = rand() % 10000 + 10000;
     } while (!is_prime(p));
     return p;
 }

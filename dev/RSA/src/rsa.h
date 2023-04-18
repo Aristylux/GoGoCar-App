@@ -42,8 +42,7 @@ typedef struct key_bytes
 
 // ----
 
-t_keys *initialize_keys(void);
-void generate_rsa_keys(t_keys *keys);
+t_keys* generate_rsa_keys(void);
 
 void rsa_encrypt(char *plaintext, uint64_t len, t_public_key public_key, uint64_t *ciphertext);
 void rsa_decrypt(uint64_t *ciphertext, uint64_t len, t_private_key private_key, char *plaintext);
