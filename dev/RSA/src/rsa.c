@@ -8,6 +8,8 @@
  */
 t_keys* generate_rsa_keys(void){
     t_keys* keys = (t_keys*) malloc(sizeof(t_keys));
+    if (keys == NULL) return NULL;
+
     srand(time(NULL));  // Seed the random number generator
 
     // Choose two distinct prime numbers, p and q.
