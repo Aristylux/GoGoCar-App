@@ -141,7 +141,7 @@ SELECT decrypt(password, 'bf') FROM users WHERE name = 'Admin Admin';
 ```sql
 SELECT id, name, convert_from(decrypt(password, 'bf'), 'SQL_ASCII') FROM users;
 ```
-"
+
 ##Address
 
 ```sql
