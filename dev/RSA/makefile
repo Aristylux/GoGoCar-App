@@ -67,3 +67,12 @@ ec:
 clear:
 	@echo "Cleaning up"
 	$(HIDE)rm -f $(BUILD_DIR)/*.o $(EXEC)
+
+clear-all:
+	@echo "Cleaning up C"
+	$(HIDE)rm -f $(BUILD_DIR)/*.o $(EXEC)
+	@echo "Cleaning up Java"
+	$(HIDE)rm -f *.class
+
+java:
+	javac *.java
