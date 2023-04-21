@@ -120,7 +120,10 @@ public class rsa_test {
 
         }
 
-        // Function to generate the RSA public and private keys
+        /**
+         * Method to generate the RSA public and private keys
+         * @param keys
+         */
         public void generateRSAKeys(RSAKeys keys) {
             // Generate two random prime numbers
             long p = generatePrime();
@@ -150,6 +153,12 @@ public class rsa_test {
             keys.publicKey.N = N;
         }
 
+        /**
+         * Encrypt text (ciphertext = (plaintext ^ e) mod N)
+         * @param plainText text
+         * @param publicKey public key
+         * @return array of long
+         */
         public long[] encrypt(String plainText, PublicKey publicKey) {
             long ciphertext[] = new long[plainText.length()];
             for (int i = 0; i < plainText.length(); i++) {
@@ -158,7 +167,13 @@ public class rsa_test {
             return ciphertext;
         }
 
-        // Function to decrypt a message using RSA
+        // 
+        /**
+         * Method to decrypt a message using RSA
+         * @param ciphertext array of long
+         * @param private_key private key
+         * @return text
+         */
         public String decrypt(long[] ciphertext, PrivateKey private_key) {
             StringBuilder plaintext = new StringBuilder();
             for (int i = 0; i < ciphertext.length; i++) {
@@ -168,6 +183,10 @@ public class rsa_test {
             return plaintext.toString();
         }
 
+        /**
+         * Print the cipher text
+         * @param ciphertext array of long
+         */
         public void printCipher(long[] ciphertext){
             System.out.printf("Ciphertext: '");
             for(int i = 0; i < ciphertext.length; i++) {
@@ -179,6 +198,34 @@ public class rsa_test {
 
         // ---- ----
 
+
+        /**
+         * Parse a string text to public key
+         * @param publicKeyString public key in hexa string
+         * @return public key object
+         */
+        public PublicKey parsePublicKey(String publicKeyString) {
+            byte[] bytes = parseToBytes(publicKeyString);            
+            ByteBuffer buffer = ByteBuffer.wrap(bytes);
+
+            PublicKey publicKey = new RSA().new PublicKey();
+            if (bytes.length == 16) {
+                publicKey.N = buffer.getLong();
+                publicKey.e = buffer.getLong();
+            } else if (bytes.length == 8) {
+                publicKey.N = buffer.getInt();
+                publicKey.e = buffer.getInt();
+            } else {
+                throw new IllegalArgumentException("Invalid input string");
+            }
+            return publicKey;
+        }
+
+        /**
+         * Convert a public key to an arry of bytes
+         * @param keys RSA keys (which contain a public key)
+         * @return array of bytes
+         */
         public byte[] publicKeyToBytes(RSAKeys keys){
             byte[] byteArray = new byte[16]; // 2 uint64_t values = 16 bytes
             ByteBuffer buffer = ByteBuffer.wrap(byteArray);
@@ -187,50 +234,40 @@ public class rsa_test {
             return byteArray;
         }
 
+        /**
+         * Convert an array of bytes to string
+         * @param bytes array of bytes
+         * @return string to print
+         */
         public static String printBytes(byte[] bytes){
             StringBuilder sb = new StringBuilder(bytes.length * 3 - 1);
             for (int i = 0; i < bytes.length; i++) {
                 sb.append(String.format("%02x", bytes[i] & 0xff));
-                if (i != bytes.length - 1) {
-                    sb.append(" ");
-                }
+                if (i != bytes.length - 1) sb.append(" ");
             }
             return sb.toString();
         }
 
-        public PublicKey parsePublicKey(String publicKeyString) {
-            String[] hexValues = publicKeyString.split(" ");
-            byte[] bytes = new byte[hexValues.length];
-            for (int i = 0; i < hexValues.length; i++) {
-                bytes[i] = (byte) Integer.parseInt(hexValues[i], 16);
-            }
-            ByteBuffer buffer = ByteBuffer.wrap(bytes);
-
-            PublicKey publicKey = new RSA().new PublicKey();
-            if (hexValues.length == 16) {
-                publicKey.N = buffer.getLong();
-                publicKey.e = buffer.getLong();
-            } else if (hexValues.length == 8) {
-                publicKey.N = buffer.getInt();
-                publicKey.e = buffer.getInt();
-            } else {
-                throw new IllegalArgumentException("Invalid input string");
-            }
-            return publicKey;
-
-        }
-
+        /**
+         * Parse a string text to bytes array 
+         * @param hexString text like "XX XX XX ...." 
+         * @return byte array
+         */
         public static byte[] parseToBytes(String hexString){
             String[] hexValues = hexString.split(" ");
             byte[] byteArray = new byte[hexValues.length];
-
             for (int i = 0; i < hexValues.length; i++) {
                 byteArray[i] = (byte) Integer.parseInt(hexValues[i], 16);
             }
-
             return byteArray;
         }
 
+        /**
+         * TODO optimization
+         * Convert an array of 16 bytes to 8 bytes
+         * @param array16Bytes array of 16 bytes
+         * @return array of 8 bytes
+         */
         public static byte[] convertTo8ByteArray(byte[] array16Bytes) {
             int numChunks = array16Bytes.length / 2;
             System.out.println("numChunk = " + numChunks);
@@ -245,23 +282,27 @@ public class rsa_test {
             return modified;
         }
 
+        /**
+         * Convert an array of 8 bytes to 16 bytes
+         * @param array8Bytes array of 8 bytes
+         * @return array of 16 bytes
+         */
         public static byte[] convertTo16ByteArray(byte[] array8Bytes){
-            int numChunks = array8Bytes.length * 2;           
-            System.out.println("numChunk= " + numChunks);
-
+            int numChunks = array8Bytes.length * 2;
             int subArrayLength = 4;
             int numOfSubArrays = array8Bytes.length / subArrayLength;
 
+            System.out.println("numChunk= " + numChunks);
             System.out.println("numOfSubArrays= " + numOfSubArrays);
 
             byte[] modified = new byte[numChunks];
             int inPos = 0;
             int destPos = subArrayLength;
             for (int i = 0; i < numOfSubArrays; i++){
-                byte[] values = Arrays.copyOfRange(array8Bytes, inPos, inPos + 4);
+                byte[] values = Arrays.copyOfRange(array8Bytes, inPos, inPos + subArrayLength);
                 System.out.println(Arrays.toString(values));
                 System.arraycopy(values, 0, modified, destPos, subArrayLength);
-                inPos += 4;
+                inPos += subArrayLength;
                 destPos += (subArrayLength*2);
             }
             return modified;
@@ -269,7 +310,24 @@ public class rsa_test {
 
         // ---- ----
 
-        // Function to generate a random prime number
+        /**
+         * Method to generate a random prime number
+         * @return prime number
+         */
+        private long generatePrime() {
+            long p;
+            do {
+                // Generate a random number between 1000 and 1999
+                p = (long) (Math.random() * 1000) + 1000;
+            } while (!isPrime(p));
+            return p;
+        }
+
+        /**
+         * Check number
+         * @param n a number
+         * @return if the number is prime
+         */
         private boolean isPrime(long n) {
             if (n == 2 || n == 3)
                 return true;
@@ -284,13 +342,18 @@ public class rsa_test {
             return true;
         }
 
+        /**
+         * Perform Miller-Rabin test
+         * @param n number
+         * @param a random
+         * @return probably prime
+         */
         private boolean millerRabin(long n, long a) {
             long r = 0, d = n - 1;
             while (d % 2 == 0) {
                 r++;
                 d /= 2;
             }
-
             long x = powmod(a, d, n);
             if (x == 1 || x == n - 1)
                 return true;
@@ -300,54 +363,16 @@ public class rsa_test {
                 if (x == n - 1)
                     return true;
             }
-
             return false;
         }
 
-        private long generatePrime() {
-            long p;
-            do {
-                // Generate a random number between 1000 and 1999
-                p = (long) (Math.random() * 1000) + 1000;
-            } while (!isPrime(p));
-            return p;
-        }
-
-        // Function to find the greatest common divisor of two integers
-        private long gcd(long a, long b) {
-            long temp;
-            while (b != 0) {
-                temp = b;
-                b = a % b;
-                a = temp;
-            }
-            return a;
-        }
-
-        // Function to find the modular inverse of a number
-        private long modInverse(long a, long m) {
-            long m0 = m, t, q;
-            long x0 = 0, x1 = 1;
-
-            if (m == 1)
-                return 0;
-
-            while (a > 1) {
-                q = a / m;
-                t = m;
-                m = a % m;
-                a = t;
-                t = x0;
-                x0 = x1 - q * x0;
-                x1 = t;
-            }
-
-            if (x1 < 0)
-                x1 += m0;
-
-            return x1;
-        }
-
+        /**
+         * Power modular
+         * @param base  base
+         * @param exp   exponant
+         * @param mod   modular number
+         * @return calcul result
+         */
         private long powmod(long base, long exp, long mod) {
             long result = 1;
 
@@ -361,6 +386,58 @@ public class rsa_test {
             return result;
         }
 
+        /**
+         * Method to find the greatest common divisor of two long
+         * @param a number 1
+         * @param b number 2
+         * @return greatest common divisor
+         */
+        private long gcd(long a, long b) {
+            long temp;
+            while (b != 0) {
+                temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+
+        /**
+         * Method to find the modular inverse of a number
+         * @param num number
+         * @param mod modular number
+         * @return modular inverse
+         */
+        private long modInverse(long num, long mod) {
+            long m0 = mod, t, q;
+            long x0 = 0, x1 = 1;
+
+            if (mod == 1)
+                return 0;
+
+            while (num > 1) {
+                q = num / mod;
+                t = mod;
+                mod = num % mod;
+                num = t;
+                t = x0;
+                x0 = x1 - q * x0;
+                x1 = t;
+            }
+
+            if (x1 < 0)
+                x1 += m0;
+
+            return x1;
+        }
+
+        /**
+         * Method to calculate the modular exponentiation of a number
+         * @param base  base
+         * @param exp   exponent
+         * @param mod   modular number
+         * @return calcul result
+         */
         private long modExp(long base, long exp, long mod) {
             long result = 1;
             while (exp > 0) {
