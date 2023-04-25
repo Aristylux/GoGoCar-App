@@ -6,6 +6,10 @@ public class rsa_test {
 
     public static void main(String[] args) {
 
+        // All the entries are in 8 bytes
+
+        // All the lib is in 16 bytes
+
         RSA.PublicKey pb_key;
 
         if(args.length != 0){
@@ -41,14 +45,11 @@ public class rsa_test {
         }
         
         
-
+        // New rsa protocol
         RSA rsa = new RSA();
 
-        // Init
-        RSA.RSAKeys keys = rsa.new RSAKeys();
-
-        // Generate
-        rsa.generateRSAKeys(keys);
+        // Generate keys
+        RSA.RSAKeys keys = rsa.generateRSAKeys();
 
         // Print
         keys.print();
@@ -96,6 +97,12 @@ public class rsa_test {
         public class PrivateKey {
             public long N; // modulus
             public long d; // private exponent
+
+            public void print() {
+                System.out.printf("Private key:\n");
+                System.out.printf("\tModulus  : %d\n", N);
+                System.out.printf("\tExponent : %d\n", d);
+            }
         }
 
         public class RSAKeys {
@@ -107,11 +114,18 @@ public class rsa_test {
                 privateKey = new PrivateKey();
             }
 
+            public RSAKeys(long N, long e, long d){
+                privateKey = new PrivateKey();
+                privateKey.N = N;
+                privateKey.d = d;
+                publicKey = new PublicKey();
+                publicKey.N = N;
+                publicKey.e = e;
+            }
+
             public void print() {
                 publicKey.print();
-                System.out.printf("Private key:\n");
-                System.out.printf("\tModulus  : %d\n", privateKey.N);
-                System.out.printf("\tExponent : %d\n", privateKey.d);
+                privateKey.print();
             }
         }
 
@@ -124,7 +138,7 @@ public class rsa_test {
          * Method to generate the RSA public and private keys
          * @param keys
          */
-        public void generateRSAKeys(RSAKeys keys) {
+        public RSA.RSAKeys generateRSAKeys() {
             // Generate two random prime numbers
             long p = generatePrime();
             long q = generatePrime();
@@ -145,12 +159,7 @@ public class rsa_test {
             // Calculate the modular inverse of e modulo φ(N), denoted as d, such that d * e
             // ≡ 1 (mod φ(N)).
             long d = modInverse(e, phi);
-
-            keys.privateKey.d = d;
-            keys.privateKey.N = N;
-
-            keys.publicKey.e = e;
-            keys.publicKey.N = N;
+            return new RSAKeys(N, e, d);
         }
 
         /**
