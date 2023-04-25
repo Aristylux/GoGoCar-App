@@ -60,11 +60,7 @@ public class rsa_test {
         System.out.println("16: " + hexString);
 
         byte[] publicKeyBytes8 = RSA.convertTo8ByteArray(publicKeyBytes);
-        System.out.println(Arrays.toString(publicKeyBytes));
-        System.out.println(Arrays.toString(publicKeyBytes8));
-
-        String hexString8 = RSA.printBytes(publicKeyBytes8);
-        System.out.println("8: " + hexString8);
+        System.out.println("8: " + RSA.printBytes(publicKeyBytes8));
 
         pb_key = rsa.parsePublicKey(hexString);
         pb_key.print();
@@ -73,6 +69,8 @@ public class rsa_test {
         long [] ciphertext = rsa.encrypt("hello", keys.publicKey);
 
         rsa.printCipher(ciphertext);
+        byte[] cipherbytes = RSA.parseToBytes(ciphertext);
+        System.out.println(RSA.printBytes(cipherbytes));
 
         String decrypt = rsa.decrypt(ciphertext, keys.privateKey);
 
@@ -176,7 +174,6 @@ public class rsa_test {
             return ciphertext;
         }
 
-        // 
         /**
          * Method to decrypt a message using RSA
          * @param ciphertext array of long
@@ -267,6 +264,15 @@ public class rsa_test {
             byte[] byteArray = new byte[hexValues.length];
             for (int i = 0; i < hexValues.length; i++) {
                 byteArray[i] = (byte) Integer.parseInt(hexValues[i], 16);
+            }
+            return byteArray;
+        }
+
+        public static byte[] parseToBytes(long[] array){
+            byte[] byteArray = new byte[8 * array.length];
+            ByteBuffer buffer = ByteBuffer.wrap(byteArray);
+            for(int i = 0; i < array.length; i++){
+                buffer.putLong(array[i]);
             }
             return byteArray;
         }
