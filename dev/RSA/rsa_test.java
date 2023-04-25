@@ -71,6 +71,8 @@ public class rsa_test {
         rsa.printCipher(ciphertext);
         byte[] cipherbytes = RSA.parseToBytes(ciphertext);
         System.out.println(RSA.printBytes(cipherbytes));
+        byte[] cipher8bytes = RSA.convertTo8ByteArray(cipherbytes);
+        System.out.println(RSA.printBytes(cipher8bytes));
 
         String decrypt = rsa.decrypt(ciphertext, keys.privateKey);
 
@@ -278,18 +280,17 @@ public class rsa_test {
         }
 
         /**
-         * TODO optimization
          * Convert an array of 16 bytes to 8 bytes
          * @param array16Bytes array of 16 bytes
          * @return array of 8 bytes
          */
         public static byte[] convertTo8ByteArray(byte[] array16Bytes) {
             int numChunks = array16Bytes.length / 2;
-            System.out.println("numChunk = " + numChunks);
-
+            int subArrayLength = 8;
+            int numOfSubArrays = array16Bytes.length / subArrayLength;
             byte[] modified = new byte[numChunks];
             int destPos = 0;
-            for (int i = 0; i < 2; i++){
+            for (int i = 0; i < numOfSubArrays; i++){
                 byte[] values = Arrays.copyOfRange(array16Bytes, 4*((i*2) + 1), 8*(i+1));                
                 System.arraycopy(values, 0, modified, destPos, values.length);
                 destPos += values.length;
@@ -306,10 +307,6 @@ public class rsa_test {
             int numChunks = array8Bytes.length * 2;
             int subArrayLength = 4;
             int numOfSubArrays = array8Bytes.length / subArrayLength;
-
-            System.out.println("numChunk= " + numChunks);
-            System.out.println("numOfSubArrays= " + numOfSubArrays);
-
             byte[] modified = new byte[numChunks];
             int inPos = 0;
             int destPos = subArrayLength;
