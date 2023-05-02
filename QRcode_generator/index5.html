@@ -26,7 +26,8 @@
         var qr_liste = [];
 
         function ajouterElement() {
-            var qr_input = document.getElementById("qr_input");
+            let qr_input = document.getElementById("qr_input");
+            console.log("qr_input: " + qr_input.value);
             var qr_liste_ul = document.getElementById("qr_liste");
             var qr_liste_li = document.createElement("li");
             qr_liste_li.textContent = qr_input.value;
@@ -53,8 +54,7 @@
             var qr_tableau_div = document.getElementById("qr_tableau");
             qr_tableau_div.innerHTML = "<table><thead><tr><th>#</th><th>Code QR</th><th>Texte</th></tr></thead><tbody></tbody></table>";
             var tbody = qr_tableau_div.querySelector("tbody");
-            for (var i = 0; i < qr_liste.length; i++) {
-                
+            for (var i = 0; i < qr_liste.length; i++) { 
                 var qr_code_element = document.createElement("div");
                 new QRCode(qr_code_element, qr_liste[i]);
                 var cell = "<td>" + qr_code_element.innerHTML + "</td>";
