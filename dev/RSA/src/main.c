@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "rsa.h"
+#include "aes.h"
 
 int main(void) {
     printf("Generate RSA keys\n");
@@ -58,6 +59,13 @@ int main(void) {
     free_public_key_bytes(public_key_bytes);
     
     free_keys(keys);
+
+
+    const size_t key_size = 32;  // 256 bits = 32 bytes
+
+    t_aes_key *key = generate_aes_key(key_size);
+    print_aes_key(key);
+    free_aes_key(key);
 
     return 0; // success
 }
