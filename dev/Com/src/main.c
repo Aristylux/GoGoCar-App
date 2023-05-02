@@ -3,7 +3,24 @@
 #include "rsa.h"
 #include "aes.h"
 
+void rsa(void);
+void aes(void);
+
 int main(void) {
+    //rsa();
+
+    aes();
+    
+    return 0; // success
+}
+
+void aes(void){
+    t_aes_key *key = generate_aes_key(KEY_256_BITS);
+    print_aes_key(key);
+    free_aes_key(key);
+}
+
+void rsa(void){
     printf("Generate RSA keys\n");
     t_keys *keys = generate_rsa_keys();
 
@@ -59,14 +76,4 @@ int main(void) {
     free_public_key_bytes(public_key_bytes);
     
     free_keys(keys);
-
-
-    const size_t key_size = 32;  // 256 bits = 32 bytes
-
-    t_aes_key *key = generate_aes_key(key_size);
-    print_aes_key(key);
-    free_aes_key(key);
-
-    return 0; // success
 }
-
