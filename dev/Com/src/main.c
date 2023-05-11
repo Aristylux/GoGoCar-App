@@ -30,6 +30,13 @@ void aes(void){
     }
     printf("\n");
 
+    aes_decrypt(ciphertext, key, plaintext);
+    printf("Decrypted data: ");
+    for (int i = 0; i < 16; ++i) {
+        printf("%02x ", plaintext[i]);
+    }
+    printf("\n");
+
     free_aes_key(key);
 }
 

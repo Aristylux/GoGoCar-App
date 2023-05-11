@@ -21,6 +21,8 @@ const uint8_t sbox[256] = {
     0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16  //F
 };
 
+uint8_t sbox_inv[256];
+
 //Round constant values (Round constant)
 /*
 const uint32_t rcon[11]; = {
@@ -121,30 +123,43 @@ void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext){
     
     // Copy the final state to the ciphertext buffer
     memcpy(ciphertext, state, BLOCK_SIZE_128_BITS);
-    
 }
 
-void aes_decrypt(char *ciphertext, t_aes_key *key){
+void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, char *plaintext){
+    uint8_t state[BLOCK_SIZE_128_BITS] = {0}, round_key[240] = {0};
+    generate_sbox_inv();
+    
+    // Copy the ciphertext into the state array
+    memcpy(state, ciphertext, BLOCK_SIZE_128_BITS);
 
-    // add round key
+    key_expansion(key->key, round_key);
+
+    // add round key 
+    add_round_key(state, round_key + 4 * 14);
 
     // DECRYPTION ROUND
-    // inv shift row
-
-    // inv sub bytes
-
-    // inv mix column
-
-    // add round key
-
+    uint8_t round;
+    for (round = 14 - 1; round > 0; --round) {
+        // inv shift row
+        shift_rows_inv(state);
+        // inv sub bytes
+        sub_bytes_inv(state, sbox_inv);
+        // add round key
+        add_round_key(state, round_key + 4 * round);
+        // inv mix column    
+        mix_columns_inv(state);
+    }
     
     // LAST ROUND
     // inv shift row
-
+    shift_rows_inv(state);
     // inv round bytes
-
+    sub_bytes_inv(state, sbox_inv);
     // add round key
+    add_round_key(state, round_key);
 
+    // Copy the decrypted state into the plaintext array
+    memcpy(plaintext, state, BLOCK_SIZE_128_BITS);
 }
 
 /**
@@ -282,5 +297,69 @@ void key_expansion(const uint8_t* key, uint8_t* expanded_key) {
         for (k = 1; k < 4; k++) {
             ((uint32_t*)expanded_key)[i/4+k] = ((uint32_t*)expanded_key)[i/4+k-1] ^ ((uint32_t*)expanded_key)[i/4+k-8];
         }
+    }
+}
+
+/* * * * * * * *
+ * AES DECRYPT *
+ * * * * * * * */
+
+void sub_bytes_inv(uint8_t* state, const uint8_t* sbox){
+     for (int i = 0; i < BLOCK_SIZE_128_BITS; ++i) {
+        state[i] = sbox[state[i]];
+    }
+}
+
+void shift_rows_inv(uint8_t *state){
+    uint8_t temp;
+
+    // Shift second row right by 1 position
+    temp = state[1];
+    state[1] = state[13];
+    state[13] = state[9];
+    state[9] = state[5];
+    state[5] = temp;
+
+    // Shift third row right by 2 positions
+    temp = state[2];
+    state[2] = state[10];
+    state[10] = temp;
+    temp = state[6];
+    state[6] = state[14];
+    state[14] = temp;
+
+    // Shift fourth row right by 3 positions
+    temp = state[3];
+    state[3] = state[7];
+    state[7] = state[11];
+    state[11] = state[15];
+    state[15] = temp;
+}
+
+/*
+void add_round_key_inv(uint8_t* state, const uint8_t* round_key){
+
+}
+*/
+
+void mix_columns_inv(uint8_t *state){
+    uint8_t tmp[4];
+
+    for (int i = 0; i < 4; ++i) {
+        tmp[0] = (uint8_t)(gf_mul(state[i], 0x0e) ^ gf_mul(state[4 + i], 0x0b) ^ gf_mul(state[8 + i], 0x0d) ^ gf_mul(state[12 + i], 0x09));
+        tmp[1] = (uint8_t)(gf_mul(state[i], 0x09) ^ gf_mul(state[4 + i], 0x0e) ^ gf_mul(state[8 + i], 0x0b) ^ gf_mul(state[12 + i], 0x0d));
+        tmp[2] = (uint8_t)(gf_mul(state[i], 0x0d) ^ gf_mul(state[4 + i], 0x09) ^ gf_mul(state[8 + i], 0x0e) ^ gf_mul(state[12 + i], 0x0b));
+        tmp[3] = (uint8_t)(gf_mul(state[i], 0x0b) ^ gf_mul(state[4 + i], 0x0d) ^ gf_mul(state[8 + i], 0x09) ^ gf_mul(state[12 + i], 0x0e));
+
+        state[i] = tmp[0];
+        state[4 + i] = tmp[1];
+        state[8 + i] = tmp[2];
+        state[12 + i] = tmp[3];
+    }
+}
+
+void generate_sbox_inv(void) {
+    for (int i = 0; i < 256; i++) {
+        sbox_inv[sbox[i]] = i;
     }
 }
