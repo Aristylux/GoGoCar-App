@@ -17,6 +17,12 @@ int main(void) {
 void aes(void){
     t_aes_key *key = generate_aes_key(KEY_256_BITS);
     print_aes_key(key);
+
+    char text[BLOCK_SIZE_128_BITS] = "hello";
+    uint8_t cipher[BLOCK_SIZE_128_BITS];
+
+    aes_encrypt(text, key, cipher);
+
     free_aes_key(key);
 }
 
