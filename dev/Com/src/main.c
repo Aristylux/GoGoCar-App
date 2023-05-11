@@ -18,10 +18,17 @@ void aes(void){
     t_aes_key *key = generate_aes_key(KEY_256_BITS);
     print_aes_key(key);
 
-    char text[BLOCK_SIZE_128_BITS] = "hello";
-    uint8_t cipher[BLOCK_SIZE_128_BITS];
+    char plaintext[BLOCK_SIZE_128_BITS] = "hello";
+    uint8_t ciphertext[BLOCK_SIZE_128_BITS];
 
-    aes_encrypt(text, key, cipher);
+    aes_encrypt(plaintext, key, ciphertext);
+
+    printf("Plaintext: %s\n", plaintext);
+    printf("Ciphertext: ");
+    for (int i = 0; i < BLOCK_SIZE_128_BITS; i++) {
+        printf("%02x ", ciphertext[i]);
+    }
+    printf("\n");
 
     free_aes_key(key);
 }
