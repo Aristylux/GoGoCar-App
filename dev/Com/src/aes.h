@@ -28,4 +28,6 @@ void sub_bytes(uint8_t* state, const uint8_t* sbox);
 void shift_rows(uint8_t *state);
 void mix_columns(uint8_t *state);
 
+uint8_t gf_mul(uint8_t a, uint8_t b);
+
 void key_expansion(const uint8_t* key, uint8_t* expanded_key);

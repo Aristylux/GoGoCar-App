@@ -2,11 +2,12 @@
 
 // S-box values
 const uint8_t sbox[256];/* = {
-  
+    
 };*/
 
+//Round constant values
 const uint32_t rcon[11];/* = {
-  //Round constant values
+    
 };*/
 
 t_aes_key* generate_aes_key(size_t key_size) {
@@ -43,9 +44,9 @@ void free_aes_key(t_aes_key *key){
 /**
  * @brief 
  * 
- * @param plaintext 
- * @param key 
- * @param ciphertext  return 
+ * @param plaintext pointer to a block of plaintext data
+ * @param key ointer to the secret key (32 bytes)
+ * @param ciphertext return pointer to the encrypted block of data (16 bytes)
  */
 void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext){
     uint8_t state[BLOCK_SIZE_128_BITS], expanded_key[240];
@@ -107,6 +108,8 @@ void aes_decrypt(char *ciphertext, t_aes_key *key){
 /**
  * @brief each byte of the state is combined with a byte of the round key using bitwise xor
  * 
+ * @param state pointer to the current state (16 bytes)
+ * @param round_key pointer to the current round key (16 bytes)
  */
 void add_round_key(uint8_t* state, const uint8_t* round_key){
     for (int i = 0; i < BLOCK_SIZE_128_BITS; i++) {
@@ -117,6 +120,8 @@ void add_round_key(uint8_t* state, const uint8_t* round_key){
 /**
  * @brief a non-linear substitution step where each byte is replaced with another according to a lookup table
  * 
+ * @param state pointer to the current state (16 bytes)
+ * @param sbox 
  */
 void sub_bytes(uint8_t* state, const uint8_t* sbox){
     for (int i = 0; i < BLOCK_SIZE_128_BITS; i++) {
@@ -127,6 +132,7 @@ void sub_bytes(uint8_t* state, const uint8_t* sbox){
 /**
  * @brief a transposition step where the last three rows of the state are shifted cyclically a certain number of steps
  * 
+ * @param state pointer to the current state (16 bytes)
  */
 void shift_rows(uint8_t *state){
     uint8_t temp;
@@ -157,11 +163,52 @@ void shift_rows(uint8_t *state){
 /**
  * @brief a linear mixing operation which operates on the columns of the state, combining the four bytes in each column.
  * 
+ * @param state pointer to the current state (16 bytes)
  */
 void mix_columns(uint8_t *state) {
-
+    uint8_t tmp[16];
+    for (int i = 0; i < 4; i++) {
+        tmp[4*i] = gf_mul(0x02, state[4*i]) ^ gf_mul(0x03, state[4*i+1]) ^ state[4*i+2] ^ state[4*i+3];
+        tmp[4*i+1] = state[4*i] ^ gf_mul(0x02, state[4*i+1]) ^ gf_mul(0x03, state[4*i+2]) ^ state[4*i+3];
+        tmp[4*i+2] = state[4*i] ^ state[4*i+1] ^ gf_mul(0x02, state[4*i+2]) ^ gf_mul(0x03, state[4*i+3]);
+        tmp[4*i+3] = gf_mul(0x03, state[4*i]) ^ state[4*i+1] ^ state[4*i+2] ^ gf_mul(0x02, state[4*i+3]);
+    }
+    memcpy(state, tmp, 16);
 }
 
+/**
+ * @brief Galois Field multiplication function
+ * 
+ * @param a a byte value
+ * @param b a byte value
+ * @return uint8_t The result of multiplying a and b in the Galois Field
+ */
+uint8_t gf_mul(uint8_t a, uint8_t b) {
+    uint8_t p = 0;
+    uint8_t hbit = 0;
+    for (int i = 0; i < 8; i++) {
+        if (b & 1) {
+            p ^= a;
+        }
+        hbit = a & 0x80;
+        a <<= 1;
+        if (hbit) {
+            a ^= 0x1b;
+        }
+        b >>= 1;
+    }
+    return p;
+}
+
+/**
+ * @brief Key expansion function
+ * Implement AES-256 key expansion
+ * This involves applying a series of transformations to the original key
+ * to generate a set of round keys that will be used for each round of encryption
+ * 
+ * @param key pointer to the secret key (32 bytes)
+ * @param expanded_key pointer to the expanded set of round keys (240 bytes)
+ */
 void key_expansion(const uint8_t* key, uint8_t* expanded_key) {
     int i, j, k;
     uint32_t temp;
