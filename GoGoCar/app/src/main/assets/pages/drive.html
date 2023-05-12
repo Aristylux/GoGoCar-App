@@ -12,10 +12,123 @@
         <link rel="stylesheet" href="../css/modal.css" />
 
         <link rel="stylesheet" href="../css/drive.css" />
+
+        <style>
+            #search-container {
+                /*width: 300px;*/
+
+                margin: 10px 20px;
+
+                /*flex-direction: column;*/
+                /*display: flex;*/
+                align-items: center;
+
+                display: grid;
+            }
+
+            form {
+                background-color: var(--primary-color);
+                height: 44px;
+                border-radius: 25px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+
+                z-index: 1;
+            }
+
+            input {
+                all: unset;
+                font: 16px system-ui;
+                color: #fff;
+                height: 100%;
+                width: 100%;
+                padding: 6px 15px;
+            }
+
+            ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+                color: #e2e2e2;
+                opacity: 1; /* Firefox */
+            }
+
+            #search-container  ul {
+                list-style: none;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                margin: 0px;
+                padding: 0;
+                text-align: center;
+                height: 44px;
+                align-content: center;
+
+                margin-top: 25px;
+            }
+
+            #search-container  li {
+                font: 16px system-ui;
+                color: #fff;
+            }
+
+            #distance {
+                font-family: sans-serif;
+                color: #fff;
+                padding: 6px 15px;
+
+                opacity: 1;
+                transition: 0.1s ease-in-out;
+            }
+
+            #distance.desappear {
+                opacity: 0.5;
+            }
+
+            #distance-container.container {
+                /*height: 54px;*/
+                border-bottom-right-radius: 25px;
+                border-bottom-left-radius: 25px;
+                background-color: var(--primary-color);
+                box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+                /*width: 280px;*/
+                margin-top: -25px;
+
+                opacity: 0;
+                height: 0;
+                transition: 0.3s ease-in-out;
+                display: none;
+
+            }
+
+            #distance-container.container-visible {
+                opacity: 1;
+                height: 69px;
+            }
+        </style>
+
     </head>
     <body>
         <section id="page-content">
             <h1>Drive</h1>
+
+            <div id="search-container">
+                <form id="search-bar" role="search">
+                    <input
+                        type="search"
+                        id="query"
+                        name="q"
+                        placeholder="Search..."
+                    />
+                    <span id="distance">10km</span>
+                </form>
+    
+                <div id="distance-container" class="container">
+                    <ul>
+                        <li>2.5km</li>
+                        <li>5km</li>
+                        <li>10km</li>
+                    </ul>
+                </div>
+            </div>
 
             <!-- Best final : use google maps -->
             <!-- For the moment : -->
@@ -43,5 +156,42 @@
         <script src="../js/popup.js"></script>
         <script src="../js/drive.js"></script>
         <script src="../js/popup_drive.js"></script>
+
+        <script>
+            const distance_but = document.getElementById("distance");
+            const distance_container = document.getElementById('distance-container');
+            
+            // When clicked, open container
+            distance_but.addEventListener("click", () => {
+                distance_container.style.display = 'block';
+                // Avoid unnecessary visual artefact
+                setTimeout(() => {
+                    distance_container.classList.add('container-visible');
+                }, 10);
+            });
+
+            
+            const distance_ul = document.getElementById('distance-container');
+            const distances = distance_ul.querySelectorAll('li');
+            distances.forEach(element => {
+                element.addEventListener('click', () => {
+                    distance_container.classList.remove('container-visible');
+                    distance_but.classList.add('desappear');
+
+                    // Send Android
+                    console.log("-> " + element.textContent.slice(0, -2));
+
+                    setTimeout(() => {
+                        distance_container.style.display = 'none';
+                    }, 300);
+
+                    setTimeout(() => {
+                        distance_but.textContent = element.textContent;
+                        distance_but.classList.remove('desappear');
+                    }, 100);
+                })
+            });
+
+        </script>
     </body>
 </html>

@@ -15,6 +15,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class BluetoothConnection extends Thread {
@@ -103,10 +104,10 @@ public class BluetoothConnection extends Thread {
         String s = "Salut man";
         String jamer = "$deb:1";
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             try {
                 bluetoothCommunication.write(jamer.getBytes(StandardCharsets.UTF_8));
-                Log.d(TAG_BT_CON, "connectionEstablished: write: " + jamer);
+                Log.d(TAG_BT_CON, "connectionEstablished: write: " + jamer + " - " + Arrays.toString(jamer.getBytes(StandardCharsets.UTF_8)));
                 Thread.sleep(1000); // Wait for 1 second (1000 milliseconds)
             } catch (InterruptedException e) {
                 // Handle the interrupted exception if necessary

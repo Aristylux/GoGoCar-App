@@ -4,7 +4,7 @@ ul {
     margin-top: 20px;
 }
 
-li {
+#vehicles_list li {
     background-color: var(--background-color);
     margin: 0 20px;
     margin-bottom: 10px;
@@ -18,7 +18,7 @@ li {
 }
 
 .vehicle_container {
-    opacity: 1;
+    opacity: 1 !important;
 }
 
 .vehicle_container:active {
