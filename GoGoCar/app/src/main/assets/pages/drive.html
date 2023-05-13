@@ -45,6 +45,7 @@
                 height: 100%;
                 width: 100%;
                 padding: 6px 15px;
+                font-size: 1em;
             }
 
             ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -52,22 +53,20 @@
                 opacity: 1; /* Firefox */
             }
 
-            #search-container  ul {
-                list-style: none;
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                margin: 0px;
-                padding: 0;
-                text-align: center;
-                height: 44px;
-                align-content: center;
-
-                margin-top: 25px;
+            #search-clear {
+                padding: 6px 15px;
+                opacity: 0;
+                transition: 0.3s ease-in-out;
             }
 
-            #search-container  li {
-                font: 16px system-ui;
+            #search-clear.display {
+                opacity: 1;
+            }
+
+            #search-container .icon {
                 color: #fff;
+                font-size: 1.5em;
+                display: flex;
             }
 
             #distance {
@@ -81,6 +80,24 @@
 
             #distance.desappear {
                 opacity: 0.5;
+            }
+
+            #search-container ul {
+                list-style: none;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                margin: 0px;
+                padding: 0;
+                text-align: center;
+                height: 44px;
+                align-content: center;
+
+                margin-top: 25px;
+            }
+
+            #search-container li {
+                font: 16px system-ui;
+                color: #fff;
             }
 
             #distance-container.container {
@@ -113,11 +130,14 @@
             <div id="search-container">
                 <form id="search-bar" role="search">
                     <input
-                        type="search"
+                        type="text"
                         id="query"
                         name="q"
                         placeholder="Search..."
                     />
+                    <span id="search-clear">
+                        <i class="fi fi-rr-cross-small icon"></i>
+                    </span> 
                     <span id="distance">10km</span>
                 </form>
     
@@ -160,6 +180,7 @@
         <script>
             const distance_but = document.getElementById("distance");
             const distance_container = document.getElementById('distance-container');
+            const transitionTime = convertToMilliseconds(window.getComputedStyle(distance_container).getPropertyValue("transition-duration"));
             
             // When clicked, open container
             distance_but.addEventListener('click', () => {
@@ -180,8 +201,6 @@
 
             function hideContainer(container) {
                 container.classList.remove('container-visible');
-                const transition = window.getComputedStyle(distance_container).getPropertyValue("transition-duration");
-                const transitionTime = convertToMilliseconds(transition);
                 setTimeout(() => {
                     container.style.display = 'none';
                 }, transitionTime);
