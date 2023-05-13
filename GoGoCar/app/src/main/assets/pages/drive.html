@@ -134,10 +134,20 @@
                 box-shadow: 0 2px 2px rgba(0,0,0,0.3);
                 border-radius: 25px;
                 margin: 0;
+
+                opacity: 0;
+                /*height: 0;*/
+                transition: 0.15s ease-in-out;
+            }
+
+            #cityList.show {
+                opacity: 1;
+                /*height: 70px;*/
             }
 
             #cityList li {
                 padding: 5px 15px;
+                transition: transform 0.3s ease-in-out;
             }
 
         </style>
@@ -255,26 +265,31 @@
                 // ------ ------ ------ ------
 
                 // Display the matching cities
-                matchingCities.forEach(function(city) {
-                    var li = document.createElement("li");
-                    li.appendChild(document.createTextNode(city));
+                cityList.classList.remove("show");
+                setTimeout(function() {
+                    matchingCities.forEach(function(city) {
+                        var li = document.createElement("li");
+                        li.appendChild(document.createTextNode(city));
 
-                    // Add click event listener to each list item
-                    li.addEventListener("click", function() {
-                        text_input.value = city;
+                        // Add click event listener to each list item
+                        li.addEventListener("click", function() {
+                            text_input.value = city;
 
-                        // Clear the list after selection
-                        cityList.innerHTML = "";
+                            // Clear the list after selection
+                            cityList.innerHTML = "";
+                        });
+
+                        cityList.appendChild(li);
                     });
-
-                    cityList.appendChild(li);
-                });
+                    cityList.classList.add("show");
+                }, 150);
             });
 
             // When click on the icon, clear input
             clear_input.addEventListener('click', () => {
                 // Clear previous results list
                 cityList.innerHTML = "";
+                cityList.classList.remove("show");
 
                 // Clear input text
                 text_input.classList.add('clear');
