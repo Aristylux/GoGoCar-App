@@ -46,11 +46,18 @@
                 width: 100%;
                 padding: 6px 15px;
                 font-size: 1em;
+
+                opacity: 1;
+                transition: 0.15s ease-in-out;
             }
 
             ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
                 color: #e2e2e2;
                 opacity: 1; /* Firefox */
+            }
+
+            #text_input.clear {
+                opacity: 0;
             }
 
             #search-clear {
@@ -131,7 +138,7 @@
                 <form id="search-bar" role="search">
                     <input
                         type="text"
-                        id="query"
+                        id="text_input"
                         name="q"
                         placeholder="Search..."
                     />
@@ -178,10 +185,30 @@
         <script src="../js/popup_drive.js"></script>
 
         <script>
+            const text_input = document.getElementById("text_input");
+            const clear_input = document.getElementById("search-clear");
             const distance_but = document.getElementById("distance");
             const distance_container = document.getElementById('distance-container');
             const transitionTime = convertToMilliseconds(window.getComputedStyle(distance_container).getPropertyValue("transition-duration"));
             
+            // When user press a key
+            text_input.addEventListener('input', () => {
+                text_input.value = formater(text_input.value);
+                clear_input.classList.add('display');
+                if(text_input.value.length == 0)
+                    clear_input.classList.remove('display');
+            });
+
+            // When click on the icon, clear input
+            clear_input.addEventListener('click', () => {
+                console.log("clear");
+                text_input.classList.add('clear');
+                setTimeout(() => {
+                    text_input.value = "";
+                    text_input.classList.remove('clear');
+                }, 150);
+            });
+
             // When clicked, open container
             distance_but.addEventListener('click', () => {
                 if(distance_container.style.display === "block") hideContainer(distance_container);
@@ -227,6 +254,19 @@
                 const numericString = timeString.replace(/[^0-9.]/g, '');
                 // Convert the numeric string to a number and multiply by 1000
                 return parseFloat(numericString) * 1000;    
+            }
+
+            function formater(text){
+                // Return an empty string for non-string inputs
+                if (typeof text !== 'string') return ''; 
+                
+                // Return the input as is for an empty string
+                if (text.length === 0) return text; 
+
+                const firstLetter = text.charAt(0).toUpperCase();
+                const restOfText = text.slice(1);
+                
+                return firstLetter + restOfText;
             }
 
         </script>
