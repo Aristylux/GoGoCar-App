@@ -201,12 +201,12 @@
 
             // When click on the icon, clear input
             clear_input.addEventListener('click', () => {
-                console.log("clear");
                 text_input.classList.add('clear');
                 setTimeout(() => {
                     text_input.value = "";
                     text_input.classList.remove('clear');
                 }, 150);
+                clear_input.classList.remove('display');
             });
 
             // When clicked, open container
