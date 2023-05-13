@@ -89,7 +89,7 @@
                 opacity: 0.5;
             }
 
-            #search-container ul {
+            #distance-container ul {
                 list-style: none;
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
@@ -102,7 +102,7 @@
                 margin-top: 25px;
             }
 
-            #search-container li {
+            #distance-container li {
                 font: 16px system-ui;
                 color: #fff;
             }
@@ -129,6 +129,18 @@
             }
         </style>
 
+        <style>
+            #cityList {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            #cityList li {
+                padding: 5px;
+            }
+
+        </style>
+
     </head>
     <body>
         <section id="page-content">
@@ -147,7 +159,6 @@
                     </span> 
                     <span id="distance">10km</span>
                 </form>
-    
                 <div id="distance-container" class="container">
                     <ul>
                         <li>2.5km</li>
@@ -155,6 +166,7 @@
                         <li>10km</li>
                     </ul>
                 </div>
+                <ul id="cityList"></ul>
             </div>
 
             <!-- Best final : use google maps -->
@@ -189,18 +201,81 @@
             const clear_input = document.getElementById("search-clear");
             const distance_but = document.getElementById("distance");
             const distance_container = document.getElementById('distance-container');
+            const cityList = document.getElementById("cityList");
             const transitionTime = convertToMilliseconds(window.getComputedStyle(distance_container).getPropertyValue("transition-duration"));
             
             // When user press a key
             text_input.addEventListener('input', () => {
                 text_input.value = formater(text_input.value);
                 clear_input.classList.add('display');
-                if(text_input.value.length == 0)
+
+                // Clear previous results list
+                cityList.innerHTML = "";
+
+                if(text_input.value.length == 0){
                     clear_input.classList.remove('display');
+                    return;
+                }
+
+                // ------ ------ ------ ------
+                // ------    FOR TEST   ------
+                var cities = [
+                    "Paris",
+                    "Marseille",
+                    "Lyon",
+                    "Toulouse",
+                    "Nice",
+                    "Nantes",
+                    "Strasbourg",
+                    "Montpellier",
+                    "Bordeaux",
+                    "Lille",
+                    "Rennes",
+                    "Reims",
+                    "Le Havre",
+                    "Cergy-Pontoise",
+                    "Saint-Étienne",
+                    "Toulon",
+                    "Angers",
+                    "Grenoble",
+                    "Dijon",
+                    "Nîmes"
+                ];
+
+                var matchingCities = [];
+
+                // Filter cities based on the search term
+                matchingCities = cities.filter(function(city) {
+                    return city.toLowerCase().startsWith(text_input.value.toLowerCase());
+                }).slice(0, 3); // Get maximum 3 matching cities
+
+                // ------ ------ ------ ------
+                // Query with text input
+                // ------ ------ ------ ------
+
+                // Display the matching cities
+                matchingCities.forEach(function(city) {
+                    var li = document.createElement("li");
+                    li.appendChild(document.createTextNode(city));
+
+                    // Add click event listener to each list item
+                    li.addEventListener("click", function() {
+                        text_input.value = city;
+
+                        // Clear the list after selection
+                        cityList.innerHTML = "";
+                    });
+
+                    cityList.appendChild(li);
+                });
             });
 
             // When click on the icon, clear input
             clear_input.addEventListener('click', () => {
+                // Clear previous results list
+                cityList.innerHTML = "";
+
+                // Clear input text
                 text_input.classList.add('clear');
                 setTimeout(() => {
                     text_input.value = "";
