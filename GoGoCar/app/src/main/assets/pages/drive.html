@@ -163,20 +163,11 @@
             
             // When clicked, open container
             distance_but.addEventListener('click', () => {
-                if(distance_container.style.display === "block"){
-                    hideContainer(distance_container);
-                } else {
-
-                distance_container.style.display = 'block';
-                // Avoid unnecessary visual artefact
-                setTimeout(() => {
-                    distance_container.classList.add('container-visible');
-                }, 10);
-            }
+                if(distance_container.style.display === "block") hideContainer(distance_container);
+                else displayContainer(distance_container);
             });
 
-            const distance_ul = document.getElementById('distance-container');
-            const distances = distance_ul.querySelectorAll('li');
+            const distances = distance_container.querySelectorAll('li');
             distances.forEach(element => {
                 element.addEventListener('click', () => {
                     hideContainer(distance_container);
@@ -189,9 +180,19 @@
 
             function hideContainer(container) {
                 container.classList.remove('container-visible');
+                const transition = window.getComputedStyle(distance_container).getPropertyValue("transition-duration");
+                const transitionTime = convertToMilliseconds(transition);
                 setTimeout(() => {
-                    distance_container.style.display = 'none';
-                }, 300);
+                    container.style.display = 'none';
+                }, transitionTime);
+            }
+
+            function displayContainer(container){
+                container.style.display = 'block';
+                // Avoid unnecessary visual artefact
+                setTimeout(() => {
+                    container.classList.add('container-visible');
+                }, 10);
             }
 
             function updateDistance(text, element) {
@@ -200,6 +201,13 @@
                     text.textContent = element.textContent;
                     text.classList.remove('desappear');
                 }, 100);
+            }
+
+            function convertToMilliseconds(timeString){
+                // Remove non-numeric characters from the string
+                const numericString = timeString.replace(/[^0-9.]/g, '');
+                // Convert the numeric string to a number and multiply by 1000
+                return parseFloat(numericString) * 1000;    
             }
 
         </script>
