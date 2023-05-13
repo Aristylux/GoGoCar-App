@@ -162,35 +162,45 @@
             const distance_container = document.getElementById('distance-container');
             
             // When clicked, open container
-            distance_but.addEventListener("click", () => {
+            distance_but.addEventListener('click', () => {
+                if(distance_container.style.display === "block"){
+                    hideContainer(distance_container);
+                } else {
+
                 distance_container.style.display = 'block';
                 // Avoid unnecessary visual artefact
                 setTimeout(() => {
                     distance_container.classList.add('container-visible');
                 }, 10);
+            }
             });
 
-            
             const distance_ul = document.getElementById('distance-container');
             const distances = distance_ul.querySelectorAll('li');
             distances.forEach(element => {
                 element.addEventListener('click', () => {
-                    distance_container.classList.remove('container-visible');
-                    distance_but.classList.add('desappear');
-
+                    hideContainer(distance_container);
+                    updateDistance(distance_but, element);
+                    
                     // Send Android
                     console.log("-> " + element.textContent.slice(0, -2));
-
-                    setTimeout(() => {
-                        distance_container.style.display = 'none';
-                    }, 300);
-
-                    setTimeout(() => {
-                        distance_but.textContent = element.textContent;
-                        distance_but.classList.remove('desappear');
-                    }, 100);
                 })
             });
+
+            function hideContainer(container) {
+                container.classList.remove('container-visible');
+                setTimeout(() => {
+                    distance_container.style.display = 'none';
+                }, 300);
+            }
+
+            function updateDistance(text, element) {
+                text.classList.add('desappear');
+                setTimeout(() => {
+                    text.textContent = element.textContent;
+                    text.classList.remove('desappear');
+                }, 100);
+            }
 
         </script>
     </body>
