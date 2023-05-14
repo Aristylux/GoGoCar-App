@@ -112,7 +112,7 @@ void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext){
     int round;
     for (round = 1; round < 14; round++) {
         // Perform byte substitution
-        sub_bytes(state, sbox);
+        sub_bytes(state);
         // Perform row shifting
         shift_rows(state);
         // Perform column mixing
@@ -122,12 +122,32 @@ void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext){
     }
 
     // Perform the final round of encryption
-    sub_bytes(state, sbox);
+    sub_bytes(state);
     shift_rows(state);
     add_round_key(state, expanded_key + round * BLOCK_SIZE_128_BITS);
     
     // Copy the final state to the ciphertext buffer
     memcpy(ciphertext, state, BLOCK_SIZE_128_BITS);
+}
+
+void main_encrypt(uint8_t *state, uint8_t *expanded_key, uint8_t nbr_rounds){
+    uint8_t round_key[16];
+
+    create_round_key(expanded_key, round_key);
+    add_round_key(state, round_key);
+
+    for (uint8_t round = 1; round < nbr_rounds; round++){
+        create_round_key(expanded_key + BLOCK_SIZE_128_BITS*round, round_key);
+        sub_bytes(state);
+        shift_rows(state);
+        mix_columns(state);
+        add_round_key(state, round_key);
+    }
+
+    create_round_key(expanded_key + BLOCK_SIZE_128_BITS*nbr_rounds, round_key);
+    sub_bytes(state);
+    shift_rows(state);
+    add_round_key(state, round_key);
 }
 
 void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, char *plaintext){
@@ -167,6 +187,14 @@ void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, char *plaintext){
     memcpy(plaintext, state, BLOCK_SIZE_128_BITS);
 }
 
+void create_round_key(uint8_t *expanded_key, uint8_t *round_key) {
+    for (uint8_t i = 0; i < 4; i++) {
+        for (uint8_t j = 0; j < 4; j++) {
+            round_key[(i+(j*4))] = expanded_key[(i*4)+j];
+        }
+    }
+}
+
 /**
  * @brief each byte of the state is combined with a byte of the round key using bitwise xor
  * 
@@ -185,7 +213,7 @@ void add_round_key(uint8_t* state, const uint8_t* round_key){
  * @param state pointer to the current state (16 bytes)
  * @param sbox Substitution box
  */
-void sub_bytes(uint8_t* state, const uint8_t* sbox){
+void sub_bytes(uint8_t* state){
     for (int i = 0; i < BLOCK_SIZE_128_BITS; i++) {
         state[i] = sbox[state[i]];
     }

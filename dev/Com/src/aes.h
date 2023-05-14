@@ -23,8 +23,9 @@ void free_aes_key(t_aes_key *key);
 void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext);
 void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, char *plaintext);
 
+void create_round_key(uint8_t *expanded_key, uint8_t *round_key);
 void add_round_key(uint8_t* state, const uint8_t* round_key);
-void sub_bytes(uint8_t* state, const uint8_t* sbox);
+void sub_bytes(uint8_t* state);
 void shift_rows(uint8_t *state);
 void shift_row(uint8_t *state, uint8_t nbr);
 
