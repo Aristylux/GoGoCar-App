@@ -5,7 +5,13 @@
 #include <stdint.h>
 #include <string.h>
 
+
+
 void test_mix_columns(void);
 void test_gmix_column(void);
+
+/** **/
+
+void print_hex(const uint8_t *arr, const size_t size, const char *title);
 
 #endif
