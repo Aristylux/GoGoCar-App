@@ -115,6 +115,13 @@ void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext){
             printf("%2.2x%c", state[i-1], (i%16) ? ' ' : '\n');
     }
 
+    n_mic_columns(state);
+
+    printf("State after:\n");
+    for (uint8_t i = 1; i < BLOCK_SIZE_128_BITS+1; i++) {
+            printf("%2.2x%c", state[i-1], (i%16) ? ' ' : '\n');
+    }
+
     // Add the initial round key to the state
     add_round_key(state, expanded_key);
 
@@ -246,6 +253,31 @@ void mix_columns(uint8_t *state) {
     memcpy(state, tmp, 16);
 }
 
+void n_mic_columns(uint8_t *state){
+    uint8_t column[4];
+    for (uint8_t i = 0; i < 4; i++){
+        // Construct a column by iterating over the 4 rows
+        for (uint8_t j = 0; j < 4; j++)
+            column[j] = state[(j*4)+i];
+        
+        mixColumn(column);
+
+        // Put the values back into the state
+        for (uint8_t j = 0; j < 4; j++)
+            state[(j*4)+i] = column[j];
+    }
+}
+
+void mixColumn(uint8_t *column){
+    uint8_t cpy[4];
+    for(uint8_t i = 0; i < 4; i++) cpy[i] = column[i];
+
+    column[0] = gf_mul(cpy[0],2) ^ gf_mul(cpy[3],1) ^ gf_mul(cpy[2],1) ^ gf_mul(cpy[1],3);
+    column[1] = gf_mul(cpy[1],2) ^ gf_mul(cpy[0],1) ^ gf_mul(cpy[3],1) ^ gf_mul(cpy[2],3);
+    column[2] = gf_mul(cpy[2],2) ^ gf_mul(cpy[1],1) ^ gf_mul(cpy[0],1) ^ gf_mul(cpy[3],3);
+    column[3] = gf_mul(cpy[3],2) ^ gf_mul(cpy[2],1) ^ gf_mul(cpy[1],1) ^ gf_mul(cpy[0],3);
+}
+
 /**
  * @brief Galois Field multiplication function
  * 
@@ -256,15 +288,11 @@ void mix_columns(uint8_t *state) {
 uint8_t gf_mul(uint8_t a, uint8_t b) {
     uint8_t p = 0;
     uint8_t hbit = 0;
-    for (int i = 0; i < 8; i++) {
-        if (b & 1) {
-            p ^= a;
-        }
-        hbit = a & 0x80;
+    for (uint8_t i = 0; i < 8; i++) {
+        if ((b & 1) == 1) p ^= a;
+        hbit = (a & 0x80);
         a <<= 1;
-        if (hbit) {
-            a ^= 0x1b;
-        }
+        if (hbit == 0x80) a ^= 0x1b;
         b >>= 1;
     }
     return p;

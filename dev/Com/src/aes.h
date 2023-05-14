@@ -29,6 +29,8 @@ void shift_rows(uint8_t *state);
 void shift_row(uint8_t *state, uint8_t nbr);
 
 void mix_columns(uint8_t *state);
+void n_mic_columns(uint8_t *state);
+void mixColumn(uint8_t *column);
 
 uint8_t gf_mul(uint8_t a, uint8_t b);
 
