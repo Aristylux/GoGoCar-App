@@ -128,21 +128,6 @@ void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext){
 void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, char *plaintext){
     uint8_t state[BLOCK_SIZE_128_BITS] = {0}, round_key[240] = {0};
     generate_sbox_inv();
-
-    for (int i = 0; i < 256; i++)
-    {
-        if(i % 15 == 0) printf("\n");
-        printf("%3d ", sbox[i]);
-        
-    }
-    printf("\n");
-    for (int i = 0; i < 256; i++)
-    {
-        if(i % 15 == 0) printf("\n");
-        printf("%3d ", sbox_inv[i]);
-        
-    }
-     printf("\n");
     
     // Copy the ciphertext into the state array
     memcpy(state, ciphertext, BLOCK_SIZE_128_BITS);
