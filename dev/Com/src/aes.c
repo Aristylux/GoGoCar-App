@@ -110,6 +110,11 @@ void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext){
             printf("%2.2x%c", expanded_key[i-1], (i%16) ? ' ' : '\n');
     }
 
+    printf("State before:\n");
+    for (uint8_t i = 1; i < BLOCK_SIZE_128_BITS+1; i++) {
+            printf("%2.2x%c", state[i-1], (i%16) ? ' ' : '\n');
+    }
+
     // Add the initial round key to the state
     add_round_key(state, expanded_key);
 
@@ -202,29 +207,27 @@ void sub_bytes(uint8_t* state, const uint8_t* sbox){
  * @param state pointer to the current state (16 bytes)
  */
 void shift_rows(uint8_t *state){
+    for (uint8_t i = 0; i < 4; i++){
+        shift_row(state+i*4, i);
+    }
+}
+
+/**
+ * @brief 
+ * 
+ * @param state 
+ * @param nbr 
+ */
+void shift_row(uint8_t *state, uint8_t nbr){
     uint8_t temp;
 
-    // Shift the second row by one byte to the left
-    temp = state[1];
-    state[1] = state[5];
-    state[5] = state[9];
-    state[9] = state[13];
-    state[13] = temp;
-
-    // Shift the third row by two bytes to the left
-    temp = state[2];
-    state[2] = state[10];
-    state[10] = temp;
-    temp = state[6];
-    state[6] = state[14];
-    state[14] = temp;
-
-    // Shift the fourth row by three bytes to the left
-    temp = state[15];
-    state[15] = state[11];
-    state[11] = state[7];
-    state[7] = state[3];
-    state[3] = temp;
+    for (uint8_t i = 0; i < nbr; i++){
+        temp = state[0];
+        for (uint8_t j = 0; j < 3; j++){
+            state[j] = state[j+1];
+        }
+        state[3] = temp;
+    }
 }
 
 /**

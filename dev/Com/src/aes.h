@@ -26,6 +26,8 @@ void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, char *plaintext);
 void add_round_key(uint8_t* state, const uint8_t* round_key);
 void sub_bytes(uint8_t* state, const uint8_t* sbox);
 void shift_rows(uint8_t *state);
+void shift_row(uint8_t *state, uint8_t nbr);
+
 void mix_columns(uint8_t *state);
 
 uint8_t gf_mul(uint8_t a, uint8_t b);
