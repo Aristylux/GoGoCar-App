@@ -1,6 +1,8 @@
 #include "aes.h"
 
-// S-box values (Substitution box)
+/**
+ * @brief S-box values (Substitution box)
+ */
 const uint8_t sbox[256] = {
     //0     1    2      3     4    5     6     7      8    9     A      B    C     D     E     F
     0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76, //0
@@ -21,14 +23,16 @@ const uint8_t sbox[256] = {
     0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16  //F
 };
 
+/**
+ * @brief inverted S-box values
+ * 
+ */
 uint8_t sbox_inv[256];
 
-//Round constant values (Round constant)
-/*
-const uint32_t rcon[11]; = {
-    
-};*/
-
+/**
+ * @brief Round constant values
+ * 
+ */
 const uint32_t rcon[255] = {
     0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8,
     0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3,
@@ -98,7 +102,13 @@ void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext){
     memcpy(state, plaintext, BLOCK_SIZE_128_BITS);
 
     // Expand the key into a set of round keys
-    key_expansion(key->key, expanded_key);
+    uint8_t _key[32] = {0};
+    key_expansion(_key, expanded_key);
+
+    printf("Expanded Key:\n");
+    for (uint8_t i = 1; i < 240+1; i++) {
+            printf("%2.2x%c", expanded_key[i-1], (i%16) ? ' ' : '\n');
+    }
 
     // Add the initial round key to the state
     add_round_key(state, expanded_key);
