@@ -96,46 +96,43 @@ void free_aes_key(t_aes_key *key){
  * @param ciphertext return pointer to the encrypted block of data (16 bytes)
  */
 void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext){
-    uint8_t state[BLOCK_SIZE_128_BITS] = {0}, expanded_key[240] = {0};
+    uint8_t block[BLOCK_SIZE_128_BITS] = {0}, expanded_key[240] = {0};
 
     // Copy the plaintext to the state array
-    memcpy(state, plaintext, BLOCK_SIZE_128_BITS);
+    //memcpy(block, plaintext, BLOCK_SIZE_128_BITS);
 
-    // Expand the key into a set of round keys
-    uint8_t _key[32] = {0};
-    key_expansion(_key, expanded_key);
-
-    // Add the initial round key to the state
-    add_round_key(state, expanded_key);
-
-    // Perform the main rounds of encryption
-    int round;
-    for (round = 1; round < 14; round++) {
-        // Perform byte substitution
-        sub_bytes(state);
-        // Perform row shifting
-        shift_rows(state);
-        // Perform column mixing
-        mix_columns(state);
-        // Add the round key to the state
-        add_round_key(state, expanded_key + round * BLOCK_SIZE_128_BITS);
+    /* iterate over the columns */
+    for (uint8_t i = 0; i < 4; i++)
+    {
+        /* iterate over the rows */
+        for (uint8_t j = 0; j < 4; j++)
+            block[(i+(j*4))] = plaintext[(i*4)+j];
     }
 
-    // Perform the final round of encryption
-    sub_bytes(state);
-    shift_rows(state);
-    add_round_key(state, expanded_key + round * BLOCK_SIZE_128_BITS);
+    // Expand the key into a set of round keys
+    key_expansion(key->key, expanded_key);
+
+    main_encrypt(block, expanded_key, 14);
     
     // Copy the final state to the ciphertext buffer
-    memcpy(ciphertext, state, BLOCK_SIZE_128_BITS);
+    for (uint8_t i = 0; i < 4; i++)
+    {
+        /* iterate over the rows */
+        for (uint8_t j = 0; j < 4; j++)
+            ciphertext[(i*4)+j] = block[(i+(j*4))];
+    }
+
+    //memcpy(ciphertext, block, BLOCK_SIZE_128_BITS);
 }
 
 void main_encrypt(uint8_t *state, uint8_t *expanded_key, uint8_t nbr_rounds){
     uint8_t round_key[16];
 
+    // Add the initial round key to the state
     create_round_key(expanded_key, round_key);
     add_round_key(state, round_key);
 
+    // Perform the main rounds of encryption
     for (uint8_t round = 1; round < nbr_rounds; round++){
         create_round_key(expanded_key + BLOCK_SIZE_128_BITS*round, round_key);
         sub_bytes(state);
@@ -144,6 +141,7 @@ void main_encrypt(uint8_t *state, uint8_t *expanded_key, uint8_t nbr_rounds){
         add_round_key(state, round_key);
     }
 
+    // Perform the final round of encryption
     create_round_key(expanded_key + BLOCK_SIZE_128_BITS*nbr_rounds, round_key);
     sub_bytes(state);
     shift_rows(state);

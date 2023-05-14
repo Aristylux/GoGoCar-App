@@ -10,9 +10,7 @@ void aes(void);
 int main(void) {
     //rsa();
 
-    //aes();
-    test_mix_columns();
-    test_gmix_column();
+    aes();
 
     return 0; // success
 }
@@ -99,4 +97,9 @@ void rsa(void){
     free_public_key_bytes(public_key_bytes);
     
     free_keys(keys);
+}
+
+void test(void){
+    test_mix_columns();
+    test_gmix_column();
 }
