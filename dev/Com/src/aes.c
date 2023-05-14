@@ -115,7 +115,7 @@ void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext){
             printf("%2.2x%c", state[i-1], (i%16) ? ' ' : '\n');
     }
 
-    n_mic_columns(state);
+    n_mix_columns(state);
 
     printf("State after:\n");
     for (uint8_t i = 1; i < BLOCK_SIZE_128_BITS+1; i++) {
@@ -253,7 +253,7 @@ void mix_columns(uint8_t *state) {
     memcpy(state, tmp, 16);
 }
 
-void n_mic_columns(uint8_t *state){
+void n_mix_columns(uint8_t *state){
     uint8_t column[4];
     for (uint8_t i = 0; i < 4; i++){
         // Construct a column by iterating over the 4 rows
@@ -296,6 +296,28 @@ uint8_t gf_mul(uint8_t a, uint8_t b) {
         b >>= 1;
     }
     return p;
+}
+
+void gmix_column(uint8_t *r) {
+    uint8_t a[4];
+    uint8_t b[4];
+    uint8_t c;
+    uint8_t h;
+    /* The array 'a' is simply a copy of the input array 'r'
+     * The array 'b' is each element of the array 'a' multiplied by 2
+     * in Rijndael's Galois field
+     * a[n] ^ b[n] is element n multiplied by 3 in Rijndael's Galois field */ 
+    for (c = 0; c < 4; c++) {
+        a[c] = r[c];
+        /* h is 0xff if the high bit of r[c] is set, 0 otherwise */
+        h = (r[c] >> 7) & 1; /* arithmetic right shift, thus shifting in either zeros or ones */
+        b[c] = r[c] << 1; /* implicitly removes high bit because b[c] is an 8-bit char, so we xor by 0x1b and not 0x11b in the next line */
+        b[c] ^= h * 0x1B; /* Rijndael's Galois field */
+    }
+    r[0] = b[0] ^ a[3] ^ a[2] ^ b[1] ^ a[1]; /* 2 * a0 + a3 + a2 + 3 * a1 */
+    r[1] = b[1] ^ a[0] ^ a[3] ^ b[2] ^ a[2]; /* 2 * a1 + a0 + a3 + 3 * a2 */
+    r[2] = b[2] ^ a[1] ^ a[0] ^ b[3] ^ a[3]; /* 2 * a2 + a1 + a0 + 3 * a3 */
+    r[3] = b[3] ^ a[2] ^ a[1] ^ b[0] ^ a[0]; /* 2 * a3 + a2 + a1 + 3 * a0 */
 }
 
 /**

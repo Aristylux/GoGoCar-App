@@ -2,6 +2,7 @@
 #include <string.h>
 #include "rsa.h"
 #include "aes.h"
+#include "test.h"
 
 void rsa(void);
 void aes(void);
@@ -9,8 +10,10 @@ void aes(void);
 int main(void) {
     //rsa();
 
-    aes();
-    
+    //aes();
+    test_mix_columns();
+    test_gmix_column();
+
     return 0; // success
 }
 
