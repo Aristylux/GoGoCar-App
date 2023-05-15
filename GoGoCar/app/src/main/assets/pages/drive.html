@@ -87,53 +87,18 @@
                     clear_input.classList.remove('display');
                     return;
                 }
-
-                // ------ ------ ------ ------
-                // ------    FOR TEST   ------
-                var cities = [
-                    "Paris",
-                    "Marseille",
-                    "Lyon",
-                    "Toulouse",
-                    "Nice",
-                    "Nantes",
-                    "Strasbourg",
-                    "Montpellier",
-                    "Bordeaux",
-                    "Lille",
-                    "Rennes",
-                    "Reims",
-                    "Le Havre",
-                    "Cergy-Pontoise",
-                    "Saint-Étienne",
-                    "Toulon",
-                    "Angers",
-                    "Grenoble",
-                    "Dijon",
-                    "Nîmes"
-                ];
-
-                var matchingCities = [];
-
-                // Filter cities based on the search term
-                matchingCities = cities.filter(function(city) {
-                    return city.toLowerCase().startsWith(text_input.value.toLowerCase());
-                }).slice(0, 3); // Get maximum 3 matching cities
-
-                // ------ ------ ------ ------
-                // Query with text input
-                // ------ ------ ------ ------
+               
                 // Ask to android
-                // Android.func(text_input.value.toLowerCase());
-
-                // Result
-                setMatchingCities(matchingCities);
+                if (androidConnected()) Android.searchFrom(text_input.value.toLowerCase());
             });
 
+            // [ANDROID CALLBACK]
             function setMatchingCities(cities){
+                let t_cities = JSON.parse(cities);
+
                 // Display the matching cities
                 cityList.classList.remove("show");
-                cities.forEach(function(city) {
+                t_cities.forEach(function(city) {
                     let li = document.createElement("li");
                     li.appendChild(document.createTextNode(city));
                     // Add click event listener to each list item
