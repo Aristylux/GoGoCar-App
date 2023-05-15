@@ -22,4 +22,7 @@ public interface ThreadResultCallback {
     default void onResultTableUpdated(boolean isUpdated) {
     }
 
+    default void onResultStringArray(String[] array) {
+    }
+
 }

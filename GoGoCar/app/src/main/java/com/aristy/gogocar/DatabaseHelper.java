@@ -48,6 +48,12 @@ public class DatabaseHelper {
     private static final String COLUMN_MODULE_NAME = "name";
     private static final String COLUMN_MODULE_MAC_ADDRESS = "mac_address";
 
+    /* CITY */
+    private static final String TABLE_CITY = "city";
+    private static final String COLUMN_CITY_ID = "id";
+    private static final String COLUMN_CITY = "city";
+    private static final String COLUMN_LOCATION = "location";
+
     public static final String ADD_USER_QUERY = "INSERT INTO " + TABLE_USER +
             "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + "," + COLUMN_USER_SALT + ") " +
             "VALUES (?,?,?,?,?)";
@@ -424,6 +430,44 @@ public class DatabaseHelper {
             exception.printStackTrace();
         }
         return returnList;
+    }
+
+
+    /*  ---------------------------------- *
+     *  --             CITY             -- *
+     *  ---------------------------------- */
+
+    public String [] getMatchingCities(String firstChar){
+        String query = "SELECT * FROM city WHERE city LIKE " + firstChar;
+
+        ArrayList<String> matching = new ArrayList<String>();
+
+        if (isConnectionError("getModules")) return matching.toArray(new String[0]);
+
+        try {
+            // Execute query
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            // Get data
+            while (rs.next()) {
+                // Get values
+                //int id = rs.getInt(1);
+                String city = rs.getString(2);
+                //String points = rs.getString(3);
+
+                matching.add(city);
+            }
+
+            // Close both cursor and the database
+            rs.close();
+            st.close();
+        } catch (Exception exception){
+            Log.e(TAG_Database, "getCity: " , exception);
+            exception.printStackTrace();
+        }
+
+        return matching.toArray(new String[0]);
     }
 
 }

@@ -419,4 +419,20 @@ public class ThreadManager {
         });
         thread.start();
     }
+
+    /*  ---------------------------------- *
+     *  --             CITY             -- *
+     *  ---------------------------------- */
+
+
+    public void getMatchingCities(String firstChar){
+        if (checkStateError("getMatchingCities")) return;
+        thread = new Thread(() -> {
+            String[] matchingCities = databaseHelper.getMatchingCities(firstChar);
+            callback.onResultStringArray(matchingCities);
+        });
+        thread.start();
+
+    }
+
 }
