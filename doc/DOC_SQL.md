@@ -44,6 +44,10 @@ CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
 ```
 
+```sql
+CREATE EXTENSION IF NOT EXISTS postgis;
+```
+
 ## Create database
 
 ```sql
@@ -131,6 +135,12 @@ UPDATE users SET password = pgp_sym_encrypt(password, 'my_secret_key');
 ```
 
 # Select
+
+## Postgis extension for location geometry
+
+```sql
+SELECT postgis_full_version();
+```
 
 ## Password with encryption
 
