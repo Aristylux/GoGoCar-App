@@ -352,6 +352,23 @@ public class ThreadManager {
         thread.start();
     }
 
+    // TODO
+    public void getVehiclesAvailable(int userID, String city, int distance){
+        if (checkStateError("getVehiclesAvailable", userID)) return;
+        thread = new Thread(() -> {
+
+            DBModelVehicle vh = new DBModelVehicle();
+
+            DBModelVehicle [] vehicles = {vh}; //= databaseHelper.getVehiclesAvailable(userID);
+
+            for (DBModelVehicle vehicle : vehicles){
+                if (isExpired()) return;
+                callback.onResultVehicle(vehicle);
+            }
+        });
+        thread.start();
+    }
+
     /**
      * Get only the vehicles booked by the user
      * <strong>CALLBACK: <i>onResultVehicles()</i></strong>

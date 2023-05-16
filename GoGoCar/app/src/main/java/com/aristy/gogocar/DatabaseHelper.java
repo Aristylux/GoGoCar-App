@@ -440,6 +440,7 @@ public class DatabaseHelper {
     public String [] getMatchingCities(String firstChar){
         //SELECT * FROM my_table WHERE address LIKE '%Main%';
         String query = "SELECT * FROM " + TABLE_CITY + " WHERE " + COLUMN_CITY + " LIKE '%" + firstChar + "%';";
+        Log.d(TAG_Database, "getMatchingCities: query: " + query);
 
         ArrayList<String> matching = new ArrayList<String>();
 

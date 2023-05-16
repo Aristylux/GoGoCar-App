@@ -40,7 +40,6 @@ import android.widget.Toast;
 import com.aristy.gogocar.WICommon.Pages.Drive;
 import com.aristy.gogocar.WICommon.Pages.Vehicle;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -267,6 +266,8 @@ public class WIMainScreen extends WICommon {
                 Log.d(TAG_Web, "searchFrom: " + Arrays.toString(array));
 
                 // To String json
+                if (array.length < 1) return;
+
                 StringBuilder cities_j = new StringBuilder("[");
                 for (int i = 0; i < array.length - 1; i++){
                     cities_j.append("\"").append(array[i]).append("\", ");
@@ -277,6 +278,18 @@ public class WIMainScreen extends WICommon {
             }
         });
         thread.getMatchingCities(city);
+    }
+
+    @JavascriptInterface
+    public void searchStart(String city, int distance){
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultVehicle(DBModelVehicle vehicle) {
+                Log.d(TAG_Web, "onResultVehicle: " + vehicle);
+                //androidToWeb(Drive.JS.ADD_VEHICLE, vehicle.toString());
+            }
+        });
+        thread.getVehiclesAvailable(userPreferences.getUserID(), city, distance);
     }
 
     // [NEVER USED] -> openSlider()

@@ -75,6 +75,12 @@
             const cityList = document.getElementById("cityList");
             const transitionTime = convertToMilliseconds(window.getComputedStyle(distance_container).getPropertyValue("transition-duration"));
             
+            let search = {
+                "distance": 10,
+                "city_name":"",
+                "city_selected": false
+            }
+
             // When user press a key
             text_input.addEventListener('input', () => {
                 text_input.value = formater(text_input.value);
@@ -90,6 +96,8 @@
                
                 // Ask to android
                 if (androidConnected()) Android.searchFrom(text_input.value.toLowerCase());
+                // Test
+                else setMatchingCities('["Marseille","Monpellier"]');
             });
 
             // [ANDROID CALLBACK]
@@ -104,7 +112,10 @@
                     // Add click event listener to each list item
                     li.addEventListener("click", function() {
                         text_input.value = city;
+                        search.city_name = city;
+                        search.city_selected = true;
                         // Send Search to android
+                        startSearch();
 
                         // Clear the list after selection
                         cityList.innerHTML = "";
@@ -119,6 +130,8 @@
                 // Clear previous results list
                 cityList.innerHTML = "";
                 cityList.classList.remove("show");
+                search.city_name = "";
+                search.city_selected = false;
 
                 // Clear input text
                 text_input.classList.add('clear');
@@ -141,10 +154,21 @@
                     hideContainer(distance_container);
                     updateDistance(distance_but, element);
                     
+                    search.distance = element.textContent.slice(0, -2);
+                    console.log("-> " + search.distance);
+
                     // Send Android
-                    console.log("-> " + element.textContent.slice(0, -2));
+                    startSearch();
                 })
             });
+
+            function startSearch(){
+                console.log("distance: " + search.distance + " - city: " + search.city_name + " - selected: " + search.city_selected + ".");
+                if (search.city_selected == true){
+                    console.log("send to android: startSearch(" + search.city_name + ", " + search.distance + ")");
+                    if (androidConnected()) Android.searchStart(search.city_name, search.distance);
+                }
+            }
 
             function hideContainer(container) {
                 container.classList.remove('container-visible');
