@@ -39,6 +39,11 @@ For location
 ```sql
 CREATE EXTENSION postgis;
 ```
+
+```sql
+CREATE EXTENSION postgis_topology;
+```
+
 ## Create database
 
 ```sql
