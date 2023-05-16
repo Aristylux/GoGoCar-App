@@ -18,6 +18,7 @@
   - [Create database](#create-database)
   - [List databases](#list-databases)
   - [Connect to database](#connect-to-database)
+  - [List all tables](#list-all-tables)
 - [Connect to our database from client](#connect-to-our-database-from-client)
   - [Check database list](#check-database-list)
 - [Server reboot](#server-reboot)
@@ -37,6 +38,12 @@
 
 ```bash
 client@user:~$ ssh ubuntu@192.168.1.187
+```
+
+or
+
+```bash
+client@user:~$ ssh -i ssh-key-2022-12-17-oracle.key ubuntu@129.151.251.242
 ```
 
 ## Install Docker
@@ -204,6 +211,26 @@ postgres=#
 postgres=# \c test
 You are now connected to database "test" as user "postgres".
 test=# 
+```
+
+## List all tables
+
+Exemple with gogocar database.
+
+```
+gogocar=# \dt
+           List of relations
+ Schema |   Name    | Type  |  Owner   
+--------+-----------+-------+----------
+ public | addresses | table | postgres
+ public | carmodel  | table | postgres
+ public | city      | table | postgres
+ public | modules   | table | postgres
+ public | users     | table | postgres
+ public | vehicles  | table | postgres
+(6 rows)
+
+gogocar=# 
 ```
 
 # Connect to our database from client

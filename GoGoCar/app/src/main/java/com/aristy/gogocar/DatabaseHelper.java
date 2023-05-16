@@ -438,7 +438,8 @@ public class DatabaseHelper {
      *  ---------------------------------- */
 
     public String [] getMatchingCities(String firstChar){
-        String query = "SELECT * FROM city WHERE city LIKE " + firstChar;
+        //SELECT * FROM my_table WHERE address LIKE '%Main%';
+        String query = "SELECT * FROM " + TABLE_CITY + " WHERE " + COLUMN_CITY + " LIKE '%" + firstChar + "%';";
 
         ArrayList<String> matching = new ArrayList<String>();
 

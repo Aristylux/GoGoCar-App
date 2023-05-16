@@ -41,6 +41,7 @@ import com.aristy.gogocar.WICommon.Pages.Drive;
 import com.aristy.gogocar.WICommon.Pages.Vehicle;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -260,43 +261,22 @@ public class WIMainScreen extends WICommon {
     public void searchFrom(String city){
         Log.d(TAG_Web, "searchFrom");
 
-        String [] cities = {"Paris",
-                "Marseille",
-                "Lyon",
-                "Toulouse",
-                "Nice",
-                "Nantes",
-                "Strasbourg",
-                "Montpellier",
-                "Bordeaux",
-                "Lille",
-                "Rennes",
-                "Reims",
-                "Le Havre",
-                "Cergy-Pontoise",
-                "Saint-Étienne",
-                "Toulon",
-                "Angers",
-                "Grenoble",
-                "Dijon",
-                "Nîmes"};
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultStringArray(String[] array) {
+                Log.d(TAG_Web, "searchFrom: " + Arrays.toString(array));
 
-        List<String> matchingCities = new ArrayList<>();
-        for (String tcity : cities) {
-            if (tcity.toLowerCase().startsWith(city.toLowerCase())) {
-                matchingCities.add(tcity);
+                // To String json
+                StringBuilder cities_j = new StringBuilder("[");
+                for (int i = 0; i < array.length - 1; i++){
+                    cities_j.append("\"").append(array[i]).append("\", ");
+                }
+                cities_j.append("\"").append(array[array.length - 1]).append("\"]");
+
+                androidToWeb("setMatchingCities", cities_j.toString());
             }
-        }
-        matchingCities = matchingCities.subList(0, Math.min(matchingCities.size(), 3));
-
-        // To String json
-        StringBuilder cities_j = new StringBuilder("[");
-        for (int i = 0; i < matchingCities.size() - 1; i++){
-            cities_j.append("\"").append(matchingCities.get(i)).append("\", ");
-        }
-        cities_j.append("\"").append(matchingCities.get(matchingCities.size() - 1)).append("\"]");
-
-        androidToWeb("setMatchingCities", cities_j.toString());
+        });
+        thread.getMatchingCities(city);
     }
 
     // [NEVER USED] -> openSlider()
