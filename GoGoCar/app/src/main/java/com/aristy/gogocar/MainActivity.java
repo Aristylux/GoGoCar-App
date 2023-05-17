@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
                     Log.d(TAG_BT, "handleMessage: received: " + message.obj);
                     // TODO (test)
-                    // -> bluetoothConnection.messageReceived((String) message.obj);
+                    bluetoothConnection.messageReceived(message.obj.toString());
                     //sendDataToFragment(bluetoothConnection.getMessageFunction(), bluetoothConnection.getMessageParams());
                     break;
                 case BT_STATE_DISCONNECTED:

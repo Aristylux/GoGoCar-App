@@ -205,8 +205,8 @@ public class RSA {
     private long generatePrime() {
         long p;
         do {
-            // Generate a random number between 1000 and 1999
-            p = (long) (Math.random() * 1000) + 1000;
+            // Generate a random number between 10000 and 19999
+            p = (long) (Math.random() * 10000) + 10000;
         } while (!isPrime(p));
         return p;
     }

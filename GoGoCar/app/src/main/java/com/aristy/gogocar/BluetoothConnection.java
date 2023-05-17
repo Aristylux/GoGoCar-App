@@ -1,6 +1,7 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
+import static com.aristy.gogocar.CodesTAG.TAG_BT_COM;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_CON;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
@@ -12,9 +13,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.aristy.gogocar.RSA.RSAHelper;
+
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class BluetoothConnection extends Thread {
@@ -99,6 +104,12 @@ public class BluetoothConnection extends Thread {
         BluetoothCommunication bluetoothCommunication = new BluetoothCommunication(BluetoothConnection.this, handler);
         bluetoothCommunication.start();
 
+        byte [] by = RSAHelper.publicKey8bytes();
+        bluetoothCommunication.write(by);
+        Log.d(TAG_BT, "connectionEstablished: " + Arrays.toString(by));
+
+
+
         // Test send
         String s = "Salut man";
 
@@ -129,16 +140,28 @@ public class BluetoothConnection extends Thread {
      * @param message message to extract
      */
     public void messageReceived(String message){
+
+
+        Log.d(TAG_BT_COM, "run: " + Arrays.toString(message.getBytes(StandardCharsets.UTF_8)));
+
+        StringBuilder formattedString = new StringBuilder();
+        for (int i = 0; i < message.length(); i += 2) {
+            formattedString.append(message.substring(i, i + 2)).append(" ");
+        }
+
+        Log.d(TAG_BT_COM, "run: " + Arrays.toString(formattedString.toString().getBytes(StandardCharsets.UTF_8)));
+
+
         // TODO
         // Message management
 
         // Extract code
 
         // Extract message
-        this.message = message;
+        //this.message = message;
 
         // Action
-        this.function = "functionTest";
+        //this.function = "functionTest";
     }
 
     public String getMessageFunction(){
