@@ -1,5 +1,9 @@
 package com.aristy.gogocar.RSA;
 
+import static com.aristy.gogocar.CodesTAG.TAG_RSA;
+
+import android.util.Log;
+
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
@@ -82,7 +86,7 @@ public class RSA {
      * @return public key object
      */
     public PublicKey parsePublicKey(String publicKeyString) {
-        byte[] bytes = parseToBytes(publicKeyString);
+        byte[] bytes = parseToBytes(formatToHex(publicKeyString));
         ByteBuffer buffer = ByteBuffer.wrap(bytes);
 
         PublicKey publicKey = new PublicKey();
@@ -93,7 +97,7 @@ public class RSA {
             publicKey.N = buffer.getInt();
             publicKey.e = buffer.getInt();
         } else {
-            throw new IllegalArgumentException("Invalid input string");
+            Log.e(TAG_RSA, "parsePublicKey: Invalid input string");
         }
         return publicKey;
     }
@@ -128,16 +132,35 @@ public class RSA {
 
     /**
      * Parse a string text to bytes array
-     * @param hexString text like "XX XX XX ...."
+     * @param hexString text like "XXXXXX..." ("AABBCC...")
      * @return byte array
      */
     public static byte[] parseToBytes(String hexString){
         String[] hexValues = hexString.split(" ");
         byte[] byteArray = new byte[hexValues.length];
+
+        if (hexString.isEmpty()) return byteArray;
+
         for (int i = 0; i < hexValues.length; i++) {
             byteArray[i] = (byte) Integer.parseInt(hexValues[i], 16);
         }
         return byteArray;
+    }
+
+    private String formatToHex(String hexString){
+        Log.d(TAG_RSA, "formatToHex: " + hexString + " : " + hexString.length());
+
+        StringBuilder formattedString = new StringBuilder();
+
+        if (hexString.length() % 2 == 0) {
+            for (int i = 0; i < hexString.length(); i += 2) {
+                formattedString.append(hexString.substring(i, i + 2)).append(" ");
+            }
+            Log.d(TAG_RSA, "formatToHex: " + formattedString);
+        } else {
+            Log.e(TAG_RSA, "formatToHex: Invalid input string");
+        }
+        return String.valueOf(formattedString);
     }
 
     public static byte[] parseToBytes(long[] array){

@@ -61,6 +61,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.aristy.gogocar.RSA.PublicKey;
 import com.aristy.gogocar.RSA.RSA;
 import com.aristy.gogocar.RSA.RSAKeys;
 

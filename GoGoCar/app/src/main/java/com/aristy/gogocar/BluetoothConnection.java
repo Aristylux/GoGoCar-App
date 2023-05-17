@@ -140,16 +140,7 @@ public class BluetoothConnection extends Thread {
      * @param message message to extract
      */
     public void messageReceived(String message){
-
-
         Log.d(TAG_BT_COM, "run: " + Arrays.toString(message.getBytes(StandardCharsets.UTF_8)));
-
-        StringBuilder formattedString = new StringBuilder();
-        for (int i = 0; i < message.length(); i += 2) {
-            formattedString.append(message.substring(i, i + 2)).append(" ");
-        }
-
-        Log.d(TAG_BT_COM, "run: " + Arrays.toString(formattedString.toString().getBytes(StandardCharsets.UTF_8)));
 
 
         // TODO
