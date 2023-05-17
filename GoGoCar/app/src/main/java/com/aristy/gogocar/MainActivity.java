@@ -3,7 +3,7 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_LEFT;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
-import static com.aristy.gogocar.CodesTAG.TAG_Debug;
+import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.ConnectionHelper.connectionValid;
 import static com.aristy.gogocar.FragmentNav.ARG_FUNCTION_NAME;
@@ -154,13 +154,13 @@ public class MainActivity extends AppCompatActivity {
         try {
             // The user leave application, close connection to the server.
             if (connectionValid(SQLConnection)) {
-                Log.d(TAG_Debug, "onDestroy: close SQL connection");
+                Log.d(TAG_Database, "onDestroy: close SQL connection");
                 SQLConnection.close();
             } else {
-                Log.e(TAG_Debug, "onDestroy: ERROR close SQL connection: invalid");
+                Log.e(TAG_Database, "onDestroy: ERROR close SQL connection: invalid");
             }
         } catch (SQLException exception) {
-            Log.e(TAG_Debug, "onDestroy: ERROR close SQL connection: ", exception);
+            Log.e(TAG_Database, "onDestroy: ERROR close SQL connection: ", exception);
             exception.printStackTrace();
         }
         super.onDestroy();

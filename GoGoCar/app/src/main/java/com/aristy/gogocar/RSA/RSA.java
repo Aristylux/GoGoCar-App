@@ -6,6 +6,8 @@ import java.util.Random;
 
 public class RSA {
 
+    private RSAKeys rsaKeys;
+
     // constructor
     public RSA() {
 
@@ -14,7 +16,7 @@ public class RSA {
     /**
      * Method to generate the RSA public and private keys
      */
-    public RSAKeys generateRSAKeys() {
+    public void generateRSAKeys() {
         // Generate two random prime numbers
         long p = generatePrime();
         long q = generatePrime();
@@ -35,7 +37,7 @@ public class RSA {
         // Calculate the modular inverse of e modulo φ(N), denoted as d, such that d * e
         // ≡ 1 (mod φ(N)).
         long d = modInverse(e, phi);
-        return new RSAKeys(N, e, d);
+        rsaKeys = new RSAKeys(N, e, d);
     }
 
     /**
@@ -106,15 +108,14 @@ public class RSA {
     }
 
     /**
-     * Convert a public key to an arry of bytes
-     * @param keys RSA keys (which contain a public key)
+     * Convert a public key to an array of bytes
      * @return array of bytes
      */
-    public byte[] publicKeyToBytes(RSAKeys keys){
+    public byte[] publicKeyToBytes(){
         byte[] byteArray = new byte[16]; // 2 uint64_t values = 16 bytes
         ByteBuffer buffer = ByteBuffer.wrap(byteArray);
-        buffer.putLong(keys.publicKey.N);
-        buffer.putLong(keys.publicKey.e);
+        buffer.putLong(rsaKeys.publicKey.N);
+        buffer.putLong(rsaKeys.publicKey.e);
         return byteArray;
     }
 
