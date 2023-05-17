@@ -1,14 +1,15 @@
 package com.aristy.gogocar.RSA;
 
+import androidx.annotation.NonNull;
+
 public class PrivateKey {
     public long N; // modulus
     public long d; // private exponent
 
     public PrivateKey() {}
 
-    public void print() {
-        System.out.println("Private key:");
-        System.out.printf("\tModulus  : %d\n", N);
-        System.out.printf("\tExponent : %d\n", d);
+    @NonNull
+    public String toString() {
+        return "Private key: Modulus: " + this.N + ", Exponent: " + this.d + ".";
     }
 }

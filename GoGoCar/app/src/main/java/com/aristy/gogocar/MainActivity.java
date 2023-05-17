@@ -4,6 +4,7 @@ import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_LEFT;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
+import static com.aristy.gogocar.CodesTAG.TAG_RSA;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.ConnectionHelper.connectionValid;
 import static com.aristy.gogocar.FragmentNav.ARG_FUNCTION_NAME;
@@ -59,6 +60,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+
+import com.aristy.gogocar.RSA.RSA;
+import com.aristy.gogocar.RSA.RSAKeys;
 
 import java.sql.Connection;
 import java.sql.SQLException;

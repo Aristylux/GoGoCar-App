@@ -1,5 +1,7 @@
 package com.aristy.gogocar.RSA;
 
+import androidx.annotation.NonNull;
+
 public class RSAKeys {
 
     public PublicKey publicKey;
@@ -19,8 +21,8 @@ public class RSAKeys {
         publicKey.e = e;
     }
 
-    public void print() {
-        publicKey.print();
-        privateKey.print();
+    @NonNull
+    public String toString() {
+        return "Keys: " + this.publicKey.toString() + " | " + this.privateKey.toString();
     }
 }

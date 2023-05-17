@@ -4,8 +4,6 @@ import static com.aristy.gogocar.CodesTAG.TAG_RSA;
 
 import android.util.Log;
 
-import java.util.Arrays;
-
 public class RSAHelper {
 
     public static byte[] publicKey8bytes(){

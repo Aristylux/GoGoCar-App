@@ -13,6 +13,10 @@ public class RSA {
 
     }
 
+    public RSAKeys getRsaKeys() {
+        return rsaKeys;
+    }
+
     /**
      * Method to generate the RSA public and private keys
      */
@@ -69,19 +73,6 @@ public class RSA {
         return plaintext.toString();
     }
 
-    /**
-     * Print the cipher text
-     * @param ciphertext array of long
-     */
-    public void printCipher(long[] ciphertext){
-        System.out.print("Ciphertext: '");
-        for (long l : ciphertext) {
-            System.out.printf("%d ", l);
-        }
-        System.out.print("'\n");
-    }
-
-
     // ---- ----
 
 
@@ -118,6 +109,8 @@ public class RSA {
         buffer.putLong(rsaKeys.publicKey.e);
         return byteArray;
     }
+
+    // ---- ----
 
     /**
      * Convert an array of bytes to string
@@ -189,7 +182,6 @@ public class RSA {
         int destPos = subArrayLength;
         for (int i = 0; i < numOfSubArrays; i++){
             byte[] values = Arrays.copyOfRange(array8Bytes, inPos, inPos + subArrayLength);
-            System.out.println(Arrays.toString(values));
             System.arraycopy(values, 0, modified, destPos, subArrayLength);
             inPos += subArrayLength;
             destPos += (subArrayLength*2);
