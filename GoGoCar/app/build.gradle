@@ -35,6 +35,10 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     //implementation files('libs/bcprov-jdk18on-172.jar')
     //implementation files('./libs/postgresql-42.5.1.jar')
+
+    // QR CODE
+    implementation 'com.google.android.gms:play-services-vision:20.1.3'
+
     implementation 'com.r0adkll:slidableactivity:2.1.0'
     implementation 'org.postgresql:postgresql:42.2.9'
     testImplementation 'junit:junit:4.13.2'
