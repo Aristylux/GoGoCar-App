@@ -14,7 +14,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.aristy.gogocar.RSA.PublicKey;
 import com.aristy.gogocar.RSA.RSA;
+import com.aristy.gogocar.RSA.RSAKeys;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -111,7 +113,7 @@ public class BluetoothConnection extends Thread {
         rsa = new RSA();
         rsa.generateRSAKeys();
 
-        byte[] publicKeyBytes = rsa.publicKeyToBytes();
+        byte[] publicKeyBytes = rsa.getBytePublicKey();
 
         Log.d(TAG_RSA, "publicKeyBytes: 16: " + RSA.printBytes(publicKeyBytes));
 

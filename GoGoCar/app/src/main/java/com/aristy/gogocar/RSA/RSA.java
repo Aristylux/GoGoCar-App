@@ -22,6 +22,10 @@ public class RSA {
         return rsaKeys;
     }
 
+    public byte [] getBytePublicKey(){
+        return rsaKeys.publicKey.bytePublicKey;
+    }
+
     public void setModulePublicKey(PublicKey modulePublicKey){
         this.modulePublicKey = modulePublicKey;
     }
@@ -50,7 +54,8 @@ public class RSA {
         // Calculate the modular inverse of e modulo φ(N), denoted as d, such that d * e
         // ≡ 1 (mod φ(N)).
         long d = modInverse(e, phi);
-        rsaKeys = new RSAKeys(N, e, d);
+
+        rsaKeys = new RSAKeys(N, e, d, publicKeyToBytes());
     }
 
     /**
@@ -109,7 +114,7 @@ public class RSA {
      * Convert a public key to an array of bytes
      * @return array of bytes
      */
-    public byte[] publicKeyToBytes(){
+    private byte[] publicKeyToBytes(){
         byte[] byteArray = new byte[16]; // 2 uint64_t values = 16 bytes
         ByteBuffer buffer = ByteBuffer.wrap(byteArray);
         buffer.putLong(rsaKeys.publicKey.N);

@@ -6,6 +6,8 @@ public class PublicKey {
     public long N; // modulus
     public long e; // public exponent
 
+    public byte [] bytePublicKey;
+
     public PublicKey() {}
 
     @NonNull

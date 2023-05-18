@@ -12,13 +12,14 @@ public class RSAKeys {
         privateKey = new PrivateKey();
     }
 
-    public RSAKeys(long N, long e, long d){
+    public RSAKeys(long N, long e, long d, byte [] bytePublicKey){
         privateKey = new PrivateKey();
         privateKey.N = N;
         privateKey.d = d;
         publicKey = new PublicKey();
         publicKey.N = N;
         publicKey.e = e;
+        publicKey.bytePublicKey = bytePublicKey;
     }
 
     @NonNull
