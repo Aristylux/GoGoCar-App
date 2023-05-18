@@ -61,7 +61,12 @@
                     <dd>
                         <div class="form-control-custom">
                             <input id="vehicle_module_code" class="form-control" type="text" name="" placeholder="#00-00-0000" maxlength="11">
-                            <input id="qr_code" class="button" type="button" value="Scan">
+                            <div id="qr_code" class="button" >
+                                <!--<input id="qr_code" class="button" type="button" value="Scan">-->
+                                <p>Scan</p>
+                                <i id="ico_return" class="fi fi-rr-barcode-read"></i>
+                            </div>
+
                         </div>
                         
                         <p id="err_mc" class="note error">This does not match a module code.</p>
