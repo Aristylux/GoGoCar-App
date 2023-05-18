@@ -1,10 +1,8 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_SLIDER;
-import static com.aristy.gogocar.CodesTAG.TAG_THREAD;
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
 import static com.aristy.gogocar.HandlerCodes.OPEN_QRCODE_ACTIVITY;
-import static com.aristy.gogocar.HandlerCodes.QUERY;
 import static com.aristy.gogocar.WindowHelper.setWindowVersion;
 
 import android.annotation.SuppressLint;
@@ -13,9 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -135,7 +131,7 @@ public class SliderActivity extends AppCompatActivity {
         if (message.what == CLOSE_SLIDER) {
             onBackPressed();
         } else if (message.what == OPEN_QRCODE_ACTIVITY){
-            Log.d("GoGoCar_Slider", "handler: open QRCODE Activity");
+            Log.d(TAG_SLIDER, "handler: open QRCODE Activity");
             Intent intent = new Intent(SliderActivity.this, ScanQRCodeActivity.class);
             SliderActivity.this.startActivity(intent);
         }

@@ -1,5 +1,7 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.CodesTAG.TAG_QRCODE;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -34,7 +36,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_qrcode);
 
-        Log.d("GoGoCar_QRCode", "onCreate: ");
+        Log.d(TAG_QRCODE, "onCreate: ");
 
         scanSurfaceView = findViewById(R.id.scan_surface_view);
 
@@ -63,14 +65,15 @@ public class ScanQRCodeActivity extends AppCompatActivity {
     }
 
     private void onQRCodeScanned(String qrCodeValue){
-        Log.d("GoGoCar_QRCode", "onQRCodeScanned: " + qrCodeValue);
+        Log.d(TAG_QRCODE, "onQRCodeScanned: " + qrCodeValue);
+        // Close & return the result
     }
 
     private void initBarcodeDetector(){
-        Log.d("GoGoCar_QRCode", "initBarcodeDetector:");
         barcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.QR_CODE)
                 .build();
+        Log.d(TAG_QRCODE, "initBarcodeDetector: OK");
     }
 
     private void initCameraSource(){
@@ -79,25 +82,26 @@ public class ScanQRCodeActivity extends AppCompatActivity {
 
         int screenWidth = displayMetrics.widthPixels;
         int screenHeight = displayMetrics.heightPixels;
-        Log.d("GoGoCar_QRCode", "initCameraSource: height=" + screenHeight + "px, width=" + screenWidth + "px");
+        Log.d(TAG_QRCODE, "initCameraSource: height=" + screenHeight + "px, width=" + screenWidth + "px");
 
         cameraSource = new CameraSource.Builder(this, barcodeDetector)
                 .setRequestedPreviewSize(screenHeight, screenWidth)
                 .setAutoFocusEnabled(true)
                 .build();
+        Log.d(TAG_QRCODE, "initCameraSource: OK");
     }
 
     private void initScanSurfaceView(){
-        Log.d("GoGoCar_QRCode", "initScanSurfaceView:");
+        Log.d(TAG_QRCODE, "initScanSurfaceView:");
         scanSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(@NonNull SurfaceHolder holder) {
                 if (ActivityCompat.checkSelfPermission(ScanQRCodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
                     try {
                         cameraSource.start(scanSurfaceView.getHolder());
-                        Log.d("GoGoCar_QRCode", "surfaceCreated:");
+                        Log.d(TAG_QRCODE, "surfaceCreated: OK");
                     } catch (IOException e) {
-                        Log.e("GoGoCar_QRCode", "surfaceCreated: ", e);
+                        Log.e(TAG_QRCODE, "surfaceCreated: ERROR", e);
                     }
                 } else {
                     ActivityCompat.requestPermissions(ScanQRCodeActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
@@ -122,7 +126,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (cameraPermissionGranted(requestCode, grantResults)){
-            Log.d("GoGoCar_QRCode", "onRequestPermissionsResult: granted");
+            Log.d(TAG_QRCODE, "onRequestPermissionsResult: granted");
             finish();
             overridePendingTransition(0, 0);
             // Start the Scan QRCODE Activity
@@ -130,7 +134,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
             //overridePendingTransition(0, 0);
         } else {
             // If user do not authorize
-            Log.d("GoGoCar_QRCode", "onRequestPermissionsResult: not granted");
+            Log.d(TAG_QRCODE, "onRequestPermissionsResult: not granted");
             // Use toast
         }
 
