@@ -3,6 +3,7 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_COM;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_CON;
+import static com.aristy.gogocar.CodesTAG.TAG_RSA;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
 
@@ -13,10 +14,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.aristy.gogocar.RSA.RSAHelper;
+import com.aristy.gogocar.RSA.RSA;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -30,6 +30,9 @@ public class BluetoothConnection extends Thread {
 
     private boolean isConnecting;
 
+    private RSA rsa;
+    private boolean waitForModulePublicKey;
+
     private String message;
     private String function;
 
@@ -39,6 +42,7 @@ public class BluetoothConnection extends Thread {
      */
     public BluetoothConnection (){
         this.isConnecting = false;
+        this.waitForModulePublicKey = false;
     }
 
     /**
@@ -104,9 +108,19 @@ public class BluetoothConnection extends Thread {
         BluetoothCommunication bluetoothCommunication = new BluetoothCommunication(BluetoothConnection.this, handler);
         bluetoothCommunication.start();
 
-        byte [] by = RSAHelper.publicKey8bytes();
+        rsa = new RSA();
+        rsa.generateRSAKeys();
+
+        byte[] publicKeyBytes = rsa.publicKeyToBytes();
+
+        Log.d(TAG_RSA, "publicKeyBytes: 16: " + RSA.printBytes(publicKeyBytes));
+
+        byte [] by = RSA.convertTo8ByteArray(publicKeyBytes);
+
         bluetoothCommunication.write(by);
         Log.d(TAG_BT, "connectionEstablished: " + Arrays.toString(by));
+
+        this.waitForModulePublicKey = true;
 
 
 
@@ -142,6 +156,14 @@ public class BluetoothConnection extends Thread {
     public void messageReceived(String message){
         Log.d(TAG_BT_COM, "run: " + Arrays.toString(message.getBytes(StandardCharsets.UTF_8)));
 
+        if (this.waitForModulePublicKey){
+            Log.d(TAG_BT_CON, "messageReceived: module public key: " + message);
+            // Set module public key
+            rsa.setModulePublicKey(rsa.parsePublicKey(message));
+        } else {
+            Log.d(TAG_BT_CON, "messageReceived: decrypt message: " + message);
+            // Decrypt the message
+        }
 
         // TODO
         // Message management

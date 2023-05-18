@@ -11,6 +11,7 @@ import java.util.Random;
 public class RSA {
 
     private RSAKeys rsaKeys;
+    private PublicKey modulePublicKey;
 
     // constructor
     public RSA() {
@@ -19,6 +20,10 @@ public class RSA {
 
     public RSAKeys getRsaKeys() {
         return rsaKeys;
+    }
+
+    public void setModulePublicKey(PublicKey modulePublicKey){
+        this.modulePublicKey = modulePublicKey;
     }
 
     /**
@@ -51,13 +56,12 @@ public class RSA {
     /**
      * Encrypt text (ciphertext = (plaintext ^ e) mod N)
      * @param plainText text
-     * @param publicKey public key
      * @return array of long
      */
-    public long[] encrypt(String plainText, PublicKey publicKey) {
+    public long[] encrypt(String plainText) {
         long[] ciphertext = new long[plainText.length()];
         for (int i = 0; i < plainText.length(); i++) {
-            ciphertext[i] = modExp((int) plainText.charAt(i), publicKey.e, publicKey.N);
+            ciphertext[i] = modExp((int) plainText.charAt(i), this.modulePublicKey.e, this.modulePublicKey.N);
         }
         return ciphertext;
     }
@@ -65,13 +69,12 @@ public class RSA {
     /**
      * Method to decrypt a message using RSA
      * @param ciphertext array of long
-     * @param private_key private key
      * @return text
      */
-    public String decrypt(long[] ciphertext, PrivateKey private_key) {
+    public String decrypt(long[] ciphertext) {
         StringBuilder plaintext = new StringBuilder();
-        for (int i = 0; i < ciphertext.length; i++) {
-            char ch = (char) modExp(ciphertext[i], private_key.d, private_key.N);
+        for (long l : ciphertext) {
+            char ch = (char) modExp(l, this.rsaKeys.privateKey.d, this.rsaKeys.privateKey.N);
             plaintext.append(ch);
         }
         return plaintext.toString();
