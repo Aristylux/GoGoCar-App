@@ -16,6 +16,10 @@ import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.r0adkll.slidr.Slidr;
@@ -127,13 +131,28 @@ public class SliderActivity extends AppCompatActivity {
         setWindowVersion(SliderActivity.this, getWindow());
     }
 
+    ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        Log.d(TAG_SLIDER, "onActivityResult:");
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Intent data = result.getData();
+            if (data != null) {
+                String resultValue = data.getStringExtra(ScanQRCodeActivity.QR_CODE_VALUE);
+                Log.d(TAG_SLIDER, "onActivityResult: " + resultValue);
+            } else {
+                Log.e(TAG_SLIDER, "onActivityResult: data null");
+            }
+        } else {
+            Log.e(TAG_SLIDER, "onActivityResult: " + result.getResultCode());
+        }
+    });
+
     Handler handler = new Handler(message -> {
         if (message.what == CLOSE_SLIDER) {
             onBackPressed();
         } else if (message.what == OPEN_QRCODE_ACTIVITY){
             Log.d(TAG_SLIDER, "handler: open QRCODE Activity");
             Intent intent = new Intent(SliderActivity.this, ScanQRCodeActivity.class);
-            SliderActivity.this.startActivity(intent);
+            resultLauncher.launch(intent);
         }
         return true;
     });
@@ -143,4 +162,6 @@ public class SliderActivity extends AppCompatActivity {
         super.onBackPressed();
         overridePendingTransition(R.anim.animate_slide_right_enter, R.anim.animate_slide_right_exit);
     }
+
+
 }

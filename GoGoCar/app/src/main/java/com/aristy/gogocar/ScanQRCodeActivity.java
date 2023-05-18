@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -24,6 +26,8 @@ import java.io.IOException;
 
 public class ScanQRCodeActivity extends AppCompatActivity {
 
+    public static final String QR_CODE_VALUE = "qr_code";
+
     private final int CAMERA_REQUEST_CODE = 2;
 
     private SurfaceView scanSurfaceView;
@@ -36,9 +40,19 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_qrcode);
 
-        Log.d(TAG_QRCODE, "onCreate: ");
-
         scanSurfaceView = findViewById(R.id.scan_surface_view);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        cameraSource.release();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG_QRCODE, "onResume: ");
 
         initBarcodeDetector();
         initCameraSource();
@@ -46,7 +60,9 @@ public class ScanQRCodeActivity extends AppCompatActivity {
 
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
-            public void release() {}
+            public void release() {
+                Log.d(TAG_QRCODE, "Camera has been released");
+            }
 
             @Override
             public void receiveDetections(@NonNull Detector.Detections<Barcode> detections) {
@@ -61,12 +77,19 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
+    /**
+     * Close & return the result
+     * @param qrCodeValue QR Code value
+     */
     private void onQRCodeScanned(String qrCodeValue){
         Log.d(TAG_QRCODE, "onQRCodeScanned: " + qrCodeValue);
-        // Close & return the result
+
+        Intent intent = new Intent();
+        intent.putExtra(QR_CODE_VALUE, qrCodeValue);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     private void initBarcodeDetector(){
@@ -109,9 +132,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-
-            }
+            public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {}
 
             // When the surface view is destroy
             @Override
@@ -127,15 +148,20 @@ public class ScanQRCodeActivity extends AppCompatActivity {
 
         if (cameraPermissionGranted(requestCode, grantResults)){
             Log.d(TAG_QRCODE, "onRequestPermissionsResult: granted");
+
+            Intent intent = new Intent(this, ScanQRCodeActivity.class);
+            setResult(Activity.RESULT_CANCELED, intent);
             finish();
             overridePendingTransition(0, 0);
             // Start the Scan QRCODE Activity
+            // Issue when restart: return last state of the activity (when ask permission)
             //startActivity(intent);
             //overridePendingTransition(0, 0);
         } else {
-            // If user do not authorize
+            // If user do not authorize, return to the last screen
             Log.d(TAG_QRCODE, "onRequestPermissionsResult: not granted");
-            // Use toast
+            finish();
+            overridePendingTransition(0, 0);
         }
 
     }
