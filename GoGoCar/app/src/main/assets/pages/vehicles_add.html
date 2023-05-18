@@ -107,8 +107,9 @@
 
             // [ANDROID CALLBACK]
             function setQRCode(qrCode){
-                const input_module_code = document.getElementById('vehicle_module_code');
-                input_module_code.value = qrCode;
+                if (qrCode !== "null"){
+                    document.getElementById('vehicle_module_code').value = qrCode;
+                }
             }
 
         </script>
