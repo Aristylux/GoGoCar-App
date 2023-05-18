@@ -62,7 +62,6 @@
                         <div class="form-control-custom">
                             <input id="vehicle_module_code" class="form-control" type="text" name="" placeholder="#00-00-0000" maxlength="11">
                             <div id="qr_code" class="button" >
-                                <!--<input id="qr_code" class="button" type="button" value="Scan">-->
                                 <p>Scan</p>
                                 <i id="ico_return" class="fi fi-rr-barcode-read"></i>
                             </div>
@@ -94,25 +93,7 @@
         <script src="../js/androidInterface.js"></script>
         <script src="../js/panels.js"></script>
         <script src="../js/vehicles_add.js"></script>
+        <script src="../js/vehicles_add_qrcode.js"></script>
         <script src="../js/formatter.js"></script>
-
-        <script>
-
-            const qrCode_button = document.getElementById('qr_code');
-            qrCode_button.addEventListener('click', (event) => {
-                if(androidConnected()) Android.openScanQRCode();
-                // TEST
-                else setQRCode("#00-00-0001");
-            });
-
-            // [ANDROID CALLBACK]
-            function setQRCode(qrCode){
-                if (qrCode !== "null"){
-                    document.getElementById('vehicle_module_code').value = qrCode;
-                }
-            }
-
-        </script>
-
     </body>
 </html>
