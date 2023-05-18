@@ -3,6 +3,7 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
+import static com.aristy.gogocar.HandlerCodes.OPEN_QRCODE_ACTIVITY;
 import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
 import static com.aristy.gogocar.WICommon.Pages.JS.SET_USER_INFO;
 import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.ADD_VEHICLE;
@@ -67,7 +68,11 @@ public class WIPanels extends WICommon {
     // ---- Add ----
     // Parent screen: vehicles.html
 
- 
+
+    @JavascriptInterface
+    public void openScanQRCode(){
+        handler.obtainMessage(OPEN_QRCODE_ACTIVITY).sendToTarget();
+    }
 
     /**
      * Send vehicle (in main) to the new fragment

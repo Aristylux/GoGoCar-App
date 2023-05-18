@@ -3,6 +3,7 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_SLIDER;
 import static com.aristy.gogocar.CodesTAG.TAG_THREAD;
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
+import static com.aristy.gogocar.HandlerCodes.OPEN_QRCODE_ACTIVITY;
 import static com.aristy.gogocar.HandlerCodes.QUERY;
 import static com.aristy.gogocar.WindowHelper.setWindowVersion;
 
@@ -133,6 +134,10 @@ public class SliderActivity extends AppCompatActivity {
     Handler handler = new Handler(message -> {
         if (message.what == CLOSE_SLIDER) {
             onBackPressed();
+        } else if (message.what == OPEN_QRCODE_ACTIVITY){
+            Log.d("GoGoCar_Slider", "handler: open QRCODE Activity");
+            Intent intent = new Intent(SliderActivity.this, ScanQRCodeActivity.class);
+            SliderActivity.this.startActivity(intent);
         }
         return true;
     });

@@ -1,3 +1,22 @@
+
+/* Form custom */
+
+.form-control-custom {
+    width: 440px;
+    max-width: 100%;
+    margin-right: 5px;
+
+    font-size: 14px;
+    line-height: 20px;
+    color: #242927;
+}
+
+.form-control-custom .form-control {
+    width: 330px;
+    max-width: 70%;
+}
+
+
 /* notes */
 
 .form-group .note {
