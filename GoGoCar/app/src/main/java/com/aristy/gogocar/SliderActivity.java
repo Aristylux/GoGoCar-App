@@ -16,8 +16,6 @@ import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +39,8 @@ public class SliderActivity extends AppCompatActivity {
     private String link;
     private boolean locked;
     private String data;
+
+    private WIPanels webInterfacePanel;
 
     /**
      * Use this factory method to create a new instance of
@@ -110,7 +110,8 @@ public class SliderActivity extends AppCompatActivity {
 
         // Result state page
         //web.setWebViewClient(new FragmentApp.Callback());
-        web.addJavascriptInterface(new WIPanels(web, userPreferences, handler, data), "Android");
+        webInterfacePanel = new WIPanels(web, userPreferences, handler, data);
+        web.addJavascriptInterface(webInterfacePanel, "Android");
 
         // Set slider
         SlidrConfig config = new SlidrConfig.Builder()
@@ -133,17 +134,17 @@ public class SliderActivity extends AppCompatActivity {
 
     ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         Log.d(TAG_SLIDER, "onActivityResult:");
+        String resultValue = null;
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent data = result.getData();
             if (data != null) {
-                String resultValue = data.getStringExtra(ScanQRCodeActivity.QR_CODE_VALUE);
+                resultValue = data.getStringExtra(ScanQRCodeActivity.QR_CODE_VALUE);
                 Log.d(TAG_SLIDER, "onActivityResult: " + resultValue);
-            } else {
-                Log.e(TAG_SLIDER, "onActivityResult: data null");
-            }
-        } else {
-            Log.e(TAG_SLIDER, "onActivityResult: " + result.getResultCode());
-        }
+            } else Log.e(TAG_SLIDER, "onActivityResult: data null");
+
+        } else Log.e(TAG_SLIDER, "onActivityResult: " + result.getResultCode());
+
+        webInterfacePanel.setResultQRCode(resultValue);
     });
 
     Handler handler = new Handler(message -> {
@@ -162,6 +163,5 @@ public class SliderActivity extends AppCompatActivity {
         super.onBackPressed();
         overridePendingTransition(R.anim.animate_slide_right_enter, R.anim.animate_slide_right_exit);
     }
-
 
 }

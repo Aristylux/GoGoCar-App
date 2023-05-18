@@ -7,6 +7,7 @@ import static com.aristy.gogocar.HandlerCodes.OPEN_QRCODE_ACTIVITY;
 import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
 import static com.aristy.gogocar.WICommon.Pages.JS.SET_USER_INFO;
 import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.ADD_VEHICLE;
+import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.SET_QRCODE_VALUE;
 import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.SET_VEHICLE;
 import static com.aristy.gogocar.WICommon.Pages.VehicleEdit.JS.EDIT_VEHICLE;
 
@@ -68,10 +69,21 @@ public class WIPanels extends WICommon {
     // ---- Add ----
     // Parent screen: vehicles.html
 
-
+    /**
+     * The user want to scan the QR code on the module,
+     * Open the new activity
+     */
     @JavascriptInterface
     public void openScanQRCode(){
         handler.obtainMessage(OPEN_QRCODE_ACTIVITY).sendToTarget();
+    }
+
+    /**
+     * Result of the function
+     * @param qrCodeValue qr code value or null (if error)
+     */
+    public void setResultQRCode(String qrCodeValue){
+        androidToWeb(SET_QRCODE_VALUE, qrCodeValue);
     }
 
     /**
