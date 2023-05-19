@@ -17,12 +17,24 @@ else {
     switchs.forEach(function (switch_input, index) {
         switch_input.addEventListener('change', (event) => {
             const box_nav = document.querySelectorAll(".box-nav");
+
+            const container = switch_input.parentElement.parentElement.parentElement.parentElement.parentElement;
+            const cancel_container = container.getElementsByClassName('off-road-container')[0];
+            const onroad_container = container.getElementsByClassName('on-road-container')[0];
+
             if (switch_input.checked) {
                 console.log("Checked");
+                // Disable box
                 box_nav.forEach((box) => {
                     console.log("log");
                     box.classList.add("disabled");
                 });
+
+                // Hide cancel journey container
+                switch_selected = switchs[index];
+                console.log(switch_selected);
+                
+                cancel_container.classList.add('hidden');
             } else {
                 console.log("Not checked");
                 // User finish to drive
@@ -30,6 +42,9 @@ else {
                     console.log("log");
                     box.classList.remove("disabled");
                 });
+
+                // Display cancel journey container
+                cancel_container.classList.remove('hidden');
             }
         });
     });
