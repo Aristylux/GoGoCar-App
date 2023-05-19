@@ -35,7 +35,10 @@ else {
                 console.log(switch_selected);
                 
                 cancel_container.classList.add('hidden');
+
                 onroad_container.classList.remove('hidden');
+                onroad_container.classList.add('display');
+                onroad_container.style.display = 'block';
             } else {
                 console.log("Not checked");
                 // User finish to drive
@@ -46,7 +49,14 @@ else {
 
                 // Display cancel journey container
                 cancel_container.classList.remove('hidden');
+
+                // Hide on road container
                 onroad_container.classList.add('hidden');
+                onroad_container.classList.remove('display');
+                
+                setTimeout(() => {
+                    onroad_container.style.display = 'none';
+                }, 490);
             }
         });
     });

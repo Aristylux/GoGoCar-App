@@ -72,14 +72,62 @@
                             </div>
                         </div>
                     </div>
-                    <div class="off-road-container hidden">
+                    <div class="off-road-container">
                         <div class="buttons">
                             <button class="bt_cancel border-button">Cancel</button>
                         </div>
                     </div>
 
-                    <div class="on-road-container ">
-                        <p>on road</p>
+                    <svg version="1.1">
+                        <defs>
+                            <linearGradient id="gradient1">
+                                <stop offset="0%" stop-color="#e91e63" />
+                                <stop offset="100%" stop-color="#673ab7" />
+                            </linearGradient>
+                        </defs>
+
+                        <defs>
+                            <linearGradient id="gradient2">
+                                <stop offset="0%" stop-color="#e9a41e" />
+                                <stop offset="100%" stop-color="#1e63e9" />
+                            </linearGradient>
+                        </defs>
+
+                        <defs>
+                            <linearGradient id="linear1">
+                                <stop offset="0%" stop-color="#1ee93e" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+
+                    <div class="on-road-container hidden">
+                        <div class="parameter">
+                            <div class="circular">
+                                <div class="outer">
+                                    <div class="inner">
+                                        <div class="text">56km/h</div>
+                                    </div>
+                                </div>
+                                <svg version="1.1">
+                                    <circle stroke-linecap="round" class="linear-one"/>
+                                </svg>
+                            </div>
+                            <span>Vehicle Speed</span>
+                        </div>
+
+                        <div class="parameter">
+                            <div class="circular">
+                                <div class="outer">
+                                    <div class="inner">
+                                        <div class="text">70%</div>
+                                    </div>
+                                </div>
+                                <svg version="1.1">
+                                    <circle stroke-linecap="round" class="grad-one"/>
+                                </svg>
+                            </div>
+                            <span>Fuel Level</span>
+                        </div>
                     </div>
                 </li>
 
