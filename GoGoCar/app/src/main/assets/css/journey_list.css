@@ -10,18 +10,41 @@ li {
 }
 
 .journey-container {
-    background: var(--background-color);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
     margin-bottom: 20px;
-    padding: 20px;
 
     display: grid;
     grid-template-rows: 1fr auto;
-    grid-gap: 10px;
 
     transition: 0.5s;
     opacity: 1;
+}
+
+.main-container {
+    background: var(--background-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.off-road-container {
+    background: var(--background-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+
+    border-radius: 0 0 10px 10px;
+    margin: 0 10px;
+
+    transition: 0.5s ease-in-out;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    z-index: 0;
+}
+
+.off-road-container.hidden {
+    margin-top: -85px;
+    margin-bottom: 5px;
 }
 
 @keyframes fadeInFromNone {

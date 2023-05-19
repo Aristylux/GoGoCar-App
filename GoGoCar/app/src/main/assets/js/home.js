@@ -9,7 +9,8 @@ else {
     vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
 
     vehicles.forEach((vehicle) => {
-        addElement(vehicle);
+        //addElement(vehicle);
+        createJourneyContainer(vehicle);
     });
 
     const switchs = document.querySelectorAll(".switch_input");
@@ -59,7 +60,7 @@ function setVehicleBooked(_table_vehicle){
     } else {
         // Add booked vehicles to the list
         vehicles.forEach((vehicle) => {
-            addElement(vehicle);
+            createJourneyContainer(vehicle);
         });
 
         // Add interruption switch
@@ -267,3 +268,92 @@ function addElement(vehicle){
     const ul = document.getElementById("journey_list");
     ul.appendChild(li);
 }
+
+function createJourneyContainer(vehicle) {
+    let journeyContainer = document.createElement('li');
+    journeyContainer.className = 'journey-container';
+  
+    let mainContainer = document.createElement('div');
+    mainContainer.className = 'main-container';
+  
+    let ul_infos = document.createElement('ul');
+  
+    let li1 = document.createElement('li');
+    let h2 = document.createElement('h2');
+    h2.textContent = "Your trip with " + vehicle.name + "'s car";
+    li1.appendChild(h2);
+    ul_infos.appendChild(li1);
+  
+    let li2 = document.createElement('li');
+    li2.className = 'info';
+    let icon1 = document.createElement('i');
+    icon1.className = 'fi fi-rr-map-marker';
+    let span1 = document.createElement('span');
+    span1.textContent = vehicle.address;
+    li2.appendChild(icon1);
+    li2.appendChild(span1);
+    ul_infos.appendChild(li2);
+  
+    let li3 = document.createElement('li');
+    li3.className = 'info';
+    let icon2 = document.createElement('i');
+    icon2.className = 'fi fi-rr-rectangle-barcode';
+    let span2 = document.createElement('span');
+    span2.textContent = 'Licence plate:';
+    let span3 = document.createElement('span');
+    span3.className = 'lp';
+    span3.textContent = vehicle.licencePlate;
+    li3.appendChild(icon2);
+    li3.appendChild(span2);
+    li3.appendChild(span3);
+    ul_infos.appendChild(li3);
+  
+    mainContainer.appendChild(ul_infos);
+  
+    let driveVehicle = document.createElement('div');
+    driveVehicle.className = 'drive_vehicle';
+  
+    let h3 = document.createElement('h3');
+    h3.textContent = 'Ready to drive?';
+    driveVehicle.appendChild(h3);
+  
+    let switchContainer = document.createElement('div');
+    switchContainer.className = 'switch_container';
+  
+    let label = document.createElement('label');
+    label.className = 'switch';
+  
+    let input = document.createElement('input');
+    input.type = 'checkbox';
+    input.className = 'switch_input';
+  
+    let span4 = document.createElement('span');
+    span4.className = 'slider';
+  
+    label.appendChild(input);
+    label.appendChild(span4);
+    switchContainer.appendChild(label);
+    driveVehicle.appendChild(switchContainer);
+  
+    mainContainer.appendChild(driveVehicle);
+  
+    journeyContainer.appendChild(mainContainer);
+  
+    let offRoadContainer = document.createElement('div');
+    offRoadContainer.className = 'off-road-container';
+  
+    let buttons = document.createElement('div');
+    buttons.className = 'buttons';
+  
+    let cancelButton = document.createElement('button');
+    cancelButton.className = 'bt_cancel border-button';
+    cancelButton.textContent = 'Cancel';
+  
+    buttons.appendChild(cancelButton);
+    offRoadContainer.appendChild(buttons);
+  
+    journeyContainer.appendChild(offRoadContainer);
+  
+    const ul = document.getElementById("journey_list");
+    ul.appendChild(journeyContainer);
+  }
