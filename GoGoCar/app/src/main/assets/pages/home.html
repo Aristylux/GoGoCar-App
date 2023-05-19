@@ -43,11 +43,33 @@
                 </div>
                 <i class="fi fi-rr-angle-small-right box-ico go"></i>
             </div>
+
+            <svg version="1.1">
+                <defs>
+                    <linearGradient id="gradient1">
+                        <stop offset="0%" stop-color="#e91e63" />
+                        <stop offset="100%" stop-color="#673ab7" />
+                    </linearGradient>
+                </defs>
+
+                <defs>
+                    <linearGradient id="gradient2">
+                        <stop offset="0%" stop-color="#e9a41e" />
+                        <stop offset="100%" stop-color="#1e63e9" />
+                    </linearGradient>
+                </defs>
+
+                <defs>
+                    <linearGradient id="linear1">
+                        <stop offset="0%" stop-color="#1ee93e" />
+                    </linearGradient>
+                </defs>
+            </svg>
             
             <ul id="journey_list">
 
                 <li class="journey-container">
-                    <div class="main-container">
+                    <div class="main container">
                         <ul>
                             <li>
                                 <h2>Your trip with Renault Clio's car</h2>
@@ -72,61 +94,99 @@
                             </div>
                         </div>
                     </div>
-                    <div class="off-road-container">
+                    <div class="off-road container">
                         <div class="buttons">
                             <button class="bt_cancel border-button">Cancel</button>
                         </div>
                     </div>
 
-                    <svg version="1.1">
-                        <defs>
-                            <linearGradient id="gradient1">
-                                <stop offset="0%" stop-color="#e91e63" />
-                                <stop offset="100%" stop-color="#673ab7" />
-                            </linearGradient>
-                        </defs>
-
-                        <defs>
-                            <linearGradient id="gradient2">
-                                <stop offset="0%" stop-color="#e9a41e" />
-                                <stop offset="100%" stop-color="#1e63e9" />
-                            </linearGradient>
-                        </defs>
-
-                        <defs>
-                            <linearGradient id="linear1">
-                                <stop offset="0%" stop-color="#1ee93e" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
-
-                    <div class="on-road-container hidden">
-                        <div class="parameter">
-                            <div class="circular">
-                                <div class="outer">
-                                    <div class="inner">
-                                        <div class="text">56km/h</div>
+                    <div class="on-road container hidden">
+                        <div class="row">
+                            <div class="parameter">
+                                <div class="circular">
+                                    <div class="outer">
+                                        <div class="inner">
+                                            <div class="text">56km/h</div>
+                                        </div>
                                     </div>
+                                    <svg version="1.1">
+                                        <circle stroke-linecap="round" class="grad-one"/>
+                                    </svg>
                                 </div>
-                                <svg version="1.1">
-                                    <circle stroke-linecap="round" class="linear-one"/>
-                                </svg>
+                                <span>Vehicle Speed</span>
                             </div>
-                            <span>Vehicle Speed</span>
+
+                            <div class="parameter">
+                                <div class="circular">
+                                    <div class="outer">
+                                        <div class="inner">
+                                            <div class="text">70%</div>
+                                        </div>
+                                    </div>
+                                    <svg version="1.1">
+                                        <circle stroke-linecap="round" class="grad-one"/>
+                                    </svg>
+                                </div>
+                                <span>Fuel Level</span>
+                            </div>
+
+                            <div class="parameter">
+                                <div class="circular">
+                                    <div class="outer">
+                                        <div class="inner">
+                                            <div class="text">3L/h</div>
+                                        </div>
+                                    </div>
+                                    <svg version="1.1">
+                                        <circle stroke-linecap="round" class="grad-one"/>
+                                    </svg>
+                                </div>
+                                <span>Fuel consumtion</span>
+                            </div>
                         </div>
 
-                        <div class="parameter">
-                            <div class="circular">
-                                <div class="outer">
-                                    <div class="inner">
-                                        <div class="text">70%</div>
+                        <div class="row">
+                            <div class="parameter">
+                                <div class="circular">
+                                    <div class="outer">
+                                        <div class="inner">
+                                            <div class="text">90°C</div>
+                                        </div>
                                     </div>
+                                    <svg version="1.1">
+                                        <circle stroke-linecap="round" class="grad-one"/>
+                                    </svg>
                                 </div>
-                                <svg version="1.1">
-                                    <circle stroke-linecap="round" class="grad-one"/>
-                                </svg>
+                                <span>Engine coolant</span>
                             </div>
-                            <span>Fuel Level</span>
+
+                            <div class="parameter">
+                                <div class="circular">
+                                    <div class="outer">
+                                        <div class="inner">
+                                            <div class="text">90°C</div>
+                                        </div>
+                                    </div>
+                                    <svg version="1.1">
+                                        <circle stroke-linecap="round" class="grad-one"/>
+                                    </svg>
+                                </div>
+                                <span>Engine water</span>
+                            </div>
+
+                            <div class="parameter">
+                                <div class="circular">
+                                    <div class="outer">
+                                        <div class="inner">
+                                            <div class="text">90°C</div>
+                                        </div>
+                                    </div>
+                                    <svg version="1.1">
+                                        <circle stroke-linecap="round" class="grad-one"/>
+                                    </svg>
+                                </div>
+                                <span>Engine oil</span>
+                            </div>
                         </div>
                     </div>
                 </li>

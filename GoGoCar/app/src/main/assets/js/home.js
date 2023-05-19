@@ -19,8 +19,8 @@ else {
             const box_nav = document.querySelectorAll(".box-nav");
 
             const container = switch_input.parentElement.parentElement.parentElement.parentElement.parentElement;
-            const cancel_container = container.getElementsByClassName('off-road-container')[0];
-            const onroad_container = container.getElementsByClassName('on-road-container')[0];
+            const cancel_container = container.getElementsByClassName('off-road')[0];
+            const onroad_container = container.getElementsByClassName('on-road')[0];
 
             if (switch_input.checked) {
                 console.log("Checked");
@@ -38,7 +38,7 @@ else {
 
                 onroad_container.classList.remove('hidden');
                 onroad_container.classList.add('display');
-                onroad_container.style.display = 'block';
+                onroad_container.style.display = 'grid';
             } else {
                 console.log("Not checked");
                 // User finish to drive
