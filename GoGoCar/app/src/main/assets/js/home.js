@@ -203,159 +203,156 @@ box_nav.forEach((box) => {
     })
 });
 
-// Add element dynamically
-function addElement(vehicle){
-    // Create Container
-    let li = document.createElement("li");
-    li.classList.add("journey-container");
 
-    // Infos
-    let ul_infos = document.createElement("ul");
-    li.appendChild(ul_infos);
-
-    // Title
-    let h2 = document.createElement("h2");
-    h2.textContent = "Your trip with " + vehicle.name + "'s car";
-
-    let li1 = document.createElement("li");
-    li1.appendChild(h2);
-
-    ul_infos.appendChild(li1);
-
-    // Address
-    let info1 = document.createElement("li");
-    info1.setAttribute("class", "info");
-
-    let i1 = document.createElement("i");
-    i1.setAttribute("class", "fi fi-rr-map-marker");
-    info1.appendChild(i1);
-
-    let span1 = document.createElement("span");
-    span1.textContent = vehicle.address;
-    info1.appendChild(span1);
-
-    ul_infos.appendChild(info1);
-
-    // Id
-    let info2 = document.createElement("li");
-    info2.setAttribute("class", "info");
-
-    let i2 = document.createElement("i");
-    i2.setAttribute("class", "fi fi-rr-rectangle-barcode");
-    info2.appendChild(i2);
-
-    let span2 = document.createElement("span");
-    span2.textContent = "Licence plate:"
-    info2.appendChild(span2);
-
-    let span3 = document.createElement("span");
-    span3.setAttribute("class", "lp");
-    span3.textContent = vehicle.licencePlate;
-    info2.appendChild(span3);
-
-    ul_infos.appendChild(info2);
-
-    // Switch
-    let div1 = document.createElement("div");
-    div1.setAttribute("class", "drive_vehicle");
-    li.appendChild(div1);
-
-    let h3 = document.createElement("h3");
-    h3.textContent = "Ready to drive?";
-    div1.appendChild(h3);
-
-    let div2 = document.createElement("div");
-    div2.setAttribute("class", "switch_container");
-    div1.appendChild(div2);
-
-    let label = document.createElement("label");
-    label.setAttribute("class", "switch");
-    div2.appendChild(label);
-
-    let input = document.createElement("input");
-    input.setAttribute("type", "checkbox");
-    input.setAttribute("class", "switch_input");
-    label.appendChild(input);
-
-    let span = document.createElement("span");
-    span.setAttribute("class", "slider");
-    label.appendChild(span);
-
-    // Button
-    let divBut = document.createElement("div");
-    divBut.setAttribute("class", "buttons");
-    li.appendChild(divBut);
-
-    let but = document.createElement("button");
-    but.setAttribute("class", "bt_cancel border-button");
-    but.textContent = "Cancel";
-    divBut.appendChild(but);
-
-    //document.body.appendChild(li);
-    const ul = document.getElementById("journey_list");
-    ul.appendChild(li);
+// Example usage:
+//let fuelParameter = createParameterElement('Fuel Level', '70%', 'grad-one');
+//document.body.appendChild(fuelParameter);
+function createParameterElement(parameterName, parameerValue, colorCircle) {
+    let parameter = document.createElement('div');
+    parameter.setAttribute("class", 'parameter');
+  
+    let circular = document.createElement('div');
+    circular.setAttribute("class", 'circular');
+  
+    let outer = document.createElement('div');
+    outer.setAttribute("class", 'outer');
+  
+    let inner = document.createElement('div');
+    inner.setAttribute("class", 'inner');
+  
+    let text = document.createElement('div');
+    text.setAttribute("class", 'text');
+    text.textContent = parameerValue;
+  
+    inner.appendChild(text);
+    outer.appendChild(inner);
+    circular.appendChild(outer);
+  
+    let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('version', '1.1');
+  
+    let circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('stroke-linecap', 'round');
+    circle.setAttribute("class", colorCircle);
+  
+    svg.appendChild(circle);
+    circular.appendChild(svg);
+  
+    let span = document.createElement('span');
+    span.textContent = parameterName;
+  
+    parameter.appendChild(circular);
+    parameter.appendChild(span);
+  
+    return parameter;
 }
 
-function createJourneyContainer(vehicle) {
-    let journeyContainer = document.createElement('li');
-    journeyContainer.className = 'journey-container';
+// Example usage:
+//let onRoadContainer = createOnRoadContainer();
+//document.body.appendChild(onRoadContainer);
+function createOnRoadContainer() {
+    let onRoadContainer = document.createElement('div');
+    onRoadContainer.setAttribute("class", 'on-road container hidden');
   
+    let row1 = document.createElement('div');
+    row1.setAttribute("class", 'row');
+  
+    row1.appendChild(createParameterElement('Vehicle Speed', '56km/h', 'grad-one'));
+    row1.appendChild(createParameterElement('Fuel Level', '70%', 'grad-one'));
+    row1.appendChild(createParameterElement('Fuel Consumption', '3L/h', 'grad-one'));
+    onRoadContainer.appendChild(row1);
+  
+    let row2 = document.createElement('div');
+    row2.setAttribute("class", 'row');
+  
+    row2.appendChild(createParameterElement('Engine Coolant', '90°C', 'grad-one'));
+    row2.appendChild(createParameterElement('Engine Water', '90°C', 'grad-one'));
+    row2.appendChild(createParameterElement('Engine Oil', '90°C', 'grad-one'));
+    onRoadContainer.appendChild(row2);
+  
+    return onRoadContainer;
+}
+  
+// Example usage:
+//var offRoadContainer = createOffRoadContainer();
+//document.body.appendChild(offRoadContainer);
+function createOffRoadContainer() {
+    let offRoadContainer = document.createElement('div');
+    offRoadContainer.setAttribute("class",'off-road container');
+  
+    let buttons = document.createElement('div');
+    buttons.setAttribute("class", 'buttons');
+  
+    let cancelButton = document.createElement('button');
+    cancelButton.setAttribute("class", 'bt_cancel border-button');
+    cancelButton.textContent = 'Cancel';
+  
+    buttons.appendChild(cancelButton);
+    offRoadContainer.appendChild(buttons);
+  
+    return offRoadContainer;
+}
+
+// Example usage:
+//let mainContainer = createMainContainer();
+//document.body.appendChild(mainContainer);
+function createMainContainer(vehicle) {
     let mainContainer = document.createElement('div');
-    mainContainer.className = 'main-container';
+    mainContainer.setAttribute("class", 'main container');
   
-    let ul_infos = document.createElement('ul');
+    let ul = document.createElement('ul');
   
     let li1 = document.createElement('li');
     let h2 = document.createElement('h2');
     h2.textContent = "Your trip with " + vehicle.name + "'s car";
     li1.appendChild(h2);
-    ul_infos.appendChild(li1);
+    ul.appendChild(li1);
   
     let li2 = document.createElement('li');
-    li2.className = 'info';
+    li2.setAttribute("class", 'info');
     let icon1 = document.createElement('i');
-    icon1.className = 'fi fi-rr-map-marker';
+    icon1.setAttribute("class", 'fi fi-rr-map-marker');
     let span1 = document.createElement('span');
     span1.textContent = vehicle.address;
     li2.appendChild(icon1);
     li2.appendChild(span1);
-    ul_infos.appendChild(li2);
+    ul.appendChild(li2);
   
     let li3 = document.createElement('li');
-    li3.className = 'info';
+    li3.setAttribute("class", 'info');
     let icon2 = document.createElement('i');
-    icon2.className = 'fi fi-rr-rectangle-barcode';
+    icon2.setAttribute("class", 'fi fi-rr-rectangle-barcode');
     let span2 = document.createElement('span');
     span2.textContent = 'Licence plate:';
     let span3 = document.createElement('span');
-    span3.className = 'lp';
+    span3.setAttribute("class", 'lp');
     span3.textContent = vehicle.licencePlate;
     li3.appendChild(icon2);
     li3.appendChild(span2);
     li3.appendChild(span3);
-    ul_infos.appendChild(li3);
+    ul.appendChild(li3);
   
-    mainContainer.appendChild(ul_infos);
+    mainContainer.appendChild(ul);
   
     let driveVehicle = document.createElement('div');
-    driveVehicle.className = 'drive_vehicle';
+    driveVehicle.setAttribute("class", 'drive_vehicle');
   
     let h3 = document.createElement('h3');
     h3.textContent = 'Ready to drive?';
     driveVehicle.appendChild(h3);
   
     let switchContainer = document.createElement('div');
-    switchContainer.className = 'switch_container';
+    switchContainer.setAttribute("class", 'switch_container');
   
     let label = document.createElement('label');
-    label.className = 'switch';
+    label.setAttribute("class", 'switch');
   
     let input = document.createElement('input');
     input.type = 'checkbox';
-    input.className = 'switch_input';
+    input.setAttribute("class", 'switch_input');
   
     let span4 = document.createElement('span');
-    span4.className = 'slider';
+    span4.setAttribute("class", 'slider');
   
     label.appendChild(input);
     label.appendChild(span4);
@@ -364,23 +361,18 @@ function createJourneyContainer(vehicle) {
   
     mainContainer.appendChild(driveVehicle);
   
-    journeyContainer.appendChild(mainContainer);
+    return mainContainer;
+}
   
-    let offRoadContainer = document.createElement('div');
-    offRoadContainer.className = 'off-road-container';
-  
-    let buttons = document.createElement('div');
-    buttons.className = 'buttons';
-  
-    let cancelButton = document.createElement('button');
-    cancelButton.className = 'bt_cancel border-button';
-    cancelButton.textContent = 'Cancel';
-  
-    buttons.appendChild(cancelButton);
-    offRoadContainer.appendChild(buttons);
-  
-    journeyContainer.appendChild(offRoadContainer);
+ 
+function createJourneyContainer(vehicle) {
+    let journeyContainer = document.createElement('li');
+    journeyContainer.className = 'journey-container';
+
+    journeyContainer.appendChild(createMainContainer(vehicle));
+    journeyContainer.appendChild(createOffRoadContainer());
+    journeyContainer.appendChild(createOnRoadContainer());
   
     const ul = document.getElementById("journey_list");
     ul.appendChild(journeyContainer);
-  }
+}
