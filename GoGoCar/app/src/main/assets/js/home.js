@@ -22,6 +22,10 @@ else {
             const cancel_container = container.getElementsByClassName('off-road')[0];
             const onroad_container = container.getElementsByClassName('on-road')[0];
 
+            updateSpeedValue('78km/h', onroad_container);
+            updateFuelLevel('65%', onroad_container);
+            updateFuelConsumption('47%', onroad_container);
+
             if (switch_input.checked) {
                 console.log("Checked");
                 // Disable box
@@ -98,6 +102,10 @@ function setVehicleBooked(_table_vehicle){
                 const container = switch_input.parentElement.parentElement.parentElement.parentElement.parentElement;
                 const cancel_container = container.getElementsByClassName('off-road')[0];
                 const onroad_container = container.getElementsByClassName('on-road')[0];
+
+                updateSpeedValue('78km/h', onroad_container);
+                updateFuelLevel('65%', onroad_container);
+                updateFuelConsumption('47%', onroad_container);
 
                 if (switch_input.checked) {
                     console.log("Checked");
@@ -241,6 +249,59 @@ box_nav.forEach((box) => {
 });
 
 
+function updateSpeedValue(speedValue, container) {
+    console.log("update: " + speedValue);
+
+    console.log(container)
+
+    // Get the speed element by its parameter name
+    let speedElement = container.querySelector('.inner .text');
+  
+    // Update the speed value
+    speedElement.textContent = speedValue;
+  
+    // Update the stroke-dashoffset property
+    let circleElement = container.querySelector('circle');
+    /*
+    console.log(circleElement)
+    console.log(circleElement.style.strokeDashoffset)
+    let circumference = circleElement.getTotalLength(); // Get the circumference of the circle
+    console.log(circumference);
+    let dashoffset = circumference - ((speedValue / 100) * circumference);
+    console.log(dashoffset);
+    */
+    circleElement.style.strokeDashoffset = /*dashoffset*/ '200px';
+}
+  
+function updateFuelLevel(fuelValue, container) {
+    console.log("update: " + fuelValue);
+
+    // Get the speed element by its parameter name
+    let fuelElement = container.querySelectorAll('.inner .text')[1];
+  
+    // Update the speed value
+    fuelElement.textContent = fuelValue;
+  
+    // Update the stroke-dashoffset property
+    let circleElement = container.querySelectorAll('circle')[1];    
+    circleElement.style.strokeDashoffset = /*dashoffset*/ '160px';
+}
+
+function updateFuelConsumption(fuelValue, container) {
+    console.log("update: " + fuelValue);
+
+    // Get the speed element by its parameter name
+    let fuelElement = container.querySelectorAll('.inner .text')[2];
+  
+    // Update the speed value
+    fuelElement.textContent = fuelValue;
+  
+    // Update the stroke-dashoffset property
+    let circleElement = container.querySelectorAll('circle')[2];    
+    circleElement.style.strokeDashoffset = /*dashoffset*/ '190px';
+}
+
+
 // Example usage:
 //let fuelParameter = createParameterElement('Fuel Level', '70%', 'grad-one');
 //document.body.appendChild(fuelParameter);
@@ -350,7 +411,8 @@ function createMainContainer(vehicle) {
     let li1 = document.createElement('li');
     let h2 = document.createElement('h2');
     // Vehicle owner
-    h2.textContent = "Your trip with " + vehicle.ownerName + "'s car";
+    vehicle.ownerName = "Axel M"
+    h2.textContent = "Your trip with " + vehicle.ownerName.split(' ')[0] + "'s car";
     li1.appendChild(h2);
     ul.appendChild(li1);
 
