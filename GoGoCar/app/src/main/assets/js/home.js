@@ -304,10 +304,23 @@ function createMainContainer(vehicle) {
   
     let li1 = document.createElement('li');
     let h2 = document.createElement('h2');
-    h2.textContent = "Your trip with " + vehicle.name + "'s car";
+    // Vehicle owner
+    h2.textContent = "Your trip with " + vehicle.owner + "'s car";
     li1.appendChild(h2);
     ul.appendChild(li1);
-  
+
+    // Vehicle name
+    let li_vn = document.createElement('li');
+    li_vn.setAttribute("class", 'info');
+    let icon_vn = document.createElement('i');
+    icon_vn.setAttribute("class", 'fi fi-rr-car-side');
+    let vehicle_n = document.createElement('span');
+    vehicle_n.textContent = vehicle.name;
+    li_vn.appendChild(icon_vn);
+    li_vn.appendChild(vehicle_n);
+    ul.appendChild(li_vn);
+
+    // Vehicle position
     let li2 = document.createElement('li');
     li2.setAttribute("class", 'info');
     let icon1 = document.createElement('i');
@@ -318,6 +331,7 @@ function createMainContainer(vehicle) {
     li2.appendChild(span1);
     ul.appendChild(li2);
   
+    // Vehicle licence plate
     let li3 = document.createElement('li');
     li3.setAttribute("class", 'info');
     let icon2 = document.createElement('i');

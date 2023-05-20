@@ -34,6 +34,9 @@ line-height: 1;
         .fi-rr-car:before {
     content: "\f1ef";
     }
+        .fi-rr-car-side:before {
+    content: "\f1ec";
+    }
         .fi-rr-check:before {
     content: "\f211";
     }
@@ -69,6 +72,9 @@ line-height: 1;
     }
         .fi-rr-phone-call:before {
     content: "\f410";
+    }
+        .fi-rr-rectangle-barcode:before {
+    content: "\f447";
     }
         .fi-rr-search:before {
     content: "\f47e";
