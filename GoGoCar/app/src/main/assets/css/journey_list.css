@@ -1,9 +1,9 @@
 :root {
-    --witdh-param: 90px;
+    --witdh-param: 50px;
     --heigth-param: var(--witdh-param);
-    --line: 20px;
+    --line: 10px;
 
-    --height-on-road-container: 320px;
+    --height-on-road-container: 250px;
 }
 
 ul {
@@ -127,12 +127,34 @@ li {
 /* ----- */
 
 .parameter {
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+    gap: 10px;
+}
+
+.figure {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 10px;
 }
+
+.parameter-name {
+    text-align: center;
+    font-size: 0.8em;
+
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+/*
+.parameter span {
+    text-align: center;
+    font-size: 0.8em;
+}
+*/
 
 .circular {
     position: relative;
@@ -165,7 +187,7 @@ li {
 }
 
 .text {
-    font-size: 1em;
+    font-size: 0.8em;
     font-weight: 600;
     color: #555;
 }

@@ -358,6 +358,56 @@ public class DatabaseHelper {
         return returnList;
     }
 
+    public List<DBModelVehicle> getVehiclesJoinOwner(int IDUser) {
+
+        String query = "SELECT " + TABLE_VEHICLE + ".*, " + TABLE_USER + "." + COLUMN_USER_NAME + " FROM " + TABLE_VEHICLE +
+                " JOIN " + TABLE_USER + " ON " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_OWNER + " = " + TABLE_USER + "." + COLUMN_USER_ID +
+                " WHERE " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_USER_BOOK + " = " + IDUser ;
+
+        Log.d(TAG_Database, "getVehiclesJoinOwner: query: " + query);
+
+        List<DBModelVehicle> returnList = new ArrayList<>();
+
+        if (isConnectionError("getVehiclesJoin")) return returnList;
+
+        // Get data from database
+        try {
+            // Execute query
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            // For each row returned
+            while (rs.next()) {
+                // Get values
+                int vehicle_id = rs.getInt(1);
+                String model = rs.getString(2);
+                String licencePlate = rs.getString(3);
+                String address = rs.getString(4);
+                int idOwner = rs.getInt(5);
+                boolean isAvailable = rs.getBoolean(6);
+                boolean isBooked = rs.getBoolean(7);
+                int idUser = rs.getInt(8);
+                int idModule = rs.getInt(9);
+                String ownerName = rs.getString(10);
+
+                // Create object and add it to the list
+                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser, idModule);
+                vehicle.setOwnerName(ownerName);
+                Log.d(TAG_Database, "getVehiclesJoin: " + vehicle);
+                returnList.add(vehicle);
+            }
+
+            // Close both cursor and the database
+            rs.close();
+            st.close();
+        } catch (Exception exception) {
+            Log.e(TAG_Database, "getVehiclesJoin: ", exception);
+            exception.printStackTrace();
+        }
+
+        return returnList;
+    }
+
     /*  ---------------------------------- *
      *  --            MODULES           -- *
      *  ---------------------------------- */
@@ -533,6 +583,7 @@ class DBModelVehicle {
     private int idUser;
     private int idModule;
 
+    private String ownerName;
     private String codeModule;
 
     // Constructor
@@ -566,6 +617,7 @@ class DBModelVehicle {
             map.put("isBooked", isBooked);
             map.put("idUser", idUser);
             map.put("idModule", idModule);
+            map.put("ownerName", ownerName);
             map.put("codeModule", codeModule);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -646,6 +698,14 @@ class DBModelVehicle {
 
     public void setIdModule(int idModule) {
         this.idModule = idModule;
+    }
+
+    public String getOwnerName() {
+        return  ownerName;
+    }
+
+    public void setOwnerName(String ownerName){
+        this.ownerName = ownerName;
     }
 
     public String getCodeModule() {

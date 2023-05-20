@@ -361,7 +361,8 @@ public class ThreadManager {
         if (checkStateError("getVehiclesBooked", userID)) return;
         thread = new Thread(() -> {
             Log.d(TAG_THREAD, "run: getVehiclesBooked");
-            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userID);
+            //List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userID);
+            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesJoinOwner(userID);
             callback.onResultVehicles(vehicles);
         });
         thread.start();

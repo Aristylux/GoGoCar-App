@@ -94,15 +94,52 @@ function setVehicleBooked(_table_vehicle){
         const switchs = document.querySelectorAll(".switch_input");
         switchs.forEach(function (switch_input, index) {
             switch_input.addEventListener('change', () => {
+
+                const container = switch_input.parentElement.parentElement.parentElement.parentElement.parentElement;
+                const cancel_container = container.getElementsByClassName('off-road')[0];
+                const onroad_container = container.getElementsByClassName('on-road')[0];
+
                 if (switch_input.checked) {
                     console.log("Checked");
                     switch_selected = switchs[index];
                     // Verify if user can drive car
-                    if(androidConnected()) Android.requestDrive(index);
+                    //if(androidConnected()) Android.requestDrive(index);
+
+                    box_nav.forEach((box) => {
+                        console.log("log");
+                        box.classList.add("disabled");
+                    });
+    
+                    // Hide cancel journey container
+                    switch_selected = switchs[index];
+                    console.log(switch_selected);
+                    
+                    cancel_container.classList.add('hidden');
+    
+                    onroad_container.classList.remove('hidden');
+                    onroad_container.classList.add('display');
+                    onroad_container.style.display = 'grid';
+
                 } else {
                     console.log("Not checked");
                     // User finish to drive
-                    if(androidConnected()) Android.requestStopDrive();
+                    //if(androidConnected()) Android.requestStopDrive();
+
+                    box_nav.forEach((box) => {
+                        console.log("log");
+                        box.classList.remove("disabled");
+                    });
+    
+                    // Display cancel journey container
+                    cancel_container.classList.remove('hidden');
+    
+                    // Hide on road container
+                    onroad_container.classList.add('hidden');
+                    onroad_container.classList.remove('display');
+                    
+                    setTimeout(() => {
+                        onroad_container.style.display = 'none';
+                    }, 490);
                 }
             });
         });
@@ -210,6 +247,9 @@ box_nav.forEach((box) => {
 function createParameterElement(parameterName, parameerValue, colorCircle) {
     let parameter = document.createElement('div');
     parameter.setAttribute("class", 'parameter');
+
+    let figure = document.createElement('div');
+    figure.setAttribute("class", 'figure');
   
     let circular = document.createElement('div');
     circular.setAttribute("class", 'circular');
@@ -227,6 +267,7 @@ function createParameterElement(parameterName, parameerValue, colorCircle) {
     inner.appendChild(text);
     outer.appendChild(inner);
     circular.appendChild(outer);
+    figure.appendChild(circular);
   
     let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('version', '1.1');
@@ -238,11 +279,15 @@ function createParameterElement(parameterName, parameerValue, colorCircle) {
     svg.appendChild(circle);
     circular.appendChild(svg);
   
+    let div = document.createElement('div');
+    div.setAttribute("class", 'parameter-name');
+
     let span = document.createElement('span');
     span.textContent = parameterName;
+    div.appendChild(span);
   
-    parameter.appendChild(circular);
-    parameter.appendChild(span);
+    parameter.appendChild(figure);
+    parameter.appendChild(div);
   
     return parameter;
 }
@@ -305,7 +350,7 @@ function createMainContainer(vehicle) {
     let li1 = document.createElement('li');
     let h2 = document.createElement('h2');
     // Vehicle owner
-    h2.textContent = "Your trip with " + vehicle.owner + "'s car";
+    h2.textContent = "Your trip with " + vehicle.ownerName + "'s car";
     li1.appendChild(h2);
     ul.appendChild(li1);
 
