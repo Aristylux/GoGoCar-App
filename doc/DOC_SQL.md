@@ -185,6 +185,11 @@ SELECT *
 FROM city
 WHERE ST_Distance(location GEOMETRY(Point,4326), ST_SetSRID(ST_MakePoint(<43.1242>, <5.9280>), 4326)) <= 10000;
 ```
+```sql
+SELECT *
+FROM city
+WHERE ST_Distance(location, ST_SetSRID(ST_MakePoint(<43.1242>, <5.9280>), 4326)) <= 10000;
+```
 # Insert
 
 ## User
