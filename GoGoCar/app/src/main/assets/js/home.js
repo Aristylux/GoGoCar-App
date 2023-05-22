@@ -276,61 +276,55 @@ const PID = {
  * [ANDROID CALLBACK]
  * Convert PID to real value / print id and modify circle
  * @param {string} speedValue
- * @param {object} container 
  */
-function updateSpeedValue(speedValue, container) {
+function updateSpeedValue(speedValue) {
     let dashoffset = convertToCircle(speedValue, PID.SPEED);
-    updateCircle(speedValue + "km/h", container, PID.SPEED, dashoffset);
+    updateCircle(speedValue + "km/h", container_selected.onroad_container, PID.SPEED, dashoffset);
 }
 
 /**
  * [ANDROID CALLBACK]
  * @param {string} fuelValue 
- * @param {object} container 
  */
-function updateFuelLevel(fuelValue, container) {
+function updateFuelLevel(fuelValue) {
     let dashoffset = convertToCircle(fuelValue, PID.FUEL_LEVEL);
-    updateCircle(fuelValue + "%", container, PID.FUEL_LEVEL, dashoffset);
+    updateCircle(fuelValue + "%", container_selected.onroad_container, PID.FUEL_LEVEL, dashoffset);
 }
 
 /**
  * [ANDROID CALLBACK]
  * @param {string} fuelValue 
- * @param {object} container 
  */
-function updateFuelConsumption(fuelValue, container) {
+function updateFuelConsumption(fuelValue) {
     let dashoffset = convertToCircle(fuelValue, PID.FUEL_CONSO);
-    updateCircle(fuelValue + "%", container, PID.FUEL_CONSO, dashoffset);
+    updateCircle(fuelValue + "%", container_selected.onroad_container, PID.FUEL_CONSO, dashoffset);
 }
 
 /**
  * [ANDROID CALLBACK]
  * @param {string} fuelValue 
- * @param {object} container 
  */
-function updateEngineCoolant(value, container) {
+function updateEngineCoolant(value) {
     let dashoffset = convertToCircle(value, PID.ENGINE_COOLANT);
-    updateCircle(value + "°C", container, PID.ENGINE_COOLANT, dashoffset);
+    updateCircle(value + "°C", container_selected.onroad_container, PID.ENGINE_COOLANT, dashoffset);
 }
 
 /**
  * [ANDROID CALLBACK]
  * @param {string} fuelValue 
- * @param {object} container 
  */
-function updateEngineWater(value, container) {
+function updateEngineWater(value) {
     let dashoffset = convertToCircle(value, PID.ENGINE_WATER);
-    updateCircle(value + "°C", container, PID.ENGINE_WATER, dashoffset);
+    updateCircle(value + "°C", container_selected.onroad_container, PID.ENGINE_WATER, dashoffset);
 }
 
 /**
  * [ANDROID CALLBACK]
  * @param {string} fuelValue 
- * @param {object} container 
  */
-function updateEngineOil(value, container) {
+function updateEngineOil(value) {
     let dashoffset = convertToCircle(value, PID.ENGINE_OIL);
-    updateCircle(value + "°C", container, PID.ENGINE_OIL, dashoffset);
+    updateCircle(value + "°C", container_selected.onroad_container, PID.ENGINE_OIL, dashoffset);
 }
 
 function convertToCircle(entryValue, type){
