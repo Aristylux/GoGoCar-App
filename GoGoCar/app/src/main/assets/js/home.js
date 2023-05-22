@@ -297,9 +297,7 @@ function updateSpeedValue(speedValue, container) {
  * @param {object} container 
  */
 function updateFuelLevel(fuelValue, container) {
-    //let dashoffset = (dashMin - ((parseInt(fuelValue, 10) / (100 + dashMax - 45)) * dashMin));
     let dashoffset = convertToCircle(fuelValue, PID.FUEL_LEVEL);
-    console.log("update: " + fuelValue + " - " + dashoffset);
     updateCircle(fuelValue + "%", container, PID.FUEL_LEVEL, dashoffset);
 }
 
@@ -310,25 +308,36 @@ function updateFuelLevel(fuelValue, container) {
  */
 function updateFuelConsumption(fuelValue, container) {
     let dashoffset = convertToCircle(fuelValue, PID.FUEL_CONSO);
-    console.log("update: " + fuelValue + " - " + dashoffset);
     updateCircle(fuelValue + "%", container, PID.FUEL_CONSO, dashoffset);
 }
 
+/**
+ * [[ANDROID CALLBACK]]
+ * @param {string} fuelValue 
+ * @param {object} container 
+ */
 function updateEngineCoolant(value, container) {
     let dashoffset = convertToCircle(value, PID.ENGINE_COOLANT);
-    console.log("update: " + value + " - " + dashoffset);
     updateCircle(value + "°C", container, PID.ENGINE_COOLANT, dashoffset);
 }
 
+/**
+ * [[ANDROID CALLBACK]]
+ * @param {string} fuelValue 
+ * @param {object} container 
+ */
 function updateEngineWater(value, container) {
     let dashoffset = convertToCircle(value, PID.ENGINE_WATER);
-    console.log("update: " + value + " - " + dashoffset);
     updateCircle(value + "°C", container, PID.ENGINE_WATER, dashoffset);
 }
 
+/**
+ * [[ANDROID CALLBACK]]
+ * @param {string} fuelValue 
+ * @param {object} container 
+ */
 function updateEngineOil(value, container) {
     let dashoffset = convertToCircle(value, PID.ENGINE_OIL);
-    console.log("update: " + value + " - " + dashoffset);
     updateCircle(value + "°C", container, PID.ENGINE_OIL, dashoffset);
 }
 
@@ -535,7 +544,7 @@ function createMainContainer(vehicle) {
     return mainContainer;
 }
   
- 
+// create the complete container
 function createJourneyContainer(vehicle) {
     let journeyContainer = document.createElement('li');
     journeyContainer.className = 'journey-container';
