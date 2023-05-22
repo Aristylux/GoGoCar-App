@@ -178,6 +178,13 @@ SELECT id, name, convert_from(decrypt(password, 'bf'), 'SQL_ASCII') FROM users;
 SELECT  location GEOMETRY(Point,4326) FROM addresses WHERE ST_Distance('123 Main St', 'Anytown', 'CA', '12345', ST_SetSRID(ST_MakePoint(-122.419416, 37.774929), 4326)) < 1000;
 
 ```
+## Distance
+
+```sql
+SELECT *
+FROM city
+WHERE ST_Distance(location GEOMETRY(Point,4326), ST_SetSRID(ST_MakePoint(<43.1242>, <5.9280>), 4326)) <= 10000;
+```
 # Insert
 
 ## User
