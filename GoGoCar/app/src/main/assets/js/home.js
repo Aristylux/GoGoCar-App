@@ -7,6 +7,7 @@ var container_selected = {
     cancel_container: 0,
     onroad_container: 0,
     switch_selected: 0,
+    is_asking_for_driving: false,
     is_driving: false
 }
 
@@ -23,17 +24,28 @@ else {
     const switchs = document.querySelectorAll(".switch_input");
     switchs.forEach(function (switch_input, index) {
         switch_input.addEventListener('change', (event) => {
+
+            
+
+            console.log(container_selected)
+
             container_selected.main_container = switch_input.parentElement.parentElement.parentElement.parentElement.parentElement;
             container_selected.cancel_container = container_selected.main_container.getElementsByClassName('off-road')[0];
             container_selected.onroad_container = container_selected.main_container.getElementsByClassName('on-road')[0];
 
             if (switch_input.checked) {
+                if(container_selected.is_driving == true || container_selected.is_asking_for_driving == true){
+                    switch_input.checked = false;
+                    return;
+                }
                 console.log("Checked");
+                container_selected.is_asking_for_driving = true;
                 container_selected.switch_selected = switch_input;               
                 openForDrive();
             } else {
                 console.log("Not checked");
                 // User finish to drive
+                container_selected.is_asking_for_driving = false;
                 closeForStop();
             }
         });
@@ -42,6 +54,9 @@ else {
     const button_cancel = document.querySelectorAll(".bt_cancel");
     button_cancel.forEach(function (cancel_input, index) {
         cancel_input.addEventListener('click', (event) => {
+            if(container_selected.is_driving == true || container_selected.is_asking_for_driving == true){
+                return;
+            }
             // Open Popup: Are you sure?
             console.log("open");
             openPopupCancelJourney(vehicles[index]);
