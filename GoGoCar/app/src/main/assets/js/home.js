@@ -15,7 +15,7 @@ var container_selected = {
 if(androidConnected()) Android.requestData();
 // For debug
 else {
-    vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
+    vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0,"ownerName":"Isen M"},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0,"ownerName":"Luis R"}]');
 
     vehicles.forEach((vehicle) => {
         createJourneyContainer(vehicle);
@@ -24,10 +24,6 @@ else {
     const switchs = document.querySelectorAll(".switch_input");
     switchs.forEach(function (switch_input, index) {
         switch_input.addEventListener('change', (event) => {
-
-            
-
-            console.log(container_selected)
 
             container_selected.main_container = switch_input.parentElement.parentElement.parentElement.parentElement.parentElement;
             container_selected.cancel_container = container_selected.main_container.getElementsByClassName('off-road')[0];
@@ -94,8 +90,14 @@ function setVehicleBooked(_table_vehicle){
                 container_selected.onroad_container = container_selected.main_container.getElementsByClassName('on-road')[0];    
 
                 if (switch_input.checked) {
+                    if(container_selected.is_driving == true || container_selected.is_asking_for_driving == true){
+                        switch_input.checked = false;
+                        console.log("You can't start another journey during a journey");
+                        return;
+                    }
                     console.log("Checked");
-                    switch_selected = switchs[index];
+                    container_selected.is_asking_for_driving = true;
+                    container_selected.switch_selected = switch_input;
                     // Verify if user can drive car
                     //if(androidConnected()) Android.requestDrive(index);
 
@@ -103,6 +105,7 @@ function setVehicleBooked(_table_vehicle){
                     openForDrive();
                 } else {
                     console.log("Not checked");
+                    container_selected.is_asking_for_driving = false;
                     // User finish to drive
                     //if(androidConnected()) Android.requestStopDrive();
                    
@@ -116,11 +119,12 @@ function setVehicleBooked(_table_vehicle){
         const button_cancel = document.querySelectorAll(".bt_cancel");
         button_cancel.forEach(function (cancel_input, index) {
             cancel_input.addEventListener('click', () => {
-
-                // verify if drive or not
-
+                // Verify if drive or not
+                if(container_selected.is_driving == true || container_selected.is_asking_for_driving == true){ 
+                    console.log("You can't cancel during a journey");
+                    return;
+                }
                 // Open Popup: Are you sure?
-                console.log("open");
                 openPopupCancelJourney(vehicles[index]);
             });
         });
@@ -360,7 +364,7 @@ function updateCircle(value, container, type, circleValue){
 // Example usage:
 //let fuelParameter = createParameterElement('Fuel Level', '70%', 'grad-one');
 //document.body.appendChild(fuelParameter);
-function createParameterElement(parameterName, parameerValue, colorCircle) {
+function createParameterElement(parameterName, paramerValue, colorCircle) {
     let parameter = document.createElement('div');
     parameter.setAttribute("class", 'parameter');
 
@@ -378,7 +382,7 @@ function createParameterElement(parameterName, parameerValue, colorCircle) {
   
     let text = document.createElement('div');
     text.setAttribute("class", 'text');
-    text.textContent = parameerValue;
+    text.textContent = paramerValue;
   
     inner.appendChild(text);
     outer.appendChild(inner);
@@ -465,8 +469,7 @@ function createMainContainer(vehicle) {
   
     let li1 = document.createElement('li');
     let h2 = document.createElement('h2');
-    // Vehicle owner
-    vehicle.ownerName = "Axel M"
+
     h2.textContent = "Your trip with " + vehicle.ownerName.split(' ')[0] + "'s car";
     li1.appendChild(h2);
     ul.appendChild(li1);
