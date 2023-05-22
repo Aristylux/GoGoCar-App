@@ -128,6 +128,14 @@ CREATE TABLE city(
   location GEOMETRY(Point,4326)
 );
 ```
+
+```sql
+CREATE TABLE city(
+  id SERIAL PRIMARY KEY,
+  city TEXT,
+  location GEOMETRY(Point,4326) USING ST_GeomFromText('POINT(0 0)', 4326)
+);
+```
 # Update
 
 ```sql
