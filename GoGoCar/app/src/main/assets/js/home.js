@@ -22,10 +22,6 @@ else {
             const cancel_container = container.getElementsByClassName('off-road')[0];
             const onroad_container = container.getElementsByClassName('on-road')[0];
 
-            updateSpeedValue('78km/h', onroad_container);
-            updateFuelLevel('65%', onroad_container);
-            updateFuelConsumption('47%', onroad_container);
-
             if (switch_input.checked) {
                 console.log("Checked");
                 // Disable box
@@ -248,59 +244,113 @@ box_nav.forEach((box) => {
     })
 });
 
+/* ----- ----- */
 
+
+const PID = {
+    SPEED: {
+        place: 0,
+        min: 0,
+        max: 255
+    },
+    FUEL_LEVEL: {
+        place: 1,
+        min: 0,
+        max: 100
+    },
+    FUEL_CONSO: {
+        place: 2,
+        min: 0,
+        max: 100
+    },
+    ENGINE_COOLANT: {
+        place: 3,
+        min: -40,
+        max: 210
+    },
+    ENGINE_WATER: {
+        place: 4,
+        min: -40,
+        max: 215
+    },
+    ENGINE_OIL: {
+        place: 5,
+        min: -40,
+        max: 210
+    }
+}
+
+/**
+ * [ANDROID CALLBACK]
+ * Convert PID to real value / print id and modify circle
+ * @param {string} speedValue
+ * @param {object} container 
+ */
 function updateSpeedValue(speedValue, container) {
-    console.log("update: " + speedValue);
-
-    console.log(container)
-
-    // Get the speed element by its parameter name
-    let speedElement = container.querySelector('.inner .text');
-  
-    // Update the speed value
-    speedElement.textContent = speedValue;
-  
-    // Update the stroke-dashoffset property
-    let circleElement = container.querySelector('circle');
-    /*
-    console.log(circleElement)
-    console.log(circleElement.style.strokeDashoffset)
-    let circumference = circleElement.getTotalLength(); // Get the circumference of the circle
-    console.log(circumference);
-    let dashoffset = circumference - ((speedValue / 100) * circumference);
-    console.log(dashoffset);
-    */
-    circleElement.style.strokeDashoffset = /*dashoffset*/ '200px';
+    let dashoffset = convertToCircle(speedValue, PID.SPEED);
+    updateCircle(speedValue + "km/h", container, PID.SPEED, dashoffset);
 }
-  
+
+/**
+ * [ANDROID CALLBACK]
+ * @param {string} fuelValue 
+ * @param {object} container 
+ */
 function updateFuelLevel(fuelValue, container) {
-    console.log("update: " + fuelValue);
-
-    // Get the speed element by its parameter name
-    let fuelElement = container.querySelectorAll('.inner .text')[1];
-  
-    // Update the speed value
-    fuelElement.textContent = fuelValue;
-  
-    // Update the stroke-dashoffset property
-    let circleElement = container.querySelectorAll('circle')[1];    
-    circleElement.style.strokeDashoffset = /*dashoffset*/ '160px';
+    //let dashoffset = (dashMin - ((parseInt(fuelValue, 10) / (100 + dashMax - 45)) * dashMin));
+    let dashoffset = convertToCircle(fuelValue, PID.FUEL_LEVEL);
+    console.log("update: " + fuelValue + " - " + dashoffset);
+    updateCircle(fuelValue + "%", container, PID.FUEL_LEVEL, dashoffset);
 }
 
+/**
+ * [[ANDROID CALLBACK]]
+ * @param {string} fuelValue 
+ * @param {object} container 
+ */
 function updateFuelConsumption(fuelValue, container) {
-    console.log("update: " + fuelValue);
-
-    // Get the speed element by its parameter name
-    let fuelElement = container.querySelectorAll('.inner .text')[2];
-  
-    // Update the speed value
-    fuelElement.textContent = fuelValue;
-  
-    // Update the stroke-dashoffset property
-    let circleElement = container.querySelectorAll('circle')[2];    
-    circleElement.style.strokeDashoffset = /*dashoffset*/ '190px';
+    let dashoffset = convertToCircle(fuelValue, PID.FUEL_CONSO);
+    console.log("update: " + fuelValue + " - " + dashoffset);
+    updateCircle(fuelValue + "%", container, PID.FUEL_CONSO, dashoffset);
 }
 
+function updateEngineCoolant(value, container) {
+    let dashoffset = convertToCircle(value, PID.ENGINE_COOLANT);
+    console.log("update: " + value + " - " + dashoffset);
+    updateCircle(value + "°C", container, PID.ENGINE_COOLANT, dashoffset);
+}
+
+function updateEngineWater(value, container) {
+    let dashoffset = convertToCircle(value, PID.ENGINE_WATER);
+    console.log("update: " + value + " - " + dashoffset);
+    updateCircle(value + "°C", container, PID.ENGINE_WATER, dashoffset);
+}
+
+function updateEngineOil(value, container) {
+    let dashoffset = convertToCircle(value, PID.ENGINE_OIL);
+    console.log("update: " + value + " - " + dashoffset);
+    updateCircle(value + "°C", container, PID.ENGINE_OIL, dashoffset);
+}
+
+function convertToCircle(entryValue, type){
+    const dashMax = 95;
+const dashMin = 280;
+    let value = parseInt(entryValue, 10);
+    let progress = ((value - type.min) / (type.max - type.min)) * (dashMax - dashMin) + dashMin;
+    return progress;
+}
+
+function updateCircle(value, container, type, circleValue){
+    // Get the speed element by its parameter name
+    let element = container.querySelectorAll('.inner .text')[type.place];
+    element.textContent = value;
+  
+    // Update the stroke-dashoffset property
+    let circleElement = container.querySelectorAll('circle')[type.place];    
+    circleElement.style.strokeDashoffset = circleValue;
+}
+
+/* ----- ----- */
 
 // Example usage:
 //let fuelParameter = createParameterElement('Fuel Level', '70%', 'grad-one');
