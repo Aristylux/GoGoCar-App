@@ -2,6 +2,14 @@
 var switch_selected;
 var isDriving = false;
 
+var container_selected = {
+    main_container: 0,
+    cancel_container: 0,
+    onroad_container: 0,
+    switch_selected: 0,
+    is_driving: false
+}
+
 // On load page:
 if(androidConnected()) Android.requestData();
 // For debug
@@ -9,54 +17,24 @@ else {
     vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
 
     vehicles.forEach((vehicle) => {
-        //addElement(vehicle);
         createJourneyContainer(vehicle);
     });
 
     const switchs = document.querySelectorAll(".switch_input");
     switchs.forEach(function (switch_input, index) {
         switch_input.addEventListener('change', (event) => {
-            const box_nav = document.querySelectorAll(".box-nav");
-
-            const container = switch_input.parentElement.parentElement.parentElement.parentElement.parentElement;
-            const cancel_container = container.getElementsByClassName('off-road')[0];
-            const onroad_container = container.getElementsByClassName('on-road')[0];
+            container_selected.main_container = switch_input.parentElement.parentElement.parentElement.parentElement.parentElement;
+            container_selected.cancel_container = container_selected.main_container.getElementsByClassName('off-road')[0];
+            container_selected.onroad_container = container_selected.main_container.getElementsByClassName('on-road')[0];
 
             if (switch_input.checked) {
                 console.log("Checked");
-                // Disable box
-                box_nav.forEach((box) => {
-                    console.log("log");
-                    box.classList.add("disabled");
-                });
-
-                // Hide cancel journey container
-                switch_selected = switchs[index];
-                console.log(switch_selected);
-                
-                cancel_container.classList.add('hidden');
-
-                onroad_container.classList.remove('hidden');
-                onroad_container.classList.add('display');
-                onroad_container.style.display = 'grid';
+                container_selected.switch_selected = switch_input;               
+                openForDrive();
             } else {
                 console.log("Not checked");
                 // User finish to drive
-                box_nav.forEach((box) => {
-                    console.log("log");
-                    box.classList.remove("disabled");
-                });
-
-                // Display cancel journey container
-                cancel_container.classList.remove('hidden');
-
-                // Hide on road container
-                onroad_container.classList.add('hidden');
-                onroad_container.classList.remove('display');
-                
-                setTimeout(() => {
-                    onroad_container.style.display = 'none';
-                }, 490);
+                closeForStop();
             }
         });
     });
@@ -94,14 +72,11 @@ function setVehicleBooked(_table_vehicle){
         const switchs = document.querySelectorAll(".switch_input");
         switchs.forEach(function (switch_input, index) {
             switch_input.addEventListener('change', () => {
+                // verify if drive or not
 
-                const container = switch_input.parentElement.parentElement.parentElement.parentElement.parentElement;
-                const cancel_container = container.getElementsByClassName('off-road')[0];
-                const onroad_container = container.getElementsByClassName('on-road')[0];
-
-                updateSpeedValue('78km/h', onroad_container);
-                updateFuelLevel('65%', onroad_container);
-                updateFuelConsumption('47%', onroad_container);
+                container_selected.main_container = switch_input.parentElement.parentElement.parentElement.parentElement.parentElement;
+                container_selected.cancel_container = container_selected.main_container.getElementsByClassName('off-road')[0];
+                container_selected.onroad_container = container_selected.main_container.getElementsByClassName('on-road')[0];    
 
                 if (switch_input.checked) {
                     console.log("Checked");
@@ -109,41 +84,15 @@ function setVehicleBooked(_table_vehicle){
                     // Verify if user can drive car
                     //if(androidConnected()) Android.requestDrive(index);
 
-                    box_nav.forEach((box) => {
-                        console.log("log");
-                        box.classList.add("disabled");
-                    });
-    
-                    // Hide cancel journey container
-                    switch_selected = switchs[index];
-                    console.log(switch_selected);
-                    
-                    cancel_container.classList.add('hidden');
-    
-                    onroad_container.classList.remove('hidden');
-                    onroad_container.classList.add('display');
-                    onroad_container.style.display = 'grid';
-
+                    // for test
+                    openForDrive();
                 } else {
                     console.log("Not checked");
                     // User finish to drive
                     //if(androidConnected()) Android.requestStopDrive();
-
-                    box_nav.forEach((box) => {
-                        console.log("log");
-                        box.classList.remove("disabled");
-                    });
-    
-                    // Display cancel journey container
-                    cancel_container.classList.remove('hidden');
-    
-                    // Hide on road container
-                    onroad_container.classList.add('hidden');
-                    onroad_container.classList.remove('display');
-                    
-                    setTimeout(() => {
-                        onroad_container.style.display = 'none';
-                    }, 490);
+                   
+                    // for test
+                    closeForStop();
                 }
             });
         });
@@ -152,6 +101,9 @@ function setVehicleBooked(_table_vehicle){
         const button_cancel = document.querySelectorAll(".bt_cancel");
         button_cancel.forEach(function (cancel_input, index) {
             cancel_input.addEventListener('click', () => {
+
+                // verify if drive or not
+
                 // Open Popup: Are you sure?
                 console.log("open");
                 openPopupCancelJourney(vehicles[index]);
@@ -165,9 +117,12 @@ function setVehicleBooked(_table_vehicle){
 // [ANDROID CALLBACK][main (bluetooth)]
 function setSwitchState(state){
     if(state === "true"){
-        switch_selected.checked = true;
-    } else
-        switch_selected.checked = false;
+        container_selected.switch_selected.checked = true;
+        //openForDrive();
+    } else {
+        container_selected.switch_selected.checked = false;
+        //closeForStop();
+    }
 }
 
 const DRIVING_REQUEST_PERMISSION_ERROR = 1,
@@ -203,11 +158,7 @@ function requestDriveCallback(allowedToDrive){
     if(allowedToDrive === "true"){
         // Open Popup : you can drive.
         console.log("You can drive :-)");
-
-        // Stay in the home fragment 
-        box_nav.forEach((box) => {
-            box.classList.add("disabled");
-        });
+        openForDrive();
         isDriving = true;
     } else {
         switch_selected.checked = false;
@@ -225,9 +176,7 @@ function requestDriveCallback(allowedToDrive){
                 console.error(error_messages.getErrorText(allowedToDrive));
                 break;
             case DRIVING_CONNECTION_DISCONNECTED: //(finish to drive)
-                box_nav.forEach((box) => {
-                    box.classList.remove("disabled");
-                })
+                closeForStop();
                 isDriving = false;
                 break;
             default:
@@ -243,6 +192,38 @@ box_nav.forEach((box) => {
         if (!isDriving && androidConnected()) Android.requestChangePage(box.id.slice(8));
     })
 });
+
+function openForDrive(){
+    // Stay in the home fragment 
+    box_nav.forEach((box) => {
+        console.log("log");
+        box.classList.add("disabled");
+    });
+    
+    container_selected.cancel_container.classList.add('hidden');
+
+    container_selected.onroad_container.classList.remove('hidden');
+    container_selected.onroad_container.classList.add('display');
+    container_selected.onroad_container.style.display = 'grid';
+}
+
+function closeForStop(){
+    box_nav.forEach((box) => {
+        console.log("log");
+        box.classList.remove("disabled");
+    });
+
+    // Display cancel journey container
+    container_selected.cancel_container.classList.remove('hidden');
+
+    // Hide on road container
+    container_selected.onroad_container.classList.add('hidden');
+    container_selected.onroad_container.classList.remove('display');
+    
+    setTimeout(() => {
+        container_selected.onroad_container.style.display = 'none';
+    }, 490);
+}
 
 /* ----- ----- */
 
