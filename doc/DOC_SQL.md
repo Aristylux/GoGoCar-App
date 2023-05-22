@@ -233,6 +233,18 @@ INSERT INTO city (city, location GEOMETRY(Point,4326)) VALUES
 ('Marseille',ST_SetSRID(ST_MakePoint(43.300000, 5.400000), 4326)),
 ('La Valette-du-Var',ST_SetSRID(ST_MakePoint(43.133331,5.98333), 4326));
 ```
+
+```sql
+INSERT INTO city (city, location)
+VALUES
+  ('Toulon', ST_SetSRID(ST_MakePoint(43.116669, 5.93333), 4326)),
+  ('Hyeres', ST_SetSRID(ST_MakePoint(43.116669, 6.11667), 4326)),
+  ('Nimes', ST_SetSRID(ST_MakePoint(43.833328, 4.35), 4326)),
+  ('Paris', ST_SetSRID(ST_MakePoint(48.8534, 2.3488), 4326)),
+  ('Nice', ST_SetSRID(ST_MakePoint(43.700001, 7.25), 4326)),
+  ('Marseille', ST_SetSRID(ST_MakePoint(43.300000, 5.400000), 4326)),
+  ('La Valette-du-Var', ST_SetSRID(ST_MakePoint(43.133331, 5.98333), 4326));
+```
 ## Vehicles
 
 ```sql
