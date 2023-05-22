@@ -1,7 +1,4 @@
 // Global Variables
-var switch_selected;
-var isDriving = false;
-
 var container_selected = {
     main_container: 0,
     cancel_container: 0,
@@ -38,11 +35,13 @@ else {
                 container_selected.is_asking_for_driving = true;
                 container_selected.switch_selected = switch_input;               
                 openForDrive();
+                container_selected.is_driving = true;
             } else {
                 console.log("Not checked");
                 // User finish to drive
                 container_selected.is_asking_for_driving = false;
                 closeForStop();
+                container_selected.is_driving = false;
             }
         });
     });
@@ -99,18 +98,12 @@ function setVehicleBooked(_table_vehicle){
                     container_selected.is_asking_for_driving = true;
                     container_selected.switch_selected = switch_input;
                     // Verify if user can drive car
-                    //if(androidConnected()) Android.requestDrive(index);
-
-                    // for test
-                    openForDrive();
+                    if(androidConnected()) Android.requestDrive(index);
                 } else {
                     console.log("Not checked");
                     container_selected.is_asking_for_driving = false;
                     // User finish to drive
-                    //if(androidConnected()) Android.requestStopDrive();
-                   
-                    // for test
-                    closeForStop();
+                    if(androidConnected()) Android.requestStopDrive();
                 }
             });
         });
@@ -172,15 +165,14 @@ const error_messages = {
  * allowedToDrive = 'true', 'error_code'
  */
 function requestDriveCallback(allowedToDrive){
-    const box_nav = document.querySelectorAll(".box-nav");
-
+    container_selected.is_asking_for_driving = false;
     if(allowedToDrive === "true"){
         // Open Popup : you can drive.
         console.log("You can drive :-)");
         openForDrive();
-        isDriving = true;
+        container_selected.is_driving = true;
     } else {
-        switch_selected.checked = false;
+        container_selected.switch_selected.checked = false;
         console.log("Error callback type: " + allowedToDrive);
         if (typeof allowedToDrive == "string") allowedToDrive = parseInt(allowedToDrive);
 
@@ -196,7 +188,7 @@ function requestDriveCallback(allowedToDrive){
                 break;
             case DRIVING_CONNECTION_DISCONNECTED: //(finish to drive)
                 closeForStop();
-                isDriving = false;
+                container_selected.is_driving = false;
                 break;
             default:
                 break;
@@ -208,14 +200,14 @@ function requestDriveCallback(allowedToDrive){
 const box_nav = document.querySelectorAll(".box-nav");
 box_nav.forEach((box) => {
     box.addEventListener('click', () => {
-        if (!isDriving && androidConnected()) Android.requestChangePage(box.id.slice(8));
+        console.log(container_selected);
+        if (!container_selected.is_driving && androidConnected()) Android.requestChangePage(box.id.slice(8));
     })
 });
 
 function openForDrive(){
     // Stay in the home fragment 
     box_nav.forEach((box) => {
-        console.log("log");
         box.classList.add("disabled");
     });
     
@@ -227,8 +219,8 @@ function openForDrive(){
 }
 
 function closeForStop(){
+    // Display box navigation 
     box_nav.forEach((box) => {
-        console.log("log");
         box.classList.remove("disabled");
     });
 
@@ -302,7 +294,7 @@ function updateFuelLevel(fuelValue, container) {
 }
 
 /**
- * [[ANDROID CALLBACK]]
+ * [ANDROID CALLBACK]
  * @param {string} fuelValue 
  * @param {object} container 
  */
@@ -312,7 +304,7 @@ function updateFuelConsumption(fuelValue, container) {
 }
 
 /**
- * [[ANDROID CALLBACK]]
+ * [ANDROID CALLBACK]
  * @param {string} fuelValue 
  * @param {object} container 
  */
@@ -322,7 +314,7 @@ function updateEngineCoolant(value, container) {
 }
 
 /**
- * [[ANDROID CALLBACK]]
+ * [ANDROID CALLBACK]
  * @param {string} fuelValue 
  * @param {object} container 
  */
@@ -332,7 +324,7 @@ function updateEngineWater(value, container) {
 }
 
 /**
- * [[ANDROID CALLBACK]]
+ * [ANDROID CALLBACK]
  * @param {string} fuelValue 
  * @param {object} container 
  */
@@ -343,7 +335,7 @@ function updateEngineOil(value, container) {
 
 function convertToCircle(entryValue, type){
     const dashMax = 95;
-const dashMin = 280;
+    const dashMin = 280;
     let value = parseInt(entryValue, 10);
     let progress = ((value - type.min) / (type.max - type.min)) * (dashMax - dashMin) + dashMin;
     return progress;
