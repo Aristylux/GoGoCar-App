@@ -2,8 +2,15 @@ package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_CON;
+import static com.aristy.gogocar.CodesTAG.TAG_CAN;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
+import static com.aristy.gogocar.WICommon.Pages.Home.JS.UP_CAN_ENGINE_COOLANT;
+import static com.aristy.gogocar.WICommon.Pages.Home.JS.UP_CAN_ENGINE_OIL;
+import static com.aristy.gogocar.WICommon.Pages.Home.JS.UP_CAN_ENGINE_WATER;
+import static com.aristy.gogocar.WICommon.Pages.Home.JS.UP_CAN_FUEL_CONSUMPTION;
+import static com.aristy.gogocar.WICommon.Pages.Home.JS.UP_CAN_FUEL_LEVEL;
+import static com.aristy.gogocar.WICommon.Pages.Home.JS.UP_CAN_SPEED_VALUE;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
@@ -134,11 +141,54 @@ public class BluetoothConnection extends Thread {
 
         // Extract code
 
-        // Extract message
+
+        // Message : "&type:data\n"
+
+        // Extract type
+        String type = "t_li";
+
+        // Extract data
         this.message = message;
 
-        // Action
-        this.function = "functionTest";
+        switch (type){
+            case "t_li":
+                Log.d(TAG_CAN, "messageReceived: t_li: " + message);
+                this.function = UP_CAN_ENGINE_COOLANT;
+                break;
+            case "vit_":
+                Log.d(TAG_CAN, "messageReceived: vit_: " + message);
+                this.function = UP_CAN_SPEED_VALUE;
+                break;
+            case "t_st":
+                Log.d(TAG_CAN, "messageReceived: t_st: " + message);
+                break;
+            case "d_st":
+                Log.d(TAG_CAN, "messageReceived: d_st: " + message);
+                break;
+            case "l_cb":
+                Log.d(TAG_CAN, "messageReceived: l_cb: " + message);
+                this.function = UP_CAN_FUEL_LEVEL;
+                break;
+            case "carb":
+                Log.d(TAG_CAN, "messageReceived: carb: " + message);
+                break;
+            case "pped":
+                Log.d(TAG_CAN, "messageReceived: pped: " + message);
+                break;
+            case "t_ol":
+                Log.d(TAG_CAN, "messageReceived: t_ol: " + message);
+                this.function = UP_CAN_ENGINE_OIL;
+                break;
+            case "cons":
+                Log.d(TAG_CAN, "messageReceived: cons: " + message);
+                this.function = UP_CAN_FUEL_CONSUMPTION;
+                break;
+            case "t_wt":
+                Log.d(TAG_CAN, "messageReceived: t_wt: " + message);
+                this.function = UP_CAN_ENGINE_WATER;
+                break;
+        }
+
     }
 
     public String getMessageFunction(){
