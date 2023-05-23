@@ -148,43 +148,6 @@ void main_encrypt(uint8_t *state, uint8_t *expanded_key, uint8_t nbr_rounds){
     add_round_key(state, round_key);
 }
 
-void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, char *plaintext){
-    uint8_t state[BLOCK_SIZE_128_BITS] = {0}, round_key[240] = {0};
-    generate_sbox_inv();
-    
-    // Copy the ciphertext into the state array
-    memcpy(state, ciphertext, BLOCK_SIZE_128_BITS);
-
-    key_expansion(key->key, round_key);
-
-    // add round key 
-    add_round_key(state, round_key + 4 * 14);
-
-    // DECRYPTION ROUND
-    uint8_t round;
-    for (round = 14 - 1; round > 0; --round) {
-        // inv shift row
-        shift_rows_inv(state);
-        // inv sub bytes
-        sub_bytes_inv(state);
-        // add round key
-        add_round_key(state, round_key + 4 * round);
-        // inv mix column    
-        mix_columns_inv(state);
-    }
-    
-    // LAST ROUND
-    // inv shift row
-    shift_rows_inv(state);
-    // inv round bytes
-    sub_bytes_inv(state);
-    // add round key
-    add_round_key(state, round_key);
-
-    // Copy the decrypted state into the plaintext array
-    memcpy(plaintext, state, BLOCK_SIZE_128_BITS);
-}
-
 void create_round_key(uint8_t *expanded_key, uint8_t *round_key) {
     for (uint8_t i = 0; i < 4; i++) {
         for (uint8_t j = 0; j < 4; j++) {
@@ -420,6 +383,43 @@ void key_expand(const uint8_t* key, uint8_t* expanded_key){
 /* * * * * * * *
  * AES DECRYPT *
  * * * * * * * */
+
+void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, char *plaintext){
+    uint8_t state[BLOCK_SIZE_128_BITS] = {0}, round_key[240] = {0};
+    generate_sbox_inv();
+    
+    // Copy the ciphertext into the state array
+    memcpy(state, ciphertext, BLOCK_SIZE_128_BITS);
+
+    key_expansion(key->key, round_key);
+
+    // add round key 
+    add_round_key(state, round_key + 4 * 14);
+
+    // DECRYPTION ROUND
+    uint8_t round;
+    for (round = 14 - 1; round > 0; --round) {
+        // inv shift row
+        shift_rows_inv(state);
+        // inv sub bytes
+        sub_bytes_inv(state);
+        // add round key
+        add_round_key(state, round_key + 4 * round);
+        // inv mix column    
+        mix_columns_inv(state);
+    }
+    
+    // LAST ROUND
+    // inv shift row
+    shift_rows_inv(state);
+    // inv round bytes
+    sub_bytes_inv(state);
+    // add round key
+    add_round_key(state, round_key);
+
+    // Copy the decrypted state into the plaintext array
+    memcpy(plaintext, state, BLOCK_SIZE_128_BITS);
+}
 
 void sub_bytes_inv(uint8_t* state){
      for (uint8_t i = 0; i < BLOCK_SIZE_128_BITS; i++) {
