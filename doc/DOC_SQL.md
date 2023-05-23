@@ -353,7 +353,21 @@ VALUES
   ('Paris', ST_SetSRID(ST_MakePoint(48.8534, 2.3488), 4326)),
   ('Nice', ST_SetSRID(ST_MakePoint(43.700001, 7.25), 4326)),
   ('Marseille', ST_SetSRID(ST_MakePoint(43.300000, 5.400000), 4326)),
-  ('La Valette-du-Var', ST_SetSRID(ST_MakePoint(43.133331, 5.98333), 4326));
+  ('La Valette-du-Var', ST_SetSRID(ST_MakePoint(43.133331, 5.98333), 4326))
+  ('Bordeaux', ST_SetSRID(ST_MakePoint(44.8378, 0.5792), 4326)),
+  ('Toulouse', ST_SetSRID(ST_MakePoint(43.6047, 1.4442), 4326)),
+  ('Strasbourg', ST_SetSRID(ST_MakePoint( 48.5734, 7.7521),4326)),
+  ('Lyon',ST_SetSRID(ST_MakePoint(45.75, 4.85),4326)),
+  ('Lille', ST_SetSRID(ST_MakePoint(50.62925, 3.057256),4326)),
+  ('Nantes', ST_SetSRID(ST_MakePoint(47.218371, -1.553621)),
+  ('Caen', ST_SetSRID(ST_MakePoint(49.182863,-0.370679), 4326)),
+  ('Angers', ST_SetSRID(ST_MakePoint(47.4712, 0.5518), 4326)),
+  ('Brest', ST_SetSRID(ST_MakePoint( 43,2751, 6.0741), 4326)),
+  ('Amiens',ST_SetSRID(ST_MakePoint( 49.894067, 2.295753), 4326)),
+  ('Le Mans', ST_SetSRID(ST_MakePoint( 48.00611, 0.1999556),4326)),
+  ('Annecy', ST_SetSRID(ST_MakePoint( 45.8992, 6.1294), 4326)),
+  ('Nancy', ST_SetSRID(ST_MakePoint(48.692054, 6.184417), 4326)),
+  ('Poitiers',ST_SetSRID(ST_MakePoint(46.583328, 0.33333), 4326));
 ```
 ## Vehicles
 
