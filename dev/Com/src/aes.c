@@ -341,8 +341,8 @@ void key_expansion(const uint8_t* key, uint8_t* expanded_key) {
 
 
 /**
- * @brief rotate the word eight bits to the left
- * @note rotate(1d2c3a4f) = 2c3a4f1d
+ * @brief Rotate the word eight bits to the left
+ * @note Rotate(1d2c3a4f) = 2c3a4f1d
  * 
  * @param word is an 8bits array of size 4 (32 bit)
  */
@@ -353,6 +353,24 @@ void rotate(uint8_t *word) {
     word[3] = c;
 }
 
+/**
+ * @brief key substitution core
+ * 
+ * @param word word of 4*8bits
+ * @param iteration number of iteration
+ */
+void core(uint8_t *word, uint32_t iteration){
+
+    // Rotate the 32-bit word 8 bits to the left
+    rotate(word);
+
+    // Apply S-Box substitution on all 4 parts of the 32-bit word
+    for (uint8_t i = 0; i < 4; ++i)
+        word[i] = sbox[i];
+    
+    // XOR the output of the rcon operation with i to the first part (leftmost) only 
+    word[0] = word[0]^rcon[iteration];
+}
 
 /* * * * * * * *
  * AES DECRYPT *

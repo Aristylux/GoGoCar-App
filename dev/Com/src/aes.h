@@ -25,6 +25,7 @@ void main_encrypt(uint8_t *state, uint8_t *expanded_key, uint8_t nbr_rounds);
 
 void key_expansion(const uint8_t* key, uint8_t* expanded_key);
 void rotate(uint8_t *word);
+void core(uint8_t *word, uint32_t iteration);
 
 void create_round_key(uint8_t *expanded_key, uint8_t *round_key);
 void add_round_key(uint8_t* state, const uint8_t* round_key);
