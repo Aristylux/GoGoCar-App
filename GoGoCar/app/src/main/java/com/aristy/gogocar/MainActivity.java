@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
                     // TODO (test)
                     // -> bluetoothConnection.messageReceived((String) message.obj);
 
-                    ReceiverCAN dataCan = bluetoothConnection.messageReceived(message.toString());
+                    ReceiverCAN dataCan = bluetoothConnection.messageReceived(message.obj.toString());
                     if (dataCan.isResulted()) fragmentNav.sendDataToFragment(putArguments(dataCan.getMethod(), dataCan.getData()));
                     break;
                 case BT_STATE_DISCONNECTED:
