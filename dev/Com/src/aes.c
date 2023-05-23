@@ -369,18 +369,18 @@ void core(uint8_t *word, uint32_t iteration){
         word[i] = sbox[word[i]];
     
     // XOR the output of the rcon operation with i to the first part (leftmost) only 
-    word[0] = word[0]^rcon[iteration];
+    word[0] ^= rcon[iteration];
 }
 
 void key_expand(const uint8_t* key, uint8_t* expanded_key){
 
     uint8_t size = KEY_256_BITS;
 
-    uint8_t expandedKeySize = 176;
+    uint8_t expandedKeySize = 240;
     uint8_t currentSize = 32; // for 256 bits key
     uint8_t temp[4] = {0};
 
-    int rcon_iteration = 1;
+    uint32_t rcon_iteration = 1;
 
     // set the 16,24,32 bytes of the expanded key to the input key
 
@@ -391,13 +391,15 @@ void key_expand(const uint8_t* key, uint8_t* expanded_key){
 
     while (currentSize < expandedKeySize) {
         /* assign the previous 4 bytes to the temporary value t */
-        for (uint8_t i = 0; i < 4; i++) temp[i] = expanded_key[(currentSize - 4) + i];
+        for (uint8_t i = 0; i < 4; i++) 
+            temp[i] = expanded_key[(currentSize - 4) + i];
         
 
         /* every 16,24,32 bytes we apply the core schedule to t
          * and increment rconIteration afterwards
          */
-        if(currentSize % size == 0) core(temp, rcon_iteration++);
+        if(currentSize % size == 0)
+            core(temp, rcon_iteration++);
         
 
         /* For 256-bit keys, we add an extra sbox to the calculation */

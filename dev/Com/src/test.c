@@ -59,14 +59,14 @@ void test_rotate(void){
 }
 
 void test_key_expantion(void){
-    uint8_t expandedKey[176] = {0}, expandedKey2[176] = {0};
+    uint8_t expandedKey[240] = {0}, expandedKey2[240] = {0};
     uint8_t key[16] = {0};
 
     key_expand(key, expandedKey);
-    print_hex(expandedKey, 176, "Expanded Key:");
+    print_hex(expandedKey, 240, "Expanded Key:");
 
     key_expansion(key, expandedKey2);
-    print_hex(expandedKey2, 176, "Expanded Key:");
+    print_hex(expandedKey2, 240, "Expanded Key:");
 
 }
 
