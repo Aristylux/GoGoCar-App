@@ -138,9 +138,11 @@ CREATE TABLE city(
 ```
 ```sql
 ALTER TABLE city 
-  ALTER COLUMN location 
+  ALTER COLUMN location SET NOT NULL;
   SET DEFAULT ST_SetSRID(ST_MakePoint(0, 0), 4326);
 ```
+
+
 
 # Update
 
