@@ -268,6 +268,25 @@ VALUES
   ('Av. René Couzinet', 'Nice', 'Alpes Maritimes', '06200', ST_SetSRID(ST_MakePoint(43.66026966774082, 7.201844224709845), 4326)),
   ('135 Bd Napoléon III', 'Nice', 'Alpes Maritimes', '06200', ST_SetSRID(ST_MakePoint(43.680594049069,7.220692367038952), 4326));
 ```
+
+```sql
+INSERT INTO addresses (street_address, city, state, zip_code, latitude, longitude)
+VALUES
+  ('161 Av.Colobel Fabien', 'Toulon', 'Var', '83000', 43.12255, 5.94120),
+  ('265 Bd Maréchal Leclerc', 'Toulon', 'Var', '83000', 43.12601, 5.92918),
+  ('300 Av. de l''Université', 'La Valette-du-Var', 'Var', '83160', 43.1363, 6.00714),
+  ('Rue Antoine Bourdelle', 'Marseille', 'Bouches du Rhône', '13009', 43.23252012446604, 5.433485893994135),
+  ('36 Av. du Maréchal Foch', 'Marseille', 'Bouches du Rhône', '13004', 43.300447541385076, 5.3998418670150325),
+  ('2300 Av. des Moulins', 'Montpellier', 'Hérault', '34080', 43.621968004876884, 3.8321528553962967),
+  ('Bd des Arènes', 'Nîmes', 'Gard', '30000', 43.835097448831654, 4.359582409376505),
+  ('51 Av. Georges Pompidou', 'Nîmes', 'Gard', '30000', 43.836153250496544, 4.346651124721022),
+  ('Avenue des Champs Elysées', 'Paris', 'Ile de France', '75008', 48.87309424819047, 2.2978633250556575),
+  ('12 Av. Joseph Clotis', 'Hyères', 'Var', '83400', 43.11994763359465, 6.130012124675955),
+  ('1 Av. Ambroise Thomas', 'Hyères', 'Var', '83400', 43.11900226715078, 6.1321932400203),
+  ('Av. Thiers', 'Nice', 'Alpes Maritimes', '06008', 43.70482074203715, 7.261904647426397),
+  ('Av. René Couzinet', 'Nice', 'Alpes Maritimes', '06200', 43.66026966774082, 7.201844224709845),
+  ('135 Bd Napoléon III', 'Nice', 'Alpes Maritimes', '06200', 43.68059404906902, 7.201844224709845);
+```
 ## City
 
 ```sql
