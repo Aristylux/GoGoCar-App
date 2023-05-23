@@ -21,6 +21,8 @@ public class HandlerCodes {
     public static final int CLOSE_SLIDER = 51;
     public static final int QUERY = 52;
 
+    public static final int OPEN_QRCODE_ACTIVITY = 6;
+
     // Bluetooth codes
     public static final int BT_STATE_DISCOVERING = 1;
     public static final int BT_STATE_CONNECTED = 3;

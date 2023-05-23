@@ -108,6 +108,7 @@ public class WICommon {
             static class JS {
                 public static final String SET_VEHICLE = "setVehicle";
                 public static final String ADD_VEHICLE = "addVehicleResult";
+                public static final String SET_QRCODE_VALUE = "setQRCode";
             }
             static class ErrorCodes {
                 // vehicle_add.js

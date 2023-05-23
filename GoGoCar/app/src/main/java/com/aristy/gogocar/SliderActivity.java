@@ -1,9 +1,8 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_SLIDER;
-import static com.aristy.gogocar.CodesTAG.TAG_THREAD;
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
-import static com.aristy.gogocar.HandlerCodes.QUERY;
+import static com.aristy.gogocar.HandlerCodes.OPEN_QRCODE_ACTIVITY;
 import static com.aristy.gogocar.WindowHelper.setWindowVersion;
 
 import android.annotation.SuppressLint;
@@ -12,13 +11,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.r0adkll.slidr.Slidr;
@@ -40,6 +39,8 @@ public class SliderActivity extends AppCompatActivity {
     private String link;
     private boolean locked;
     private String data;
+
+    private WIPanels webInterfacePanel;
 
     /**
      * Use this factory method to create a new instance of
@@ -109,7 +110,8 @@ public class SliderActivity extends AppCompatActivity {
 
         // Result state page
         //web.setWebViewClient(new FragmentApp.Callback());
-        web.addJavascriptInterface(new WIPanels(web, userPreferences, handler, data), "Android");
+        webInterfacePanel = new WIPanels(web, userPreferences, handler, data);
+        web.addJavascriptInterface(webInterfacePanel, "Android");
 
         // Set slider
         SlidrConfig config = new SlidrConfig.Builder()
@@ -130,9 +132,28 @@ public class SliderActivity extends AppCompatActivity {
         setWindowVersion(SliderActivity.this, getWindow());
     }
 
+    ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        Log.d(TAG_SLIDER, "onActivityResult:");
+        String resultValue = null;
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Intent data = result.getData();
+            if (data != null) {
+                resultValue = data.getStringExtra(ScanQRCodeActivity.QR_CODE_VALUE);
+                Log.d(TAG_SLIDER, "onActivityResult: " + resultValue);
+            } else Log.e(TAG_SLIDER, "onActivityResult: data null");
+
+        } else Log.e(TAG_SLIDER, "onActivityResult: " + result.getResultCode());
+
+        webInterfacePanel.setResultQRCode(resultValue);
+    });
+
     Handler handler = new Handler(message -> {
         if (message.what == CLOSE_SLIDER) {
             onBackPressed();
+        } else if (message.what == OPEN_QRCODE_ACTIVITY){
+            Log.d(TAG_SLIDER, "handler: open QRCODE Activity");
+            Intent intent = new Intent(SliderActivity.this, ScanQRCodeActivity.class);
+            resultLauncher.launch(intent);
         }
         return true;
     });
@@ -142,4 +163,5 @@ public class SliderActivity extends AppCompatActivity {
         super.onBackPressed();
         overridePendingTransition(R.anim.animate_slide_right_enter, R.anim.animate_slide_right_exit);
     }
+
 }
