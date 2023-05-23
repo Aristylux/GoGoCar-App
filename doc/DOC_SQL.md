@@ -310,7 +310,21 @@ VALUES
   ('1 Av. Ambroise Thomas', 'Hyères', 'Var', '83400', ST_SetSRID(ST_MakePoint(43.11900226715078, 6.1321932400203), 4326)),
   ('Av. Thiers', 'Nice', 'Alpes Maritimes', '06008', ST_SetSRID(ST_MakePoint(43.70482074203715, 7.261904647426397), 4326)),
   ('Av. René Couzinet', 'Nice', 'Alpes Maritimes', '06200', ST_SetSRID(ST_MakePoint(43.66026966774082, 7.201844224709845), 4326)),
-  ('135 Bd Napoléon III', 'Nice', 'Alpes Maritimes', '06200', ST_SetSRID(ST_MakePoint(43.680594049069,7.220692367038952), 4326));
+  ('135 Bd Napoléon III', 'Nice', 'Alpes Maritimes', '06200', ST_SetSRID(ST_MakePoint(43.680594049069,7.220692367038952), 4326)),
+  ('Pl. de la Bourse','Bordeaux ','Gironde','33000', ST_SetSRID(ST_MakePoint(44.847625319339706, -0.570222932383494), 4326)),
+  ('1 All. Gabriel Biénès','Toulouse','Haute-Garonne','31000',ST_SetSRID(ST_MakePoint(43.58699790631396, 1.4331819687088538), 4326)),
+  ('Pl. André Maurois','Strasbourg', 'Bas-Rhin','67200',ST_SetSRID(ST_MakePoint(48.59476977827798, 7.695929483804118), 4326)),
+  ('36 Bd des Canuts','Lyon','Rhone','69004',  ST_SetSRID(ST_MakePoint(45.78234814027368, 4.829633261850004),4326)),
+  ('Av. Mathias Delobel','Lille', 'Nord','59000',ST_SetSRID(ST_MakePoint(50.64215669067997, 3.047237760668041), 4326)),
+  ('Bd Léon Bureau','Nantes','Loire-Atlantique','44200',ST_SetSRID(ST_MakePoint(47.211156760921284, -1.5634279868211647),4326)),
+  ('place Blot','Caen','Calvados','14000',ST_SetSRID(ST_MakePoint(49.18990693317228, -0.3703552922594886),4326)),
+  ('Bd Albert Camus','Angers','Maine et Loire','49100',ST_SetSRID(ST_MakePoint(47.48697080425762, -0.5728946763388832),4326)),
+  ('Bd Tanguy Prigent','Brest','Finistere','29200',ST_SetSRID(ST_MakePoint(Brest 48.40727325844152, -4.528771140969449),4326)),
+  ('All. du Zoo','Amiens','Somme','80000',ST_SetSRID(ST_MakePoint(49.90376735370334, 2.274721479783732),4326)),
+  ('54 Rue des Batignolles','Le Mans ',Sarthe','72100', ST_SetSRID(ST_MakePoint(47.99658073460969, 0.18574115544987005),4326)),
+  ('60 Rte des Creuses','Annecy', 'Haute Savoie','74960',ST_SetSRID(ST_MakePoint(45.898452515655016, 6.092793818353532),4326)),
+  ('1 Rue Louis Majorelle','Nancy','Meurthe-et-Moselle',' 54000 ',ST_SetSRID(ST_MakePoint(48.68839002604194, 6.164168310550205),4326)),
+  ('93 Rte de Gençay','Poitiers','Poitou Charente','86000 ', ST_SetSRID(ST_MakePoint(46.57468965595032, 0.3563472761161022),4326));
 ```
 
 ```sql
