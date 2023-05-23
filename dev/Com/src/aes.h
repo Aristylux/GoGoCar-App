@@ -27,6 +27,8 @@ void key_expansion(const uint8_t* key, uint8_t* expanded_key);
 void rotate(uint8_t *word);
 void core(uint8_t *word, uint32_t iteration);
 
+void key_expand(const uint8_t* key, uint8_t* expanded_key);
+
 void create_round_key(uint8_t *expanded_key, uint8_t *round_key);
 void add_round_key(uint8_t* state, const uint8_t* round_key);
 void sub_bytes(uint8_t* state);

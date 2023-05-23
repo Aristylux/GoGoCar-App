@@ -110,7 +110,7 @@ void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext){
     }
 
     // Expand the key into a set of round keys
-    key_expansion(key->key, expanded_key);
+    key_expand(key->key, expanded_key);
 
     main_encrypt(block, expanded_key, 14);
     
@@ -366,10 +366,53 @@ void core(uint8_t *word, uint32_t iteration){
 
     // Apply S-Box substitution on all 4 parts of the 32-bit word
     for (uint8_t i = 0; i < 4; ++i)
-        word[i] = sbox[i];
+        word[i] = sbox[word[i]];
     
     // XOR the output of the rcon operation with i to the first part (leftmost) only 
     word[0] = word[0]^rcon[iteration];
+}
+
+void key_expand(const uint8_t* key, uint8_t* expanded_key){
+
+    uint8_t size = KEY_256_BITS;
+
+    uint8_t expandedKeySize = 176;
+    uint8_t currentSize = 32; // for 256 bits key
+    uint8_t temp[4] = {0};
+
+    int rcon_iteration = 1;
+
+    // set the 16,24,32 bytes of the expanded key to the input key
+
+    // Copy the original key to the first set of round keys
+    memcpy(expanded_key, key, currentSize);
+
+    
+
+    while (currentSize < expandedKeySize) {
+        /* assign the previous 4 bytes to the temporary value t */
+        for (uint8_t i = 0; i < 4; i++) temp[i] = expanded_key[(currentSize - 4) + i];
+        
+
+        /* every 16,24,32 bytes we apply the core schedule to t
+         * and increment rconIteration afterwards
+         */
+        if(currentSize % size == 0) core(temp, rcon_iteration++);
+        
+
+        /* For 256-bit keys, we add an extra sbox to the calculation */
+        if(size == KEY_256_BITS && ((currentSize % size) == 16)) {
+            for(uint8_t i = 0; i < 4; i++) temp[i] = sbox[temp[i]];
+        }
+
+        /* We XOR t with the four-byte block 16,24,32 bytes before the new expanded key.
+         * This becomes the next four bytes in the expanded key.
+         */
+        for(uint8_t i = 0; i < 4; i++) {
+            expanded_key[currentSize] = expanded_key[currentSize - size] ^ temp[i];
+            currentSize++;
+        }
+    }
 }
 
 /* * * * * * * *

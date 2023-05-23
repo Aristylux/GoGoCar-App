@@ -118,4 +118,5 @@ void test(void){
     test_mix_columns();
     test_gmix_column();
     test_rotate();
+    test_key_expantion();
 }
