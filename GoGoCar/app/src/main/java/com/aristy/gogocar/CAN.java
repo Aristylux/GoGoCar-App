@@ -30,39 +30,39 @@ public class CAN {
 
         switch (type){
             case CODE_ENGINE_COOLANT:
-                Log.d(TAG_CAN, "messageReceived: " + CODE_ENGINE_COOLANT + ": " + data);
+                Log.d(TAG_CAN, "transformMessage: " + CODE_ENGINE_COOLANT + ": " + data);
                 can.setJSMethod(UP_CAN_ENGINE_COOLANT);
                 break;
             case CODE_SPEED:
-                Log.d(TAG_CAN, "messageReceived: " + CODE_SPEED + ": " + data);
+                Log.d(TAG_CAN, "transformMessage: " + CODE_SPEED + ": " + data);
                 can.setJSMethod(UP_CAN_SPEED_VALUE);
                 break;
             case CODE_TIME_ENGINE:
-                Log.d(TAG_CAN, "messageReceived: " + CODE_SPEED + ": " + data);
+                Log.d(TAG_CAN, "transformMessage: " + CODE_SPEED + ": " + data);
                 break;
             case CODE_DISTANCE_WITH_PROBLEM:
-                Log.d(TAG_CAN, "messageReceived: " + CODE_DISTANCE_WITH_PROBLEM + ": " + data);
+                Log.d(TAG_CAN, "transformMessage: " + CODE_DISTANCE_WITH_PROBLEM + ": " + data);
                 break;
             case CODE_FUEL_LEVEL:
-                Log.d(TAG_CAN, "messageReceived: " + CODE_FUEL_LEVEL + ": " + data);
+                Log.d(TAG_CAN, "transformMessage: " + CODE_FUEL_LEVEL + ": " + data);
                 can.setJSMethod(UP_CAN_FUEL_LEVEL);
                 break;
             case CODE_TYPE_FUEL:
-                Log.d(TAG_CAN, "messageReceived: " + CODE_TYPE_FUEL + ": " + data);
+                Log.d(TAG_CAN, "transformMessage: " + CODE_TYPE_FUEL + ": " + data);
                 break;
             case CODE_ACCELERATOR_PEDAL:
-                Log.d(TAG_CAN, "messageReceived: " + CODE_ACCELERATOR_PEDAL + ": " + data);
+                Log.d(TAG_CAN, "transformMessage: " + CODE_ACCELERATOR_PEDAL + ": " + data);
                 break;
             case CODE_ENGINE_OIL:
-                Log.d(TAG_CAN, "messageReceived: " + CODE_ENGINE_OIL + ": " + data);
+                Log.d(TAG_CAN, "transformMessage: " + CODE_ENGINE_OIL + ": " + data);
                 can.setJSMethod(UP_CAN_ENGINE_OIL);
                 break;
             case CODE_FUEL_CONSUMPTION:
-                Log.d(TAG_CAN, "messageReceived: " + CODE_FUEL_CONSUMPTION + ": " + data);
+                Log.d(TAG_CAN, "transformMessage: " + CODE_FUEL_CONSUMPTION + ": " + data);
                 can.setJSMethod(UP_CAN_FUEL_CONSUMPTION);
                 break;
             case CODE_ENGINE_WATER:
-                Log.d(TAG_CAN, "messageReceived: " + CODE_ENGINE_WATER + ": " + data);
+                Log.d(TAG_CAN, "transformMessage: " + CODE_ENGINE_WATER + ": " + data);
                 can.setJSMethod(UP_CAN_ENGINE_WATER);
                 break;
         }
