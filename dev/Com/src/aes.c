@@ -448,20 +448,34 @@ void add_round_key_inv(uint8_t* state, const uint8_t* round_key){
 }
 */
 
+/**
+ * @brief a linear mixing operation which operates on the columns of the state, combining the four bytes in each column.
+ * 
+ * @param state pointer to the current state (16 bytes)
+ */
 void mix_columns_inv(uint8_t *state){
-    uint8_t tmp[4];
+    uint8_t column[4];
+    for (uint8_t i = 0; i < 4; i++){
+        // Construct a column by iterating over the 4 rows
+        for (uint8_t j = 0; j < 4; j++)
+            column[j] = state[(j*4)+i];
+        
+        mix_column_inv(column);
 
-    for (int i = 0; i < 4; ++i) {
-        tmp[0] = (uint8_t)(gf_mul(state[i], 0x0e) ^ gf_mul(state[4 + i], 0x0b) ^ gf_mul(state[8 + i], 0x0d) ^ gf_mul(state[12 + i], 0x09));
-        tmp[1] = (uint8_t)(gf_mul(state[i], 0x09) ^ gf_mul(state[4 + i], 0x0e) ^ gf_mul(state[8 + i], 0x0b) ^ gf_mul(state[12 + i], 0x0d));
-        tmp[2] = (uint8_t)(gf_mul(state[i], 0x0d) ^ gf_mul(state[4 + i], 0x09) ^ gf_mul(state[8 + i], 0x0e) ^ gf_mul(state[12 + i], 0x0b));
-        tmp[3] = (uint8_t)(gf_mul(state[i], 0x0b) ^ gf_mul(state[4 + i], 0x0d) ^ gf_mul(state[8 + i], 0x09) ^ gf_mul(state[12 + i], 0x0e));
-
-        state[i] = tmp[0];
-        state[4 + i] = tmp[1];
-        state[8 + i] = tmp[2];
-        state[12 + i] = tmp[3];
+        // Put the values back into the state
+        for (uint8_t j = 0; j < 4; j++)
+            state[(j*4)+i] = column[j];
     }
+}
+
+void mix_column_inv(uint8_t *column){
+    uint8_t cpy[4];
+    for(uint8_t i = 0; i < 4; i++) cpy[i] = column[i];
+
+    column[0] = gf_mul(cpy[0],14) ^ gf_mul(cpy[3],9) ^ gf_mul(cpy[2],13) ^ gf_mul(cpy[1],11);
+    column[1] = gf_mul(cpy[1],14) ^ gf_mul(cpy[0],9) ^ gf_mul(cpy[3],13) ^ gf_mul(cpy[2],11);
+    column[2] = gf_mul(cpy[2],14) ^ gf_mul(cpy[1],9) ^ gf_mul(cpy[0],13) ^ gf_mul(cpy[3],11);
+    column[3] = gf_mul(cpy[3],14) ^ gf_mul(cpy[2],9) ^ gf_mul(cpy[1],13) ^ gf_mul(cpy[0],11);
 }
 
 void generate_sbox_inv(void) {
