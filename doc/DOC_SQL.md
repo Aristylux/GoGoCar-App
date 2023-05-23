@@ -120,6 +120,18 @@ CREATE TABLE addresses (
 ```
 REMARQUE 4326 dans PostGIS, cela indique que les coordonnées géographiques stockées dans la table sont des coordonnées WGS84
 
+```sql
+CREATE TABLE addresses (
+  id SERIAL PRIMARY KEY,
+  street_address TEXT,
+  city TEXT,
+  state TEXT,
+  zip_code TEXT,
+  latitude DOUBLE PRECISION,
+  longitude DOUBLE PRECISION
+);
+```
+
 ### City
 ```sql
 CREATE TABLE city(
