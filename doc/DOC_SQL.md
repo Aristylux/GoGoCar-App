@@ -229,6 +229,13 @@ SELECT ST_X(a.location) AS address_longitude, ST_Y(a.location) AS address_latitu
 FROM addresses AS a
 JOIN city AS c ON a.city = c.city;
 ```
+Pour un point autour de 10km
+```sql
+SELECT a.*
+FROM city c
+JOIN addresses a ON c.city = a.city
+WHERE ST_DWithin(c.location, a.location, 10000);
+```
 # Insert
 
 ## User
