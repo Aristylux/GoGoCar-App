@@ -166,7 +166,7 @@ void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, char *plaintext){
         // inv shift row
         shift_rows_inv(state);
         // inv sub bytes
-        sub_bytes_inv(state, sbox_inv);
+        sub_bytes_inv(state);
         // add round key
         add_round_key(state, round_key + 4 * round);
         // inv mix column    
@@ -177,7 +177,7 @@ void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, char *plaintext){
     // inv shift row
     shift_rows_inv(state);
     // inv round bytes
-    sub_bytes_inv(state, sbox_inv);
+    sub_bytes_inv(state);
     // add round key
     add_round_key(state, round_key);
 
@@ -421,36 +421,25 @@ void key_expand(const uint8_t* key, uint8_t* expanded_key){
  * AES DECRYPT *
  * * * * * * * */
 
-void sub_bytes_inv(uint8_t* state, const uint8_t* sbox){
-     for (int i = 0; i < BLOCK_SIZE_128_BITS; ++i) {
-        state[i] = sbox[state[i]];
+void sub_bytes_inv(uint8_t* state){
+     for (uint8_t i = 0; i < BLOCK_SIZE_128_BITS; i++) {
+        state[i] = sbox_inv[state[i]];
     }
 }
 
 void shift_rows_inv(uint8_t *state){
+    for (uint8_t i = 0; i < 4; i++)
+        shift_row_inv(state + i * 4, i);
+}
+
+void shift_row_inv(uint8_t *state, uint8_t nbr){
     uint8_t temp;
-
-    // Shift second row right by 1 position
-    temp = state[1];
-    state[1] = state[13];
-    state[13] = state[9];
-    state[9] = state[5];
-    state[5] = temp;
-
-    // Shift third row right by 2 positions
-    temp = state[2];
-    state[2] = state[10];
-    state[10] = temp;
-    temp = state[6];
-    state[6] = state[14];
-    state[14] = temp;
-
-    // Shift fourth row right by 3 positions
-    temp = state[3];
-    state[3] = state[7];
-    state[7] = state[11];
-    state[11] = state[15];
-    state[15] = temp;
+    for (uint8_t i = 0; i < nbr; i++){
+        temp = state[3];
+        for (int8_t j = 3; j > 0; j--)
+            state[j] = state[j - 1];
+        state[0] = temp;
+    }
 }
 
 /*

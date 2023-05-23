@@ -43,8 +43,10 @@ uint8_t gf_mul(uint8_t a, uint8_t b);
 // Decrypt
 void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, char *plaintext);
 
-void sub_bytes_inv(uint8_t* state, const uint8_t* sbox);
+void sub_bytes_inv(uint8_t* state);
 void shift_rows_inv(uint8_t *state);
+void shift_row_inv(uint8_t *state, uint8_t nbr);
+
 void mix_columns_inv(uint8_t *state);
 
 void generate_sbox_inv(void);
