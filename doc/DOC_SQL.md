@@ -236,6 +236,15 @@ FROM city c
 JOIN addresses a ON c.city = a.city
 WHERE ST_DWithin(c.location, a.location, 10000);
 ```
+```sql
+SELECT *
+FROM addresses
+WHERE ST_DWithin(
+  ST_MakePoint(address_longitude, address_latitude)::geography,
+  ST_MakePoint(city_longitude, city_latitude)::geography,
+  10000
+);
+```
 # Insert
 
 ## User
