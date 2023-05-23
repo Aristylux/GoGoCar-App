@@ -91,9 +91,17 @@ class ReceiverCAN {
         this.data = data;
     }
 
+    public String getData(){
+        return this.data;
+    }
+
     public void setJSMethod(String method){
         this.JSMethod = method;
         this.isResulted = true;
+    }
+
+    public String getMethod(){
+        return this.JSMethod;
     }
 
 }

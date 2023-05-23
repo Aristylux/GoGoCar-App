@@ -2,15 +2,8 @@ package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_CON;
-import static com.aristy.gogocar.CodesTAG.TAG_CAN;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
-import static com.aristy.gogocar.WICommon.Pages.Home.JS.UP_CAN_ENGINE_COOLANT;
-import static com.aristy.gogocar.WICommon.Pages.Home.JS.UP_CAN_ENGINE_OIL;
-import static com.aristy.gogocar.WICommon.Pages.Home.JS.UP_CAN_ENGINE_WATER;
-import static com.aristy.gogocar.WICommon.Pages.Home.JS.UP_CAN_FUEL_CONSUMPTION;
-import static com.aristy.gogocar.WICommon.Pages.Home.JS.UP_CAN_FUEL_LEVEL;
-import static com.aristy.gogocar.WICommon.Pages.Home.JS.UP_CAN_SPEED_VALUE;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
@@ -31,9 +24,6 @@ public class BluetoothConnection extends Thread {
     public Handler handler;
 
     private boolean isConnecting;
-
-    private String message;
-    private String function;
 
 
     /**
@@ -135,7 +125,7 @@ public class BluetoothConnection extends Thread {
      * Find the best function to result
      * @param message message to extract
      */
-    public void messageReceived(String message){
+    public ReceiverCAN messageReceived(String message){
         // TODO
         // Message management
 
@@ -148,18 +138,9 @@ public class BluetoothConnection extends Thread {
         String type = "t_li";
 
         // Extract data
-        this.message = message;
+        String data = message; // message splited
 
-
-
-    }
-
-    public String getMessageFunction(){
-        return this.function;
-    }
-
-    public String getMessageParams(){
-        return this.message;
+        return CAN.transformMessage(type, data);
     }
 
     /**
