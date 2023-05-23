@@ -136,6 +136,12 @@ CREATE TABLE city(
   location GEOMETRY(Point,4326) USING ST_GeomFromText('POINT(0 0)', 4326)
 );
 ```
+```sql
+ALTER TABLE city 
+  ALTER COLUMN location 
+  SET DEFAULT ST_SetSRID(ST_MakePoint(0, 0), 4326);
+```
+
 # Update
 
 ```sql
