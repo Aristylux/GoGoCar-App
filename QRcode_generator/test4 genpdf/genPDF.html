@@ -37,12 +37,12 @@
             qr_liste_li.textContent = value;
             qr_liste_ul.appendChild(qr_liste_li);
             qr_liste.push(value);
-            addQRCodeToTable(qr_liste.length - 1);
+            //addQRCodeToTable(qr_liste.length - 1);
         }
     
         function addQRCodeToTable(i) {
             var qr_tableau_div = document.getElementById("qr_tableau");
-            var tbody = qr_tableau_div.querySelector("tbody");
+            var tbody = qr_tableau_div.querySelector("#qr_tableau tbody");//"#qr_tableau tbody" plus précis que "tbody"
 
             // Create elements for the row
             var row = document.createElement("tr");
