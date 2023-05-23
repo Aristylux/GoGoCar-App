@@ -252,6 +252,16 @@ JOIN addresses a ON c1.city = a.city
 JOIN city c2 ON c2.city = 'Toulon'
 WHERE a.street_address = '265 Bd Maréchal Leclerc' AND c2.city = 'Toulon';
 ```
+On utilisera cette requete 
+```sql
+SELECT *
+FROM addresses
+WHERE ST_DWithin(
+  location::geography,
+  (SELECT location FROM city WHERE city = 'Marseille')::geography,
+  10000
+);
+```
 # Insert
 
 ## User
