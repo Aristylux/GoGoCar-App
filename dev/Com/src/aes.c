@@ -339,6 +339,21 @@ void key_expansion(const uint8_t* key, uint8_t* expanded_key) {
     }
 }
 
+
+/**
+ * @brief rotate the word eight bits to the left
+ * @note rotate(1d2c3a4f) = 2c3a4f1d
+ * 
+ * @param word is an 8bits array of size 4 (32 bit)
+ */
+void rotate(uint8_t *word) {
+    uint8_t c = word[0];
+    for (uint8_t i = 0; i < 3; i++)
+        word[i] = word[i+1];
+    word[3] = c;
+}
+
+
 /* * * * * * * *
  * AES DECRYPT *
  * * * * * * * */

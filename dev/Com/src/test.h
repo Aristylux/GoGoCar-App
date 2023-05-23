@@ -9,6 +9,7 @@
 
 void test_mix_columns(void);
 void test_gmix_column(void);
+void test_rotate(void);
 
 /** **/
 

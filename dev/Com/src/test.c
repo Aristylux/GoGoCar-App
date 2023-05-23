@@ -38,6 +38,23 @@ void test_gmix_column(void){
         printf("mix_column function passed the test!\n");
     } else {
         printf("mix_column function failed the test!\n");
+        print_hex(state, 4, "Result");
+        print_hex(expected_state, 4, "Expected");
+    }
+}
+
+void test_rotate(void){
+    uint8_t state[4] = {0xdb, 0x13, 0x53, 0x45};
+    uint8_t expected_state[4] = {0x13, 0x53, 0x45, 0xdb};
+
+    rotate(state);
+
+    if (memcmp(state, expected_state, 4) == 0) {
+        printf("rotate function passed the test!\n");
+    } else {
+        printf("rotate function failed the test!\n");
+        print_hex(state, 4, "Result");
+        print_hex(expected_state, 4, "Expected");
     }
 }
 
@@ -46,4 +63,5 @@ void print_hex(const uint8_t *arr, const size_t size, const char *title){
     for (uint8_t i = 1; i < size+1; i++) {
         printf("%2.2x%c", arr[i-1], (i%16) ? ' ' : '\n');
     }
+    printf("\n");
 }
