@@ -144,7 +144,7 @@ public class BluetoothConnection extends Thread {
             return CAN.transformMessage(type, data);
         } else {
             Log.e(TAG_CAN, "messageReceived: data invalid. message: '" + message + "'");
-            return null;
+            return new ReceiverCAN();
         }
     }
 
