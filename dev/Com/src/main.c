@@ -6,12 +6,27 @@
 
 void rsa(void);
 void aes(void);
+void test(void);
 
-int main(void) {
-    //rsa();
+int main(int argc, char *argv[]) {
+    int runTest = 0;
 
-    aes();
+    // Check if the "-t" parameter is present
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-t") == 0) {
+            runTest = 1;
+            break;
+        }
+    }
 
+    if (runTest) {
+        test();
+    } else {
+
+        //rsa();
+
+        aes();
+    }
     return 0; // success
 }
 
