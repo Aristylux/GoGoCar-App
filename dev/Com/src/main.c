@@ -34,7 +34,8 @@ void aes(void){
     t_aes_key *key = generate_aes_key(KEY_256_BITS);
     print_aes_key(key);
 
-    char plaintext[BLOCK_SIZE_128_BITS] = "hello";
+    unsigned char plaintext[BLOCK_SIZE_128_BITS] = "hello";
+    unsigned char plaintextFinal[BLOCK_SIZE_128_BITS] = {0};
     uint8_t ciphertext[BLOCK_SIZE_128_BITS];
 
     aes_encrypt(plaintext, key, ciphertext);
@@ -46,12 +47,14 @@ void aes(void){
     }
     printf("\n");
 
-    aes_decrypt(ciphertext, key, plaintext);
+    aes_decrypt(ciphertext, key, plaintextFinal);
     printf("Decrypted data: ");
     for (int i = 0; i < 16; ++i) {
-        printf("%02x ", plaintext[i]);
+        printf("%02x ", plaintextFinal[i]);
     }
     printf("\n");
+
+    printf("%s", plaintextFinal);
 
     free_aes_key(key);
 }

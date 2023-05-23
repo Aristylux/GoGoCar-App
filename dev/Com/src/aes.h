@@ -20,7 +20,7 @@ t_aes_key* generate_aes_key(size_t key_size);
 void print_aes_key(t_aes_key *key);
 void free_aes_key(t_aes_key *key);
 
-void aes_encrypt(char *plaintext, t_aes_key *key, uint8_t *ciphertext);
+void aes_encrypt(unsigned char *plaintext, t_aes_key *key, uint8_t *ciphertext);
 void main_encrypt(uint8_t *state, uint8_t *expanded_key, uint8_t nbr_rounds);
 
 void key_expansion(const uint8_t* key, uint8_t* expanded_key);
@@ -41,12 +41,14 @@ void mix_column(uint8_t *column);
 uint8_t gf_mul(uint8_t a, uint8_t b);
 
 // Decrypt
-void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, char *plaintext);
+void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, unsigned char *plaintext);
+void main_decrypt(uint8_t *state, uint8_t *expanded_key, uint8_t nbr_rounds);
 
 void sub_bytes_inv(uint8_t* state);
 void shift_rows_inv(uint8_t *state);
 void shift_row_inv(uint8_t *state, uint8_t nbr);
 
 void mix_columns_inv(uint8_t *state);
+void mix_column_inv(uint8_t *column);
 
 void generate_sbox_inv(void);
