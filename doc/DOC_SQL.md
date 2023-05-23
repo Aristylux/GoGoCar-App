@@ -209,16 +209,25 @@ SELECT  location GEOMETRY(Point,4326) FROM addresses WHERE ST_Distance('123 Main
 
 ```
 ## Distance
+On ne peut pas utiliser car GEOMETRY
 
 ```sql
 SELECT *
 FROM city
 WHERE ST_Distance(location GEOMETRY(Point,4326), ST_SetSRID(ST_MakePoint(<43.1242>, <5.9280>), 4326)) <= 10000;
 ```
+
 ```sql
 SELECT *
 FROM city
 WHERE ST_Distance(location, ST_SetSRID(ST_MakePoint(<43.1242>, <5.9280>), 4326)) <= 10000;
+```
+Pour extraire les coordonnées
+```sql
+SELECT ST_X(a.location) AS address_longitude, ST_Y(a.location) AS address_latitude,
+       ST_X(c.location) AS city_longitude, ST_Y(c.location) AS city_latitude
+FROM addresses AS a
+JOIN city AS c ON a.city = c.city;
 ```
 # Insert
 
