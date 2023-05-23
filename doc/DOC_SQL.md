@@ -108,6 +108,7 @@ CREATE TABLE `carmodel` (
 ```
 
 ### Addresses
+On utilisera cette table
 ```sql
 CREATE TABLE addresses (
   id SERIAL PRIMARY KEY,
@@ -133,6 +134,7 @@ CREATE TABLE addresses (
 ```
 
 ### City
+On utilisera cette table
 ```sql
 CREATE TABLE city(
   id SERIAL PRIMARY KEY,
@@ -249,7 +251,7 @@ INSERT INTO addresses (street_address, city, state, zip_code, location GEOMETRY(
 ('Av. René Couzinet', ' Nice', 'Alpes maritimes', '06200', ST_SetSRID(ST_MakePoint(43.66026966774082, 7.201844224709845), 4326)),
 ('135 Bd Napoléon III', 'Nice', 'Alpes maritimes', '06200', ST_SetSRID(ST_MakePoint(43.68059404906902, 7.220692367038952), 4326));
 ```
-
+On utilisera cette requete
 ```sql
 INSERT INTO addresses (street_address, city, state, zip_code, location)
 VALUES
@@ -299,7 +301,7 @@ INSERT INTO city (city, location GEOMETRY(Point,4326)) VALUES
 ('Marseille',ST_SetSRID(ST_MakePoint(43.300000, 5.400000), 4326)),
 ('La Valette-du-Var',ST_SetSRID(ST_MakePoint(43.133331,5.98333), 4326));
 ```
-
+On utilisera cette requete
 ```sql
 INSERT INTO city (city, location)
 VALUES
