@@ -245,6 +245,13 @@ WHERE ST_DWithin(
   10000
 );
 ```
+```sql
+SELECT ST_Distance(c1.location, a.location) as distance
+FROM city c1
+JOIN addresses a ON c1.city = a.city
+JOIN city c2 ON c2.city = 'Toulon'
+WHERE a.street_address = '265 Bd Maréchal Leclerc' AND c2.city = 'Toulon';
+```
 # Insert
 
 ## User
