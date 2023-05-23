@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <script src="qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
     <section>
         <label>Entrez un texte ou un lien :</label>
         <input type="text" id="qr_input">
@@ -21,11 +24,10 @@
     <section>
         <h2>QR Codes</h2>
         <div id="qr_tableau"></div>
-        <button id="generate-pdf">Générer PDF</button>
+        <button id="generate-pdf" onclick="setTimeout(genererPDF, 1000)">Générer PDF</button>
     </section>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
-    <script src="qrcode.min.js"></script>
+    
     <script type="text/javascript">
         var qr_liste = [];
     
@@ -35,6 +37,7 @@
             qr_liste_li.textContent = value;
             qr_liste_ul.appendChild(qr_liste_li);
             qr_liste.push(value);
+            addQRCodeToTable(qr_liste.length - 1);
         }
     
         function addQRCodeToTable(i) {
