@@ -152,7 +152,20 @@ public class FragmentNav extends Fragment {
         }
     });
 
-    public void putArguments(Bundle args){
+
+
+    /**
+     * @param function function name to call in web
+     * @param params parameters in that function
+     */
+    public static Bundle putArguments(String function, String params){
+        Bundle args = new Bundle();
+        args.putString(ARG_FUNCTION_NAME, function);
+        args.putString(ARG_FUNCTION_PARAMS, params);
+        return args;
+    }
+
+    public void sendDataToFragment(Bundle args){
         String functionName = args.getString(ARG_FUNCTION_NAME);
         String params = args.getString(ARG_FUNCTION_PARAMS);
         if (web != null)

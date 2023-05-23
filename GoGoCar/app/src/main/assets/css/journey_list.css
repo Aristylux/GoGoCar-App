@@ -1,3 +1,11 @@
+:root {
+    --witdh-param: 50px;
+    --heigth-param: var(--witdh-param);
+    --line: 10px;
+
+    --height-on-road-container: 250px;
+}
+
 ul {
     padding: 0;
     /*margin: 0;*/
@@ -10,19 +18,212 @@ li {
 }
 
 .journey-container {
-    background: var(--background-color);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
     margin-bottom: 20px;
-    padding: 20px;
 
     display: grid;
     grid-template-rows: 1fr auto;
-    grid-gap: 10px;
 
     transition: 0.5s;
     opacity: 1;
 }
+
+.container {
+    background: var(--background-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+}
+
+.main {
+    border-radius: 10px;
+    z-index: 2;
+}
+
+.off-road {
+    background: var(--background-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+
+    border-radius: 0 0 10px 10px;
+    margin: 0 10px;
+
+    transition: 0.5s ease-in-out;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    z-index: 1;
+}
+
+.off-road.hidden {
+    margin-top: -85px;
+    margin-bottom: 5px;
+}
+
+.on-road {
+    background: #e3edf7;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+
+    border-radius: 0 0 10px 10px;
+    margin: 0 10px;
+
+    z-index: 0;
+
+    display: grid;
+    gap: 10px;
+}
+
+.on-road.display { 
+    animation: display 0.5s ease-out;
+    height: var(--height-on-road-container);
+}
+
+.on-road.hidden {
+    animation: remove 0.5s ease-out;
+    display: none;
+}
+
+.on-road .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+@keyframes display {
+    0% {
+        opacity: 0;
+        margin-top: -300px;
+        height: 200px;
+    }
+
+    30% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+        margin-top: 0px;
+        height: var(--height-on-road-container);
+    }
+}
+
+@keyframes remove {
+    0% {
+        opacity: 1;
+        margin-top: 0px;
+        height: var(--height-on-road-container);
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0;
+        margin-top: -300px;
+        height: 200px;
+    }
+}
+
+
+
+/* ----- */
+
+.parameter {
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+    gap: 10px;
+}
+
+.figure {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.parameter-name {
+    text-align: center;
+    font-size: 0.8em;
+
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+/*
+.parameter span {
+    text-align: center;
+    font-size: 0.8em;
+}
+*/
+
+.circular {
+    position: relative;
+}
+
+.outer {
+    width: var(--witdh-param);
+    height:  var(--heigth-param);
+    padding: var(--line);
+    
+    border-radius: 50%;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+                -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+}
+
+.inner {
+    width: var(--witdh-param);
+    height:  var(--heigth-param);
+
+    border-radius: 50%;
+    box-shadow: inset 4px 4px 6px -1px rgba(0, 0, 0, 0.2),
+                inset -4px -4px 6px -1px rgba(255, 255, 255, 0.7),
+                -0.5px -0.5px 0px rgba(255, 255, 255, 1),
+                0.5px 0.5px 0px rgba(0, 0, 0, 0.15),
+                0px 12px 10px -10px rgba(0,0,0,0.05);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text {
+    font-size: 0.8em;
+    font-weight: 600;
+    color: #555;
+}
+
+circle {
+    fill: none;
+    
+    stroke-width: var(--line);
+    stroke-dasharray: /*calc((var(--heigth-param) + var(--line)) * 3 + 20 )*/ 280px;
+    stroke-dashoffset: /*calc((var(--heigth-param) + var(--line)) * 3 + 20 )*/ 280px;
+    cx: calc((var(--heigth-param) + 2* var(--line)) / 2);
+    cy: calc((var(--heigth-param) + 2* var(--line)) / 2);
+    r: calc((var(--heigth-param) + var(--line)) / 2);
+}
+
+.grad-one {
+    stroke: url(#gradient1);
+}
+
+.grad-two {
+    stroke: url(#gradient2);
+}
+
+.linear-one {
+    stroke: url(#linear1);
+}
+
+svg {
+    width: calc(var(--heigth-param) + 2* var(--line));
+    height:  calc(var(--heigth-param) + 2* var(--line));
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* ----- */
 
 @keyframes fadeInFromNone {
     0% {

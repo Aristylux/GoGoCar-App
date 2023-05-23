@@ -2,6 +2,7 @@ package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_CON;
+import static com.aristy.gogocar.CodesTAG.TAG_CAN;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
 
@@ -24,9 +25,6 @@ public class BluetoothConnection extends Thread {
     public Handler handler;
 
     private boolean isConnecting;
-
-    private String message;
-    private String function;
 
 
     /**
@@ -128,25 +126,26 @@ public class BluetoothConnection extends Thread {
      * Find the best function to result
      * @param message message to extract
      */
-    public void messageReceived(String message){
+    public ReceiverCAN messageReceived(String message){
         // TODO
         // Message management
 
         // Extract code
 
-        // Extract message
-        this.message = message;
+        String type;
+        String data;
 
-        // Action
-        this.function = "functionTest";
-    }
+        // Message : "&type:data\n"
+        if (message.startsWith("$") && message.contains(":")) {
+            int colonIndex = message.indexOf(":");
 
-    public String getMessageFunction(){
-        return this.function;
-    }
-
-    public String getMessageParams(){
-        return this.message;
+            type = message.substring(1, colonIndex);
+            data = message.substring(colonIndex + 1);
+            return CAN.transformMessage(type, data);
+        } else {
+            Log.e(TAG_CAN, "messageReceived: data invalid. message: '" + message + "'");
+            return null;
+        }
     }
 
     /**

@@ -6,8 +6,7 @@ import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Debug;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
 import static com.aristy.gogocar.ConnectionHelper.connectionValid;
-import static com.aristy.gogocar.FragmentNav.ARG_FUNCTION_NAME;
-import static com.aristy.gogocar.FragmentNav.ARG_FUNCTION_PARAMS;
+import static com.aristy.gogocar.FragmentNav.putArguments;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_STATE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
@@ -234,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices FINISHED");
                 // If a connection is not in progress, we don't find the car, prevent user.
                 if (!bluetoothConnection.isConnecting())
-                    sendDataToFragment(DRIVING_REQUEST, DRIVING_REQUEST_CAR_NOT_FOUND);
+                    fragmentNav.sendDataToFragment(putArguments(DRIVING_REQUEST, DRIVING_REQUEST_CAR_NOT_FOUND));
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices STARTED");
             } else if (BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)){
@@ -269,24 +268,26 @@ public class MainActivity extends AppCompatActivity {
                 case BT_STATE_CONNECTED:                    //Send pairing success and connection established
                     Log.v(TAG_BT, "BT_STATE_CONNECTED");
                     bluetoothConnection.connectionEstablished();
-                    sendDataToFragment(DRIVING_REQUEST, TRUE);
+                    fragmentNav.sendDataToFragment(putArguments(DRIVING_REQUEST, TRUE));
                     break;
                 case BT_STATE_CONNECTION_FAILED:
                     Log.v(TAG_BT, "BT_STATE_CONNECTION_FAILED");
                     bluetoothConnection.connectionFailed();
-                    sendDataToFragment(DRIVING_REQUEST, DRIVING_CONNECTION_FAILED);
+                    fragmentNav.sendDataToFragment(putArguments(DRIVING_REQUEST, DRIVING_CONNECTION_FAILED));
                     break;
                 case BT_STATE_MESSAGE_RECEIVED:
                     Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
                     Log.d(TAG_BT, "handleMessage: received: " + message.obj);
                     // TODO (test)
                     // -> bluetoothConnection.messageReceived((String) message.obj);
-                    //sendDataToFragment(bluetoothConnection.getMessageFunction(), bluetoothConnection.getMessageParams());
+
+                    ReceiverCAN dataCan = bluetoothConnection.messageReceived(message.toString());
+                    if (dataCan.isResulted()) fragmentNav.sendDataToFragment(putArguments(dataCan.getMethod(), dataCan.getData()));
                     break;
                 case BT_STATE_DISCONNECTED:
                     Log.v(TAG_BT, "BT_STATE_DISCONNECTED");
                     bluetoothConnection.connectionFinished();
-                    sendDataToFragment(DRIVING_REQUEST, DRIVING_CONNECTION_DISCONNECTED);
+                    fragmentNav.sendDataToFragment(putArguments(DRIVING_REQUEST, DRIVING_CONNECTION_DISCONNECTED));
                     break;
                 case BT_STATE_DISCONNECTING:
                     Log.v(TAG_BT, "BT_STATE_DISCONNECTING");
@@ -294,11 +295,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case BT_REQUEST_STATE:
                     if (bluetoothConnection == null || bluetoothConnection.getBluetoothSocket() == null) {
-                        sendDataToFragment("setSwitchState", FALSE);
+                        fragmentNav.sendDataToFragment(putArguments("setSwitchState", FALSE));
                         break;
                     }
                     boolean connected = bluetoothConnection.getBluetoothSocket().isConnected();
-                    sendDataToFragment("setSwitchState", String.valueOf(connected));
+                    fragmentNav.sendDataToFragment(putArguments("setSwitchState", String.valueOf(connected)));
                     break;
             }
             return true;
@@ -327,17 +328,6 @@ public class MainActivity extends AppCompatActivity {
     public void setFragment(int animation, String link){
         fragmentNav = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, link);
         setFragment(fragmentNav, animation);
-    }
-
-    /**
-     * @param function function name to call in web
-     * @param params parameters in that function
-     */
-    public void sendDataToFragment(String function, String params){
-        Bundle args = new Bundle();
-        args.putString(ARG_FUNCTION_NAME, function);
-        args.putString(ARG_FUNCTION_PARAMS, params);
-        fragmentNav.putArguments(args);
     }
 
     Handler fragmentHandler = new Handler(new Handler.Callback() {

@@ -69,6 +69,12 @@ public class WICommon {
                 public static final String SET_VEHICLE_BOOKED = "setVehicleBooked";
                 public static final String DRIVING_REQUEST = "requestDriveCallback";
                 public static final String DELETE_JOURNEY = "journeyDelete";
+                public static final String UP_CAN_SPEED_VALUE = "updateSpeedValue";
+                public static final String UP_CAN_FUEL_LEVEL = "updateFuelLevel";
+                public static final String UP_CAN_FUEL_CONSUMPTION = "updateFuelConsumption";
+                public static final String UP_CAN_ENGINE_COOLANT = "updateEngineCoolant";
+                public static final String UP_CAN_ENGINE_WATER = "updateEngineWater";
+                public static final String UP_CAN_ENGINE_OIL = "updateEngineOil";
             }
             static class ErrorCodes {
                 // home.js

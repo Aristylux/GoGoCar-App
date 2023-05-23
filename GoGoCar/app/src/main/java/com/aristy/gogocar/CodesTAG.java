@@ -17,5 +17,6 @@ public class CodesTAG {
     static final String TAG_BT_COM = TAG_BT + "_Communication";
     static final String TAG_FRAGMENT = TAG + "_F";
     static final String TAG_SLIDER = TAG + "_Slider";
+    static final String TAG_CAN = TAG + "_CAN";
     static final String TAG_QRCODE = TAG + "_QRCode";
 }
