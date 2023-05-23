@@ -86,7 +86,20 @@ CREATE TABLE vehicles (
     id_module INTEGER UNIQUE NOT NULL
     );
 ```
-
+On utilise cette table
+```sql
+CREATE TABLE vehicles (
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, 
+    model VARCHAR(40) NOT NULL, 
+    licence_plate VARCHAR(10) UNIQUE NOT NULL,
+    id_address INTEGER UNIQUE NOT NULL ,
+    id_owner INTEGER NOT NULL,
+    is_available BOOLEAN NOT NULL DEFAULT TRUE,
+    is_booked BOOLEAN NOT NULL DEFAULT FALSE,
+    id_user_book INTEGER,
+    id_module INTEGER UNIQUE NOT NULL
+    );
+```
 ### Modules gogocar
 
 ```sql
