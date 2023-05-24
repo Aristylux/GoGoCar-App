@@ -34,9 +34,11 @@ public class aes {
 
         }
 
-        private final byte BLOCK_SIZE_128_BITS = 16;
+        private final int BLOCK_SIZE_128_BITS = 16;
 
-
+        private final int KEY_128_BITS = 16;
+        private final int KEY_192_BITS = 24;
+        private final int KEY_256_BITS = 32;
 
         /**
          * @brief S-box values (Substitution box)
@@ -213,7 +215,101 @@ public class aes {
 
         // --- Decrypt functions ---
 
-        // --- ---
+        // --- General functions ---
+
+        /**
+         * @brief Rotate the word eight bits to the left
+         * @note Rotate(1d2c3a4f) = 2c3a4f1d
+         * 
+         * @param word Is an 8bits array of size 4 (32 bit)
+         */
+        private void rotate(byte[] word) {
+            byte c = word[0];
+            for (int i = 0; i < 3; i++)
+                word[i] = word[i+1];
+            word[3] = c;
+        }
+
+        /**
+         * @brief Key substitution core
+         * 
+         * @param word Word of 4*8bits
+         * @param iteration Number of iteration
+         */
+        private void core(byte[] word, int iteration) {
+            // Rotate the 32-bit word 8 bits to the left
+            rotate(word);
+        
+             // Apply S-Box substitution on all 4 parts of the 32-bit word
+            for (int i = 0; i < 4; ++i)
+                word[i] = sbox[word[i] & 0xFF];
+            
+                // XOR the output of the rcon operation with i to the first part (leftmost) only
+            word[0] ^= rcon[iteration];
+        }
+
+        /**
+         * @brief Key expansion function.
+         * Implement AES-256 key expansion,
+         * This involves applying a series of transformations to the original key
+         * to generate a set of round keys that will be used for each round of encryption.
+         * 
+         * @param key Pointer to the secret key (32 bytes)
+         * @param expanded_key Pointer to the expanded set of round keys (240 bytes)
+         */
+        private void keyExpansion(AESKey key, byte[] expandedKey) {
+            int expandedKeySize = (BLOCK_SIZE_128_BITS * (setNumberRound(key.keySize) + 1));
+            int currentSize = key.keySize; // for 256 bits key
+            byte[] temp = new byte[4];
+            int rconIteration = 1;
+        
+            // Copy the original key to the first set of round keys
+            System.arraycopy(key.key, 0, expandedKey, 0, currentSize);
+        
+            while (currentSize < expandedKeySize) {
+                // Assign the previous 4 bytes to the temporary value t
+                for (int i = 0; i < 4; i++) {
+                    temp[i] = expandedKey[(currentSize - 4) + i];
+                }
+        
+                // Every 16, 24, 32 bytes, we apply the core schedule to temp and increment rconIteration afterwards
+                if (currentSize % key.keySize == 0) {
+                    core(temp, rconIteration++);
+                }
+        
+                // For 256-bit keys, we add an extra sbox to the calculation
+                if (key.keySize == KEY_256_BITS && ((currentSize % key.keySize) == 16)) {
+                    for (int i = 0; i < 4; i++) {
+                        temp[i] = sbox[temp[i]];
+                    }
+                }
+        
+                // We XOR temp with the four-byte block 16, 24, 32 bytes before the new expanded key. This becomes the next four bytes in the expanded key.
+                for (int i = 0; i < 4; i++) {
+                    expandedKey[currentSize] = (byte) (expandedKey[currentSize - key.keySize] ^ temp[i]);
+                    currentSize++;
+                }
+            }
+        }
+
+        /**
+         * @brief Set the number round object
+         * 
+         * @param key_size Size of the aes key
+         * @return uint8_t Number of round of the key
+         */
+        private int setNumberRound(int key_size){
+            switch (key_size){
+            case KEY_128_BITS:
+                return 10;
+            case KEY_192_BITS:
+                return 12;
+            case KEY_256_BITS:
+                return 14;
+            default:
+                return 0;
+            }
+        }
 
         /**
          * @brief Galois Field multiplication function
@@ -222,7 +318,7 @@ public class aes {
          * @param b A byte value
          * @return uint8_t The result of multiplying a and b in the Galois Field
          */
-        byte gfMul(byte a, byte b) {
+        private byte gfMul(int a, int b) {
             byte p = 0;
             byte hbit = 0;
             for (int i = 0; i < 8; i++) {
