@@ -67,7 +67,6 @@ void test_key_expantion(void){
 
     key_expansion(key, expandedKey2);
     print_hex(expandedKey2, 240, "Expanded Key:");
-
 }
 
 void print_hex(const uint8_t *arr, const size_t size, const char *title){

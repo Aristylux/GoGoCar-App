@@ -40,8 +40,8 @@ void aes(void){
 
     aes_encrypt(plaintext, key, ciphertext);
 
-    printf("Plaintext: %s\n", plaintext);
-    printf("Ciphertext: ");
+    printf("Plaintext     : %s\n", plaintext);
+    printf("Ciphertext    : ");
     for (int i = 0; i < BLOCK_SIZE_128_BITS; i++) {
         printf("%02x ", ciphertext[i]);
     }
@@ -54,7 +54,7 @@ void aes(void){
     }
     printf("\n");
 
-    printf("%s", plaintextFinal);
+    printf("Decrypted text: %s\n", plaintextFinal);
 
     free_aes_key(key);
 }
