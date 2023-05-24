@@ -2,7 +2,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
 
-public class rsa_test {
+public class rsa {
 
     public static void main(String[] args) {
 
