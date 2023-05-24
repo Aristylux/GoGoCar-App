@@ -113,15 +113,79 @@ public class aes {
         // --- Encrypt functions ---
 
         /**
+         * @brief Copy key & plain text, encrypt text with the key
+         * @note 10 rounds for 128-bit keys.
+         *       12 rounds for 192-bit keys.
+         *       14 rounds for 256-bit keys.
+         * 
+         * @param plaintext Pointer to a block of plaintext data
+         * @param key Pointer to the secret key (32 bytes)
+         * @param ciphertext Return pointer to the encrypted block of data (16 bytes)
+         */
+        public void aesEncrypt(byte[] plaintext, AESKey key, byte[] ciphertext) {
+            byte[] state = new byte[BLOCK_SIZE_128_BITS];
+            byte[] expandedKey = new byte[240]; // 240 = 16 * (14 + 1)
+        
+            // Copy the plaintext to the state array
+            System.arraycopy(plaintext, 0, state, 0, BLOCK_SIZE_128_BITS);
+        
+            // Expand the key into a set of round keys
+            keyExpansion(key, expandedKey);
+        
+            // Encrypt
+            mainEncrypt(state, expandedKey, 14);
+        
+            // Copy the encrypted state into the ciphertext array
+            System.arraycopy(state, 0, ciphertext, 0, BLOCK_SIZE_128_BITS);
+        }
+        
+        /**
+         * @brief AES Algorithm encryption
+         * 
+         * @param state State
+         * @param expandedKey Expanded key
+         * @param nbrRounds 10, 12 or 14 (<- for 256 bits)
+         */
+        private void mainEncrypt(byte[] state, byte[] expandedKey, int nbrRounds){
+            byte[] roundKey = new byte[BLOCK_SIZE_128_BITS];
+        
+            // Add the initial round key to the state
+            createRoundKey(expandedKey, roundKey);
+            addRoundKey(state, roundKey);
+        
+            // Perform the main rounds of encryption
+            for (int round = 1; round < nbrRounds; round++){
+                createRoundKey(expandedKey, roundKey, BLOCK_SIZE_128_BITS*round);
+                subBytes(state);
+                shiftRows(state);
+                mixColumns(state);
+                addRoundKey(state, roundKey);
+            }
+        
+            // Perform the final round of encryption
+            createRoundKey(expandedKey, roundKey,  BLOCK_SIZE_128_BITS*nbrRounds);
+            subBytes(state);
+            shiftRows(state);
+            addRoundKey(state, roundKey);
+        }
+
+        /**
          * @brief Create a round key object
          * 
-         * @param expanded_key Expanded key
-         * @param round_key Return round key
+         * @param expandedKey Expanded key
+         * @param roundKey Return round key
          */
         private void createRoundKey(byte[] expandedKey, byte[] roundKey) {
             for (byte i = 0; i < 4; i++) {
                 for (byte j = 0; j < 4; j++)
                     roundKey[i + (j * 4)] = expandedKey[(i * 4) + j];
+            }
+        }
+
+        private void createRoundKey(byte[] expandedKey, byte[] roundKey, int keyOffset) {
+            for (byte i = 0; i < 4; i++) {
+                for (byte j = 0; j < 4; j++)
+                    roundKey[i + (j * 4)] = expandedKey[keyOffset + (i * 4) + j];
             }
         }
 
@@ -214,6 +278,126 @@ public class aes {
 
 
         // --- Decrypt functions ---
+
+        /**
+         * @brief Copy key & cipher text, encrypt text with the key
+         * 
+         * @param ciphertext Pointer to the encrypted block of data (16 bytes)
+         * @param key Pointer to the secret key (32 bytes)
+         * @param plaintext Return pointer to a block of plaintext data
+         */
+        public void aesDecrypt(byte[] ciphertext, AESKey key, byte[] plaintext) {
+            byte[] state = new byte[BLOCK_SIZE_128_BITS];
+            byte[] expandedKey = new byte[240]; // 240 = 16 * (14 + 1)
+        
+            // Copy the ciphertext into the state array
+            System.arraycopy(ciphertext, 0, state, 0, BLOCK_SIZE_128_BITS);
+        
+            // Expand the key into a set of round keys
+            keyExpansion(key, expandedKey);
+        
+            // Decrypt
+            mainDecrypt(state, expandedKey, 14);
+        
+            // Copy the decrypted state into the plaintext array
+            System.arraycopy(state, 0, plaintext, 0, BLOCK_SIZE_128_BITS);
+        }
+
+        private void mainDecrypt(byte[] state, byte[] expandedKey, int nbrRounds){
+            byte[] roundKey = new byte[BLOCK_SIZE_128_BITS];
+        
+            // Add the initial round key to the state
+            createRoundKey(expandedKey, roundKey, BLOCK_SIZE_128_BITS * nbrRounds);
+            addRoundKey(state, roundKey);
+        
+            // Perform the main rounds of encryption
+            for (int round = nbrRounds - 1; round > 0; round--){
+                createRoundKey(expandedKey, roundKey, BLOCK_SIZE_128_BITS*round);
+                shiftRowsInv(state);
+                subBytesInv(state);
+                addRoundKey(state, roundKey);
+                mixColumnsInv(state);
+            }
+        
+            // Perform the final round of encryption
+            createRoundKey(expandedKey, roundKey);
+            subBytesInv(state);
+            shiftRowsInv(state);
+            addRoundKey(state, roundKey);
+        }
+
+        /**
+         * @brief Invert sub bytes operation
+         * 
+         * @param state State
+         */
+        private void subBytesInv(byte[] state) {
+            for (int i = 0; i < BLOCK_SIZE_128_BITS; i++) {
+                state[i] = this.sboxInv[state[i] & 0xFF];
+            }
+        }
+
+        /**
+         * @brief A transposition step where the last three rows of the state are shifted cyclically a certain number of steps
+         * 
+         * @param state Pointer to the current state (16 bytes)
+         */
+        private void shiftRowsInv(byte[] state) {
+            for (int i = 0; i < 4; i++)
+                shiftRowInv(state, i * 4);
+        }
+        
+        /**
+         * @brief Transpose on a row
+         * 
+         * @param state State
+         * @param nbr Value of column of state
+         */
+        private void shiftRowInv(byte[] state, int nbr) {
+            byte temp;
+            for (int i = 0; i < nbr; i++) {
+                temp = state[3];
+                for (int j = 3; j > 0; j--)
+                    state[j] = state[j - 1];
+                state[0] = temp;
+            }
+        }
+        
+        /**
+         * @brief A linear mixing operation which operates on the columns of the state, combining the four bytes in each column.
+         * 
+         * @param state Pointer to the current state (16 bytes)
+         */
+        private void mixColumnsInv(byte[] state) {
+            byte[] column = new byte[4];
+            for (int i = 0; i < 4; i++) {
+                // Construct a column by iterating over the 4 rows
+                for (int j = 0; j < 4; j++)
+                    column[j] = state[(j * 4) + i];
+                
+                mixColumnInv(column);
+        
+                // Put the values back into the state
+                for (int j = 0; j < 4; j++)
+                    state[(j * 4) + i] = column[j];
+            }
+        }
+        
+        /**
+         * @brief Mix column from state
+         * 
+         * @param column Column of state
+         */
+        private void mixColumnInv(byte[] column) {
+            byte[] cpy = new byte[4];
+            System.arraycopy(column, 0, cpy, 0, 4);
+        
+            column[0] = (byte)(gfMul(cpy[0], 14) ^ gfMul(cpy[3], 9) ^ gfMul(cpy[2], 13) ^ gfMul(cpy[1], 11));
+            column[1] = (byte)(gfMul(cpy[1], 14) ^ gfMul(cpy[0], 9) ^ gfMul(cpy[3], 13) ^ gfMul(cpy[2], 11));
+            column[2] = (byte)(gfMul(cpy[2], 14) ^ gfMul(cpy[1], 9) ^ gfMul(cpy[0], 13) ^ gfMul(cpy[3], 11));
+            column[3] = (byte)(gfMul(cpy[3], 14) ^ gfMul(cpy[2], 9) ^ gfMul(cpy[1], 13) ^ gfMul(cpy[0], 11));
+        }
+        
 
         // --- General functions ---
 
