@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class aes {
@@ -9,26 +10,24 @@ public class aes {
         AES.AESKey key = aes.generateAESKey(aes.KEY_256_BITS);
         System.out.println(key.print());
 
-        String plaintext = "hello";
-        String plaintextFinal = new String();
-        byte[] ciphertext = new byte[16];
+        String text = "hello";
 
-        aes.aesEncrypt(plaintext, key, ciphertext);
+        byte[] ciphertext = aes.aesEncrypt(text, key);
 
-        System.out.println("Plaintext     : " + plaintext);
+        System.out.println("Plaintext     : " + text);
         System.out.print("Ciphertext    : ");
         for (int i = 0; i < 16; i++) {
             System.out.print(String.format("%02x ", ciphertext[i]));
         }
         System.out.print("\n");
 
-        byte[] pl = aes.aesDecrypt(ciphertext, key, plaintextFinal.getBytes());
+        String plaintext = aes.aesDecrypt(ciphertext, key);
         System.out.print("Decrypted data: ");
         for (int i = 0; i < 16; i++) {
-            System.out.print(String.format("%02x ", pl[i]));
+            System.out.print(String.format("%02x ", plaintext.getBytes()[i]));
         }
         System.out.print("\n");
-        System.out.println("Decrypted text: " + Arrays.toString(pl));
+        System.out.println("Decrypted text: " + plaintext);
     }
 
     public static class AES {
@@ -154,7 +153,7 @@ public class aes {
          * @param key Pointer to the secret key (32 bytes)
          * @param ciphertext Return pointer to the encrypted block of data (16 bytes)
          */
-        public void aesEncrypt(String plaintext, AESKey key, byte[] ciphertext) {
+        public byte[] aesEncrypt(String plaintext, AESKey key) {
             byte[] state = new byte[BLOCK_SIZE_128_BITS];
             byte[] expandedKey = new byte[240]; // 240 = 16 * (14 + 1)
     
@@ -170,8 +169,7 @@ public class aes {
             // Encrypt
             mainEncrypt(state, expandedKey, 14);
 
-            // Copy the encrypted state into the ciphertext array
-            System.arraycopy(state, 0, ciphertext, 0, BLOCK_SIZE_128_BITS);
+            return state;
         }
         
         /**
@@ -322,7 +320,7 @@ public class aes {
          * @param key Pointer to the secret key (32 bytes)
          * @param plaintext Return pointer to a block of plaintext data
          */
-        public byte[] aesDecrypt(byte[] ciphertext, AESKey key, byte[] plaintext) {
+        public String aesDecrypt(byte[] ciphertext, AESKey key) {
             byte[] state = new byte[BLOCK_SIZE_128_BITS];
             byte[] expandedKey = new byte[240]; // 240 = 16 * (14 + 1)
         
@@ -334,7 +332,7 @@ public class aes {
         
             // Decrypt
             mainDecrypt(state, expandedKey, 14);
-            return state;
+            return new String(state, StandardCharsets.UTF_8);
         }
 
         private void mainDecrypt(byte[] state, byte[] expandedKey, int nbrRounds){
