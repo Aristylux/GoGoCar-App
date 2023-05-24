@@ -425,6 +425,39 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
     ('Peugeot 208', 'CQ-154-IU', '270 rue jean monnet' , 5, 11),
     ('Renault Mégane', 'MF-476-NX', '34 Avenue Francois Cuzin', 6, 12);
 ```
+Insert vehicules: il manque id owner
+```sql
+INSERT INTO vehicles (model, licence plate, id_address, id_owner, id_module)
+VALUES
+(‘Alfa Romeo 164’, ‘QS-523-EE', 1,,1),
+(‘Audi A1’, ‘DE-431-AD',2,,2),
+(‘Citroen C3’, 'WS-856-CE',3,,3),
+(‘Citroen C4’,'DL-727-HS',4,,4),
+(‘Dacia Sandero’, 'CQ-154-IU', 5,,5),
+(‘Fiat 500’, 'MF-476-NX', 6,,6),
+(‘Ford Focus’, 'MP-496-NX', 7,,7),
+(‘Honda Civic’, 'LQ-374-IU', 8,,8),
+(‘Hyundai Tucson’, 'ML-727-KS', 9,,9),
+(‘Kia Rio’, ‘AS-513-EE', 10,,10),
+(‘Mazda Tribute’, ‘XE-431-QD', 11,,11),
+(‘Mini ‘, 'PS-156-ME', 12,,12),
+(‘Mini Countryman’, 'CL-720-RS', 13,,13),
+(‘Nissan Navara’, 'CQ-152-IP', 14,,14),
+(‘Opel Corsa’, ‘'MF-474-NZ', 15,,15),
+(‘Peugeot 208’, 'MS-491-NN',16,,16),
+(‘Peugeot 308’, 'SQ-174-ME', 17,,17),
+(‘Renault Captur’, ‘AX-515-GE', 18,,18),
+(‘Renault Clio’, ‘JE-735-GP’, 19,,19),
+(‘Seat Ibiza’, ’ZP-480-FJ’, 20,,20),
+(‘Skoda Fabia’, ‘PE-483-RO’, 21,,21),
+(‘Suzuki Swift’, ‘OZ-284-FE’, 22,,22),
+(‘Toyota Auris’, ‘FR-894-GJ’, 23,,23),
+(‘Volkswagen Golf’, ‘ ME-898-JR’, 24,,24),
+(‘Volvo C30’,’FJ-049-FE’,25,,25),
+(‘Volvo Cross Country’, ‘EI-424-RF’,26,,26),
+(‘Renault Modus’, ‘ZP-940-JZ’, 27,,27),
+(‘Renault Megane’,’ EJ-203-ZL’,28,,28);
+```
 
 ### Insert `Nissan Capri` for tests (4 and 2 important)
 
