@@ -97,7 +97,7 @@ void free_aes_key(t_aes_key *key){
     free(key);
 }
 
-// --- Encrypt ---
+// --- Encrypt functions ---
 
 /**
  * @brief Copy key & plain text, encrypt text with the key
@@ -269,112 +269,7 @@ void mix_column(uint8_t *column){
     column[3] = gf_mul(cpy[3],2) ^ gf_mul(cpy[2],1) ^ gf_mul(cpy[1],1) ^ gf_mul(cpy[0],3);
 }
 
-/**
- * @brief Galois Field multiplication function
- * 
- * @param a A byte value
- * @param b A byte value
- * @return uint8_t The result of multiplying a and b in the Galois Field
- */
-uint8_t gf_mul(uint8_t a, uint8_t b) {
-    uint8_t p = 0;
-    uint8_t hbit = 0;
-    for (uint8_t i = 0; i < 8; i++) {
-        if ((b & 1) == 1) p ^= a;
-        hbit = (a & 0x80);
-        a <<= 1;
-        if (hbit == 0x80) a ^= 0x1b;
-        b >>= 1;
-    }
-    return p;
-}
-
-/**
- * @brief Rotate the word eight bits to the left
- * @note Rotate(1d2c3a4f) = 2c3a4f1d
- * 
- * @param word Is an 8bits array of size 4 (32 bit)
- */
-void rotate(uint8_t *word) {
-    uint8_t c = word[0];
-    for (uint8_t i = 0; i < 3; i++)
-        word[i] = word[i+1];
-    word[3] = c;
-}
-
-/**
- * @brief Key substitution core
- * 
- * @param word Word of 4*8bits
- * @param iteration Number of iteration
- */
-void core(uint8_t *word, uint32_t iteration){
-    // Rotate the 32-bit word 8 bits to the left
-    rotate(word);
-
-    // Apply S-Box substitution on all 4 parts of the 32-bit word
-    for (uint8_t i = 0; i < 4; ++i)
-        word[i] = sbox[word[i]];
-    
-    // XOR the output of the rcon operation with i to the first part (leftmost) only 
-    word[0] ^= rcon[iteration];
-}
-
-/**
- * @brief Key expansion function.
- * Implement AES-256 key expansion,
- * This involves applying a series of transformations to the original key
- * to generate a set of round keys that will be used for each round of encryption.
- * 
- * @param key Pointer to the secret key (32 bytes)
- * @param expanded_key Pointer to the expanded set of round keys (240 bytes)
- */
-void key_expansion(const uint8_t* key, uint8_t* expanded_key){
-
-    uint8_t size = KEY_256_BITS;
-
-    uint8_t expandedKeySize = 240;
-    uint8_t currentSize = 32; // for 256 bits key
-    uint8_t temp[4] = {0};
-
-    uint32_t rcon_iteration = 1;
-
-    // set the 16,24,32 bytes of the expanded key to the input key
-
-    // Copy the original key to the first set of round keys
-    memcpy(expanded_key, key, currentSize);
-
-    while (currentSize < expandedKeySize) {
-        /* assign the previous 4 bytes to the temporary value t */
-        for (uint8_t i = 0; i < 4; i++) 
-            temp[i] = expanded_key[(currentSize - 4) + i];
-        
-
-        /* every 16,24,32 bytes we apply the core schedule to t
-         * and increment rconIteration afterwards
-         */
-        if(currentSize % size == 0)
-            core(temp, rcon_iteration++);
-        
-
-        /* For 256-bit keys, we add an extra sbox to the calculation */
-        if(size == KEY_256_BITS && ((currentSize % size) == 16)) {
-            for(uint8_t i = 0; i < 4; i++) temp[i] = sbox[temp[i]];
-        }
-
-        /* We XOR t with the four-byte block 16,24,32 bytes before the new expanded key.
-         * This becomes the next four bytes in the expanded key.
-         */
-        for(uint8_t i = 0; i < 4; i++) {
-            expanded_key[currentSize] = expanded_key[currentSize - size] ^ temp[i];
-            currentSize++;
-        }
-    }
-}
-
-/* * * * * * * *
- * AES DECRYPT *
- * * * * * * * */
+// --- Decrypt functions ---
 
 /**
  * @brief Copy key & cipher text, encrypt text with the key
@@ -511,6 +406,111 @@ void mix_column_inv(uint8_t *column){
     column[1] = gf_mul(cpy[1],14) ^ gf_mul(cpy[0],9) ^ gf_mul(cpy[3],13) ^ gf_mul(cpy[2],11);
     column[2] = gf_mul(cpy[2],14) ^ gf_mul(cpy[1],9) ^ gf_mul(cpy[0],13) ^ gf_mul(cpy[3],11);
     column[3] = gf_mul(cpy[3],14) ^ gf_mul(cpy[2],9) ^ gf_mul(cpy[1],13) ^ gf_mul(cpy[0],11);
+}
+
+// --- General functions ---
+
+/**
+ * @brief Rotate the word eight bits to the left
+ * @note Rotate(1d2c3a4f) = 2c3a4f1d
+ * 
+ * @param word Is an 8bits array of size 4 (32 bit)
+ */
+void rotate(uint8_t *word) {
+    uint8_t c = word[0];
+    for (uint8_t i = 0; i < 3; i++)
+        word[i] = word[i+1];
+    word[3] = c;
+}
+
+/**
+ * @brief Key substitution core
+ * 
+ * @param word Word of 4*8bits
+ * @param iteration Number of iteration
+ */
+void core(uint8_t *word, uint32_t iteration){
+    // Rotate the 32-bit word 8 bits to the left
+    rotate(word);
+
+    // Apply S-Box substitution on all 4 parts of the 32-bit word
+    for (uint8_t i = 0; i < 4; ++i)
+        word[i] = sbox[word[i]];
+    
+    // XOR the output of the rcon operation with i to the first part (leftmost) only 
+    word[0] ^= rcon[iteration];
+}
+
+/**
+ * @brief Key expansion function.
+ * Implement AES-256 key expansion,
+ * This involves applying a series of transformations to the original key
+ * to generate a set of round keys that will be used for each round of encryption.
+ * 
+ * @param key Pointer to the secret key (32 bytes)
+ * @param expanded_key Pointer to the expanded set of round keys (240 bytes)
+ */
+void key_expansion(const uint8_t* key, uint8_t* expanded_key){
+
+    uint8_t size = KEY_256_BITS;
+
+    uint8_t expandedKeySize = 240;
+    uint8_t currentSize = 32; // for 256 bits key
+    uint8_t temp[4] = {0};
+
+    uint32_t rcon_iteration = 1;
+
+    // set the 16,24,32 bytes of the expanded key to the input key
+
+    // Copy the original key to the first set of round keys
+    memcpy(expanded_key, key, currentSize);
+
+    while (currentSize < expandedKeySize) {
+        /* assign the previous 4 bytes to the temporary value t */
+        for (uint8_t i = 0; i < 4; i++) 
+            temp[i] = expanded_key[(currentSize - 4) + i];
+        
+
+        /* every 16,24,32 bytes we apply the core schedule to t
+         * and increment rconIteration afterwards
+         */
+        if(currentSize % size == 0)
+            core(temp, rcon_iteration++);
+        
+
+        /* For 256-bit keys, we add an extra sbox to the calculation */
+        if(size == KEY_256_BITS && ((currentSize % size) == 16)) {
+            for(uint8_t i = 0; i < 4; i++) temp[i] = sbox[temp[i]];
+        }
+
+        /* We XOR t with the four-byte block 16,24,32 bytes before the new expanded key.
+         * This becomes the next four bytes in the expanded key.
+         */
+        for(uint8_t i = 0; i < 4; i++) {
+            expanded_key[currentSize] = expanded_key[currentSize - size] ^ temp[i];
+            currentSize++;
+        }
+    }
+}
+
+/**
+ * @brief Galois Field multiplication function
+ * 
+ * @param a A byte value
+ * @param b A byte value
+ * @return uint8_t The result of multiplying a and b in the Galois Field
+ */
+uint8_t gf_mul(uint8_t a, uint8_t b) {
+    uint8_t p = 0;
+    uint8_t hbit = 0;
+    for (uint8_t i = 0; i < 8; i++) {
+        if ((b & 1) == 1) p ^= a;
+        hbit = (a & 0x80);
+        a <<= 1;
+        if (hbit == 0x80) a ^= 0x1b;
+        b >>= 1;
+    }
+    return p;
 }
 
 /**
