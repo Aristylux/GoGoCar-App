@@ -258,8 +258,6 @@ public class WIMainScreen extends WICommon {
 
     @JavascriptInterface
     public void searchFrom(String city){
-        Log.d(TAG_Web, "searchFrom");
-
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultStringArray(String[] array) {

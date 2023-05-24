@@ -51,7 +51,7 @@ public class DatabaseHelper {
     /* CITY */
     private static final String TABLE_CITY = "city";
     private static final String COLUMN_CITY_ID = "id";
-    private static final String COLUMN_CITY = "city";
+    private static final String COLUMN_CITY = "city_name";
     private static final String COLUMN_LOCATION = "location";
 
     public static final String ADD_USER_QUERY = "INSERT INTO " + TABLE_USER +
@@ -439,7 +439,7 @@ public class DatabaseHelper {
 
     public String [] getMatchingCities(String firstChar){
         //SELECT * FROM my_table WHERE address LIKE '%Main%';
-        String query = "SELECT * FROM " + TABLE_CITY + " WHERE " + COLUMN_CITY + " LIKE '%" + firstChar + "%';";
+        String query = "SELECT * FROM " + TABLE_CITY + " WHERE " + COLUMN_CITY + " ILIKE '%" + firstChar + "%' ORDER BY " + COLUMN_CITY + " ASC LIMIT 3;";
         Log.d(TAG_Database, "getMatchingCities: query: " + query);
 
         ArrayList<String> matching = new ArrayList<String>();
@@ -455,7 +455,7 @@ public class DatabaseHelper {
             while (rs.next()) {
                 // Get values
                 //int id = rs.getInt(1);
-                String city = rs.getString(2);
+                String city = rs.getString(COLUMN_CITY);
                 //String points = rs.getString(3);
 
                 matching.add(city);
@@ -465,7 +465,7 @@ public class DatabaseHelper {
             rs.close();
             st.close();
         } catch (Exception exception){
-            Log.e(TAG_Database, "getCity: " , exception);
+            Log.e(TAG_Database, "getMatchingCities: " , exception);
             exception.printStackTrace();
         }
 
