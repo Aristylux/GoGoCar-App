@@ -2,6 +2,9 @@ package com.aristy.gogocar.AES;
 
 import android.util.Log;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
 public class AESCommon {
 
     public static final int BLOCK_SIZE_128_BITS = 16;
@@ -125,21 +128,37 @@ public class AESCommon {
         return p;
     }
 
+    public static byte[] removeNullBytes(byte[] byteArray) {
+        int count = 0;
+        for (int i = byteArray.length - 1; i > 0; i--){
+            if (byteArray[i] == 0) count++;
+            else break;
+        }
+
+        byte[] filteredArray = new byte[byteArray.length - count];
+        System.arraycopy(byteArray, 0, filteredArray, 0, filteredArray.length);
+
+        return filteredArray;
+    }
+
     public static void AESTest(){
-        Log.d("Gogocar_AES", "onCreate: AES");
+        Log.d("Gogocar_AES", "AESTest: AES");
         AES aes = new AES();
         AESKey aesKey = aes.generateAESKey(KEY_256_BITS);
-        Log.d("Gogocar_AES", "onCreate: " + aesKey.print());
-        String text = "hello";
+        Log.d("Gogocar_AES", "AESTest: " + aesKey.print());
 
-        byte[] ciphertext = aes.aesEncrypt(text, aesKey);
-        Log.d("Gogocar_AES", "onCreate: Plaintext     : " + text);
+        byte[] text = {0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6f, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+        //String text = "hello";
+
+        byte[] ciphertext = aes.aesEncrypt(new String(text, StandardCharsets.UTF_8), aesKey);
+        Log.d("Gogocar_AES", "AESTest: Plaintext     : " + new String(text, StandardCharsets.UTF_8));
 
         StringBuilder sb = new StringBuilder();
         for (byte b : ciphertext) {
             sb.append(String.format("%02x ", b));
         }
-        Log.d("Gogocar_AES", "onCreate: Ciphertext    : " + sb);
+        Log.d("Gogocar_AES", "AESTest: Ciphertext    : " + sb);
 
 
         String plaintext = aes.aesDecrypt(ciphertext, aesKey);
@@ -147,7 +166,7 @@ public class AESCommon {
         for (byte b : plaintext.getBytes()) {
             sb.append(String.format("%02x ", b));
         }
-        Log.d("Gogocar_AES", "onCreate: Decrypted data: " + sb);
-        Log.d("Gogocar_AES", "onCreate: Decrypted text: " + plaintext);
+        Log.d("Gogocar_AES", "AESTest: Decrypted data: " + sb);
+        Log.d("Gogocar_AES", "AESTest: Decrypted text: " + plaintext);
     }
 }

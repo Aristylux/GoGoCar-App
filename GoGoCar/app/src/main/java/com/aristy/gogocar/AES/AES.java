@@ -219,7 +219,7 @@ public class AES {
 
         // Decrypt
         mainDecrypt(state, expandedKey, 14);
-        return new String(state, StandardCharsets.UTF_8);
+        return new String(removeNullBytes(state), StandardCharsets.UTF_8);
     }
 
     private void mainDecrypt(byte[] state, byte[] expandedKey, int nbrRounds){
