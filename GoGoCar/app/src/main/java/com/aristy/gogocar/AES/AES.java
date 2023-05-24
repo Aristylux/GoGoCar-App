@@ -340,9 +340,7 @@ public class AES {
 
         while (currentSize < expandedKeySize) {
             // Assign the previous 4 bytes to the temporary value t
-            for (int i = 0; i < 4; i++) {
-                temp[i] = expandedKey[(currentSize - 4) + i];
-            }
+            System.arraycopy(expandedKey, (currentSize - 4), temp, 0, 4);
 
             // Every 16, 24, 32 bytes, we apply the core schedule to temp and increment rconIteration afterwards
             if (currentSize % keySize == 0) {

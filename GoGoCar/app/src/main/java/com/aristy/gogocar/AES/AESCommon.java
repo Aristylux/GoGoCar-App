@@ -1,5 +1,7 @@
 package com.aristy.gogocar.AES;
 
+import android.util.Log;
+
 public class AESCommon {
 
     public static final int BLOCK_SIZE_128_BITS = 16;
@@ -121,5 +123,31 @@ public class AESCommon {
             b >>= 1;
         }
         return p;
+    }
+
+    public static void AESTest(){
+        Log.d("Gogocar_AES", "onCreate: AES");
+        AES aes = new AES();
+        AESKey aesKey = aes.generateAESKey(KEY_256_BITS);
+        Log.d("Gogocar_AES", "onCreate: " + aesKey.print());
+        String text = "hello";
+
+        byte[] ciphertext = aes.aesEncrypt(text, aesKey);
+        Log.d("Gogocar_AES", "onCreate: Plaintext     : " + text);
+
+        StringBuilder sb = new StringBuilder();
+        for (byte b : ciphertext) {
+            sb.append(String.format("%02x ", b));
+        }
+        Log.d("Gogocar_AES", "onCreate: Ciphertext    : " + sb);
+
+
+        String plaintext = aes.aesDecrypt(ciphertext, aesKey);
+        sb = new StringBuilder();
+        for (byte b : plaintext.getBytes()) {
+            sb.append(String.format("%02x ", b));
+        }
+        Log.d("Gogocar_AES", "onCreate: Decrypted data: " + sb);
+        Log.d("Gogocar_AES", "onCreate: Decrypted text: " + plaintext);
     }
 }
