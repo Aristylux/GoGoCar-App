@@ -53,12 +53,12 @@ public class WIAuthentication extends WICommon {
      */
     @JavascriptInterface
     public void AuthenticationLogin(String email, String password){
-        // Hash password
-        String hash = hashPassword(password, SHAHash.DOMAIN);
-
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultUser(DBModelUser user) {
+                // Hash password
+                String hash = hashPassword(password, user.getSalt());
+
                 // Verify user exist for this email and password
                 DBModelUser userVerified = verify(user, hash);
 
@@ -107,12 +107,13 @@ public class WIAuthentication extends WICommon {
      */
     @JavascriptInterface
     public void AuthenticationRegister(String fullName, String email, String phoneNumber, String password){
-        // Hash password
-        String hash = hashPassword(password, SHAHash.DOMAIN);
-
         // Generate salt
         String salt = generateSalt();
-        Log.d(TAG_Auth, "pw= \"" + password + "\", hash= \"" + hash + "\", salt= \"" + salt + "\"");
+
+        // Hash password
+        String hash = hashPassword(password, salt);
+
+        Log.d(TAG_Auth, "AuthenticationRegister: pw= \"" + password + "\", hash= \"" + hash + "\", salt= \"" + salt + "\"");
 
         // Create user
         DBModelUser user = new DBModelUser(fullName, email, phoneNumber, hash, salt);

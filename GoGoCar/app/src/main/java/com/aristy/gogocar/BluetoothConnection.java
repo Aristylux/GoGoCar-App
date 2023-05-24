@@ -1,7 +1,9 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
+import static com.aristy.gogocar.CodesTAG.TAG_BT_COM;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_CON;
+import static com.aristy.gogocar.CodesTAG.TAG_RSA;
 import static com.aristy.gogocar.CodesTAG.TAG_CAN;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
@@ -13,9 +15,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.aristy.gogocar.RSA.PublicKey;
+import com.aristy.gogocar.RSA.RSA;
+import com.aristy.gogocar.RSA.RSAKeys;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class BluetoothConnection extends Thread {
@@ -27,11 +34,15 @@ public class BluetoothConnection extends Thread {
     private boolean isConnecting;
 
 
+    private RSA rsa;
+    private boolean waitForModulePublicKey;
+  
     /**
      * Constructor, set default, prepare to be connected
      */
     public BluetoothConnection (){
         this.isConnecting = false;
+        this.waitForModulePublicKey = false;
     }
 
     /**
@@ -97,6 +108,22 @@ public class BluetoothConnection extends Thread {
         BluetoothCommunication bluetoothCommunication = new BluetoothCommunication(BluetoothConnection.this, handler);
         bluetoothCommunication.start();
 
+        rsa = new RSA();
+        rsa.generateRSAKeys();
+
+        byte[] publicKeyBytes = rsa.getBytePublicKey();
+
+        Log.d(TAG_RSA, "publicKeyBytes: 16: " + RSA.printBytes(publicKeyBytes));
+
+        byte [] by = RSA.convertTo8ByteArray(publicKeyBytes);
+
+        bluetoothCommunication.write(by);
+        Log.d(TAG_BT, "connectionEstablished: " + Arrays.toString(by));
+
+        this.waitForModulePublicKey = true;
+
+
+
         // Test send
         String s = "Salut man";
 
@@ -126,11 +153,18 @@ public class BluetoothConnection extends Thread {
      * Find the best function to result
      * @param message message to extract
      */
-    public ReceiverCAN messageReceived(String message){
-        // TODO
-        // Message management
 
-        // Extract code
+    public ReceiverCAN messageReceived(String message){
+        Log.d(TAG_BT_COM, "run: " + Arrays.toString(message.getBytes(StandardCharsets.UTF_8)));
+
+        if (this.waitForModulePublicKey){
+            Log.d(TAG_BT_CON, "messageReceived: module public key: " + message);
+            // Set module public key
+            rsa.setModulePublicKey(rsa.parsePublicKey(message));
+        } else {
+            Log.d(TAG_BT_CON, "messageReceived: decrypt message: " + message);
+            // Decrypt the message
+        }
 
         String type;
         String data;
