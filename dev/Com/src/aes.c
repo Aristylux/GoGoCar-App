@@ -124,7 +124,7 @@ void aes_encrypt(unsigned char *plaintext, t_aes_key *key, uint8_t *ciphertext){
     }
 
     // Expand the key into a set of round keys
-    key_expansion(key->key, expanded_key);
+    key_expansion(key, expanded_key);
 
     main_encrypt(block, expanded_key, 14);
     
@@ -291,7 +291,7 @@ void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, unsigned char *plaintext){
             state[(i+(j*4))] = ciphertext[(i*4)+j];
     }
 
-    key_expansion(key->key, expanded_key);
+    key_expansion(key, expanded_key);
 
     main_decrypt(state, expanded_key, 14);
 
@@ -450,46 +450,53 @@ void core(uint8_t *word, uint32_t iteration){
  * @param key Pointer to the secret key (32 bytes)
  * @param expanded_key Pointer to the expanded set of round keys (240 bytes)
  */
-void key_expansion(const uint8_t* key, uint8_t* expanded_key){
-
-    uint8_t size = KEY_256_BITS;
-
-    uint8_t expandedKeySize = 240;
-    uint8_t currentSize = 32; // for 256 bits key
+void key_expansion(const t_aes_key* key, uint8_t* expanded_key){
+    uint8_t expanded_key_size = (16 * (set_number_round(key->key_size) + 1));
+    uint8_t current_size = key->key_size; // for 256 bits key
     uint8_t temp[4] = {0};
-
     uint32_t rcon_iteration = 1;
 
-    // set the 16,24,32 bytes of the expanded key to the input key
-
     // Copy the original key to the first set of round keys
-    memcpy(expanded_key, key, currentSize);
+    memcpy(expanded_key, key->key, current_size);
 
-    while (currentSize < expandedKeySize) {
-        /* assign the previous 4 bytes to the temporary value t */
+    while (current_size < expanded_key_size) {
+        // Assign the previous 4 bytes to the temporary value t
         for (uint8_t i = 0; i < 4; i++) 
-            temp[i] = expanded_key[(currentSize - 4) + i];
+            temp[i] = expanded_key[(current_size - 4) + i];
         
-
-        /* every 16,24,32 bytes we apply the core schedule to t
-         * and increment rconIteration afterwards
-         */
-        if(currentSize % size == 0)
+        // Every 16,24,32 bytes we apply the core schedule to temp and increment rconIteration afterwards
+        if(current_size % key->key_size == 0)
             core(temp, rcon_iteration++);
         
-
-        /* For 256-bit keys, we add an extra sbox to the calculation */
-        if(size == KEY_256_BITS && ((currentSize % size) == 16)) {
+        // For 256-bit keys, we add an extra sbox to the calculation
+        if(key->key_size == KEY_256_BITS && ((current_size % key->key_size) == 16)) {
             for(uint8_t i = 0; i < 4; i++) temp[i] = sbox[temp[i]];
         }
 
-        /* We XOR t with the four-byte block 16,24,32 bytes before the new expanded key.
-         * This becomes the next four bytes in the expanded key.
-         */
+        // We XOR temp with the four-byte block 16,24,32 bytes before the new expanded key. This becomes the next four bytes in the expanded key.
         for(uint8_t i = 0; i < 4; i++) {
-            expanded_key[currentSize] = expanded_key[currentSize - size] ^ temp[i];
-            currentSize++;
+            expanded_key[current_size] = expanded_key[current_size - key->key_size] ^ temp[i];
+            current_size++;
         }
+    }
+}
+
+/**
+ * @brief Set the number round object
+ * 
+ * @param key_size Size of the aes key
+ * @return uint8_t Number of round of the key
+ */
+uint8_t set_number_round(uint8_t key_size){
+    switch (key_size){
+    case KEY_128_BITS:
+        return 10;
+    case KEY_192_BITS:
+        return 12;
+    case KEY_256_BITS:
+        return 14;
+    default:
+        return 0;
     }
 }
 

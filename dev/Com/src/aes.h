@@ -52,7 +52,9 @@ void mix_column_inv(uint8_t *column);
 
 void rotate(uint8_t *word);
 void core(uint8_t *word, uint32_t iteration);
-void key_expansion(const uint8_t* key, uint8_t* expanded_key);
+void key_expansion(const t_aes_key* key, uint8_t* expanded_key);
+
+uint8_t set_number_round(uint8_t key_size);
 
 uint8_t gf_mul(uint8_t a, uint8_t b);
 void generate_sbox_inv(void);
