@@ -50,14 +50,12 @@ public class WIAuthentication extends WICommon {
      */
     @JavascriptInterface
     public void AuthenticationLogin(String email, String password){
-        // TODO get salt from database
-
-        // Hash password
-        String hash = hashPassword(password, SHAHash.DOMAIN);
-
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
             public void onResultUser(DBModelUser user) {
+                // Hash password
+                String hash = hashPassword(password, user.getSalt());
+
                 // Verify user exist for this email and password
                 DBModelUser userVerified = verify(user, hash);
 

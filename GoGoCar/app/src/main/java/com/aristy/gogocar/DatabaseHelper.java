@@ -194,8 +194,10 @@ public class DatabaseHelper {
                 String phone = rs.getString(4);
                 String hash = rs.getString(5);
                 //int identity_id = rs.getInt(6);
+                String salt = rs.getString("salt");
 
                 user = new DBModelUser(user_id, name, email, phone, hash);
+                user.setSalt(salt);
                 Log.i(TAG_Database, "getUser: " + user);
             }
 
