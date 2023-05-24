@@ -110,33 +110,19 @@ void free_aes_key(t_aes_key *key){
  * @param ciphertext Return pointer to the encrypted block of data (16 bytes)
  */
 void aes_encrypt(unsigned char *plaintext, t_aes_key *key, uint8_t *ciphertext){
-    uint8_t block[BLOCK_SIZE_128_BITS] = {0}, expanded_key[240] = {0}; //240 = 16 * (14 + 1)
+    uint8_t state[BLOCK_SIZE_128_BITS] = {0}, expanded_key[240] = {0}; //240 = 16 * (14 + 1)
 
     // Copy the plaintext to the state array
-    //memcpy(block, plaintext, BLOCK_SIZE_128_BITS);
-
-    /* iterate over the columns */
-    for (uint8_t i = 0; i < 4; i++)
-    {
-        /* iterate over the rows */
-        for (uint8_t j = 0; j < 4; j++)
-            block[(i+(j*4))] = plaintext[(i*4)+j];
-    }
+    memcpy(state, plaintext, BLOCK_SIZE_128_BITS);
 
     // Expand the key into a set of round keys
     key_expansion(key, expanded_key);
 
-    main_encrypt(block, expanded_key, 14);
-    
-    // Copy the final state to the ciphertext buffer
-    for (uint8_t i = 0; i < 4; i++)
-    {
-        /* iterate over the rows */
-        for (uint8_t j = 0; j < 4; j++)
-            ciphertext[(i*4)+j] = block[(i+(j*4))];
-    }
+    // Encrypt 
+    main_encrypt(state, expanded_key, 14);
 
-    //memcpy(ciphertext, block, BLOCK_SIZE_128_BITS);
+    // Copy the encrypted state into the cipher text array
+    memcpy(ciphertext, state, BLOCK_SIZE_128_BITS);
 }
 
 /**
@@ -147,7 +133,7 @@ void aes_encrypt(unsigned char *plaintext, t_aes_key *key, uint8_t *ciphertext){
  * @param nbr_rounds 10, 12 or 14 (<- for 256 bits)
  */
 void main_encrypt(uint8_t *state, uint8_t *expanded_key, uint8_t nbr_rounds){
-    uint8_t round_key[16];
+    uint8_t round_key[BLOCK_SIZE_128_BITS];
 
     // Add the initial round key to the state
     create_round_key(expanded_key, round_key);
@@ -282,28 +268,16 @@ void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, unsigned char *plaintext){
     uint8_t state[BLOCK_SIZE_128_BITS] = {0}, expanded_key[240] = {0};
     
     // Copy the ciphertext into the state array
-    //memcpy(state, ciphertext, BLOCK_SIZE_128_BITS);
+    memcpy(state, ciphertext, BLOCK_SIZE_128_BITS);
 
-    /* iterate over the columns */
-    for (uint8_t i = 0; i < 4; i++) {
-        /* iterate over the rows */
-        for (uint8_t j = 0; j < 4; j++)
-            state[(i+(j*4))] = ciphertext[(i*4)+j];
-    }
-
+    // Expand the key into a set of round keys
     key_expansion(key, expanded_key);
 
+    // Decrypt
     main_decrypt(state, expanded_key, 14);
 
-    /* unmap the block again into the output */
-    for (uint8_t i = 0; i < 4; i++) {
-        /* iterate over the rows */
-        for (uint8_t j = 0; j < 4; j++)
-            plaintext[(i*4)+j] = state[(i+(j*4))];
-    }
-
     // Copy the decrypted state into the plaintext array
-    //memcpy(plaintext, state, BLOCK_SIZE_128_BITS);
+    memcpy(plaintext, state, BLOCK_SIZE_128_BITS);
 }
 
 /**
@@ -314,7 +288,7 @@ void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, unsigned char *plaintext){
  * @param nbr_rounds 10, 12 or 14
  */
 void main_decrypt(uint8_t *state, uint8_t *expanded_key, uint8_t nbr_rounds){
-    uint8_t round_key[16];
+    uint8_t round_key[BLOCK_SIZE_128_BITS];
 
     // Add the initial round key to the state
     create_round_key(expanded_key + BLOCK_SIZE_128_BITS * nbr_rounds, round_key);
@@ -451,7 +425,7 @@ void core(uint8_t *word, uint32_t iteration){
  * @param expanded_key Pointer to the expanded set of round keys (240 bytes)
  */
 void key_expansion(const t_aes_key* key, uint8_t* expanded_key){
-    uint8_t expanded_key_size = (16 * (set_number_round(key->key_size) + 1));
+    uint8_t expanded_key_size = (BLOCK_SIZE_128_BITS * (set_number_round(key->key_size) + 1));
     uint8_t current_size = key->key_size; // for 256 bits key
     uint8_t temp[4] = {0};
     uint32_t rcon_iteration = 1;
