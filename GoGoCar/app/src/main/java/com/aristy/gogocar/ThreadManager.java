@@ -356,10 +356,7 @@ public class ThreadManager {
     public void getVehiclesAvailable(int userID, String city, int distance){
         if (checkStateError("getVehiclesAvailable", userID)) return;
         thread = new Thread(() -> {
-
-            DBModelVehicle vh = new DBModelVehicle();
-
-            DBModelVehicle [] vehicles = {vh}; //= databaseHelper.getVehiclesAvailable(userID);
+            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userID, city, distance);
 
             for (DBModelVehicle vehicle : vehicles){
                 if (isExpired()) return;

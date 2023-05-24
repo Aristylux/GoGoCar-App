@@ -51,8 +51,17 @@ public class DatabaseHelper {
     /* CITY */
     private static final String TABLE_CITY = "city";
     private static final String COLUMN_CITY_ID = "id";
-    private static final String COLUMN_CITY = "city_name";
-    private static final String COLUMN_LOCATION = "location";
+    private static final String COLUMN_CITY_NAME = "city_name";
+    private static final String COLUMN_CITY_LOCATION = "location";
+
+    /* ADDRESSES */
+    private static final String TABLE_ADDRESSES = "addresses";
+    private static final String COLUMN_ADDRESS_ID = "id";
+    private static final String COLUMN_ADDRESS_STREET = "street_address";
+    private static final String COLUMN_ADDRESS_CITY = "city";
+    private static final String COLUMN_ADDRESS_STATE = "state";
+    private static final String COLUMN_ADDRESS_ZIP_CODE = "zip_code";
+    private static final String COLUMN_ADDRESS_LOCATION = "location";
 
     public static final String ADD_USER_QUERY = "INSERT INTO " + TABLE_USER +
             "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + "," + COLUMN_USER_SALT + ") " +
@@ -232,6 +241,20 @@ public class DatabaseHelper {
      */
     public List<DBModelVehicle> getVehiclesAvailable(int IDUser) {
         String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_IS_AVAILABLE + " = true AND " + COLUMN_VEHICLE_IS_BOOKED + " = false AND " + COLUMN_VEHICLE_ID_OWNER + " != " + IDUser;
+        return getVehicles(query);
+    }
+
+    public List<DBModelVehicle> getVehiclesAvailable(int IDUser, String city, int distance) {
+        String queryCity = "SELECT " + COLUMN_CITY_LOCATION + " FROM " + TABLE_CITY + " WHERE " + COLUMN_CITY_NAME + " = '" + city + "'";
+        String queryAddresses = "SELECT * FROM " + TABLE_ADDRESSES + " WHERE ST_DWithin(location::geography, (" + queryCity + ")::geography, " + (distance*1000) + ")";
+
+        String vehicleAlias = "vh";
+        String addressesAlias = "addr";
+
+        // TODO replace COLUMN_VEHICLE_ID by COLUMN_VEHICLE_ID_ADDRESS
+        String query = "SELECT " + vehicleAlias + ".*, " + addressesAlias + ".* FROM " + TABLE_VEHICLE + " AS " + vehicleAlias +
+                " JOIN (" + queryAddresses + ") " + addressesAlias + " ON " + vehicleAlias + "." + COLUMN_VEHICLE_ID + " = " + addressesAlias + "." + COLUMN_ADDRESS_ID + ";";
+        Log.d(TAG_Database, "getVehiclesAvailable: query: " + query);
         return getVehicles(query);
     }
 
@@ -438,13 +461,12 @@ public class DatabaseHelper {
      *  ---------------------------------- */
 
     public String [] getMatchingCities(String firstChar){
-        //SELECT * FROM my_table WHERE address LIKE '%Main%';
-        String query = "SELECT * FROM " + TABLE_CITY + " WHERE " + COLUMN_CITY + " ILIKE '%" + firstChar + "%' ORDER BY " + COLUMN_CITY + " ASC LIMIT 3;";
+        String query = "SELECT * FROM " + TABLE_CITY + " WHERE " + COLUMN_CITY_NAME + " ILIKE '%" + firstChar + "%' ORDER BY " + COLUMN_CITY_NAME + " ASC LIMIT 3;";
         Log.d(TAG_Database, "getMatchingCities: query: " + query);
 
         ArrayList<String> matching = new ArrayList<String>();
 
-        if (isConnectionError("getModules")) return matching.toArray(new String[0]);
+        if (isConnectionError("getMatchingCities")) return matching.toArray(new String[0]);
 
         try {
             // Execute query
@@ -455,7 +477,7 @@ public class DatabaseHelper {
             while (rs.next()) {
                 // Get values
                 //int id = rs.getInt(1);
-                String city = rs.getString(COLUMN_CITY);
+                String city = rs.getString(COLUMN_CITY_NAME);
                 //String points = rs.getString(3);
 
                 matching.add(city);
