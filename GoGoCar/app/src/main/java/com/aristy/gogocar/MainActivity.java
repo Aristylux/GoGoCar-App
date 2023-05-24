@@ -60,8 +60,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.aristy.gogocar.AES.AESCommon;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -110,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         setWindowVersion(MainActivity.this, getWindow());
 
         // -----
-        AESCommon.AESTest();
 
         // Get bluetooth adapter
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();

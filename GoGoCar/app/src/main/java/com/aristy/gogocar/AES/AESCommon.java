@@ -129,19 +129,25 @@ public class AESCommon {
         return p;
     }
 
+    /**
+     * Remove last bytes & resize array
+     * @param byteArray byte array
+     * @return byte array resized
+     */
     public static byte[] removeNullBytes(byte[] byteArray) {
         int count = 0;
         for (int i = byteArray.length - 1; i > 0; i--){
             if (byteArray[i] == 0) count++;
             else break;
         }
-
         byte[] filteredArray = new byte[byteArray.length - count];
         System.arraycopy(byteArray, 0, filteredArray, 0, filteredArray.length);
-
         return filteredArray;
     }
 
+    /**
+     * Perform AES test
+     */
     public static void AESTest(){
         Log.d(TAG_AES, "AESTest: AES");
         AES aes = new AES();
