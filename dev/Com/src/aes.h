@@ -20,14 +20,14 @@ t_aes_key* generate_aes_key(size_t key_size);
 void print_aes_key(t_aes_key *key);
 void free_aes_key(t_aes_key *key);
 
+// --- Encrypt ---
+
 void aes_encrypt(unsigned char *plaintext, t_aes_key *key, uint8_t *ciphertext);
 void main_encrypt(uint8_t *state, uint8_t *expanded_key, uint8_t nbr_rounds);
 
-void key_expansion(const uint8_t* key, uint8_t* expanded_key);
 void rotate(uint8_t *word);
 void core(uint8_t *word, uint32_t iteration);
-
-void key_expand(const uint8_t* key, uint8_t* expanded_key);
+void key_expansion(const uint8_t* key, uint8_t* expanded_key);
 
 void create_round_key(uint8_t *expanded_key, uint8_t *round_key);
 void add_round_key(uint8_t* state, const uint8_t* round_key);
@@ -40,7 +40,8 @@ void mix_column(uint8_t *column);
 
 uint8_t gf_mul(uint8_t a, uint8_t b);
 
-// Decrypt
+// --- Decrypt ---
+
 void aes_decrypt(uint8_t *ciphertext, t_aes_key *key, unsigned char *plaintext);
 void main_decrypt(uint8_t *state, uint8_t *expanded_key, uint8_t nbr_rounds);
 
