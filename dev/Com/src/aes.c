@@ -445,7 +445,7 @@ void key_expansion(const t_aes_key* key, uint8_t* expanded_key){
         // For 256-bit keys, we add an extra sbox to the calculation
         if(key->key_size == KEY_256_BITS && ((current_size % key->key_size) == 16)) {
             for(uint8_t i = 0; i < 4; i++) {
-                printf("i: %d temp: %d box: %d\n", i, temp[i], sbox[temp[i]]);
+                //printf("i: %d temp: %d box: %d\n", i, temp[i], sbox[temp[i]]);
                 temp[i] = sbox[temp[i]];
             }
         }

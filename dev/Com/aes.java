@@ -15,8 +15,8 @@ public class aes {
 
         aes.aesEncrypt(plaintext, key, ciphertext);
 
-        System.out.println("Plaintext    : " + plaintext);
-        System.out.print("Ciphertext   : ");
+        System.out.println("Plaintext     : " + plaintext);
+        System.out.print("Ciphertext    : ");
         for (int i = 0; i < 16; i++) {
             System.out.print(String.format("%02x ", ciphertext[i]));
         }
@@ -120,6 +120,15 @@ public class aes {
 
         public AES(){
             this.sboxInv = generateSboxInv();
+            //print_hex(sboxInv, 256, "sboxinv");
+        }
+
+        void print_hex(byte[] arr, int size, String title) {
+            System.out.println(title + ":");
+            for (int i = 1; i <= size; i++) {
+                System.out.printf("%02x%c", arr[i - 1], (i % 16 != 0) ? ' ' : '\n');
+            }
+            System.out.println();
         }
 
         // --- Key functions ---
@@ -157,10 +166,10 @@ public class aes {
 
             // Expand the key into a set of round keys
             keyExpansion(key, expandedKey);
-        
+
             // Encrypt
             mainEncrypt(state, expandedKey, 14);
-        
+
             // Copy the encrypted state into the ciphertext array
             System.arraycopy(state, 0, ciphertext, 0, BLOCK_SIZE_128_BITS);
         }
@@ -178,10 +187,10 @@ public class aes {
             // Add the initial round key to the state
             createRoundKey(expandedKey, roundKey);
             addRoundKey(state, roundKey);
-        
+
             // Perform the main rounds of encryption
             for (int round = 1; round < nbrRounds; round++){
-                createRoundKey(expandedKey, roundKey, BLOCK_SIZE_128_BITS*round);
+                createRoundKey(expandedKey, roundKey, BLOCK_SIZE_128_BITS*round);     
                 subBytes(state);
                 shiftRows(state);
                 mixColumns(state);
@@ -246,7 +255,7 @@ public class aes {
          */
         private void shiftRows(byte[] state) {
             for (int i = 0; i < 4; i++)
-                shiftRow(state, i);
+                shiftRow(state, i, i * 4);
         }
         
         /**
@@ -254,16 +263,17 @@ public class aes {
          * 
          * @param state State
          * @param nbr Column
+         * @param offset Starting index of the row in the state array
          */
-        private void shiftRow(byte[] state, int nbr) {
+        private void shiftRow(byte[] state, int nbr, int offset) {
             byte temp;
         
             for (int i = 0; i < nbr; i++) {
-                temp = state[0];
+                temp = state[offset];
                 for (int j = 0; j < 3; j++) {
-                    state[j] = state[j + 1];
+                    state[offset + j] = state[offset + j + 1];
                 }
-                state[3] = temp;
+                state[offset + 3] = temp;
             }
         }
 
@@ -324,20 +334,6 @@ public class aes {
         
             // Decrypt
             mainDecrypt(state, expandedKey, 14);
-        
-            // Copy the decrypted state into the plaintext array
-            /*
-            System.arraycopy(state, 0, plaintext, 0, BLOCK_SIZE_128_BITS);
-            System.out.print("->");
-            for (byte b : state) {
-                System.out.print(b + " ");
-            }
-            System.out.print("\n-> ");
-            for (byte b : plaintext) {
-                System.out.print(b + " ");
-            }
-            System.out.print("\n");
-            */
             return state;
         }
 
@@ -382,7 +378,7 @@ public class aes {
          */
         private void shiftRowsInv(byte[] state) {
             for (int i = 0; i < 4; i++)
-                shiftRowInv(state, i * 4);
+                shiftRowInv(state, i, i * 4);
         }
         
         /**
@@ -391,13 +387,13 @@ public class aes {
          * @param state State
          * @param nbr Value of column of state
          */
-        private void shiftRowInv(byte[] state, int nbr) {
+        private void shiftRowInv(byte[] state, int nbr, int offset) {
             byte temp;
             for (int i = 0; i < nbr; i++) {
-                temp = state[3];
+                temp = state[offset + 3];
                 for (int j = 3; j > 0; j--)
-                    state[j] = state[j - 1];
-                state[0] = temp;
+                    state[offset + j] = state[offset + j - 1];
+                state[offset] = temp;
             }
         }
         
@@ -541,12 +537,12 @@ public class aes {
          * @param b A byte value
          * @return uint8_t The result of multiplying a and b in the Galois Field
          */
-        private byte gfMul(int a, int b) {
-            byte p = 0;
-            byte hbit = 0;
+        private int gfMul(int a, int b) {
+            int p = 0;
+            int hbit = 0;
             for (int i = 0; i < 8; i++) {
                 if ((b & 0x01) == 0x01) p ^= a;
-                hbit = (byte)(a & 0x80);
+                hbit = (a & 0x80);
                 a <<= 1;
                 if (hbit == 0x80) a ^= 0x1b;
                 b >>= 1;
