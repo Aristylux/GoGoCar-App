@@ -1,9 +1,10 @@
 package com.aristy.gogocar.AES;
 
+import static com.aristy.gogocar.CodesTAG.TAG_AES;
+
 import android.util.Log;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class AESCommon {
 
@@ -93,7 +94,7 @@ public class AESCommon {
      * Set the number round object
      *
      * @param key_size Size of the aes key
-     * @return uint8_t Number of round of the key
+     * @return Number of round of the key
      */
     public static int setNumberRound(int key_size){
         switch (key_size){
@@ -113,7 +114,7 @@ public class AESCommon {
      *
      * @param a A byte value
      * @param b A byte value
-     * @return uint8_t The result of multiplying a and b in the Galois Field
+     * @return The result of multiplying a and b in the Galois Field
      */
     public static int gfMul(int a, int b) {
         int p = 0;
@@ -142,23 +143,23 @@ public class AESCommon {
     }
 
     public static void AESTest(){
-        Log.d("Gogocar_AES", "AESTest: AES");
+        Log.d(TAG_AES, "AESTest: AES");
         AES aes = new AES();
         AESKey aesKey = aes.generateAESKey(KEY_256_BITS);
-        Log.d("Gogocar_AES", "AESTest: " + aesKey.print());
+        Log.d(TAG_AES, "AESTest: " + aesKey.print());
 
         byte[] text = {0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6f, 0x00, 0x00, 0x00, 0x00, 0x00};
 
         //String text = "hello";
 
         byte[] ciphertext = aes.aesEncrypt(new String(text, StandardCharsets.UTF_8), aesKey);
-        Log.d("Gogocar_AES", "AESTest: Plaintext     : " + new String(text, StandardCharsets.UTF_8));
+        Log.d(TAG_AES, "AESTest: Plaintext     : " + new String(text, StandardCharsets.UTF_8));
 
         StringBuilder sb = new StringBuilder();
         for (byte b : ciphertext) {
             sb.append(String.format("%02x ", b));
         }
-        Log.d("Gogocar_AES", "AESTest: Ciphertext    : " + sb);
+        Log.d(TAG_AES, "AESTest: Ciphertext    : " + sb);
 
 
         String plaintext = aes.aesDecrypt(ciphertext, aesKey);
@@ -166,7 +167,7 @@ public class AESCommon {
         for (byte b : plaintext.getBytes()) {
             sb.append(String.format("%02x ", b));
         }
-        Log.d("Gogocar_AES", "AESTest: Decrypted data: " + sb);
-        Log.d("Gogocar_AES", "AESTest: Decrypted text: " + plaintext);
+        Log.d(TAG_AES, "AESTest: Decrypted data: " + sb);
+        Log.d(TAG_AES, "AESTest: Decrypted text: " + plaintext);
     }
 }

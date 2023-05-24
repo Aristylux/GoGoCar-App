@@ -12,6 +12,10 @@ public class AESKey {
         return key;
     }
 
+    public int getSize(){
+        return  key.length;
+    }
+
     public String print(){
         StringBuilder sb = new StringBuilder("AES key: ");
         for (byte b : this.key) {

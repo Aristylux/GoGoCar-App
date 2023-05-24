@@ -15,4 +15,5 @@ public class CodesTAG {
     public static final String TAG_FRAGMENT = TAG + "_Frag";
     public static final String TAG_SLIDER = TAG + "_Slider";
     public static final String TAG_RSA = TAG + "_RSA";
+    public static final String TAG_AES = TAG + "_AES";
 }

@@ -50,7 +50,7 @@ public class AES {
         keyExpansion(key, expandedKey);
 
         // Encrypt
-        mainEncrypt(state, expandedKey, 14);
+        mainEncrypt(state, expandedKey, setNumberRound(key.getSize()));
 
         return state;
     }
@@ -204,7 +204,7 @@ public class AES {
      * Copy key & cipher text, encrypt text with the key
      *
      * @param ciphertext encrypted block of data (16 bytes)
-     * @param key ecret key (32 bytes)
+     * @param key Secret key (32 bytes)
      * @return String block of plaintext data
      */
     public String aesDecrypt(byte[] ciphertext, AESKey key) {
@@ -218,7 +218,7 @@ public class AES {
         keyExpansion(key, expandedKey);
 
         // Decrypt
-        mainDecrypt(state, expandedKey, 14);
+        mainDecrypt(state, expandedKey, setNumberRound(key.getSize()));
         return new String(removeNullBytes(state), StandardCharsets.UTF_8);
     }
 
@@ -329,7 +329,7 @@ public class AES {
      * @param expandedKey Pointer to the expanded set of round keys (240 bytes)
      */
     private void keyExpansion(AESKey key, byte[] expandedKey) {
-        int keySize = key.getKey().length;
+        int keySize = key.getSize();
         int expandedKeySize = (BLOCK_SIZE_128_BITS * (setNumberRound(keySize) + 1));
         int currentSize = keySize; // for 256 bits key
         byte[] temp = new byte[4];
