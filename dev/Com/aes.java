@@ -1,11 +1,34 @@
 import java.util.Random;
+import java.util.Arrays;
 
 public class aes {
     
     public static void main(String[] args) {
 
-        System.out.println("Hello");
+        AES aes = new AES();
+        AES.AESKey key = aes.generateAESKey(aes.KEY_256_BITS);
+        System.out.println(key.print());
 
+        String plaintext = "hello";
+        String plaintextFinal = new String();
+        byte[] ciphertext = new byte[16];
+
+        aes.aesEncrypt(plaintext, key, ciphertext);
+
+        System.out.println("Plaintext    : " + plaintext);
+        System.out.print("Ciphertext   : ");
+        for (int i = 0; i < 16; i++) {
+            System.out.print(String.format("%02x ", ciphertext[i]));
+        }
+        System.out.print("\n");
+
+        byte[] pl = aes.aesDecrypt(ciphertext, key, plaintextFinal.getBytes());
+        System.out.print("Decrypted data: ");
+        for (int i = 0; i < 16; i++) {
+            System.out.print(String.format("%02x ", pl[i]));
+        }
+        System.out.print("\n");
+        System.out.println("Decrypted text: " + Arrays.toString(pl));
     }
 
     public static class AES {
@@ -34,11 +57,11 @@ public class aes {
 
         }
 
-        private final int BLOCK_SIZE_128_BITS = 16;
+        public final int BLOCK_SIZE_128_BITS = 16;
 
-        private final int KEY_128_BITS = 16;
-        private final int KEY_192_BITS = 24;
-        private final int KEY_256_BITS = 32;
+        public final int KEY_128_BITS = 16;
+        public final int KEY_192_BITS = 24;
+        public final int KEY_256_BITS = 32;
 
         /**
          * @brief S-box values (Substitution box)
@@ -122,13 +145,16 @@ public class aes {
          * @param key Pointer to the secret key (32 bytes)
          * @param ciphertext Return pointer to the encrypted block of data (16 bytes)
          */
-        public void aesEncrypt(byte[] plaintext, AESKey key, byte[] ciphertext) {
+        public void aesEncrypt(String plaintext, AESKey key, byte[] ciphertext) {
             byte[] state = new byte[BLOCK_SIZE_128_BITS];
             byte[] expandedKey = new byte[240]; // 240 = 16 * (14 + 1)
-        
+    
+            byte[] byteArray = Arrays.copyOf(plaintext.getBytes(), BLOCK_SIZE_128_BITS);
+            Arrays.fill(byteArray, plaintext.length(), byteArray.length, (byte) 0);
+
             // Copy the plaintext to the state array
-            System.arraycopy(plaintext, 0, state, 0, BLOCK_SIZE_128_BITS);
-        
+            System.arraycopy(byteArray, 0, state, 0, BLOCK_SIZE_128_BITS);
+
             // Expand the key into a set of round keys
             keyExpansion(key, expandedKey);
         
@@ -286,7 +312,7 @@ public class aes {
          * @param key Pointer to the secret key (32 bytes)
          * @param plaintext Return pointer to a block of plaintext data
          */
-        public void aesDecrypt(byte[] ciphertext, AESKey key, byte[] plaintext) {
+        public byte[] aesDecrypt(byte[] ciphertext, AESKey key, byte[] plaintext) {
             byte[] state = new byte[BLOCK_SIZE_128_BITS];
             byte[] expandedKey = new byte[240]; // 240 = 16 * (14 + 1)
         
@@ -300,7 +326,19 @@ public class aes {
             mainDecrypt(state, expandedKey, 14);
         
             // Copy the decrypted state into the plaintext array
+            /*
             System.arraycopy(state, 0, plaintext, 0, BLOCK_SIZE_128_BITS);
+            System.out.print("->");
+            for (byte b : state) {
+                System.out.print(b + " ");
+            }
+            System.out.print("\n-> ");
+            for (byte b : plaintext) {
+                System.out.print(b + " ");
+            }
+            System.out.print("\n");
+            */
+            return state;
         }
 
         private void mainDecrypt(byte[] state, byte[] expandedKey, int nbrRounds){
@@ -464,13 +502,14 @@ public class aes {
                 // For 256-bit keys, we add an extra sbox to the calculation
                 if (key.keySize == KEY_256_BITS && ((currentSize % key.keySize) == 16)) {
                     for (int i = 0; i < 4; i++) {
-                        temp[i] = sbox[temp[i]];
+                        //System.out.println("i:" + i + " temp:" + (temp[i] & 0xFF) + " sbox:" + "sbox[temp[i]]");
+                        temp[i] = sbox[(temp[i] & 0xFF)];
                     }
                 }
         
                 // We XOR temp with the four-byte block 16, 24, 32 bytes before the new expanded key. This becomes the next four bytes in the expanded key.
                 for (int i = 0; i < 4; i++) {
-                    expandedKey[currentSize] = (byte) (expandedKey[currentSize - key.keySize] ^ temp[i]);
+                    expandedKey[currentSize] = (byte) ((expandedKey[currentSize - key.keySize] & 0xFF) ^ (temp[i] & 0xFF));
                     currentSize++;
                 }
             }

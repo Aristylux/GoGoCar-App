@@ -444,7 +444,10 @@ void key_expansion(const t_aes_key* key, uint8_t* expanded_key){
         
         // For 256-bit keys, we add an extra sbox to the calculation
         if(key->key_size == KEY_256_BITS && ((current_size % key->key_size) == 16)) {
-            for(uint8_t i = 0; i < 4; i++) temp[i] = sbox[temp[i]];
+            for(uint8_t i = 0; i < 4; i++) {
+                printf("i: %d temp: %d box: %d\n", i, temp[i], sbox[temp[i]]);
+                temp[i] = sbox[temp[i]];
+            }
         }
 
         // We XOR temp with the four-byte block 16,24,32 bytes before the new expanded key. This becomes the next four bytes in the expanded key.
@@ -499,6 +502,6 @@ uint8_t gf_mul(uint8_t a, uint8_t b) {
  * 
  */
 void generate_sbox_inv(void) {
-    for (uint8_t i = 0; i < 256; i++)
+    for (int i = 0; i < 256; i++)
         sbox_inv[sbox[i]] = i;
 }
