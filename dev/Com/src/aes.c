@@ -24,7 +24,7 @@ const uint8_t sbox[256] = {
 
 /**
  * @brief Inverted S-box values
- * @note generate with generate_sbox_inv();
+ * @note Generate with generate_sbox_inv();
  */
 uint8_t sbox_inv[256];
 
@@ -499,6 +499,6 @@ uint8_t gf_mul(uint8_t a, uint8_t b) {
  * 
  */
 void generate_sbox_inv(void) {
-    for (int i = 0; i < 256; i++)
+    for (uint8_t i = 0; i < 256; i++)
         sbox_inv[sbox[i]] = i;
 }

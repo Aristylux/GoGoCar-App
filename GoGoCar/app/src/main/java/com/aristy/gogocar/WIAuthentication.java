@@ -50,6 +50,8 @@ public class WIAuthentication extends WICommon {
      */
     @JavascriptInterface
     public void AuthenticationLogin(String email, String password){
+        // TODO get salt from database
+
         // Hash password
         String hash = hashPassword(password, SHAHash.DOMAIN);
 
@@ -104,12 +106,13 @@ public class WIAuthentication extends WICommon {
      */
     @JavascriptInterface
     public void AuthenticationRegister(String fullName, String email, String phoneNumber, String password){
-        // Hash password
-        String hash = hashPassword(password, SHAHash.DOMAIN);
-
         // Generate salt
         String salt = generateSalt();
-        Log.d(TAG_Auth, "pw= \"" + password + "\", hash= \"" + hash + "\", salt= \"" + salt + "\"");
+
+        // Hash password
+        String hash = hashPassword(password, salt);
+
+        Log.d(TAG_Auth, "AuthenticationRegister: pw= \"" + password + "\", hash= \"" + hash + "\", salt= \"" + salt + "\"");
 
         // Create user
         DBModelUser user = new DBModelUser(fullName, email, phoneNumber, hash, salt);

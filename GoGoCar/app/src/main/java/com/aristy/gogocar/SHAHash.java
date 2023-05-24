@@ -14,11 +14,11 @@ public class SHAHash {
      * hashPassword:
      * Hash password combined with domain in SHA3-512.
      * @param password password
-     * @param domain domain
+     * @param salt salt
      * @return hash in String (length: 128)
      */
-    public static String hashPassword(String password, String domain) {
-        String pw = password + domain;
+    public static String hashPassword(String password, String salt) {
+        String pw = password + salt;
         MessageDigest sha;
         byte[] byteData;
         try {
@@ -48,6 +48,10 @@ public class SHAHash {
         return hexString.toString();
     }
 
+    /**
+     * Generate Salt
+     * @return Salt in string
+     */
     public static String generateSalt(){
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
