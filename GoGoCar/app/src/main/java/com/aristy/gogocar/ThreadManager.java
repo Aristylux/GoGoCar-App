@@ -24,6 +24,8 @@ public class ThreadManager {
 
     private Thread thread;
     private ThreadResultCallback callback;
+    private long threadID;
+    private boolean isExpired;
 
     // Database
     private DatabaseHelper databaseHelper;
@@ -70,7 +72,35 @@ public class ThreadManager {
         this.callback = callback;
     }
 
-    
+    /**
+     * Verify if the current thread is running<br>
+     * If yes, set it expired.
+     */
+    public void verifyThread(){
+        Log.d(TAG_THREAD, "printThread: " + threadID + " " + thread.getId() + " | " + (threadID == thread.getId()) + " " + thread.getState());
+        if (thread.getState().toString().equals("RUNNABLE")){
+            isExpired = true;
+        }
+    }
+
+    /**
+     * Verify if the current thread is expired
+     * @return isExpired
+     */
+    private boolean isExpired(){
+        if (isExpired){
+            isExpired = false;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Verify all the elements to avoid unexpected error
+     * @param methodName    caller method which call this method
+     * @param params        arguments of the caller method
+     * @return true if error
+     */
     private boolean checkStateError(String methodName, Object... params) {
         if (!connected){
             // Set last method called
@@ -309,9 +339,13 @@ public class ThreadManager {
     public void getVehiclesAvailable(int userID){
         if (checkStateError("getVehiclesAvailable")) return;
         thread = new Thread(() -> {
-            Log.d(TAG_THREAD, "run: getVehiclesAvailable");
+            threadID = thread.getId();
+            Log.d(TAG_THREAD, "run: getVehiclesAvailable: " + thread.getName() + " " + thread.getId() + " " + thread.getState());
+
             List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userID);
+
             for (DBModelVehicle vehicle : vehicles){
+                if (isExpired()) return;
                 callback.onResultVehicle(vehicle);
             }
         });
@@ -327,7 +361,8 @@ public class ThreadManager {
         if (checkStateError("getVehiclesBooked", userID)) return;
         thread = new Thread(() -> {
             Log.d(TAG_THREAD, "run: getVehiclesBooked");
-            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userID);
+            //List<DBModelVehicle> vehicles = databaseHelper.getVehiclesBooked(userID);
+            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesJoinOwner(userID);
             callback.onResultVehicles(vehicles);
         });
         thread.start();
@@ -341,9 +376,10 @@ public class ThreadManager {
     public void getVehiclesByUser(int userID){
         if (checkStateError("getVehiclesByUser")) return;
         thread = new Thread(() -> {
-            Log.d(TAG_THREAD, "run: getVehiclesByUser");
+            Log.d(TAG_THREAD, "run: getVehiclesByUser: " + thread.getName() + " " + thread.getId() + " " + thread.getState());
             List<DBModelVehicle> vehicles = databaseHelper.getVehiclesByUser(userID);
 
+            if (isExpired()) return;
             callback.onResultEmpty(vehicles.size() == 0);
 
             for (DBModelVehicle vehicle : vehicles){

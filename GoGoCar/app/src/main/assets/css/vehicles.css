@@ -3,11 +3,11 @@ a {
 }
 
 .button_bottom {
-    position: absolute;
+    position: fixed;
     right: 0;
     bottom: 0;
     margin: 5%;
-    margin-bottom: 20%;
+    margin-bottom: 5%;
 
     animation: transitionIn 0.5s;
 }

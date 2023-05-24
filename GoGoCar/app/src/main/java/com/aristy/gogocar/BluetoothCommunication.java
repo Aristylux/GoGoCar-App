@@ -11,6 +11,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 public class BluetoothCommunication extends Thread {
     private InputStream inputStream = null;
@@ -53,7 +54,7 @@ public class BluetoothCommunication extends Thread {
 
                 // Get Message
                 String tempMessage = new String(buffer,0, bytes);
-                //Log.d(TAG_BT, "run: " + bytes + " | " + Arrays.toString(buffer));
+                //Log.d(TAG_BT_COM, "run: " + bytes + " | " + Arrays.toString(buffer));
 
                 //$VA:data\n
 

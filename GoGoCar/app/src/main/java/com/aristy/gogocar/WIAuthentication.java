@@ -5,6 +5,9 @@ import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import static com.aristy.gogocar.SHAHash.generateSalt;
 import static com.aristy.gogocar.SHAHash.hashPassword;
+import static com.aristy.gogocar.WICommon.Pages.Login.JS.ERROR_AUTH_LOGIN;
+import static com.aristy.gogocar.WICommon.Pages.Login.JS.ERROR_AUTH_REGIS;
+import static com.aristy.gogocar.WICommon.Pages.Login.JS.SUCCESS;
 
 import android.content.Context;
 import android.os.Handler;
@@ -63,7 +66,7 @@ public class WIAuthentication extends WICommon {
                 if (userVerified == null) {
                     Log.e(TAG_Auth, "AuthenticationLogin: this user isn't in our database");
                     // Send error to the page
-                    androidToWeb("errorAuthenticationLogin");
+                    androidToWeb(ERROR_AUTH_LOGIN);
                 } else {
                     // Set user in app & Save user for the application (user id)
                     userPreferences.setUser(user);
@@ -169,8 +172,8 @@ public class WIAuthentication extends WICommon {
                 Log.d(TAG_Auth, "verifyEmail: " + user.toString());
 
                 // If != null (exist) -> error
-                if (user.getEmail() == null) androidToWeb("success", String.valueOf(successCode));
-                else androidToWeb("errorAuthenticationRegistration", String.valueOf(errorCode));
+                if (user.getEmail() == null) androidToWeb(SUCCESS, String.valueOf(successCode));
+                else androidToWeb(ERROR_AUTH_REGIS, String.valueOf(errorCode));
             }
         });
         Log.d(TAG_Auth, "verifyEmail: get");
@@ -192,8 +195,8 @@ public class WIAuthentication extends WICommon {
                 Log.d(TAG_Auth, "verifyPhone: " + user.toString());
 
                 // If exist -> error
-                if (user.getPhoneNumber() == null) androidToWeb("success", String.valueOf(successCode));
-                else androidToWeb("errorAuthenticationRegistration", String.valueOf(errorCode));
+                if (user.getPhoneNumber() == null) androidToWeb(SUCCESS, String.valueOf(successCode));
+                else androidToWeb(ERROR_AUTH_REGIS, String.valueOf(errorCode));
             }
         });
         thread.getUserByPhone(phone);

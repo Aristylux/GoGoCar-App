@@ -4,6 +4,7 @@ import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_COM;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_CON;
 import static com.aristy.gogocar.CodesTAG.TAG_RSA;
+import static com.aristy.gogocar.CodesTAG.TAG_CAN;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
 
@@ -32,13 +33,10 @@ public class BluetoothConnection extends Thread {
 
     private boolean isConnecting;
 
+
     private RSA rsa;
     private boolean waitForModulePublicKey;
-
-    private String message;
-    private String function;
-
-
+  
     /**
      * Constructor, set default, prepare to be connected
      */
@@ -155,7 +153,8 @@ public class BluetoothConnection extends Thread {
      * Find the best function to result
      * @param message message to extract
      */
-    public void messageReceived(String message){
+
+    public ReceiverCAN messageReceived(String message){
         Log.d(TAG_BT_COM, "run: " + Arrays.toString(message.getBytes(StandardCharsets.UTF_8)));
 
         if (this.waitForModulePublicKey){
@@ -167,24 +166,20 @@ public class BluetoothConnection extends Thread {
             // Decrypt the message
         }
 
-        // TODO
-        // Message management
+        String type;
+        String data;
 
-        // Extract code
+        // Message : "&type:data\n"
+        if (message.startsWith("$") && message.contains(":")) {
+            int colonIndex = message.indexOf(":");
 
-        // Extract message
-        //this.message = message;
-
-        // Action
-        //this.function = "functionTest";
-    }
-
-    public String getMessageFunction(){
-        return this.function;
-    }
-
-    public String getMessageParams(){
-        return this.message;
+            type = message.substring(1, colonIndex);
+            data = message.substring(colonIndex + 1);
+            return CAN.transformMessage(type, data);
+        } else {
+            Log.e(TAG_CAN, "messageReceived: data invalid. message: '" + message + "'");
+            return new ReceiverCAN();
+        }
     }
 
     /**

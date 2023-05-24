@@ -5,9 +5,6 @@ public class CodesTAG {
     private static final String TAG = "GoGoCar";
 
     public static final String TAG_Web = TAG + "_Web";
-    public static final String TAG_Database = TAG + "_DB";
-    public static final String TAG_Auth = TAG + "_A";
-    public static final String TAG_SPLASH = TAG + "_S";
     public static final String TAG_THREAD = TAG + "_Thread";
     public static final String TAG_BT = TAG + "_BT";
     public static final String TAG_BT_CON = TAG_BT + "_Connection";
@@ -16,4 +13,10 @@ public class CodesTAG {
     public static final String TAG_SLIDER = TAG + "_Slider";
     public static final String TAG_RSA = TAG + "_RSA";
     public static final String TAG_AES = TAG + "_AES";
+    static final String TAG_Database = TAG + "_DB";
+    static final String TAG_Auth = TAG + "_A";
+    static final String TAG_SPLASH = TAG + "_S";
+    static final String TAG_CAN = TAG + "_CAN";
+    static final String TAG_QRCODE = TAG + "_QRCode";
+
 }

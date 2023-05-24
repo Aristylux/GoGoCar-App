@@ -3,6 +3,13 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
+import static com.aristy.gogocar.HandlerCodes.OPEN_QRCODE_ACTIVITY;
+import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
+import static com.aristy.gogocar.WICommon.Pages.JS.SET_USER_INFO;
+import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.ADD_VEHICLE;
+import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.SET_QRCODE_VALUE;
+import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.SET_VEHICLE;
+import static com.aristy.gogocar.WICommon.Pages.VehicleEdit.JS.EDIT_VEHICLE;
 
 import android.os.Handler;
 import android.util.Log;
@@ -56,11 +63,28 @@ public class WIPanels extends WICommon {
 
     @JavascriptInterface
     public void requestPersonalInformation() {
-        androidToWeb("setUserInformation", userPreferences.toString());
+        androidToWeb(SET_USER_INFO, userPreferences.toString());
     }
 
     // ---- Add ----
     // Parent screen: vehicles.html
+
+    /**
+     * The user want to scan the QR code on the module,
+     * Open the new activity
+     */
+    @JavascriptInterface
+    public void openScanQRCode(){
+        handler.obtainMessage(OPEN_QRCODE_ACTIVITY).sendToTarget();
+    }
+
+    /**
+     * Result of the function
+     * @param qrCodeValue qr code value or null (if error)
+     */
+    public void setResultQRCode(String qrCodeValue){
+        androidToWeb(SET_QRCODE_VALUE, qrCodeValue);
+    }
 
     /**
      * Send vehicle (in main) to the new fragment
@@ -68,7 +92,7 @@ public class WIPanels extends WICommon {
     @JavascriptInterface
     public void requestGetVehicle(){
         Log.d("GoGoCar_T", "requestGetVehicle: get vehicle:" + data);
-        androidToWeb("setVehicle", data);
+        androidToWeb(SET_VEHICLE, data);
     }
 
     /**
@@ -84,7 +108,7 @@ public class WIPanels extends WICommon {
 
         // Check address
         if (address.isEmpty()){
-            androidToWeb(JSFunction.ADD_VEHICLE, ErrorCodes.ADD_VEHICLE_NO_ADDRESS);
+            androidToWeb(ADD_VEHICLE, Pages.VehicleAdd.ErrorCodes.ADD_VEHICLE_NO_ADDRESS);
             return;
         }
 
@@ -98,7 +122,7 @@ public class WIPanels extends WICommon {
             public void onResultModule(DBModelModule module) {
                 if(module.getId() == 0){
                     //Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
-                    androidToWeb(JSFunction.ADD_VEHICLE, ErrorCodes.ADD_VEHICLE_MODULE_CODE_UNKNOWN);
+                    androidToWeb(ADD_VEHICLE, Pages.VehicleAdd.ErrorCodes.ADD_VEHICLE_MODULE_CODE_UNKNOWN);
                 } else
                     addVehicle(model, licencePlate, address, module.getId(), isAvailable);
             }
@@ -125,7 +149,7 @@ public class WIPanels extends WICommon {
                 Log.d(TAG_Database, "addVehicleResult: success=" + success);
                 if (!success) {
                     //Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
-                    androidToWeb(JSFunction.ADD_VEHICLE, ErrorCodes.ADD_VEHICLE_FAILED);
+                    androidToWeb(ADD_VEHICLE, Pages.VehicleAdd.ErrorCodes.ADD_VEHICLE_FAILED);
                 } else {
                     // Return top vehicle fragment
                     handler.obtainMessage(CLOSE_SLIDER).sendToTarget();
@@ -159,7 +183,7 @@ public class WIPanels extends WICommon {
                 if (module.getId() == 0){
                     //Toast.makeText(context, "module code incorrect", Toast.LENGTH_SHORT).show();
                     Log.e(TAG_Web, "onResultModule: module code incorrect");
-                    androidToWeb(JSFunction.EDIT_VEHICLE, ErrorCodes.EDIT_VEHICLE_MODULE_CODE_INCORRECT);  // Error code 2
+                    androidToWeb(EDIT_VEHICLE, Pages.VehicleEdit.ErrorCodes.EDIT_VEHICLE_MODULE_CODE_INCORRECT);  // Error code 2
                 } else {
                     // Modify the vehicle
                     DBModelVehicle vehicle = new DBModelVehicle();
@@ -188,7 +212,7 @@ public class WIPanels extends WICommon {
             public void onResultVehicle(DBModelVehicle vehicleResulted) {
                 if (vehicleResulted.getId() != vehicle.getId()){
                     Log.e(TAG_Web, "onResultVehicles: module code already used");
-                    androidToWeb(JSFunction.EDIT_VEHICLE, ErrorCodes.EDIT_VEHICLE_MODULE_CODE_USED);
+                    androidToWeb(EDIT_VEHICLE, Pages.VehicleEdit.ErrorCodes.EDIT_VEHICLE_MODULE_CODE_USED);
                 } else {
                     updateVehicle(vehicle);
                 }
@@ -208,7 +232,7 @@ public class WIPanels extends WICommon {
                 if (!success) {
                     //Toast.makeText(context, "An error occured.", Toast.LENGTH_SHORT).show();
                     Log.e(TAG_Web, "onResultVehicles: An error occured during update.");
-                    androidToWeb(JSFunction.EDIT_VEHICLE, ErrorCodes.EDIT_VEHICLE_FAILED);
+                    androidToWeb(EDIT_VEHICLE, Pages.VehicleEdit.ErrorCodes.EDIT_VEHICLE_FAILED);
                 } else {
                     // Return top vehicle fragment
                     handler.obtainMessage(CLOSE_SLIDER).sendToTarget();
