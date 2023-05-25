@@ -394,6 +394,7 @@ VALUES
   ('Le Mans', ST_SetSRID(ST_MakePoint( 48.00611, 0.1999556),4326)),
   ('Annecy', ST_SetSRID(ST_MakePoint( 45.8992, 6.1294), 4326)),
   ('Nancy', ST_SetSRID(ST_MakePoint(48.692054, 6.184417), 4326)),
+  ('Montpellier',ST_SetSRID(ST_MakePoint(43.62505, 3.862038), 4326)),
   ('Poitiers',ST_SetSRID(ST_MakePoint(46.583328, 0.33333), 4326));
 ```
 ## Vehicles
