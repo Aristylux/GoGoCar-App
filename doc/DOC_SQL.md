@@ -275,6 +275,13 @@ WHERE ST_DWithin(
   10000
 );
 ```
+## Id address
+
+```sql
+SELECT id_address, street_address, city, state, zip_code, location
+FROM addresses
+WHERE id_address IN (1, 4, 13, 9, 15); 
+```
 # Insert
 
 ## User
