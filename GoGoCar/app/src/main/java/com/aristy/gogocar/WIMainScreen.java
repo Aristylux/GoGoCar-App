@@ -6,9 +6,6 @@ import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTING;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCOVERING;
 import static com.aristy.gogocar.HandlerCodes.FRAGMENT_HANDLER_POS;
-import static com.aristy.gogocar.HandlerCodes.GOTO_ADD_VEHICLE_FRAGMENT;
-import static com.aristy.gogocar.HandlerCodes.GOTO_BOOK_VEHICLE_FRAGMENT;
-import static com.aristy.gogocar.HandlerCodes.GOTO_EDIT_VEHICLE_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.GOTO_LOGIN_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.NAVIGATION_HANDLER_POS;
 import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
@@ -256,6 +253,10 @@ public class WIMainScreen extends WICommon {
         thread.getVehiclesAvailable(userPreferences.getUserID());
     }
 
+    /**
+     * Search city
+     * @param city partial city
+     */
     @JavascriptInterface
     public void searchFrom(String city){
         thread.setResultCallback(new ThreadResultCallback() {
@@ -278,6 +279,11 @@ public class WIMainScreen extends WICommon {
         thread.getMatchingCities(city);
     }
 
+    /**
+     * When a city is selected
+     * @param city complete city name
+     * @param distance distance form the center
+     */
     @JavascriptInterface
     public void searchStart(String city, int distance){
         thread.setResultCallback(new ThreadResultCallback() {
@@ -290,18 +296,6 @@ public class WIMainScreen extends WICommon {
         thread.getVehiclesAvailable(userPreferences.getUserID(), city, distance);
     }
 
-    // [NEVER USED] -> openSlider()
-    /**
-     * [MOVER METHOD]<br>
-     * Called when the user want to book a vehicle<br>
-     * In: <code>popup.js</code><br>
-     * @param vehicle the vehicle wanted parsed in json format
-     */
-    @JavascriptInterface
-    public void requestOpenBook(String vehicle){
-        Log.d(TAG_Web, "requestOpenBook: " + vehicle);
-        fragmentHandler.obtainMessage(GOTO_BOOK_VEHICLE_FRAGMENT, vehicle).sendToTarget();
-    }
 
     /*  ---------------------------------- *
      *  --        vehicles.html         -- *
@@ -345,27 +339,6 @@ public class WIMainScreen extends WICommon {
             }
         });
         thread.deleteVehicle(vehicleID);
-    }
-
-    // [NEVER USED] -> openSlider()
-    /**
-     * [MOVER METHOD]<br>
-     * Open Edit fragment & save vehicle for
-     * @param vehicle String JSON vehicle
-     */
-    @JavascriptInterface
-    public void requestOpenEditVehicle(String vehicle){
-        fragmentHandler.obtainMessage(GOTO_EDIT_VEHICLE_FRAGMENT, vehicle).sendToTarget();
-    }
-
-    // [NEVER USED] -> openSlider()
-    /**
-     * [MOVER METHOD]<br>
-     * Open Add a vehicle fragment
-     */
-    @JavascriptInterface
-    public void requestOpenAddVehicle(){
-        fragmentHandler.obtainMessage(GOTO_ADD_VEHICLE_FRAGMENT).sendToTarget();
     }
 
     /*  ---------------------------------- *
