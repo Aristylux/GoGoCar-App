@@ -34,26 +34,42 @@ public class ConnectionHelper{
         this.connection = null;
     }
 
+    /**
+     * Create new connection with database
+     */
     public void openConnection() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         String jdbcURL = "jdbc:postgresql://" + host + ":" + port + "/" + databaseName;
-        Log.d(TAG_Database, "ConnectionClass: " + jdbcURL);
+        Log.d(TAG_Database, "openConnection: " + jdbcURL);
         try {
             // Get connection to the database
             connection = DriverManager.getConnection(jdbcURL, userName, password);
-            Log.d(TAG_Database, "ConnectionClass: Connected");
+            Log.d(TAG_Database, "openConnection: Connected");
         } catch (Exception exception) {
-            Log.e(TAG_Database, "ConnectionClass: ", exception);
+            // No connection!
+            Log.e(TAG_Database, "openConnection: ", exception);
+            Log.e(TAG_Database, "openConnection: " + exception.getMessage());
             exception.printStackTrace();
         }
     }
 
+    /**
+     * Getter connection
+     * @return connection
+     */
     public Connection getConnection() {
         return this.connection;
     }
 
+    /**
+     * verify if the current connection is valid<br>
+     * -> not null<br>
+     * -> not closed
+     * @param connection current connection
+     * @return if valid
+     */
     public static boolean connectionValid(Connection connection){
         try {
             if (connection != null) {

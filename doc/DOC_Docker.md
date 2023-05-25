@@ -25,6 +25,10 @@
   - [Verify our docker image](#verify-our-docker-image)
   - [Verify running container](#verify-running-container-1)
   - [Restart container](#restart-container)
+- [Install Extension](#install-extension)
+  - [Crypto](#crypto)
+  - [Verification](#verification)
+  - [Postgis](#postgis)
 
 
 # Database Postgres Server Docker
@@ -250,7 +254,7 @@ To repair that:
 
 ## Connect to our server in ssh
 
-```
+```bash
 ssh ubuntu@192.168.1.187
 ubuntu@192.168.1.187's password: 
 Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-1021-raspi aarch64)
@@ -258,7 +262,7 @@ Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-1021-raspi aarch64)
 
 ## Verify our docker image
 
-```
+```bash
 ubuntu@ubuntu:~$ sudo docker images
 REPOSITORY   TAG       IMAGE ID       CREATED      SIZE
 postgres     latest    5eea76716a19   7 days ago   359MB
@@ -266,7 +270,7 @@ postgres     latest    5eea76716a19   7 days ago   359MB
 
 ## Verify running container
 
-```
+```bash
 ubuntu@ubuntu:~$ sudo docker ps 
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 ubuntu@ubuntu:~$ 
@@ -274,7 +278,7 @@ ubuntu@ubuntu:~$
 
 ## Restart container 
 
-```
+```bash
 ubuntu@ubuntu:~$ sudo docker restart postgres-0
 postgres-0
 ubuntu@ubuntu:~$ sudo docker ps 
@@ -286,3 +290,43 @@ ubuntu@ubuntu:~$
 **Note:** the database is now available.
 
 **Note:** We can use `--restart always` (but not tested for the moment)
+
+# Install Extension
+
+## Crypto
+
+```
+psql -U postgres -d gogocar
+```
+
+```
+CREATE EXTENSION pgcrypto;
+```
+
+## Verification
+
+```
+gogocar=# \dx
+                  List of installed extensions
+   Name   | Version |   Schema   |         Description          
+----------+---------+------------+------------------------------
+ pgcrypto | 1.3     | public     | cryptographic functions
+ plpgsql  | 1.0     | pg_catalog | PL/pgSQL procedural language
+(2 rows)
+
+```
+## Postgis
+
+Connect to your server
+
+```bash
+ubuntu@ubuntu:~$ sudo docker exec -it postgres-0 bash
+```
+
+```
+root@8fe59819205b:/# apt install postgis
+```
+
+```
+root@8fe59819205b:/# psql -U postgres -d gogocar
+```

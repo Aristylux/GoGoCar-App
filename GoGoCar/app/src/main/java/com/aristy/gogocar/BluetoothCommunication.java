@@ -1,6 +1,5 @@
 package com.aristy.gogocar;
 
-import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_COM;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_DISCONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_MESSAGE_RECEIVED;
@@ -24,6 +23,11 @@ public class BluetoothCommunication extends Thread {
 
     private StringBuilder message = new StringBuilder();
 
+    /**
+     * Initialise new bluetooth communication
+     * @param bluetoothConnection a bluetooth connection
+     * @param handler handler from main activity
+     */
     public BluetoothCommunication(BluetoothConnection bluetoothConnection, Handler handler){
         this.bluetoothConnection = bluetoothConnection;
         this.handler = handler;
@@ -50,7 +54,7 @@ public class BluetoothCommunication extends Thread {
 
                 // Get Message
                 String tempMessage = new String(buffer,0, bytes);
-                //Log.d(TAG_BT, "run: " + bytes + " | " + Arrays.toString(buffer));
+                //Log.d(TAG_BT_COM, "run: " + bytes + " | " + Arrays.toString(buffer));
 
                 //$VA:data\n
 
@@ -81,10 +85,12 @@ public class BluetoothCommunication extends Thread {
 
 
     /**
-     * write to the output stream <br>
-     * (in the bluetooth line) <br>
-     * String word = "hello world"; <br>
-     * use: class.write(word.getBytes());
+     * Write to the output stream (in the bluetooth line)<br>
+     * @implNote
+     * <pre>
+     *     String word = "hello world";
+     *     use: class.write(word.getBytes());
+     * </pre>
      * @param bytes data
      */
     public void write(byte[] bytes){

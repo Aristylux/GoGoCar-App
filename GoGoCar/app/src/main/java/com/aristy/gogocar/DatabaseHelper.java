@@ -26,6 +26,7 @@ public class DatabaseHelper {
     private static final String COLUMN_USER_EMAIL = "email";
     private static final String COLUMN_USER_PHONE_NUMBER = "phone";
     private static final String COLUMN_USER_PASSWORD = "password";
+    private static final String COLUMN_USER_SALT = "salt";
     // id person (identity card table) (if null => not approved)
 
     /* VEHICLE */
@@ -47,6 +48,28 @@ public class DatabaseHelper {
     private static final String COLUMN_MODULE_NAME = "name";
     private static final String COLUMN_MODULE_MAC_ADDRESS = "mac_address";
 
+    public static final String ADD_USER_QUERY = "INSERT INTO " + TABLE_USER +
+            "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + "," + COLUMN_USER_SALT + ") " +
+            "VALUES (?,?,?,?,?)";
+
+    public static final String DELETE_USER_QUERY = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = ?";
+
+    public static final String ADD_VEHICLE_QUERY = "INSERT INTO " + TABLE_VEHICLE +
+            "( " + COLUMN_VEHICLE_MODEL + "," + COLUMN_VEHICLE_LICENCE_PLATE + "," + COLUMN_VEHICLE_ADDRESS + "," + COLUMN_VEHICLE_ID_OWNER + "," + COLUMN_VEHICLE_IS_AVAILABLE + "," + COLUMN_VEHICLE_ID_MODULE + ") " +
+            "VALUES (?,?,?,?,?,?)";
+
+    public static final String DELETE_VEHICLE_QUERY = "DELETE FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID + " = ?";
+
+    public static final String UPDATE_VEHICLE_QUERY = "UPDATE " + TABLE_VEHICLE + " SET " +
+            COLUMN_VEHICLE_MODEL + " = ?, " + COLUMN_VEHICLE_LICENCE_PLATE + " = ?, " + COLUMN_VEHICLE_ADDRESS + " = ?, " +
+            COLUMN_VEHICLE_IS_AVAILABLE + " = ?, " + COLUMN_VEHICLE_ID_MODULE + " = ? " +
+            "WHERE " + COLUMN_VEHICLE_ID + " = ?";
+
+    public static final String SET_VEHICLE_BOOKED_QUERY = "UPDATE " + TABLE_VEHICLE + " SET " +
+            COLUMN_VEHICLE_ID_USER_BOOK + " = ?, " + COLUMN_VEHICLE_IS_BOOKED + " = ? " +
+            "WHERE " + COLUMN_VEHICLE_ID + " = ?";
+
+
     Connection connection;
 
     // Constructor
@@ -59,9 +82,12 @@ public class DatabaseHelper {
      * @param elements element for '?' in preparedQuery
      * @return success
      */
-    private boolean executeQuery(String preparedQuery, Object... elements){
+    public boolean executeQuery(String preparedQuery, Object... elements){
         // Test if the connection is ok
         if (isConnectionError("executeQuery")) return false;
+
+        // Check if the number of element is the same as provided by the prepared query
+        if (!isElementsCorrects(preparedQuery, elements.length)) return false;
 
         try {
             PreparedStatement st = connection.prepareStatement(preparedQuery);
@@ -85,6 +111,11 @@ public class DatabaseHelper {
         }
     }
 
+    /**
+     * Check is the connection is null
+     * @param funcName actual function
+     * @return error or not
+     */
     private boolean isConnectionError(String funcName){
         if (connection == null /*|| connection.isClosed()*/) {
             // Failure. do not add anything to the list
@@ -95,66 +126,26 @@ public class DatabaseHelper {
         }
     }
 
+    /**
+     * Check if the prepared query as the correct number of objects
+     * @param preparedQuery     query for prepared statement
+     * @param num_elements      number of elements
+     * @return error or not
+     */
+    private boolean isElementsCorrects(String preparedQuery, int num_elements){
+        int count = 0;
+        for (int i = 0; i < preparedQuery.length(); i++) {
+            if (preparedQuery.charAt(i) == '?') count++;
+        }
+
+        if (count == num_elements) return true;
+        Log.e(TAG_Database, "executeQuery: [NO NUM]: provided(" + num_elements + ") required(" + count + ")");
+        return false;
+    }
+
     /*  ---------------------------------- *
      *  --             USER             -- *
      *  ---------------------------------- */
-
-    /**
-     * @param userModel user with name, phone, ...
-     * @return the success:<br>
-     *         - true  - if success<br>
-     *         - false - if not connection or exception
-     */
-    public boolean addUser(DBModelUser userModel){
-        String query = "INSERT INTO " + TABLE_USER +
-                "( " + COLUMN_USER_NAME + "," + COLUMN_USER_EMAIL + "," + COLUMN_USER_PHONE_NUMBER + "," + COLUMN_USER_PASSWORD + ") " +
-                "VALUES (?,?,?,?)";
-        return executeQuery(query, userModel.getFullName(), userModel.getEmail(), userModel.getPhoneNumber(), userModel.getPassword());
-    }
-
-    /**
-     * @param userModel user to delete
-     * @return the success
-     */
-    public boolean deleteUser(DBModelUser userModel){
-        String query = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = ?";
-        return executeQuery(query, userModel.getId());
-    }
-
-    public List<DBModelUser> getAllUsers(){
-        List<DBModelUser> returnList = new ArrayList<>();
-
-        String query = "SELECT * FROM " + TABLE_USER;
-
-        if (isConnectionError("getAllUsers")) return returnList;
-
-        // Get data from database
-        try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(query);
-
-            while (rs.next()) {
-                // Loop through the cursor (result set) and create new user objects. Put them into the return list.
-                int userID = rs.getInt(1);
-                String userName = rs.getString(2);
-                String userEmail = rs.getString(3);
-                String userPhone = rs.getString(4);
-                String userHash = rs.getString(5);
-                //int userIdentityID = rs.getInt(6);
-
-                DBModelUser user = new DBModelUser(userID, userName, userEmail, userPhone, userHash);
-                Log.i(TAG_Database, user.toString());
-                returnList.add(user);
-            }
-
-            // Close both result and the statement
-            rs.close();
-            st.close();
-        } catch (Exception exception){
-            Log.e(TAG_Database, "getAllUsers: ", exception);
-        }
-        return returnList;
-    }
 
     /**
      * @param ID user id
@@ -203,8 +194,10 @@ public class DatabaseHelper {
                 String phone = rs.getString(4);
                 String hash = rs.getString(5);
                 //int identity_id = rs.getInt(6);
+                String salt = rs.getString("salt");
 
                 user = new DBModelUser(user_id, name, email, phone, hash);
+                user.setSalt(salt);
                 Log.i(TAG_Database, "getUser: " + user);
             }
 
@@ -220,55 +213,6 @@ public class DatabaseHelper {
     /*  ---------------------------------- *
      *  --            VEHICLES          -- *
      *  ---------------------------------- */
-
-    /**
-     * add a vehicle into the database
-     * @param modelVehicle the vehicle
-     * @return the success:<br>
-     *         - true  - if success<br>
-     *         - false - if not connection or exception
-     */
-    public boolean addVehicle(DBModelVehicle modelVehicle){
-        String query = "INSERT INTO " + TABLE_VEHICLE +
-                "( " + COLUMN_VEHICLE_MODEL + "," + COLUMN_VEHICLE_LICENCE_PLATE + "," + COLUMN_VEHICLE_ADDRESS + "," + COLUMN_VEHICLE_ID_OWNER + "," + COLUMN_VEHICLE_IS_AVAILABLE + "," + COLUMN_VEHICLE_ID_MODULE + ") " +
-                "VALUES (?,?,?,?,?,?)";
-        return executeQuery(query, modelVehicle.getModel(), modelVehicle.getLicencePlate(), modelVehicle.getAddress(), modelVehicle.getIdOwner(), modelVehicle.isAvailable(), modelVehicle.getIdModule());
-    }
-
-    /**
-     * @param modelVehicle Vehicle to delete
-     * @return success
-     */
-    public boolean deleteVehicle(DBModelVehicle modelVehicle){
-        String query = "DELETE FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID + " = ?";
-        return executeQuery(query, modelVehicle.getId());
-    }
-
-    /**
-     * @param vehicle vehicle to update
-     * @return success
-     */
-    public boolean updateVehicle(DBModelVehicle vehicle){
-        String query = "UPDATE " + TABLE_VEHICLE + " SET " +
-                COLUMN_VEHICLE_MODEL + " = ?, " + COLUMN_VEHICLE_LICENCE_PLATE + " = ?, " + COLUMN_VEHICLE_ADDRESS + " = ?, " +
-                COLUMN_VEHICLE_IS_AVAILABLE + " = ?, " + COLUMN_VEHICLE_ID_MODULE + " = ? " +
-                "WHERE " + COLUMN_VEHICLE_ID + " = ?";
-        return executeQuery(query, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.isAvailable(), vehicle.getIdModule(), vehicle.getId());
-    }
-
-    /**
-     * set or reset a vehicle for booking
-     * @param vehicleID the vehicle id
-     * @param userID the user who book
-     * @param isBooked if the user book or not
-     * @return success
-     */
-    public boolean setBookedVehicle(int vehicleID, int userID, boolean isBooked){
-        String query = "UPDATE " + TABLE_VEHICLE + " SET " +
-                COLUMN_VEHICLE_ID_USER_BOOK + " = ?, " + COLUMN_VEHICLE_IS_BOOKED + " = ? " +
-                "WHERE " + COLUMN_VEHICLE_ID + " = ?";
-        return executeQuery(query, userID, isBooked, vehicleID);
-    }
 
     /**
      * @return List of all vehicles
@@ -327,7 +271,7 @@ public class DatabaseHelper {
             while (rs.next()) {
                 // Get values
 
-                //TODO rs.findColumn();
+                //TODO : i = rs.findColumn("column name");
                 int vehicle_id = rs.getInt(1);
                 String model = rs.getString(2);
                 String licencePlate = rs.getString(3);
@@ -363,6 +307,11 @@ public class DatabaseHelper {
      */
     public DBModelVehicle getVehicleById(int ID){
         String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID + " = " + ID;
+        return getVehicles(query).get(0);
+    }
+
+    public DBModelVehicle getVehicleByModule(int moduleID){
+        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID_MODULE + " = " + moduleID;
         return getVehicles(query).get(0);
     }
 
@@ -405,6 +354,56 @@ public class DatabaseHelper {
             st.close();
         }catch (Exception exception){
             Log.e(TAG_Database, "getVehicles: " , exception);
+            exception.printStackTrace();
+        }
+
+        return returnList;
+    }
+
+    public List<DBModelVehicle> getVehiclesJoinOwner(int IDUser) {
+
+        String query = "SELECT " + TABLE_VEHICLE + ".*, " + TABLE_USER + "." + COLUMN_USER_NAME + " FROM " + TABLE_VEHICLE +
+                " JOIN " + TABLE_USER + " ON " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_OWNER + " = " + TABLE_USER + "." + COLUMN_USER_ID +
+                " WHERE " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_USER_BOOK + " = " + IDUser ;
+
+        Log.d(TAG_Database, "getVehiclesJoinOwner: query: " + query);
+
+        List<DBModelVehicle> returnList = new ArrayList<>();
+
+        if (isConnectionError("getVehiclesJoin")) return returnList;
+
+        // Get data from database
+        try {
+            // Execute query
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            // For each row returned
+            while (rs.next()) {
+                // Get values
+                int vehicle_id = rs.getInt(1);
+                String model = rs.getString(2);
+                String licencePlate = rs.getString(3);
+                String address = rs.getString(4);
+                int idOwner = rs.getInt(5);
+                boolean isAvailable = rs.getBoolean(6);
+                boolean isBooked = rs.getBoolean(7);
+                int idUser = rs.getInt(8);
+                int idModule = rs.getInt(9);
+                String ownerName = rs.getString(10);
+
+                // Create object and add it to the list
+                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser, idModule);
+                vehicle.setOwnerName(ownerName);
+                Log.d(TAG_Database, "getVehiclesJoin: " + vehicle);
+                returnList.add(vehicle);
+            }
+
+            // Close both cursor and the database
+            rs.close();
+            st.close();
+        } catch (Exception exception) {
+            Log.e(TAG_Database, "getVehiclesJoin: ", exception);
             exception.printStackTrace();
         }
 
@@ -488,6 +487,7 @@ class DBModelUser {
     private String email;
     private String phoneNumber;
     private String password;
+    private String salt;
 
     // Constructor
     public DBModelUser(int id, String fullName, String email, String phoneNumber, String password) {
@@ -496,6 +496,15 @@ class DBModelUser {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
+    }
+
+    public DBModelUser(String fullName, String email, String phoneNumber, String password, String salt){
+        this.id = -1;
+        this.fullName = fullName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.salt = salt;
     }
 
     public DBModelUser(){}
@@ -510,6 +519,7 @@ class DBModelUser {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", password='" + password + '\'' +
+                ", salt='" + salt + '\'' +
                 '}';
     }
 
@@ -553,6 +563,14 @@ class DBModelUser {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 }
 
 class DBModelVehicle {
@@ -567,6 +585,7 @@ class DBModelVehicle {
     private int idUser;
     private int idModule;
 
+    private String ownerName;
     private String codeModule;
 
     // Constructor
@@ -600,6 +619,7 @@ class DBModelVehicle {
             map.put("isBooked", isBooked);
             map.put("idUser", idUser);
             map.put("idModule", idModule);
+            map.put("ownerName", ownerName);
             map.put("codeModule", codeModule);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -680,6 +700,14 @@ class DBModelVehicle {
 
     public void setIdModule(int idModule) {
         this.idModule = idModule;
+    }
+
+    public String getOwnerName() {
+        return  ownerName;
+    }
+
+    public void setOwnerName(String ownerName){
+        this.ownerName = ownerName;
     }
 
     public String getCodeModule() {

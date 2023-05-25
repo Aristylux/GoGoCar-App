@@ -71,57 +71,63 @@
             setDatabase(vehicles);
 */
 
-// Global Variable
-var vehicles;
+// Global Variables
+var vehicles = [];
 var vehicle_selected;
+var index_vh = 0;
 
 // Request database
 if (androidConnected()) Android.requestDatabase();
 else{
-    vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
+    let vehicle_j = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
     
-    vehicles.forEach((vehicle) => {
-        addElement(vehicle);
-    });
+    vehicle_j.forEach((vehicle) => {
+        let element = addElement(vehicle, index_vh++);
+        vehicles.push(vehicle);
+        element.addEventListener("click", () => {
+            console.log(vehicles[parseInt(element.id.substring(3))]);
 
-    const vehicles_container = document.querySelectorAll(".vehicle_container");
-    vehicles_container.forEach(function (container, index) {
-        container.addEventListener("click", (event) => {
             // Open popup 'book'
-            console.log(index);
-            //if (androidConnected()) Android.openPopupBook(vehicles[index].id);
-            vehicle_selected = vehicles[index];
+            vehicle_selected = vehicles[parseInt(element.id.substring(3))];
             openPopupBook();
         });
     });
 }
 
-// [ANDROID CALLBACK] Retrive databases from android (result)
-function setDatabase(_table_vehicle) {
-    vehicles = JSON.parse(_table_vehicle);
+// [ANDROID CALLBACK] Add vehicle
+function cbDriveAddVehicle(_vehicle){
+    let vehicle = JSON.parse(_vehicle);
+    let element = addElement(vehicle, index_vh++);
+    vehicles.push(vehicle);
 
-    vehicles.forEach((vehicle) => {
-        addElement(vehicle);
+    element.addEventListener("click", () => {
+        console.log(vehicles[parseInt(element.id.substring(3))]);
+        // Open popup 'book'
+        vehicle_selected = vehicles[parseInt(element.id.substring(3))];
+        openPopupBook();
     });
+}
 
-    const vehicles_container = document.querySelectorAll(".vehicle_container");
-    vehicles_container.forEach(function (container, index) {
-        container.addEventListener("click", (event) => {
-            // Open popup 'book'
-            console.log(index);
-            vehicle_selected = vehicles[index];
-            openPopupBook();
-        });
-    });
+// [ANDROID] Reset database for update
+function resetDatabase(){
+    var ul = document.getElementById("vehicles_list");
+
+    // loop through all its child nodes
+    let liElements = ul.getElementsByTagName("li");
+    for (let i = liElements.length - 1; i >= 0; i--) { 
+        ul.removeChild(liElements[i]); // remove the li element from the ul element
+    }
+    if (androidConnected()) Android.requestDatabase();
 }
 
 // Add element to ul list
-function addElement(vehicle) {
+function addElement(vehicle, index) {
     const vehicle_info = [vehicle.name, vehicle.address];
 
     // Create Container
     let li = document.createElement("li");
     li.classList.add("vehicle_container");
+    li.id = "vh_" + index;
     vehicle_info.forEach((info) => {
         let div = document.createElement("div");
         div.appendChild(document.createTextNode(info));
@@ -129,4 +135,6 @@ function addElement(vehicle) {
     });
     const ul = document.getElementById("vehicles_list");
     ul.appendChild(li);
+    
+    return li;
 }

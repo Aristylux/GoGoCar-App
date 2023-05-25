@@ -5,6 +5,7 @@ public class HandlerCodes {
     // Handler positions
     public static final int FRAGMENT_HANDLER_POS = 0;
     public static final int BLUETOOTH_HANDLER_POS = 1;
+    public static final int NAVIGATION_HANDLER_POS = 2;
 
     // Fragments codes
     public static final int GOTO_LOGIN_FRAGMENT = 1;
@@ -16,6 +17,11 @@ public class HandlerCodes {
     public static final int GOTO_EDIT_VEHICLE_FRAGMENT = 42;
     public static final int DATA_SET_VEHICLE = 421;
     public static final int STATUS_BAR_COLOR = 20;
+    public static final int OPEN_SLIDER = 50;
+    public static final int CLOSE_SLIDER = 51;
+    public static final int QUERY = 52;
+
+    public static final int OPEN_QRCODE_ACTIVITY = 6;
 
     // Bluetooth codes
     public static final int BT_STATE_DISCOVERING = 1;
@@ -27,5 +33,12 @@ public class HandlerCodes {
 
     public static final int BT_REQUEST_ENABLE = 11;
     public static final int BT_REQUEST_STATE = 12;
+
+    // Navigation Code
+    public static final int SET_PAGE = 1;
+    public static final int SET_PAGE_FROM_HOME = 2;
+    public static final int SET_DRIVING = 3;
+    public static final int SET_MODAL = 4;
+    public static final int REMOVE_MODAL = 5;
 
 }

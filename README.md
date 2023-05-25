@@ -14,6 +14,12 @@ Android Application for GoGoCar
   - [SQL](#sql)
   - [Local](#local)
 - [Dev](#dev)
+  - [Tests check](#tests-check)
+    - [Authentification (Login)](#authentification-login)
+    - [Home](#home)
+    - [Drive](#drive)
+    - [Vehicles](#vehicles)
+  - [Dev apps](#dev-apps)
     - [App 1](#app-1)
     - [App 2](#app-2)
     - [App 3](#app-3)
@@ -22,6 +28,7 @@ Android Application for GoGoCar
     - [App 6](#app-6)
     - [App 7](#app-7)
     - [App 8](#app-8)
+    - [Communication](#communication)
 
 
 # Documentation
@@ -42,6 +49,46 @@ Android Application for GoGoCar
 
 
 # Dev
+
+## Tests check
+
+### Authentification (Login)
+
+| From           | Action            | Result              |       Pass?        |
+| :------------- | :---------------- | :------------------ | :----------------: |
+| ***Login***    | login             | Move to ***Home***  | :heavy_check_mark: |
+| ***Login***    | register          | Move to ***Home***  | :heavy_check_mark: |
+| ***Settings*** | Log out           | Move to ***Login*** | :heavy_check_mark: |
+| ***Settings*** | Delete my account | Move to ***Login*** | :heavy_check_mark: |
+
+### Home
+
+| From       | Action         | Result                 |       Pass?        |
+| :--------- | :------------- | :--------------------- | :----------------: |
+| ***Home*** | go to drive    | Move to ***Drive***    | :heavy_check_mark: |
+| ***Home*** | go to Vehicles | Move to ***Vehicles*** | :heavy_check_mark: |
+| ***Home*** | Cancel journey | Remove vehicle         | :heavy_check_mark: |
+
+### Drive
+
+| From        | Action             | Result             |       Pass?        |
+| :---------- | :----------------- | :----------------- | :----------------: |
+| ***Drive*** | Click on a vehicle | Open popup booking | :heavy_check_mark: |
+
+
+### Vehicles
+
+| From                | Action          | Result                     |       Pass?        |
+| :------------------ | :-------------- | :------------------------- | :----------------: |
+| ***Vehicles***      | Click on Edit   | Move to ***Vehicle Edit*** | :heavy_check_mark: |
+| ***Vehicles***      | Click on Add    | Move to ***Vehicle Add***  | :heavy_check_mark: |
+| ***Vehicles Edit*** | Click on Exit   | Move to ***Vehicles***     | :heavy_check_mark: |
+| ***Vehicles Edit*** | Click on Return | Move to ***Vehicles***     | :heavy_check_mark: |
+| ***Vehicles Edit*** | Click on Save   | Move to ***Vehicles***     | :heavy_check_mark: |
+| ***Vehicles Add***  | Click on Return | Move to ***Vehicles***     | :heavy_check_mark: |
+| ***Vehicles Add***  | Click on Add    | Move to ***Vehicles***     | :heavy_check_mark: |
+
+## Dev apps
 
 App 1, 2, 3, 4 and 5 are app test for bluetooth 
 
@@ -117,3 +164,9 @@ App3 ~= App2 + App1
 
 * Try to implement Slidr lib for activity
 * (work)
+
+### Communication
+
+Detail the RSA and AES encryption
+
+Used for bluetooth communication

@@ -1,5 +1,7 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.WICommon.Pages.Login.LOGIN;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
@@ -13,8 +15,6 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import java.sql.Connection;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FragmentLogin#} factory method to
@@ -23,25 +23,49 @@ import java.sql.Connection;
  */
 public class FragmentLogin extends Fragment {
 
-    Connection SQLConnection;
+    // The fragment initialization parameters
+    private static final String ARG_USER_PREF = "userPref";
+    private static final String ARG_FRG_HANDLER = "FRGHandler";
 
-    UserPreferences userPreferences;
-    Handler fragmentHandler;
+    private UserPreferences userPreferences;
+    private Handler fragmentHandler;
 
-    public FragmentLogin(Connection SQLConnection){
-        this.SQLConnection = SQLConnection;
+    public FragmentLogin(){
+        // Required empty public constructor
     }
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param userPreferences user preferences
+     * @param fragmentHandler fragment handler
+     * @return A new instance of fragment FragmentLogin.
+     */
+    public static FragmentLogin newInstance(UserPreferences userPreferences, Handler fragmentHandler){
+        FragmentLogin fragment = new FragmentLogin();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_FRG_HANDLER, new HandlerWrapper(fragmentHandler));
+        args.putParcelable(ARG_USER_PREF, userPreferences);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    /**
+     * Get arguments
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             // Get handler
-            HandlerWrapper handlerWrapper = (HandlerWrapper) getArguments().getSerializable("FRGHandler");
+            HandlerWrapper handlerWrapper = (HandlerWrapper) getArguments().getSerializable(ARG_FRG_HANDLER);
             this.fragmentHandler = handlerWrapper.getHandler();
 
             // Get user preferences
-            this.userPreferences = getArguments().getParcelable("userPreferences");
+            this.userPreferences = getArguments().getParcelable(ARG_USER_PREF);
         }
     }
 
@@ -53,13 +77,13 @@ public class FragmentLogin extends Fragment {
 
         // Find items
         WebView web = view.findViewById(R.id.web_view);
-        web.loadUrl("file:///android_asset/login.html");
+        web.loadUrl(LOGIN);
 
         // Enable javascript
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        web.addJavascriptInterface(new WIAuthentication(getContext(), web, SQLConnection, userPreferences, fragmentHandler), "Android");
+        web.addJavascriptInterface(new WIAuthentication(getContext(), web, userPreferences, fragmentHandler), "Android");
 
         return view;
     }

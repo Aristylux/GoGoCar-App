@@ -14,13 +14,14 @@ function openPopupBook() {
 }
 
 popup_vehicle_button_close.addEventListener("click", function () {
-    console.log("close");
+    if (androidConnected()) Android.setModal(false);
     closePopup(popup);
 });
 
 popup_vehicle_button_book.addEventListener("click", function () {
     console.log("book");
+    if (androidConnected()) Android.setModal(false);
     closePopup(popup);
     // Open new html (booking)
-    if (androidConnected()) Android.requestOpenBook(JSON.stringify(vehicle_selected));
+    if (androidConnected()) Android.openSlider("drive", "book", JSON.stringify(vehicle_selected));
 });
