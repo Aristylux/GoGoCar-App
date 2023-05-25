@@ -17,7 +17,7 @@
 
     <!--code javascript-->
     <script src="qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.3/jspdf.umd.min.js"></script>
+    <script src="jspdf.umd.min.js"></script>
     <script type="text/javascript">
         var qr_texte = document.querySelector(".qr_texte");
         var qr_codes = []; // Liste pour stocker les valeurs des QR codes
@@ -39,14 +39,18 @@
                 doc.addImage(qr_codes[i], "JPEG", 10, y, 50, 50);
                 y += 60; // Incrémente la position verticale pour la prochaine image
             }
-    
+            //var pdfData = doc.output("bloburl");
+            //window.open(pdfData);
             doc.save("qrcodes.pdf"); // Télécharge le PDF
         }
+        
     </script>
+    <!--
+    //Ce code fonctionne mais pour une seule valeur, on va essayer de faire 
+    //une liste de qr code pour une liste de valeur (index5) puis de génerer
+    //un pdf contenant cette liste de qr codes.
+    -->
     
-//Ce code fonctionne mais pour une seule valeur, on va essayer de faire 
-//une liste de qr code pour une liste de valeur (index5) puis de génerer
-//un pdf contenant cette liste de qr codes.
 
 </body>
 </html>
