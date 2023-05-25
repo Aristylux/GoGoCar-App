@@ -142,6 +142,7 @@
                     text_input.classList.remove('clear');
                 }, 150);
                 clear_input.classList.remove('display');
+                resetDatabase();
             });
 
             // When clicked, open container
@@ -167,9 +168,9 @@
             function startSearch(){
                 console.log("distance: " + search.distance + " - city: " + search.city_name + " - selected: " + search.city_selected + ".");
                 if (search.city_selected == true){
-                    console.log("send to android: startSearch(" + search.city_name + ", " + search.distance + ")");
+                    console.log("send to android: startSearch(" + search.city_name + ", " + parseInt(search.distance, 10) + ")");
                     if (androidConnected()){
-                        Android.searchStart(search.city_name, search.distance);
+                        Android.searchStart(search.city_name, parseInt(search.distance, 10));
                         clearVehicles();
                     } 
                 }

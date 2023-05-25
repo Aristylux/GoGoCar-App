@@ -35,6 +35,7 @@ public class DatabaseHelper {
     private static final String COLUMN_VEHICLE_MODEL = "model";
     private static final String COLUMN_VEHICLE_LICENCE_PLATE = "licence_plate";
     private static final String COLUMN_VEHICLE_ADDRESS = "address";
+    private static final String COLUMN_VEHICLE_ID_ADDRESS = "id_address";
     private static final String COLUMN_VEHICLE_ID_OWNER = "id_owner";
     private static final String COLUMN_VEHICLE_IS_AVAILABLE = "is_available";
     private static final String COLUMN_VEHICLE_IS_BOOKED = "is_booked";
@@ -251,9 +252,8 @@ public class DatabaseHelper {
         String vehicleAlias = "vh";
         String addressesAlias = "addr";
 
-        // TODO replace COLUMN_VEHICLE_ID by COLUMN_VEHICLE_ID_ADDRESS
         String query = "SELECT " + vehicleAlias + ".*, " + addressesAlias + ".* FROM " + TABLE_VEHICLE + " AS " + vehicleAlias +
-                " JOIN (" + queryAddresses + ") " + addressesAlias + " ON " + vehicleAlias + "." + COLUMN_VEHICLE_ID + " = " + addressesAlias + "." + COLUMN_ADDRESS_ID + ";";
+                " JOIN (" + queryAddresses + ") " + addressesAlias + " ON " + vehicleAlias + "." + COLUMN_VEHICLE_ID_ADDRESS + " = " + addressesAlias + "." + COLUMN_ADDRESS_ID + ";";
         Log.d(TAG_Database, "getVehiclesAvailable: query: " + query);
         return getVehicles(query);
     }

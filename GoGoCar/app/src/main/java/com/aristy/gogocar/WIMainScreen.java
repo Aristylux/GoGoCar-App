@@ -284,7 +284,7 @@ public class WIMainScreen extends WICommon {
             @Override
             public void onResultVehicle(DBModelVehicle vehicle) {
                 Log.d(TAG_Web, "onResultVehicle: " + vehicle);
-                //androidToWeb(Drive.JS.ADD_VEHICLE, vehicle.toString());
+                androidToWeb(Drive.JS.ADD_VEHICLE, vehicle.toString());
             }
         });
         thread.getVehiclesAvailable(userPreferences.getUserID(), city, distance);
