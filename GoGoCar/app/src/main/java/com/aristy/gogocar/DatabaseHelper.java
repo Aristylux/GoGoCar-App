@@ -420,8 +420,9 @@ public class DatabaseHelper {
 
     public List<DBModelVehicle> getVehiclesJoinOwner(int IDUser) {
 
-        String query = "SELECT " + TABLE_VEHICLE + ".*, " + TABLE_USER + "." + COLUMN_USER_NAME + " FROM " + TABLE_VEHICLE +
-                " JOIN " + TABLE_USER + " ON " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_OWNER + " = " + TABLE_USER + "." + COLUMN_USER_ID +
+        String query = "SELECT " + TABLE_VEHICLE + ".*, " + TABLE_USER + "." + COLUMN_USER_NAME + "," + TABLE_ADDRESSES + "." + COLUMN_ADDRESS_STREET + " FROM " + TABLE_VEHICLE +
+                " INNER JOIN " + TABLE_USER + " ON " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_OWNER + " = " + TABLE_USER + "." + COLUMN_USER_ID +
+                " INNER JOIN " + TABLE_ADDRESSES + " ON " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_ADDRESS + " = " + TABLE_ADDRESSES + "." + COLUMN_ADDRESS_ID +
                 " WHERE " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_USER_BOOK + " = " + IDUser ;
 
         Log.d(TAG_Database, "getVehiclesJoinOwner: query: " + query);
@@ -442,17 +443,19 @@ public class DatabaseHelper {
                 int vehicle_id = rs.getInt(1);
                 String model = rs.getString(2);
                 String licencePlate = rs.getString(3);
-                String address = rs.getString(4);
+                String addressId = rs.getString(4);
                 int idOwner = rs.getInt(5);
                 boolean isAvailable = rs.getBoolean(6);
                 boolean isBooked = rs.getBoolean(7);
                 int idUser = rs.getInt(8);
                 int idModule = rs.getInt(9);
                 String ownerName = rs.getString(10);
+                String address = rs.getString(COLUMN_ADDRESS_STREET);
 
                 // Create object and add it to the list
-                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser, idModule);
+                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, addressId, idOwner, isAvailable, isBooked, idUser, idModule);
                 vehicle.setOwnerName(ownerName);
+                vehicle.setAddress(address);
                 Log.d(TAG_Database, "getVehiclesJoin: " + vehicle);
                 returnList.add(vehicle);
             }
