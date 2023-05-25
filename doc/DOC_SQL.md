@@ -7,15 +7,29 @@ This file save all big query for re-create GoGoCar database.
 - [SQL Queries](#sql-queries)
 - [Summary](#summary)
 - [Create](#create)
+  - [Create extension] (#create-extension)
   - [Create database](#create-database)
   - [Create tables](#create-tables)
     - [User](#user)
     - [Vehicle](#vehicle)
     - [Modules gogocar](#modules-gogocar)
+    - [Marques et Modeles voitures](#marques-et-modeles-voitures)
+    - [Adresses](#adresses)
+    - [City](#city)
+-[Update]
+-[Select]
+     -[Postgis extension for location geometry]
+     -[Password with encryption]
+     -[Address]
+     -[Distance]
+     -[Id address]
 - [Insert](#insert)
   - [User](#user-1)
+  - [Adresses]
+  - [City]
   - [Vehicles](#vehicles)
   - [Modules gogocar](#modules-gogocar-1)
+  - [Vehicles Models]
 
 # Create
 
