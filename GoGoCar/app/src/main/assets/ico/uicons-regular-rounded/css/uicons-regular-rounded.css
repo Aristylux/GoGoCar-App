@@ -22,6 +22,9 @@ line-height: 1;
         .fi-rr-arrow-small-right:before {
     content: "\f14e";
     }
+        .fi-rr-arrow-up-right-from-square:before {
+    content: "\f15e";
+    }
     	.fi-rr-angle-small-right:before {
     content: "\f11f";
     }
