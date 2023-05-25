@@ -111,9 +111,16 @@ public class BluetoothConnection extends Thread {
         rsa = new RSA();
         rsa.generateRSAKeys();
 
+        long expo = rsa.getRsaKeys().publicKey.e;
+        long mod =  rsa.getRsaKeys().publicKey.N;
+
+        Log.d(TAG_RSA, "connectionEstablished: E:" + expo + "N:" + mod);
+        Log.d(TAG_RSA, "connectionEstablished: E:" + Byte.valueOf(String.valueOf(expo)) + "N:" + Byte.valueOf(String.valueOf(mod)));
+        bluetoothCommunication.write(String.valueOf(expo).getBytes());
+
         byte[] publicKeyBytes = rsa.getBytePublicKey();
 
-        Log.d(TAG_RSA, "publicKeyBytes: 16: " + RSA.printBytes(publicKeyBytes));
+        Log.d(TAG_RSA, "connectionEstablished: 16: " + RSA.printBytes(publicKeyBytes));
 
         byte [] by = RSA.convertTo8ByteArray(publicKeyBytes);
 
@@ -160,7 +167,7 @@ public class BluetoothConnection extends Thread {
         if (this.waitForModulePublicKey){
             Log.d(TAG_BT_CON, "messageReceived: module public key: " + message);
             // Set module public key
-            rsa.setModulePublicKey(rsa.parsePublicKey(message));
+            //rsa.setModulePublicKey(rsa.parsePublicKey(message));
         } else {
             Log.d(TAG_BT_CON, "messageReceived: decrypt message: " + message);
             // Decrypt the message
