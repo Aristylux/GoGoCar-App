@@ -425,7 +425,7 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
     ('Peugeot 208', 'CQ-154-IU', '270 rue jean monnet' , 5, 11),
     ('Renault Mégane', 'MF-476-NX', '34 Avenue Francois Cuzin', 6, 12);
 ```
-Insert vehicules: il manque id owner
+Insert vehicules on utilisera cette requete 
 ```sql
 INSERT INTO vehicles (model, licence plate, id_address, id_owner, id_module)
 VALUES
