@@ -241,7 +241,16 @@ public class DatabaseHelper {
      * @return List of vehicles which are not owned by the user, available and not booked.
      */
     public List<DBModelVehicle> getVehiclesAvailable(int IDUser) {
-        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_IS_AVAILABLE + " = true AND " + COLUMN_VEHICLE_IS_BOOKED + " = false AND " + COLUMN_VEHICLE_ID_OWNER + " != " + IDUser;
+        //String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_IS_AVAILABLE + " = true AND " + COLUMN_VEHICLE_IS_BOOKED + " = false AND " + COLUMN_VEHICLE_ID_OWNER + " != " + IDUser;
+
+        String vehicleAlias = "vh";
+        String addressesAlias = "addr";
+
+        String queryJoin = "SELECT " + COLUMN_ADDRESS_ID + "," + COLUMN_ADDRESS_STREET + " FROM " + TABLE_ADDRESSES;
+        String query = "SELECT " + vehicleAlias + ".*, " + addressesAlias + ".* FROM " + TABLE_VEHICLE + " AS " + vehicleAlias +
+                " JOIN (" + queryJoin +") " + addressesAlias + " ON " + vehicleAlias + "." + COLUMN_VEHICLE_ID_ADDRESS + " = " + addressesAlias + "." + COLUMN_ADDRESS_ID +
+                " WHERE " + COLUMN_VEHICLE_IS_AVAILABLE + " = true AND " + COLUMN_VEHICLE_IS_BOOKED + " = false AND " + COLUMN_VEHICLE_ID_OWNER + " != " + IDUser + ";";
+
         return getVehicles(query);
     }
 
@@ -264,7 +273,17 @@ public class DatabaseHelper {
      * @return List of vehicles booked by the user.
      */
     public List<DBModelVehicle> getVehiclesBooked(int IDUser) {
-        String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID_USER_BOOK + " = " + IDUser;
+        //String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID_USER_BOOK + " = " + IDUser;
+
+        String vehicleAlias = "vh";
+        String addressesAlias = "addr";
+
+        String queryJoin = "SELECT " + COLUMN_ADDRESS_ID + "," + COLUMN_ADDRESS_STREET + " FROM " + TABLE_ADDRESSES;
+        String query = "SELECT " + vehicleAlias + ".*, " + addressesAlias + ".* FROM " + TABLE_VEHICLE + " AS " + vehicleAlias +
+                " JOIN (" + queryJoin +") " + addressesAlias + " ON " + vehicleAlias + "." + COLUMN_VEHICLE_ID_ADDRESS + " = " + addressesAlias + "." + COLUMN_ADDRESS_ID +
+                " WHERE " + COLUMN_VEHICLE_ID_USER_BOOK + " = " + IDUser + ";";
+
+        Log.d(TAG_Database, "getVehiclesBooked: " + query);
         return getVehicles(query);
     }
 
@@ -274,9 +293,13 @@ public class DatabaseHelper {
      */
     public List<DBModelVehicle> getVehiclesByUser(int IDUser){
         //String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID_OWNER + " = " + IDUser;
-        String query = "SELECT " + TABLE_VEHICLE + ".*, " + TABLE_MODULE + "." + COLUMN_MODULE_NAME + " FROM " + TABLE_VEHICLE +
-                " JOIN " + TABLE_MODULE + " ON " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_MODULE + " = " + TABLE_MODULE + "." + COLUMN_MODULE_ID +
+
+        String query = "SELECT " + TABLE_VEHICLE + ".*, " + TABLE_MODULE + "." + COLUMN_MODULE_NAME + "," + TABLE_ADDRESSES + "." + COLUMN_ADDRESS_STREET + " FROM " + TABLE_VEHICLE +
+                " INNER JOIN " + TABLE_MODULE + " ON " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_MODULE + " = " + TABLE_MODULE + "." + COLUMN_MODULE_ID +
+                " INNER JOIN " + TABLE_ADDRESSES + " ON " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_ADDRESS + " = " + TABLE_ADDRESSES + "." + COLUMN_ADDRESS_ID +
                 " WHERE " + TABLE_VEHICLE + "." + COLUMN_VEHICLE_ID_OWNER + " = " + IDUser ;
+
+        Log.d(TAG_Database, "getVehiclesByUser: " + query);
         return getVehiclesJoin(query);
     }
 
@@ -303,16 +326,18 @@ public class DatabaseHelper {
                 int vehicle_id = rs.getInt(1);
                 String model = rs.getString(2);
                 String licencePlate = rs.getString(3);
-                String address = rs.getString(4);
+                String addressId = rs.getString(4);
                 int idOwner = rs.getInt(5);
                 boolean isAvailable = rs.getBoolean(6);
                 boolean isBooked = rs.getBoolean(7);
                 int idUser = rs.getInt(8);
                 int idModule = rs.getInt(9);
                 String codeModule = rs.getString(10);
+                String address = rs.getString(COLUMN_ADDRESS_STREET).replace("'", "$");
 
                 // Create object and add it to the list
-                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser, idModule);
+                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, addressId, idOwner, isAvailable, isBooked, idUser, idModule);
+                vehicle.setAddress(address);
                 vehicle.setCodeModule(codeModule);
                 Log.d(TAG_Database, "getVehiclesJoin: " + vehicle);
                 returnList.add(vehicle);
@@ -364,15 +389,18 @@ public class DatabaseHelper {
                 int vehicle_id = rs.getInt(1);
                 String model = rs.getString(2);
                 String licencePlate = rs.getString(3);
-                String address = rs.getString(4);
+                String address_id = rs.getString(4);
                 int idOwner = rs.getInt(5);
                 boolean isAvailable = rs.getBoolean(6);
                 boolean isBooked = rs.getBoolean(7);
                 int idUser = rs.getInt(8);
                 int idModule = rs.getInt(9);
+                String address = rs.getString(COLUMN_ADDRESS_STREET);
 
                 // Create object and add it to the list
-                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address, idOwner, isAvailable, isBooked, idUser, idModule);
+                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address_id, idOwner, isAvailable, isBooked, idUser, idModule);
+                vehicle.setAddress(address);
+
                 Log.d(TAG_Database, "getVehicles: " + vehicle);
                 returnList.add(vehicle);
             }
@@ -597,7 +625,7 @@ class DBModelVehicle {
     private int id;
     private String model;
     private String licencePlate;
-    private String address;
+    private String addressId;
     private int idOwner;    // User Id
     private boolean isAvailable;
     private boolean isBooked;
@@ -605,13 +633,14 @@ class DBModelVehicle {
     private int idModule;
 
     private String codeModule;
+    private String address;
 
     // Constructor
-    public DBModelVehicle(int id, String model, String licencePlate, String address, int idOwner, boolean isAvailable, boolean isBooked, int idUser, int idModule) {
+    public DBModelVehicle(int id, String model, String licencePlate, String addressId, int idOwner, boolean isAvailable, boolean isBooked, int idUser, int idModule) {
         this.id = id;
         this.model = model;
         this.licencePlate = licencePlate;
-        this.address = address;
+        this.addressId = addressId;
         this.idOwner = idOwner;
         this.isAvailable = isAvailable;
         this.isBooked = isBooked;
@@ -631,13 +660,14 @@ class DBModelVehicle {
             map.put("id", id);
             map.put("name", model);
             map.put("licencePlate", licencePlate);
-            map.put("address", address);
+            map.put("address_id", addressId);
             map.put("idOwner", idOwner);
             map.put("isAvailable", isAvailable);
             map.put("isBooked", isBooked);
             map.put("idUser", idUser);
             map.put("idModule", idModule);
             map.put("codeModule", codeModule);
+            map.put("address", address);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -671,12 +701,12 @@ class DBModelVehicle {
         this.licencePlate = licencePlate;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAddressID() {
+        return addressId;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddressID(String addressId) {
+        this.addressId = addressId;
     }
 
     public int getIdOwner() {
@@ -726,6 +756,15 @@ class DBModelVehicle {
     public void setCodeModule(String codeModule) {
         this.codeModule = codeModule;
     }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
 }
 
 class DBModelModule {

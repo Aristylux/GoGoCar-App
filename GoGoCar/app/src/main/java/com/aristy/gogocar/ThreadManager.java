@@ -396,6 +396,7 @@ public class ThreadManager {
             callback.onResultEmpty(vehicles.size() == 0);
 
             for (DBModelVehicle vehicle : vehicles){
+                Log.d(TAG_THREAD, "getVehiclesByUser: vh" + vehicle.toString());
                 callback.onResultVehicle(vehicle);
             }
         });

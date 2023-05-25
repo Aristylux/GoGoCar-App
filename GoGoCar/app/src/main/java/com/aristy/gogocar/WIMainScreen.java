@@ -320,6 +320,7 @@ public class WIMainScreen extends WICommon {
             }
             @Override
             public void onResultVehicle(DBModelVehicle vehicle) {
+                // Error
                 androidToWeb(Vehicle.JS.ADD_VEHICLE, vehicle.toString());
             }
         });
