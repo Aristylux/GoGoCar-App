@@ -12,7 +12,7 @@ const addVehicleButton = document.getElementById("add_vehicle_button");
 addVehicleButton.addEventListener('click', () => {
     // Open new window for add new vehicle
     if (++click_add === 1)
-        if(androidConnected()) Android.openSlider("vehicles", "add");
+        if(androidConnected()) Android.openSlider("vehicles", "add_menu");
 });
 
 // Request database

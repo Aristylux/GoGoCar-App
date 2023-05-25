@@ -3,6 +3,7 @@ package com.aristy.gogocar;
 import static com.aristy.gogocar.CodesTAG.TAG_SLIDER;
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
 import static com.aristy.gogocar.HandlerCodes.OPEN_QRCODE_ACTIVITY;
+import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
 import static com.aristy.gogocar.WindowHelper.setWindowVersion;
 
 import android.annotation.SuppressLint;
@@ -28,13 +29,11 @@ import com.r0adkll.slidr.model.SlidrPosition;
 public class SliderActivity extends AppCompatActivity {
 
     // The activity initialization parameters
-    private static final String ARG_MESSENGER_HANDLER = "messenger";
     private static final String ARG_USER_PREF = "userPref";
     private static final String ARG_LINK = "webLink";
     private static final String ARG_LOCKED = "locked";
     private static final String ARG_DATA = "data";
 
-    Messenger messenger;
     private UserPreferences userPreferences;
     private String link;
     private boolean locked;
@@ -46,16 +45,13 @@ public class SliderActivity extends AppCompatActivity {
      * Use this factory method to create a new instance of
      * this activity using the provided parameters.
      * @param mainActivity      principal activity
-     * @param fragmentHandler   handler for fragments
      * @param userPreferences   user preferences
      * @param link              web link
      * @param locked            slider locked (default false)
      * @return  A new intent of this activity.
      */
-    public static Intent newInstance(Activity mainActivity, Handler fragmentHandler, UserPreferences userPreferences, String link, boolean locked){
+    public static Intent newInstance(Activity mainActivity, UserPreferences userPreferences, String link, boolean locked){
         Intent intent = new Intent(mainActivity, SliderActivity.class);
-        Messenger messenger = new Messenger(fragmentHandler);
-        intent.putExtra(ARG_MESSENGER_HANDLER, messenger);
         intent.putExtra(ARG_USER_PREF, userPreferences);
         intent.putExtra(ARG_LINK, link);
         intent.putExtra(ARG_LOCKED, locked);
@@ -67,17 +63,14 @@ public class SliderActivity extends AppCompatActivity {
      * Use this factory method to create a new instance of
      * this activity using the provided parameters.
      * @param mainActivity      principal activity
-     * @param fragmentHandler   handler for fragments
      * @param userPreferences   user preferences
      * @param link              web link
      * @param locked            slider locked (default false)
      * @param data              JSON data
      * @return  A new intent of this activity.
      */
-    public static Intent newInstance(Activity mainActivity, Handler fragmentHandler, UserPreferences userPreferences, String link, boolean locked, String data){
+    public static Intent newInstance(Activity mainActivity, UserPreferences userPreferences, String link, boolean locked, String data){
         Intent intent = new Intent(mainActivity, SliderActivity.class);
-        Messenger messenger = new Messenger(fragmentHandler);
-        intent.putExtra(ARG_MESSENGER_HANDLER, messenger);
         intent.putExtra(ARG_USER_PREF, userPreferences);
         intent.putExtra(ARG_LINK, link);
         intent.putExtra(ARG_LOCKED, locked);
@@ -92,8 +85,6 @@ public class SliderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_slider);
 
         if (getIntent() != null) {
-            // messenger: communication between activity (not used for the moment)
-            this.messenger = getIntent().getParcelableExtra(ARG_MESSENGER_HANDLER);
             this.userPreferences = getIntent().getParcelableExtra(ARG_USER_PREF);
             this.link = getIntent().getStringExtra(ARG_LINK);
             this.locked = getIntent().getBooleanExtra(ARG_LOCKED, false);
@@ -154,6 +145,15 @@ public class SliderActivity extends AppCompatActivity {
             Log.d(TAG_SLIDER, "handler: open QRCODE Activity");
             Intent intent = new Intent(SliderActivity.this, ScanQRCodeActivity.class);
             resultLauncher.launch(intent);
+        } else if (message.what == OPEN_SLIDER){
+            Log.d(TAG_SLIDER, "handler: open another slider");
+            Object [] args = (Object[]) message.obj;
+            Intent intent = newInstance(SliderActivity.this, userPreferences, String.valueOf(args[0]), (boolean) args[1]);
+            SliderActivity.this.startActivity(intent);
+            SliderActivity.this.overridePendingTransition(
+                    R.anim.animate_slide_left_enter,
+                    R.anim.animate_slide_left_exit
+            );
         }
         return true;
     });

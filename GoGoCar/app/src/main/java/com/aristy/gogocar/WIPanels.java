@@ -10,6 +10,7 @@ import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.ADD_VEHICLE;
 import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.SET_QRCODE_VALUE;
 import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.SET_VEHICLE;
 import static com.aristy.gogocar.WICommon.Pages.VehicleEdit.JS.EDIT_VEHICLE;
+import static com.aristy.gogocar.WICommon.Pages.pathPage;
 
 import android.os.Handler;
 import android.util.Log;
@@ -68,6 +69,15 @@ public class WIPanels extends WICommon {
 
     // ---- Add ----
     // Parent screen: vehicles.html
+
+    @JavascriptInterface
+    public void openSlideTest(String pageSource, String panelName){
+        // If the page source is 'settings', enable swipe
+        boolean activeSwipe = !pageSource.equals("settings");
+        Object[] param = {pathPage + pageSource + "_" + panelName + ".html", activeSwipe};
+        Log.d(TAG_Web, "openSlider: " + param[0]);
+        handler.obtainMessage(OPEN_SLIDER, param).sendToTarget();
+    }
 
     /**
      * The user want to scan the QR code on the module,

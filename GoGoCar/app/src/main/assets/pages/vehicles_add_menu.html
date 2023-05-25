@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="../css/main_theme.css" />
+
+        <link rel="stylesheet" href="../ico/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+
+        <link rel="stylesheet" href="../css/switch.css" />
+        <link rel="stylesheet" href="../css/style_button.css"/>
+
+        <link rel="stylesheet" href="../css/screen_header.css"/>
+
+        <style>
+
+            section {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .button {
+                width: 200px;
+                height: 200px;
+                border-radius: 15px;
+                border-radius: 20px;
+                box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15), -6px -6px 10px -1px rgba(238, 238, 238, 0.7);
+                margin: 10px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            
+
+        </style>
+
+    </head>
+    <body>
+        <div id="screen_header">
+            <a id="button_return" href="#">
+                <i id="ico_return" class="fi fi-rr-arrow-small-left"></i>
+            </a>
+            <h1>Add a vehicle</h1>
+        </div>
+
+        <section>
+            
+            <div id="have_module_buuton" class="button">
+                <span>I have a module</span>
+            </div>
+
+            <div id="not_have_module_button" class="button">
+                <span>I do not have a module</span>
+            </div>
+            
+        </section>
+
+        <script src="../js/androidInterface.js"></script>
+        <script src="../js/panels.js"></script>
+
+        <script>
+
+            const but_module = document.getElementById('have_module_buuton');
+            const but_no_module = document.getElementById('not_have_module_button');
+
+            var click_m = 0, click_no_m = 0; // disable multi click
+
+            but_module.addEventListener('click', () => {
+                console.log("open 'vehicle_add_menu_module.html'");
+                // Open new window for add new vehicle
+                if (++click_m === 1)
+                    if(androidConnected()) Android.openSlideTest("vehicles", "add");
+            });
+
+            but_no_module.addEventListener('click', () => {
+                console.log("open 'vehicle_add_menu_no_module.html'");
+                // Open new window for ask a module
+                if (++click_no_m === 1)
+                    if(androidConnected()) Android.openSlideTest("vehicles", "ask");
+            });
+
+        </script>
+
+    </body>
+</html>

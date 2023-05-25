@@ -375,9 +375,9 @@ public class MainActivity extends AppCompatActivity {
     private void openSlider(Object[] args){
         Intent intent;
         if(args.length > 2){
-            intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, String.valueOf(args[0]), (boolean) args[1], (String) args[2]);
+            intent = SliderActivity.newInstance(MainActivity.this, userPreferences, String.valueOf(args[0]), (boolean) args[1], (String) args[2]);
         } else {
-            intent = SliderActivity.newInstance(MainActivity.this, fragmentHandler, userPreferences, String.valueOf(args[0]), (boolean) args[1]);
+            intent = SliderActivity.newInstance(MainActivity.this, userPreferences, String.valueOf(args[0]), (boolean) args[1]);
         }
 
         // Start new activity with animation
