@@ -335,7 +335,7 @@ public class DatabaseHelper {
                 int idUser = rs.getInt(8);
                 int idModule = rs.getInt(9);
                 String codeModule = rs.getString(10);
-                String address = rs.getString(COLUMN_ADDRESS_STREET).replace("'", "$");
+                String address = rs.getString(COLUMN_ADDRESS_STREET);
 
                 // Create object and add it to the list
                 DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, addressId, idOwner, isAvailable, isBooked, idUser, idModule);
@@ -724,7 +724,8 @@ class DBModelVehicle {
             map.put("idModule", idModule);
             map.put("ownerName", ownerName);
             map.put("codeModule", codeModule);
-            map.put("address", address);
+            map.put("address", address.replace("'", "$"));
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

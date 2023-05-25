@@ -71,7 +71,7 @@ function cbVehicleAddVehicle(_vehicle){
         console.log(JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
 
         if (++click_edit === 1)
-            if (androidConnected()) Android.openSlider("vehicles", "edit", JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
+            if (androidConnected()) Android.openSlider("vehicles", "edit", JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]).replace(/\'/g, "$"));
     });
 }
 

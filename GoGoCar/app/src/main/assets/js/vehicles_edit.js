@@ -11,7 +11,7 @@ if(androidConnected()) Android.requestGetVehicle();
 // [ANDROID CALLBACK]
 function setVehicle(vehicle){
     console.log("set: " + vehicle);
-    JSONvehicle = JSON.parse(vehicle);
+    JSONvehicle = JSON.parse(vehicle.replace(/\$/g, "'"));
 
     const formVehicle = document.getElementById("form-edit-vehicle");
     formVehicle.elements["vehicle_model"].value = JSONvehicle.name;
