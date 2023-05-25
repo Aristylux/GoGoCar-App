@@ -40,6 +40,9 @@ line-height: 1;
         .fi-rr-check:before {
     content: "\f211";
     }
+        .fi-rr-cross-small:before {
+    content: "\f29a";
+    }
         .fi-rr-credit-card:before {
     content: "\f296";
     }

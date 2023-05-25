@@ -133,11 +133,12 @@ public class BluetoothConnection extends Thread {
 
         // Test send
         String s = "Salut man";
+        String jamer = "$deb:1";
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             try {
-                bluetoothCommunication.write(s.getBytes(StandardCharsets.UTF_8));
-                Log.d(TAG_BT_CON, "connectionEstablished: write: " + s);
+                bluetoothCommunication.write(jamer.getBytes(StandardCharsets.UTF_8));
+                Log.d(TAG_BT_CON, "connectionEstablished: write: " + jamer + " - " + Arrays.toString(jamer.getBytes(StandardCharsets.UTF_8)));
                 Thread.sleep(1000); // Wait for 1 second (1000 milliseconds)
             } catch (InterruptedException e) {
                 // Handle the interrupted exception if necessary

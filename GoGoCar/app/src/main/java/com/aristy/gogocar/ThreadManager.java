@@ -352,6 +352,20 @@ public class ThreadManager {
         thread.start();
     }
 
+    // TODO
+    public void getVehiclesAvailable(int userID, String city, int distance){
+        if (checkStateError("getVehiclesAvailable", userID)) return;
+        thread = new Thread(() -> {
+            List<DBModelVehicle> vehicles = databaseHelper.getVehiclesAvailable(userID, city, distance);
+
+            for (DBModelVehicle vehicle : vehicles){
+                if (isExpired()) return;
+                callback.onResultVehicle(vehicle);
+            }
+        });
+        thread.start();
+    }
+
     /**
      * Get only the vehicles booked by the user
      * <strong>CALLBACK: <i>onResultVehicles()</i></strong>
@@ -383,6 +397,7 @@ public class ThreadManager {
             callback.onResultEmpty(vehicles.size() == 0);
 
             for (DBModelVehicle vehicle : vehicles){
+                Log.d(TAG_THREAD, "getVehiclesByUser: vh" + vehicle.toString());
                 callback.onResultVehicle(vehicle);
             }
         });
@@ -420,4 +435,20 @@ public class ThreadManager {
         });
         thread.start();
     }
+
+    /*  ---------------------------------- *
+     *  --             CITY             -- *
+     *  ---------------------------------- */
+
+
+    public void getMatchingCities(String firstChar){
+        if (checkStateError("getMatchingCities")) return;
+        thread = new Thread(() -> {
+            String[] matchingCities = databaseHelper.getMatchingCities(firstChar);
+            callback.onResultStringArray(matchingCities);
+        });
+        thread.start();
+
+    }
+
 }

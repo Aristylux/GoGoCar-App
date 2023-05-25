@@ -1,0 +1,124 @@
+#search-container {
+    margin: 10px 20px;
+    align-items: center;
+    display: grid;
+}
+
+form {
+    background-color: var(--primary-color);
+    height: 44px;
+    border-radius: 25px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+
+    z-index: 1;
+}
+
+input {
+    all: unset;
+    font: 16px system-ui;
+    color: #fff;
+    height: 100%;
+    width: 100%;
+    padding: 6px 15px;
+    font-size: 1em;
+
+    opacity: 1;
+    transition: 0.15s ease-in-out;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #e2e2e2;
+    opacity: 1; /* Firefox */
+}
+
+#text_input.clear {
+    opacity: 0;
+}
+
+#search-clear {
+    padding: 6px 15px;
+    opacity: 0;
+    transition: 0.3s ease-in-out;
+}
+
+#search-clear.display {
+    opacity: 1;
+}
+
+#search-container .icon {
+    color: #fff;
+    font-size: 1.5em;
+    display: flex;
+}
+
+#distance {
+    font-family: sans-serif;
+    color: #fff;
+    padding: 6px 15px;
+
+    opacity: 1;
+    transition: 0.1s ease-in-out;
+}
+
+#distance.desappear {
+    opacity: 0.5;
+}
+
+#distance-container ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin: 0px;
+    margin-top: 25px;
+    padding: 0;
+    text-align: center;
+    height: 44px;
+    align-content: center;
+}
+
+#distance-container li {
+    font: 16px system-ui;
+    color: #fff;
+}
+
+#distance-container.container {
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+    background-color: var(--primary-color);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+
+    margin-top: -25px;
+
+    opacity: 0;
+    height: 0;
+    transition: 0.3s ease-in-out;
+    display: none;
+}
+
+#distance-container.container-visible {
+    opacity: 1;
+    height: 69px;
+}
+
+#cityList.list {
+    box-shadow: 0 2px 2px rgba(0,0,0,0.3);
+    border-radius: 25px;
+    margin: 0;
+
+    opacity: 0;
+    height: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+#cityList.show {
+    opacity: 1;
+    height: 100px;
+}
+
+#cityList li {
+    padding: 5px 15px;
+    transition: transform 0.3s ease-in-out;
+}

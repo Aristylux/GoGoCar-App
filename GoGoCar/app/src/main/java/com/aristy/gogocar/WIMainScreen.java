@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.aristy.gogocar.WICommon.Pages.Drive;
 import com.aristy.gogocar.WICommon.Pages.Vehicle;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -255,6 +256,40 @@ public class WIMainScreen extends WICommon {
         thread.getVehiclesAvailable(userPreferences.getUserID());
     }
 
+    @JavascriptInterface
+    public void searchFrom(String city){
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultStringArray(String[] array) {
+                Log.d(TAG_Web, "searchFrom: " + Arrays.toString(array));
+
+                // To String json
+                if (array.length < 1) return;
+
+                StringBuilder cities_j = new StringBuilder("[");
+                for (int i = 0; i < array.length - 1; i++){
+                    cities_j.append("\"").append(array[i]).append("\", ");
+                }
+                cities_j.append("\"").append(array[array.length - 1]).append("\"]");
+
+                androidToWeb("setMatchingCities", cities_j.toString());
+            }
+        });
+        thread.getMatchingCities(city);
+    }
+
+    @JavascriptInterface
+    public void searchStart(String city, int distance){
+        thread.setResultCallback(new ThreadResultCallback() {
+            @Override
+            public void onResultVehicle(DBModelVehicle vehicle) {
+                Log.d(TAG_Web, "onResultVehicle: " + vehicle);
+                androidToWeb(Drive.JS.ADD_VEHICLE, vehicle.toString());
+            }
+        });
+        thread.getVehiclesAvailable(userPreferences.getUserID(), city, distance);
+    }
+
     // [NEVER USED] -> openSlider()
     /**
      * [MOVER METHOD]<br>
@@ -285,6 +320,7 @@ public class WIMainScreen extends WICommon {
             }
             @Override
             public void onResultVehicle(DBModelVehicle vehicle) {
+                // Error
                 androidToWeb(Vehicle.JS.ADD_VEHICLE, vehicle.toString());
             }
         });

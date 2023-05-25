@@ -1,4 +1,5 @@
 // Global Variables
+
 var vehicles = [];
 var index_vh = 0;
 var click_add = 0, click_edit = 0;
@@ -17,12 +18,13 @@ addVehicleButton.addEventListener('click', () => {
 // Request database
 if (androidConnected()) Android.requestUserVehicles();
 // For debug on PC
+
 else{
     let vh_test = [
         {"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},
         {"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}
     ]
-    var vehicles = vh_test/*JSON.parse('[]');*/
+    var vehicles = vh_test;//JSON.parse('[]');
     console.log(vehicles.length);
 
     vehicles.forEach((vehicle) => {
@@ -43,7 +45,6 @@ else{
         }, 1000);
         
     });
-
 }
 
 // [ANDROID CALLBACK](requestUserVehicles)
@@ -56,7 +57,7 @@ function setResult(resultEmpty) {
 
 // [ANDROID CALLBACK](requestUserVehicles) Add vehicle
 function cbVehicleAddVehicle(_vehicle){
-    let vehicle = JSON.parse(_vehicle);
+    let vehicle = JSON.parse(_vehicle.replace(/\$/g, "'"));
     let elements = addElement(vehicle, index_vh++);
     vehicles.push(vehicle);
 
