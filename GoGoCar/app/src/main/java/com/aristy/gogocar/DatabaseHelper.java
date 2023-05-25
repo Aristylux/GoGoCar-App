@@ -253,7 +253,8 @@ public class DatabaseHelper {
         String addressesAlias = "addr";
 
         String query = "SELECT " + vehicleAlias + ".*, " + addressesAlias + ".* FROM " + TABLE_VEHICLE + " AS " + vehicleAlias +
-                " JOIN (" + queryAddresses + ") " + addressesAlias + " ON " + vehicleAlias + "." + COLUMN_VEHICLE_ID_ADDRESS + " = " + addressesAlias + "." + COLUMN_ADDRESS_ID + ";";
+                " JOIN (" + queryAddresses + ") " + addressesAlias + " ON " + vehicleAlias + "." + COLUMN_VEHICLE_ID_ADDRESS + " = " + addressesAlias + "." + COLUMN_ADDRESS_ID +
+                " WHERE " + vehicleAlias + "." + COLUMN_VEHICLE_IS_AVAILABLE + " = true AND " + COLUMN_VEHICLE_IS_BOOKED + " = false AND " + COLUMN_VEHICLE_ID_OWNER + " != " + IDUser + ";";
         Log.d(TAG_Database, "getVehiclesAvailable: query: " + query);
         return getVehicles(query);
     }
