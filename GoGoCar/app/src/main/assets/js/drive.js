@@ -116,6 +116,7 @@ function resetDatabase(){
 
 // Clear list
 function clearVehicles(){
+    console.log("clear list");
     let ul = document.getElementById("vehicles_list");
 
     // loop through all its child nodes

@@ -38,7 +38,7 @@
                         <li>10km</li>
                     </ul>
                 </div>
-                <ul id="cityList"></ul>
+                <ul id="cityList" class="list"></ul>
             </div>
 
             <!-- Best final : use google maps, For the moment :-->
@@ -91,13 +91,14 @@
 
                 if(text_input.value.length == 0){
                     clear_input.classList.remove('display');
+                    cityList.classList.remove("show");
                     return;
                 }
                
                 // Ask to android
                 if (androidConnected()) Android.searchFrom(text_input.value.toLowerCase());
                 // Test
-                else setMatchingCities('["Marseille","Monpellier"]');
+                else setMatchingCities('["Marseille","Monpellier","Nimes"]');
             });
 
             // [ANDROID CALLBACK]
@@ -119,6 +120,7 @@
 
                         // Clear the list after selection
                         cityList.innerHTML = "";
+                        cityList.classList.remove("show");
                     });
                     cityList.appendChild(li);
                 });

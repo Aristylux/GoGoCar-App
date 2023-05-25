@@ -103,16 +103,19 @@ input {
     height: 69px;
 }
 
-#cityList {
+#cityList.list {
     box-shadow: 0 2px 2px rgba(0,0,0,0.3);
     border-radius: 25px;
     margin: 0;
 
     opacity: 0;
+    height: 0;
+    transition: all 0.3s ease-in-out;
 }
 
 #cityList.show {
     opacity: 1;
+    height: 100px;
 }
 
 #cityList li {
