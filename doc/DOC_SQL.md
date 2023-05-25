@@ -372,7 +372,7 @@ INSERT INTO city (city, location GEOMETRY(Point,4326)) VALUES
 ```
 On utilisera cette requete
 ```sql
-INSERT INTO city (city, location)
+INSERT INTO city (city_name, location)
 VALUES
   ('Toulon', ST_SetSRID(ST_MakePoint(43.116669, 5.93333), 4326)),
   ('Hyeres', ST_SetSRID(ST_MakePoint(43.116669, 6.11667), 4326)),
