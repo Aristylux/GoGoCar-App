@@ -282,6 +282,13 @@ SELECT id_address, street_address, city, state, zip_code, location
 FROM addresses
 WHERE id_address IN (1, 4, 13, 9, 15); 
 ```
+```sql
+SELECT v.*, a.street_address, a.city, a.state, a.zip_code, a.location
+FROM vehicles v
+JOIN addresses a ON v.id_address = a.id
+WHERE v.id = <ID_DU_VEHICULE>;
+```
+
 # Insert
 
 ## User
