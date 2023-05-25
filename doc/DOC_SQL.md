@@ -7,17 +7,60 @@ This file save all big query for re-create GoGoCar database.
 - [SQL Queries](#sql-queries)
 - [Summary](#summary)
 - [Create](#create)
+  - [Create extension](#create-extension)
   - [Create database](#create-database)
   - [Create tables](#create-tables)
     - [User](#user)
     - [Vehicle](#vehicle)
     - [Modules gogocar](#modules-gogocar)
+    - [Marques et Modeles voitures](#marques-et-modeles-voitures)
+    - [Adresses](#adresses)
+    - [City](#city)
+- [Update](#update)
+- [Select](#Select)
+     -[Postgis extension for location geometry](#postgis-extension-for-location-geometry)
+     -[Password with encryption](#password-with-encryption)
+     -[Address](#Address)
+     -[Distance](#distance)
+     -[Id address](#id-address)
 - [Insert](#insert)
   - [User](#user-1)
+  - [Adresses](#adresses)
+  - [City](#city)
   - [Vehicles](#vehicles)
   - [Modules gogocar](#modules-gogocar-1)
+  - [Vehicles Models](#vehicles-models)
 
 # Create
+
+## Create extension
+
+For passwords encryption.
+
+```sql
+CREATE EXTENSION pgcrypto;
+```
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+```
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+```
+For location 
+
+```sql
+CREATE EXTENSION postgis;
+```
+
+```sql
+CREATE EXTENSION postgis_topology;
+```
+
+```sql
+CREATE EXTENSION IF NOT EXISTS postgis;
+```
 
 ## Create database
 
@@ -35,8 +78,10 @@ CREATE TABLE users (
     name VARCHAR(40) NOT NULL,
     email VARCHAR(40) UNIQUE NOT NULL,
     phone VARCHAR(14) UNIQUE NOT NULL,
-    password VARCHAR(129) UNIQUE NOT NULL,
+    password VARCHAR(400) UNIQUE NOT NULL,
+    salt VARCHAR(40) NOT NULL,
     id_identity INTEGER UNIQUE
+    
     );
 ```
 
@@ -55,7 +100,20 @@ CREATE TABLE vehicles (
     id_module INTEGER UNIQUE NOT NULL
     );
 ```
-
+On utilise cette table
+```sql
+CREATE TABLE vehicles (
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, 
+    model VARCHAR(40) NOT NULL, 
+    licence_plate VARCHAR(10) UNIQUE NOT NULL,
+    id_address INTEGER UNIQUE NOT NULL ,
+    id_owner INTEGER NOT NULL,
+    is_available BOOLEAN NOT NULL DEFAULT TRUE,
+    is_booked BOOLEAN NOT NULL DEFAULT FALSE,
+    id_user_book INTEGER,
+    id_module INTEGER UNIQUE NOT NULL
+    );
+```
 ### Modules gogocar
 
 ```sql
@@ -67,12 +125,182 @@ CREATE TABLE modules (
 ```
 
 ### Marques et Modeles voitures
+
 ```sql
-CREATE TABLE `modeles` (
+CREATE TABLE `carmodel` (
   `id` int(11) NOT NULL,
-  `marque` varchar(255) NOT NULL,
-  `modele` varchar(255) NOT NULL
+  `brandname` varchar(255) NOT NULL,
+  `carmodel` varchar(255) NOT NULL
 );
+```
+
+### Addresses
+On utilisera cette table
+```sql
+CREATE TABLE addresses (
+  id SERIAL PRIMARY KEY,
+  street_address TEXT,
+  city TEXT,
+  state TEXT,
+  zip_code TEXT,
+  location GEOMETRY(Point,4326)
+);
+```
+REMARQUE 4326 dans PostGIS, cela indique que les coordonnées géographiques stockées dans la table sont des coordonnées WGS84
+
+```sql
+CREATE TABLE addresses (
+  id SERIAL PRIMARY KEY,
+  street_address TEXT,
+  city TEXT,
+  state TEXT,
+  zip_code TEXT,
+  latitude DOUBLE PRECISION,
+  longitude DOUBLE PRECISION
+);
+```
+
+### City
+On utilisera cette table
+```sql
+CREATE TABLE city(
+  id SERIAL PRIMARY KEY,
+  city TEXT,
+  location GEOMETRY(Point,4326)
+);
+```
+
+```sql
+CREATE TABLE city(
+  id SERIAL PRIMARY KEY,
+  city TEXT,
+  location GEOMETRY(Point,4326) USING ST_GeomFromText('POINT(0 0)', 4326)
+);
+```
+```sql
+ALTER TABLE city 
+  ALTER COLUMN location SET NOT NULL,
+  SET DEFAULT ST_SetSRID(ST_MakePoint(0, 0), 4326);
+```
+
+
+
+# Update
+
+```sql
+UPDATE users SET password = pgp_sym_encrypt(password, 'my_secret_key');
+```
+
+# Select
+
+## Postgis extension for location geometry
+
+```sql
+SELECT postgis_full_version();
+```
+
+## Password with encryption
+
+```sql
+SELECT pgp_sym_decrypt(password, 'my_secret_key') FROM users;
+```
+
+```sql
+SELECT proname FROM pg_proc WHERE proname = 'decrypt';
+```
+
+```sql
+SELECT * FROM pg_extension WHERE extname = 'pgcrypto';
+```
+
+```sql
+SELECT pgp_sym_decrypt(decode('base64_encoded_text', 'base64'), 'my_secret_key');
+```
+
+```sql
+SELECT password FROM users WHERE name = 'Admin Admin';
+```
+
+```sql
+SELECT decrypt(password, 'bf') FROM users WHERE name = 'Admin Admin';
+```
+
+```sql
+SELECT id, name, convert_from(decrypt(password, 'bf'), 'SQL_ASCII') FROM users;
+```
+
+## Address
+
+```sql
+SELECT  location GEOMETRY(Point,4326) FROM addresses WHERE ST_Distance('123 Main St', 'Anytown', 'CA', '12345', ST_SetSRID(ST_MakePoint(-122.419416, 37.774929), 4326)) < 1000;
+
+```
+## Distance
+On ne peut pas utiliser car GEOMETRY
+
+```sql
+SELECT *
+FROM city
+WHERE ST_Distance(location GEOMETRY(Point,4326), ST_SetSRID(ST_MakePoint(<43.1242>, <5.9280>), 4326)) <= 10000;
+```
+
+```sql
+SELECT *
+FROM city
+WHERE ST_Distance(location, ST_SetSRID(ST_MakePoint(<43.1242>, <5.9280>), 4326)) <= 10000;
+```
+Pour extraire les coordonnées
+```sql
+SELECT ST_X(a.location) AS address_longitude, ST_Y(a.location) AS address_latitude,
+       ST_X(c.location) AS city_longitude, ST_Y(c.location) AS city_latitude
+FROM addresses AS a
+JOIN city AS c ON a.city = c.city;
+```
+Pour un point autour de 10km
+```sql
+SELECT a.*
+FROM city c
+JOIN addresses a ON c.city = a.city
+WHERE ST_DWithin(c.location, a.location, 10000);
+```
+```sql
+SELECT *
+FROM addresses
+WHERE ST_DWithin(
+  ST_MakePoint(address_longitude, address_latitude)::geography,
+  ST_MakePoint(city_longitude, city_latitude)::geography,
+  10000
+);
+```
+```sql
+SELECT ST_Distance(c1.location, a.location) as distance
+FROM city c1
+JOIN addresses a ON c1.city = a.city
+JOIN city c2 ON c2.city = 'Toulon'
+WHERE a.street_address = '265 Bd Maréchal Leclerc' AND c2.city = 'Toulon';
+```
+On utilisera cette requete 
+```sql
+SELECT *
+FROM addresses
+WHERE ST_DWithin(
+  location::geography,
+  (SELECT location FROM city WHERE city = 'Marseille')::geography,
+  10000
+);
+```
+## Id address
+
+```sql
+SELECT id_address, street_address, city, state, zip_code, location
+FROM addresses
+WHERE id_address IN (1, 4, 13, 9, 15); 
+```
+```sql
+SELECT v.*, a.street_address, a.city, a.state, a.zip_code, a.location
+FROM vehicles v
+JOIN addresses a ON v.id_address = a.id
+WHERE v.id = <ID_DU_VEHICULE>;
 ```
 
 # Insert
@@ -83,10 +311,120 @@ password: 'admin'
 hash: `hash = hashPassword("admin");`
 
 ```sql
-INSERT INTO users(name, email, phone, password) VALUES
-  ('Admin Admin', 'admin@admin.com', '06 05 04 03 02', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918');
+INSERT INTO users(name, email, phone, password, salt) VALUES
+  ('Admin Admin', 'admin@admin.com', '06 05 04 03 02', crypt('8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', gen_salt('bf')),'');
 ```
 
+## Adresses
+
+```sql
+INSERT INTO addresses (street_address, city, state, zip_code, location GEOMETRY(Point,4326)) VALUES
+('161 Av.Colobel Fabien', 'Toulon', 'Var', '83000', ST_SetSRID(ST_MakePoint(43.12255, 5.94120), 4326)),
+('265 Bd Maréchal Leclerc', 'Toulon', 'Var', '83000', ST_SetSRID(ST_MakePoint(43.12601, 5.92918), 4326)),
+('300 Av. de l'Université', 'La Valette-du-Var', 'Var', '83160', ST_SetSRID(ST_MakePoint(43.1363, 6.00714), 4326)),
+('Rue Antoine Bourdelle', ' Marseille', 'Bouches du rhone', '13009', ST_SetSRID(ST_MakePoint(43.23252012446604, 5.433485893994135), 4326)),
+('36 Av. du Maréchal Foch', 'Marseille', 'Bouches du rhone', '13004', ST_SetSRID(ST_MakePoint(43.300447541385076, 5.3998418670150325), 4326)),
+('2300 Av. des Moulins', 'Montpellier', 'Herault', '34080', ST_SetSRID(ST_MakePoint(43.621968004876884, 3.8321528553962967), 4326)),
+('Bd des Arènes', 'Nîmes', 'Gard', '30000', ST_SetSRID(ST_MakePoint(43.835097448831654, 4.359582409376505), 4326)),
+('51 Av. Georges Pompidou', 'Nîmes', 'Gard', '30000', ST_SetSRID(ST_MakePoint(43.836153250496544, 4.346651124721022), 4326)),
+('Avenue des Champs Elysees', 'Paris', 'Ile de France', '75008', ST_SetSRID(ST_MakePoint(48.87309424819047, 2.2978633250556575), 4326)),
+('12 Av. Joseph Clotis', 'Hyères', 'Var', '83400', ST_SetSRID(ST_MakePoint(43.11994763359465, 6.130012124675955), 4326)),
+('1 Av. Ambroise Thomas', 'Hyères', 'Var', '83400', ST_SetSRID(ST_MakePoint(43.11900226715078, 6.1321932400203), 4326)),
+('Av. Thiers', 'Nice', 'Alpes maritimes', ' 06008', ST_SetSRID(ST_MakePoint(43.70482074203715, 7.261904647426397), 4326)),
+('Av. René Couzinet', ' Nice', 'Alpes maritimes', '06200', ST_SetSRID(ST_MakePoint(43.66026966774082, 7.201844224709845), 4326)),
+('135 Bd Napoléon III', 'Nice', 'Alpes maritimes', '06200', ST_SetSRID(ST_MakePoint(43.68059404906902, 7.220692367038952), 4326));
+```
+On utilisera cette requete
+```sql
+INSERT INTO addresses (street_address, city, state, zip_code, location)
+VALUES
+  ('161 Av.Colobel Fabien', 'Toulon', 'Var', '83000', ST_SetSRID(ST_MakePoint(43.12255, 5.94120), 4326)),
+  ('265 Bd Maréchal Leclerc', 'Toulon', 'Var', '83000', ST_SetSRID(ST_MakePoint(43.12601, 5.92918), 4326)),
+  ('300 Av. de l'Université', 'La Valette-du-Var', 'Var', '83160', ST_SetSRID(ST_MakePoint(43.1363, 6.00714), 4326)),
+  ('Rue Antoine Bourdelle', 'Marseille', 'Bouches du Rhône', '13009', ST_SetSRID(ST_MakePoint(43.23252012446604, 5.433485893994135), 4326)),
+  ('36 Av. du Maréchal Foch', 'Marseille', 'Bouches du Rhône', '13004', ST_SetSRID(ST_MakePoint(43.300447541385076, 5.3998418670150325), 4326)),
+  ('2300 Av. des Moulins', 'Montpellier', 'Hérault', '34080', ST_SetSRID(ST_MakePoint(43.621968004876884, 3.8321528553962967), 4326)),
+  ('Bd des Arènes', 'Nîmes', 'Gard', '30000', ST_SetSRID(ST_MakePoint(43.835097448831654, 4.359582409376505), 4326)),
+  ('51 Av. Georges Pompidou', 'Nîmes', 'Gard', '30000', ST_SetSRID(ST_MakePoint(43.836153250496544, 4.346651124721022), 4326)),
+  ('Avenue des Champs Elysées', 'Paris', 'Ile de France', '75008', ST_SetSRID(ST_MakePoint(48.87309424819047, 2.2978633250556575), 4326)),
+  ('12 Av. Joseph Clotis', 'Hyères', 'Var', '83400', ST_SetSRID(ST_MakePoint(43.11994763359465, 6.130012124675955), 4326)),
+  ('1 Av. Ambroise Thomas', 'Hyères', 'Var', '83400', ST_SetSRID(ST_MakePoint(43.11900226715078, 6.1321932400203), 4326)),
+  ('Av. Thiers', 'Nice', 'Alpes Maritimes', '06008', ST_SetSRID(ST_MakePoint(43.70482074203715, 7.261904647426397), 4326)),
+  ('Av. René Couzinet', 'Nice', 'Alpes Maritimes', '06200', ST_SetSRID(ST_MakePoint(43.66026966774082, 7.201844224709845), 4326)),
+  ('135 Bd Napoléon III', 'Nice', 'Alpes Maritimes', '06200', ST_SetSRID(ST_MakePoint(43.680594049069,7.220692367038952), 4326)),
+  ('Pl. de la Bourse','Bordeaux ','Gironde','33000', ST_SetSRID(ST_MakePoint(44.847625319339706, -0.570222932383494), 4326)),
+  ('1 All. Gabriel Biénès','Toulouse','Haute-Garonne','31000',ST_SetSRID(ST_MakePoint(43.58699790631396, 1.4331819687088538), 4326)),
+  ('Pl. André Maurois','Strasbourg', 'Bas-Rhin','67200',ST_SetSRID(ST_MakePoint(48.59476977827798, 7.695929483804118), 4326)),
+  ('36 Bd des Canuts','Lyon','Rhone','69004',  ST_SetSRID(ST_MakePoint(45.78234814027368, 4.829633261850004),4326)),
+  ('Av. Mathias Delobel','Lille', 'Nord','59000',ST_SetSRID(ST_MakePoint(50.64215669067997, 3.047237760668041), 4326)),
+  ('Bd Léon Bureau','Nantes','Loire-Atlantique','44200',ST_SetSRID(ST_MakePoint(47.211156760921284, -1.5634279868211647),4326)),
+  ('place Blot','Caen','Calvados','14000',ST_SetSRID(ST_MakePoint(49.18990693317228, -0.3703552922594886),4326)),
+  ('Bd Albert Camus','Angers','Maine et Loire','49100',ST_SetSRID(ST_MakePoint(47.48697080425762, -0.5728946763388832),4326)),
+  ('Bd Tanguy Prigent','Brest','Finistere','29200',ST_SetSRID(ST_MakePoint(48.40727325844152, -4.528771140969449),4326)),
+  ('All. du Zoo','Amiens','Somme','80000',ST_SetSRID(ST_MakePoint(49.90376735370334, 2.274721479783732),4326)),
+  ('54 Rue des Batignolles','Le Mans ','Sarthe','72100', ST_SetSRID(ST_MakePoint(47.99658073460969, 0.18574115544987005),4326)),
+  ('60 Rte des Creuses','Annecy', 'Haute Savoie','74960',ST_SetSRID(ST_MakePoint(45.898452515655016, 6.092793818353532),4326)),
+  ('1 Rue Louis Majorelle','Nancy','Meurthe-et-Moselle',' 54000 ',ST_SetSRID(ST_MakePoint(48.68839002604194, 6.164168310550205),4326)),
+  ('93 Rte de Gençay','Poitiers','Poitou Charente','86000 ', ST_SetSRID(ST_MakePoint(46.57468965595032, 0.3563472761161022),4326));
+```
+
+```sql
+INSERT INTO addresses (street_address, city, state, zip_code, latitude, longitude)
+VALUES
+  ('161 Av.Colobel Fabien', 'Toulon', 'Var', '83000', 43.12255, 5.94120),
+  ('265 Bd Maréchal Leclerc', 'Toulon', 'Var', '83000', 43.12601, 5.92918),
+  ('300 Av. de l''Université', 'La Valette-du-Var', 'Var', '83160', 43.1363, 6.00714),
+  ('Rue Antoine Bourdelle', 'Marseille', 'Bouches du Rhône', '13009', 43.23252012446604, 5.433485893994135),
+  ('36 Av. du Maréchal Foch', 'Marseille', 'Bouches du Rhône', '13004', 43.300447541385076, 5.3998418670150325),
+  ('2300 Av. des Moulins', 'Montpellier', 'Hérault', '34080', 43.621968004876884, 3.8321528553962967),
+  ('Bd des Arènes', 'Nîmes', 'Gard', '30000', 43.835097448831654, 4.359582409376505),
+  ('51 Av. Georges Pompidou', 'Nîmes', 'Gard', '30000', 43.836153250496544, 4.346651124721022),
+  ('Avenue des Champs Elysées', 'Paris', 'Ile de France', '75008', 48.87309424819047, 2.2978633250556575),
+  ('12 Av. Joseph Clotis', 'Hyères', 'Var', '83400', 43.11994763359465, 6.130012124675955),
+  ('1 Av. Ambroise Thomas', 'Hyères', 'Var', '83400', 43.11900226715078, 6.1321932400203),
+  ('Av. Thiers', 'Nice', 'Alpes Maritimes', '06008', 43.70482074203715, 7.261904647426397),
+  ('Av. René Couzinet', 'Nice', 'Alpes Maritimes', '06200', 43.66026966774082, 7.201844224709845),
+  ('135 Bd Napoléon III', 'Nice', 'Alpes Maritimes', '06200', 43.68059404906902, 7.201844224709845);
+```
+## City
+
+```sql
+INSERT INTO city (city, location GEOMETRY(Point,4326)) VALUES
+('Toulon', ST_SetSRID(ST_MakePoint(43.116669, 5.93333), 4326)),
+('Hyeres', ST_SetSRID(ST_MakePoint(43.116669, 6.11667), 4326)),
+('Nimes',ST_SetSRID(ST_MakePoint(43.833328, 4.35), 4326)),
+('Paris',ST_SetSRID(ST_MakePoint(48.8534, 2.3488), 4326)),
+('Nice',ST_SetSRID(ST_MakePoint(43.700001, 7.25), 4326)),
+('Marseille',ST_SetSRID(ST_MakePoint(43.300000, 5.400000), 4326)),
+('La Valette-du-Var',ST_SetSRID(ST_MakePoint(43.133331,5.98333), 4326));
+```
+On utilisera cette requete
+```sql
+INSERT INTO city (city_name, location)
+VALUES
+  ('Toulon', ST_SetSRID(ST_MakePoint(43.116669, 5.93333), 4326)),
+  ('Hyeres', ST_SetSRID(ST_MakePoint(43.116669, 6.11667), 4326)),
+  ('Nimes', ST_SetSRID(ST_MakePoint(43.833328, 4.35), 4326)),
+  ('Paris', ST_SetSRID(ST_MakePoint(48.8534, 2.3488), 4326)),
+  ('Nice', ST_SetSRID(ST_MakePoint(43.700001, 7.25), 4326)),
+  ('Marseille', ST_SetSRID(ST_MakePoint(43.300000, 5.400000), 4326)),
+  ('La Valette-du-Var', ST_SetSRID(ST_MakePoint(43.133331, 5.98333), 4326)),
+  ('Bordeaux', ST_SetSRID(ST_MakePoint(44.8378, 0.5792), 4326)),
+  ('Toulouse', ST_SetSRID(ST_MakePoint(43.6047, 1.4442), 4326)),
+  ('Strasbourg', ST_SetSRID(ST_MakePoint( 48.5734, 7.7521),4326)),
+  ('Lyon',ST_SetSRID(ST_MakePoint(45.75, 4.85),4326)),
+  ('Lille', ST_SetSRID(ST_MakePoint(50.62925, 3.057256),4326)),
+  ('Nantes', ST_SetSRID(ST_MakePoint(47.218371, -1.553621), 4326)),
+  ('Caen', ST_SetSRID(ST_MakePoint(49.182863,-0.370679), 4326)),
+  ('Angers', ST_SetSRID(ST_MakePoint(47.4712, 0.5518), 4326)),
+  ('Brest', ST_SetSRID(ST_MakePoint( 43.2751, 6.0741), 4326)),
+  ('Amiens',ST_SetSRID(ST_MakePoint( 49.894067, 2.295753), 4326)),
+  ('Le Mans', ST_SetSRID(ST_MakePoint( 48.00611, 0.1999556),4326)),
+  ('Annecy', ST_SetSRID(ST_MakePoint( 45.8992, 6.1294), 4326)),
+  ('Nancy', ST_SetSRID(ST_MakePoint(48.692054, 6.184417), 4326)),
+  ('Montpellier',ST_SetSRID(ST_MakePoint(43.62505, 3.862038), 4326)),
+  ('Poitiers',ST_SetSRID(ST_MakePoint(46.583328, 0.33333), 4326));
+```
 ## Vehicles
 
 ```sql
@@ -105,18 +443,100 @@ INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
 INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES 
     ('Mini Cooper', 'ST-425-ZE', '10 Avenue Francois Cuzin', 3, 7),
     ('Fiat 500', 'PN-671-DT', '18 Boulevard Jules Ferry', 4, 8);
+```
 
 ```sql
 INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
-    ('Citroën c3', 'QS-523-EE', '5 Boulevard des Arènes' , 4, 7),
+    ('Citroën c3', 'QS-523-EE', '5 Boulevard des Arènes' , 6, 7),
     ('Chevrolet Camaro', 'DE-431-AD', '12 rue Picot' , 2, 8),
     ('Fiat 500', 'WS-856-CE', '268 rue du Dr Paradis' , 5, 9),
     ('Mini Cooper', 'DL-727-HS', ' 6 Avenue du 11 novembre' , 2, 10),
     ('Peugeot 208', 'CQ-154-IU', '270 rue jean monnet' , 5, 11),
     ('Renault Mégane', 'MF-476-NX', '34 Avenue Francois Cuzin', 6, 12);
 ```
+
+Insert vehicules on utilisera cette requete 
+
 ```sql
-INSERT INTO `modeles` (`id`, `marque`, `modele`) VALUES
+INSERT INTO vehicles (model, "licence_plate", id_address, id_owner, id_module)
+VALUES
+('Alfa Romeo 164', 'QS-523-EE', 1, 1, 1),
+('Audi A1', 'DE-431-AD', 2, 1, 2),
+('Citroen C3', 'WS-856-CE', 3, 4, 3),
+('Citroen C4', 'DL-727-HS', 4, 6, 4),
+('Dacia Sandero', 'CQ-154-IU', 9, 5, 5),
+('Fiat 500', 'MF-476-NX', 6, 6, 6),
+('Ford Focus', 'MP-496-NX', 7, 9, 7),
+('Honda Civic', 'LQ-374-IU', 8, 10, 8),
+('Hyundai Tucson', 'ML-727-KS', 9, 11, 9),
+('Kia Rio', 'AS-513-EE', 10, 10, 10),
+('Mazda Tribute', 'XE-431-QD', 11, 11, 11),
+('Mini', 'PS-156-ME', 12, 12, 12),
+('Mini Countryman', 'CL-720-RS', 13, 13, 13),
+('Nissan Navara', 'CQ-152-IP', 14, 14, 14),
+('Opel Corsa', 'MF-474-NZ', 15, 15, 15),
+('Peugeot 208', 'MS-491-NN', 16, 16, 16),
+('Peugeot 308', 'SQ-174-ME', 17, 17, 17),
+('Renault Captur', 'AX-515-GE', 18, 18, 18),
+('Renault Clio', 'JE-735-GP', 19, 19, 19),
+('Seat Ibiza', 'ZP-480-FJ', 20, 20, 20),
+('Skoda Fabia', 'PE-483-RO', 21, 21, 21),
+('Suzuki Swift', 'OZ-284-FE', 22, 22, 22),
+('Toyota Auris', 'FR-894-GJ', 23, 23, 23),
+('Volkswagen Golf', 'ME-898-JR', 24, 24, 24),
+('Volvo C30', 'FJ-049-FE', 25, 25, 25),
+('Volvo Cross Country', 'EI-424-RF', 26, 26, 26),
+('Renault Modus', 'ZP-940-JZ', 27, 27, 27),
+('Renault Megane', 'EJ-203-ZL', 28, 28, 28);
+
+```
+
+### Insert `Nissan Capri` for tests (4 and 2 important)
+
+```
+INSERT INTO vehicles (model, licence_plate, address, id_owner, id_module) VALUES
+    ('Nissan Capri', 'SS-523-DE', '18 Boulevard des Arènes' , 4, 2);
+```
+
+## Modules gogocar
+
+```sql
+INSERT INTO modules (name, mac_address) VALUES
+    ('#01-01-0001', 'e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9'),
+    ('#01-01-0002', '29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4'),
+    ('#01-01-0003', '3'),
+    ('#01-01-0004', '4'),
+    ('#01-01-0005', '5'),
+    ('#01-01-0006', '6'),
+    ('#01-01-0007', '7'),
+    ('#01-01-0008', '8'),
+    ('#01-01-0009', '9'),
+    ('#01-01-0010', '10'),
+    ('#01-01-0011', '11'),
+    ('#01-01-0012', '12'),
+    ('#01-01-0013', '13'),
+    ('#01-01-0014', '14'),
+    ('#01-01-0015', '15'),
+    ('#01-01-0016', '16'),
+    ('#01-01-0017', '17'),
+    ('#01-01-0018', '18'),
+    ('#01-01-0019', '19'),
+    ('#01-01-0020', '20'),
+    ('#01-01-0021', '21'),
+    ('#01-01-0022', '22'),
+    ('#01-01-0023', '23'),
+    ('#01-01-0024', '24'),
+    ('#01-01-0025', '25'),
+    ('#01-01-0026', '26'),
+    ('#01-01-0027', '27'),
+    ('#01-01-0028', '28');
+    
+```
+
+## Vehicles Models
+
+```sql
+INSERT INTO `carmodel` (`id`, `brandname`, `carmodel`) VALUES
 (1, 'AIWAYS', 'U5'),
 (2, 'ALEKO', '2141'),
 (3, 'ALFA ROMEO', '1300'),
@@ -1751,20 +2171,4 @@ INSERT INTO `modeles` (`id`, `marque`, `modele`) VALUES
 (1632, 'ZASTAVA', '1300'),
 (1633, 'ZASTAVA', 'YUGO'),
 (1634, 'ZAZ', 'TAVRIA');
-```
-
-## Modules gogocar
-
-```sql
-INSERT INTO modules (name, mac_address) VALUES
-    ('#01-01-0001', 'e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9'),
-    ('#01-01-0002', '29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4'),
-    ('#01-01-0003', '3'),
-    ('#01-01-0004', '4'),
-    ('#01-01-0005', '5'),
-    ('#01-01-0006', '6'),
-    ('#01-01-0007', '7'),
-    ('#01-01-0008', '8'),
-    ('#01-01-0009', '9'),
-    ('#01-01-0010', '10');
 ```
