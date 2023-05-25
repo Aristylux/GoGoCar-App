@@ -96,7 +96,7 @@ else{
 
 // [ANDROID CALLBACK] Add vehicle
 function cbDriveAddVehicle(_vehicle){
-    let vehicle = JSON.parse(_vehicle);
+    let vehicle = JSON.parse(_vehicle.replace(/\$/g, "'"));
     let element = addElement(vehicle, index_vh++);
     vehicles.push(vehicle);
 

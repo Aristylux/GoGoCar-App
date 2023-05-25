@@ -14,22 +14,24 @@ This file save all big query for re-create GoGoCar database.
     - [Vehicle](#vehicle)
     - [Modules gogocar](#modules-gogocar)
     - [Marques et Modeles voitures](#marques-et-modeles-voitures)
-    - [Adresses](#adresses)
+    - [Addresses](#addresses)
     - [City](#city)
 - [Update](#update)
-- [Select](#Select)
-     -[Postgis extension for location geometry](#postgis-extension-for-location-geometry)
-     -[Password with encryption](#password-with-encryption)
-     -[Address](#Address)
-     -[Distance](#distance)
-     -[Id address](#id-address)
+- [Select](#select)
+  - [Postgis extension for location geometry](#postgis-extension-for-location-geometry)
+  - [Password with encryption](#password-with-encryption)
+  - [Address](#address)
+  - [Distance](#distance)
+  - [Id address](#id-address)
 - [Insert](#insert)
   - [User](#user-1)
   - [Adresses](#adresses)
-  - [City](#city)
+  - [City](#city-1)
   - [Vehicles](#vehicles)
+    - [Insert `Nissan Capri` for tests (4 and 2 important)](#insert-nissan-capri-for-tests-4-and-2-important)
   - [Modules gogocar](#modules-gogocar-1)
   - [Vehicles Models](#vehicles-models)
+
 
 # Create
 
@@ -135,7 +137,9 @@ CREATE TABLE `carmodel` (
 ```
 
 ### Addresses
+
 On utilisera cette table
+
 ```sql
 CREATE TABLE addresses (
   id SERIAL PRIMARY KEY,
@@ -146,7 +150,8 @@ CREATE TABLE addresses (
   location GEOMETRY(Point,4326)
 );
 ```
-REMARQUE 4326 dans PostGIS, cela indique que les coordonnées géographiques stockées dans la table sont des coordonnées WGS84
+
+**REMARQUE:** 4326 dans PostGIS, cela indique que les coordonnées géographiques stockées dans la table sont des coordonnées WGS84
 
 ```sql
 CREATE TABLE addresses (
@@ -161,7 +166,9 @@ CREATE TABLE addresses (
 ```
 
 ### City
+
 On utilisera cette table
+
 ```sql
 CREATE TABLE city(
   id SERIAL PRIMARY KEY,
@@ -177,13 +184,12 @@ CREATE TABLE city(
   location GEOMETRY(Point,4326) USING ST_GeomFromText('POINT(0 0)', 4326)
 );
 ```
+
 ```sql
 ALTER TABLE city 
   ALTER COLUMN location SET NOT NULL,
   SET DEFAULT ST_SetSRID(ST_MakePoint(0, 0), 4326);
 ```
-
-
 
 # Update
 
@@ -296,6 +302,7 @@ SELECT id_address, street_address, city, state, zip_code, location
 FROM addresses
 WHERE id_address IN (1, 4, 13, 9, 15); 
 ```
+
 ```sql
 SELECT v.*, a.street_address, a.city, a.state, a.zip_code, a.location
 FROM vehicles v
@@ -317,11 +324,13 @@ INSERT INTO users(name, email, phone, password, salt) VALUES
 
 ## Adresses
 
+Dans la base de donnée, On stocke le texte avec des simples "'" avec le $ pour eviter les conflits 
+
 ```sql
 INSERT INTO addresses (street_address, city, state, zip_code, location GEOMETRY(Point,4326)) VALUES
 ('161 Av.Colobel Fabien', 'Toulon', 'Var', '83000', ST_SetSRID(ST_MakePoint(43.12255, 5.94120), 4326)),
 ('265 Bd Maréchal Leclerc', 'Toulon', 'Var', '83000', ST_SetSRID(ST_MakePoint(43.12601, 5.92918), 4326)),
-('300 Av. de l'Université', 'La Valette-du-Var', 'Var', '83160', ST_SetSRID(ST_MakePoint(43.1363, 6.00714), 4326)),
+('300 Av. de l$Université', 'La Valette-du-Var', 'Var', '83160', ST_SetSRID(ST_MakePoint(43.1363, 6.00714), 4326)),
 ('Rue Antoine Bourdelle', ' Marseille', 'Bouches du rhone', '13009', ST_SetSRID(ST_MakePoint(43.23252012446604, 5.433485893994135), 4326)),
 ('36 Av. du Maréchal Foch', 'Marseille', 'Bouches du rhone', '13004', ST_SetSRID(ST_MakePoint(43.300447541385076, 5.3998418670150325), 4326)),
 ('2300 Av. des Moulins', 'Montpellier', 'Herault', '34080', ST_SetSRID(ST_MakePoint(43.621968004876884, 3.8321528553962967), 4326)),
@@ -334,13 +343,15 @@ INSERT INTO addresses (street_address, city, state, zip_code, location GEOMETRY(
 ('Av. René Couzinet', ' Nice', 'Alpes maritimes', '06200', ST_SetSRID(ST_MakePoint(43.66026966774082, 7.201844224709845), 4326)),
 ('135 Bd Napoléon III', 'Nice', 'Alpes maritimes', '06200', ST_SetSRID(ST_MakePoint(43.68059404906902, 7.220692367038952), 4326));
 ```
+
 On utilisera cette requete
+
 ```sql
 INSERT INTO addresses (street_address, city, state, zip_code, location)
 VALUES
   ('161 Av.Colobel Fabien', 'Toulon', 'Var', '83000', ST_SetSRID(ST_MakePoint(43.12255, 5.94120), 4326)),
   ('265 Bd Maréchal Leclerc', 'Toulon', 'Var', '83000', ST_SetSRID(ST_MakePoint(43.12601, 5.92918), 4326)),
-  ('300 Av. de l'Université', 'La Valette-du-Var', 'Var', '83160', ST_SetSRID(ST_MakePoint(43.1363, 6.00714), 4326)),
+  ('300 Av. de l$Université', 'La Valette-du-Var', 'Var', '83160', ST_SetSRID(ST_MakePoint(43.1363, 6.00714), 4326)),
   ('Rue Antoine Bourdelle', 'Marseille', 'Bouches du Rhône', '13009', ST_SetSRID(ST_MakePoint(43.23252012446604, 5.433485893994135), 4326)),
   ('36 Av. du Maréchal Foch', 'Marseille', 'Bouches du Rhône', '13004', ST_SetSRID(ST_MakePoint(43.300447541385076, 5.3998418670150325), 4326)),
   ('2300 Av. des Moulins', 'Montpellier', 'Hérault', '34080', ST_SetSRID(ST_MakePoint(43.621968004876884, 3.8321528553962967), 4326)),

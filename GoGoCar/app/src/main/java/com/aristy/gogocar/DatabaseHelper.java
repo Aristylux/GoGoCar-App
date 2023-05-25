@@ -71,15 +71,18 @@ public class DatabaseHelper {
     public static final String DELETE_USER_QUERY = "DELETE FROM " + TABLE_USER + " WHERE " + COLUMN_USER_ID + " = ?";
 
     public static final String ADD_VEHICLE_QUERY = "INSERT INTO " + TABLE_VEHICLE +
-            "( " + COLUMN_VEHICLE_MODEL + "," + COLUMN_VEHICLE_LICENCE_PLATE + "," + COLUMN_VEHICLE_ADDRESS + "," + COLUMN_VEHICLE_ID_OWNER + "," + COLUMN_VEHICLE_IS_AVAILABLE + "," + COLUMN_VEHICLE_ID_MODULE + ") " +
+            "( " + COLUMN_VEHICLE_MODEL + "," + COLUMN_VEHICLE_LICENCE_PLATE + "," + COLUMN_VEHICLE_ID_ADDRESS + "," + COLUMN_VEHICLE_ID_OWNER + "," + COLUMN_VEHICLE_IS_AVAILABLE + "," + COLUMN_VEHICLE_ID_MODULE + ") " +
             "VALUES (?,?,?,?,?,?)";
 
     public static final String DELETE_VEHICLE_QUERY = "DELETE FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID + " = ?";
 
     public static final String UPDATE_VEHICLE_QUERY = "UPDATE " + TABLE_VEHICLE + " SET " +
-            COLUMN_VEHICLE_MODEL + " = ?, " + COLUMN_VEHICLE_LICENCE_PLATE + " = ?, " + COLUMN_VEHICLE_ADDRESS + " = ?, " +
+            COLUMN_VEHICLE_MODEL + " = ?, " + COLUMN_VEHICLE_LICENCE_PLATE + " = ?, " +
             COLUMN_VEHICLE_IS_AVAILABLE + " = ?, " + COLUMN_VEHICLE_ID_MODULE + " = ? " +
             "WHERE " + COLUMN_VEHICLE_ID + " = ?";
+
+    public static  final String UPDATE_VEHICLE_ADDRESS_QUERY = "UPDATE " + TABLE_ADDRESSES + " SET " + COLUMN_ADDRESS_STREET + " = ? " +
+            "WHERE " + COLUMN_ADDRESS_ID + " = ?";
 
     public static final String SET_VEHICLE_BOOKED_QUERY = "UPDATE " + TABLE_VEHICLE + " SET " +
             COLUMN_VEHICLE_ID_USER_BOOK + " = ?, " + COLUMN_VEHICLE_IS_BOOKED + " = ? " +
@@ -253,6 +256,7 @@ public class DatabaseHelper {
                 " JOIN (" + queryJoin +") " + addressesAlias + " ON " + vehicleAlias + "." + COLUMN_VEHICLE_ID_ADDRESS + " = " + addressesAlias + "." + COLUMN_ADDRESS_ID +
                 " WHERE " + COLUMN_VEHICLE_IS_AVAILABLE + " = true AND " + COLUMN_VEHICLE_IS_BOOKED + " = false AND " + COLUMN_VEHICLE_ID_OWNER + " != " + IDUser + ";";
 
+        Log.d(TAG_Database, "getVehiclesAvailable (user) query: " + query);
         return getVehicles(query);
     }
 
@@ -266,7 +270,7 @@ public class DatabaseHelper {
         String query = "SELECT " + vehicleAlias + ".*, " + addressesAlias + ".* FROM " + TABLE_VEHICLE + " AS " + vehicleAlias +
                 " JOIN (" + queryAddresses + ") " + addressesAlias + " ON " + vehicleAlias + "." + COLUMN_VEHICLE_ID_ADDRESS + " = " + addressesAlias + "." + COLUMN_ADDRESS_ID +
                 " WHERE " + vehicleAlias + "." + COLUMN_VEHICLE_IS_AVAILABLE + " = true AND " + COLUMN_VEHICLE_IS_BOOKED + " = false AND " + COLUMN_VEHICLE_ID_OWNER + " != " + IDUser + ";";
-        Log.d(TAG_Database, "getVehiclesAvailable: query: " + query);
+        Log.d(TAG_Database, "getVehiclesAvailable: (dist) query: " + query);
         return getVehicles(query);
     }
 
@@ -328,7 +332,7 @@ public class DatabaseHelper {
                 int vehicle_id = rs.getInt(1);
                 String model = rs.getString(2);
                 String licencePlate = rs.getString(3);
-                String addressId = rs.getString(4);
+                int addressId = rs.getInt(4);
                 int idOwner = rs.getInt(5);
                 boolean isAvailable = rs.getBoolean(6);
                 boolean isBooked = rs.getBoolean(7);
@@ -367,7 +371,31 @@ public class DatabaseHelper {
 
     public DBModelVehicle getVehicleByModule(int moduleID){
         String query = "SELECT * FROM " + TABLE_VEHICLE + " WHERE " + COLUMN_VEHICLE_ID_MODULE + " = " + moduleID;
-        return getVehicles(query).get(0);
+
+        DBModelVehicle vh = new DBModelVehicle();
+        if (isConnectionError("getVehicles")) return vh;
+
+        // Get data from database
+        try {
+            // Execute query
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            // For each row returned
+            while (rs.next()) {
+                // Get values
+                vh.setId(rs.getInt(COLUMN_VEHICLE_ID));
+            }
+
+            // Close both cursor and the database
+            rs.close();
+            st.close();
+        }catch (Exception exception){
+            Log.e(TAG_Database, "getVehicles: " , exception);
+            exception.printStackTrace();
+        }
+
+        return vh;
     }
 
     /**
@@ -391,7 +419,7 @@ public class DatabaseHelper {
                 int vehicle_id = rs.getInt(1);
                 String model = rs.getString(2);
                 String licencePlate = rs.getString(3);
-                String address_id = rs.getString(4);
+                int addressId = rs.getInt(4);
                 int idOwner = rs.getInt(5);
                 boolean isAvailable = rs.getBoolean(6);
                 boolean isBooked = rs.getBoolean(7);
@@ -400,7 +428,7 @@ public class DatabaseHelper {
                 String address = rs.getString(COLUMN_ADDRESS_STREET);
 
                 // Create object and add it to the list
-                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, address_id, idOwner, isAvailable, isBooked, idUser, idModule);
+                DBModelVehicle vehicle = new DBModelVehicle(vehicle_id, model, licencePlate, addressId, idOwner, isAvailable, isBooked, idUser, idModule);
                 vehicle.setAddress(address);
 
                 Log.d(TAG_Database, "getVehicles: " + vehicle);
@@ -443,7 +471,7 @@ public class DatabaseHelper {
                 int vehicle_id = rs.getInt(1);
                 String model = rs.getString(2);
                 String licencePlate = rs.getString(3);
-                String addressId = rs.getString(4);
+                int addressId = rs.getInt(4);
                 int idOwner = rs.getInt(5);
                 boolean isAvailable = rs.getBoolean(6);
                 boolean isBooked = rs.getBoolean(7);
@@ -680,7 +708,7 @@ class DBModelVehicle {
     private int id;
     private String model;
     private String licencePlate;
-    private String addressId;
+    private int addressId;
     private int idOwner;    // User Id
     private boolean isAvailable;
     private boolean isBooked;
@@ -692,7 +720,7 @@ class DBModelVehicle {
     private String address;
 
     // Constructor
-    public DBModelVehicle(int id, String model, String licencePlate, String addressId, int idOwner, boolean isAvailable, boolean isBooked, int idUser, int idModule) {
+    public DBModelVehicle(int id, String model, String licencePlate, int addressId, int idOwner, boolean isAvailable, boolean isBooked, int idUser, int idModule) {
         this.id = id;
         this.model = model;
         this.licencePlate = licencePlate;
@@ -716,7 +744,7 @@ class DBModelVehicle {
             map.put("id", id);
             map.put("name", model);
             map.put("licencePlate", licencePlate);
-            map.put("address_id", addressId);
+            map.put("addressId", addressId);
             map.put("idOwner", idOwner);
             map.put("isAvailable", isAvailable);
             map.put("isBooked", isBooked);
@@ -724,8 +752,7 @@ class DBModelVehicle {
             map.put("idModule", idModule);
             map.put("ownerName", ownerName);
             map.put("codeModule", codeModule);
-            map.put("address", address.replace("'", "$"));
-
+            map.put("address", address);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -759,11 +786,11 @@ class DBModelVehicle {
         this.licencePlate = licencePlate;
     }
 
-    public String getAddressID() {
+    public int getAddressID() {
         return addressId;
     }
 
-    public void setAddressID(String addressId) {
+    public void setAddressID(int addressId) {
         this.addressId = addressId;
     }
 

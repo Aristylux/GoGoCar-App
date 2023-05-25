@@ -34,7 +34,7 @@ edit_vehicle_button.addEventListener('click', function() {
     console.log("vehicle: " + formVhModel + ", " + formVhLicencePlate + ", " + formVhAddress + ", " + formVhModuleCode + ", " + formVhIsAvailable);
 
     // Sent to android
-    if(androidConnected()) Android.requestUpdateVehicle(JSONvehicle.id, formVhModel, formVhLicencePlate, formVhAddress, formVhModuleCode, formVhIsAvailable);
+    if(androidConnected()) Android.requestUpdateVehicle(JSONvehicle.id, formVhModel, formVhLicencePlate, formVhAddress.replace(/\'/g, "$"), JSONvehicle.addressId, formVhModuleCode, formVhIsAvailable);
 });
 
 const EDIT_VEHICLE_MODULE_CODE_INCORRECT = 1,

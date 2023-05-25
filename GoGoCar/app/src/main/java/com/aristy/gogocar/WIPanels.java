@@ -175,7 +175,7 @@ public class WIPanels extends WICommon {
      * @param isAvailable if vehicle is available for booking
      */
     @JavascriptInterface
-    public void requestUpdateVehicle(int id, String model, String licencePlate, String address, String moduleCode, boolean isAvailable){
+    public void requestUpdateVehicle(int id, String model, String licencePlate, String address, int addressId, String moduleCode, boolean isAvailable){
         // Check if the module code is correct
         thread.setResultCallback(new ThreadResultCallback() {
             @Override
@@ -191,6 +191,7 @@ public class WIPanels extends WICommon {
                     vehicle.setModel(model);
                     vehicle.setLicencePlate(licencePlate);
                     vehicle.setAddress(address);
+                    vehicle.setAddressID(addressId);
                     vehicle.setIdModule(module.getId());
                     vehicle.setAvailable(isAvailable);
 

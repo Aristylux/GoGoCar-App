@@ -6,6 +6,7 @@ import static com.aristy.gogocar.DatabaseHelper.ADD_VEHICLE_QUERY;
 import static com.aristy.gogocar.DatabaseHelper.DELETE_USER_QUERY;
 import static com.aristy.gogocar.DatabaseHelper.DELETE_VEHICLE_QUERY;
 import static com.aristy.gogocar.DatabaseHelper.SET_VEHICLE_BOOKED_QUERY;
+import static com.aristy.gogocar.DatabaseHelper.UPDATE_VEHICLE_ADDRESS_QUERY;
 import static com.aristy.gogocar.DatabaseHelper.UPDATE_VEHICLE_QUERY;
 
 import android.util.Log;
@@ -308,8 +309,14 @@ public class ThreadManager {
     public void updateVehicle(DBModelVehicle vehicle){
         if (checkStateError("updateVehicle")) return;
         thread = new Thread(() -> {
-            boolean isUpdated = databaseHelper.executeQuery(UPDATE_VEHICLE_QUERY, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.getAddress(), vehicle.isAvailable(), vehicle.getIdModule(), vehicle.getId());
-            callback.onResultTableUpdated(isUpdated);
+            boolean isUpdatedVehicle = databaseHelper.executeQuery(UPDATE_VEHICLE_QUERY, vehicle.getModel(), vehicle.getLicencePlate(), vehicle.isAvailable(), vehicle.getIdModule(), vehicle.getId());
+            boolean isUpdatedAddress = false;
+            if (isUpdatedVehicle){
+                isUpdatedAddress = databaseHelper.executeQuery(UPDATE_VEHICLE_ADDRESS_QUERY, vehicle.getAddress(), vehicle.getAddressID());
+                callback.onResultTableUpdated(isUpdatedAddress);
+            } else
+                callback.onResultTableUpdated(false);
+            Log.d(TAG_THREAD, "updateVehicle: isUpdatedVehicle:" + isUpdatedVehicle + " isUpdatedAddress:" + isUpdatedAddress + " id:" + vehicle.getAddressID());
         });
         thread.start();
     }

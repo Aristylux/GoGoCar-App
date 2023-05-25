@@ -68,7 +68,7 @@ function setUserName(name){
 // Get all car booked for the user
 // [ANDROID CALLBACK]
 function setVehicleBooked(_table_vehicle){
-    var vehicles = JSON.parse(_table_vehicle);
+    var vehicles = JSON.parse(_table_vehicle.replace(/\$/g, "'"));
     
     if (vehicles.length == 0){
         console.log("no vehicle booked");
