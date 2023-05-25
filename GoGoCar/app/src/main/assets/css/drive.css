@@ -11,19 +11,20 @@ ul {
     box-shadow: 0 2px 5px #0002;
     border-radius: 15px;
     padding: 15px;
-    transition: all 0.3s;
-
+   
     animation: fadeInFromNone 0.5s ease-out;
-    opacity: 0;
 }
 
 .vehicle_container {
-    opacity: 1 !important;
+    max-height: 100px; /* set a value larger than the original height */
+    transition: max-height 0.5s ease-in-out, 
+    opacity 0.5s ease-in-out, 
+    padding 0.2s ease-out 0.3s,
+    margin 0.2s ease-out 0.3s;
 }
 
 .vehicle_container:active {
     background-color: var(--primary-color);
-    
 }
 
 @keyframes fadeInFromNone {

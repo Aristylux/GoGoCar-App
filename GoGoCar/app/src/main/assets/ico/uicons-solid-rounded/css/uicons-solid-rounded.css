@@ -15,6 +15,9 @@ line-height: 1;
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
+        .fi-sr-car-side:before {
+    content: "\f1ee";
+    }
         .fi-sr-car:before {
     content: "\f1f1";
     }

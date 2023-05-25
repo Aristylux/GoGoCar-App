@@ -129,14 +129,29 @@ function clearVehicles(){
 // Add element to ul list
 function addElement(vehicle, index) {
     const vehicle_info = [vehicle.name, vehicle.address];
+    const icons = ["fi-sr-car-side", "fi-sr-map-marker"]
 
     // Create Container
     let li = document.createElement("li");
     li.classList.add("vehicle_container");
     li.id = "vh_" + index;
-    vehicle_info.forEach((info) => {
+
+    vehicle_info.forEach((info, index) => {
+        // Line
         let div = document.createElement("div");
-        div.appendChild(document.createTextNode(info));
+        div.classList.add("info");
+
+        // Icon
+        let icon = document.createElement("i");
+        icon.classList.add("fi");
+        icon.classList.add(icons[index]);
+        div.appendChild(icon);
+
+        // Text
+        let text = document.createElement("span");
+        text.textContent = info;
+        div.appendChild(text);
+        
         li.appendChild(div);
     });
     const ul = document.getElementById("vehicles_list");
