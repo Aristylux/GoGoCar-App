@@ -340,7 +340,7 @@ INSERT INTO addresses (street_address, city, state, zip_code, location)
 VALUES
   ('161 Av.Colobel Fabien', 'Toulon', 'Var', '83000', ST_SetSRID(ST_MakePoint(43.12255, 5.94120), 4326)),
   ('265 Bd Maréchal Leclerc', 'Toulon', 'Var', '83000', ST_SetSRID(ST_MakePoint(43.12601, 5.92918), 4326)),
-  ('300 Av. de l''Université', 'La Valette-du-Var', 'Var', '83160', ST_SetSRID(ST_MakePoint(43.1363, 6.00714), 4326)),
+  ('300 Av. de l'Université', 'La Valette-du-Var', 'Var', '83160', ST_SetSRID(ST_MakePoint(43.1363, 6.00714), 4326)),
   ('Rue Antoine Bourdelle', 'Marseille', 'Bouches du Rhône', '13009', ST_SetSRID(ST_MakePoint(43.23252012446604, 5.433485893994135), 4326)),
   ('36 Av. du Maréchal Foch', 'Marseille', 'Bouches du Rhône', '13004', ST_SetSRID(ST_MakePoint(43.300447541385076, 5.3998418670150325), 4326)),
   ('2300 Av. des Moulins', 'Montpellier', 'Hérault', '34080', ST_SetSRID(ST_MakePoint(43.621968004876884, 3.8321528553962967), 4326)),
