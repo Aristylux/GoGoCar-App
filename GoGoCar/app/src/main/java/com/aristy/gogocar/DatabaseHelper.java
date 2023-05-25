@@ -462,9 +462,11 @@ public class DatabaseHelper {
 
     public String [] getMatchingCities(String firstChar){
         String query = "SELECT * FROM " + TABLE_CITY + " WHERE " + COLUMN_CITY_NAME + " ILIKE '%" + firstChar + "%' ORDER BY " + COLUMN_CITY_NAME + " ASC LIMIT 3;";
-        Log.d(TAG_Database, "getMatchingCities: query: " + query);
+        return getCities(query);
+    }
 
-        ArrayList<String> matching = new ArrayList<String>();
+    public String [] getCities(String query){
+        ArrayList<String> matching = new ArrayList<>();
 
         if (isConnectionError("getMatchingCities")) return matching.toArray(new String[0]);
 

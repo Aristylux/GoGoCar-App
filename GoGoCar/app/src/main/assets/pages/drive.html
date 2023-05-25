@@ -166,7 +166,10 @@
                 console.log("distance: " + search.distance + " - city: " + search.city_name + " - selected: " + search.city_selected + ".");
                 if (search.city_selected == true){
                     console.log("send to android: startSearch(" + search.city_name + ", " + search.distance + ")");
-                    if (androidConnected()) Android.searchStart(search.city_name, search.distance);
+                    if (androidConnected()){
+                        Android.searchStart(search.city_name, search.distance);
+                        clearVehicles();
+                    } 
                 }
             }
 

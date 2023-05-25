@@ -110,14 +110,19 @@ function cbDriveAddVehicle(_vehicle){
 
 // [ANDROID] Reset database for update
 function resetDatabase(){
-    var ul = document.getElementById("vehicles_list");
+    clearVehicles();
+    if (androidConnected()) Android.requestDatabase();
+}
+
+// Clear list
+function clearVehicles(){
+    let ul = document.getElementById("vehicles_list");
 
     // loop through all its child nodes
     let liElements = ul.getElementsByTagName("li");
     for (let i = liElements.length - 1; i >= 0; i--) { 
         ul.removeChild(liElements[i]); // remove the li element from the ul element
     }
-    if (androidConnected()) Android.requestDatabase();
 }
 
 // Add element to ul list
