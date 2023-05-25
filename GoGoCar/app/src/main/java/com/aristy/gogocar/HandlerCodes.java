@@ -11,15 +11,10 @@ public class HandlerCodes {
     public static final int GOTO_LOGIN_FRAGMENT = 1;
     public static final int GOTO_HOME_FRAGMENT = 2;
     public static final int GOTO_DRIVE_FRAGMENT = 3;
-    public static final int GOTO_BOOK_VEHICLE_FRAGMENT = 31;
     public static final int GOTO_VEHICLE_FRAGMENT = 4;
-    public static final int GOTO_ADD_VEHICLE_FRAGMENT = 41;
-    public static final int GOTO_EDIT_VEHICLE_FRAGMENT = 42;
-    public static final int DATA_SET_VEHICLE = 421;
     public static final int STATUS_BAR_COLOR = 20;
     public static final int OPEN_SLIDER = 50;
     public static final int CLOSE_SLIDER = 51;
-    public static final int QUERY = 52;
 
     public static final int OPEN_QRCODE_ACTIVITY = 6;
 
