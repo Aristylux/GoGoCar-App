@@ -380,7 +380,7 @@ VALUES
   ('Paris', ST_SetSRID(ST_MakePoint(48.8534, 2.3488), 4326)),
   ('Nice', ST_SetSRID(ST_MakePoint(43.700001, 7.25), 4326)),
   ('Marseille', ST_SetSRID(ST_MakePoint(43.300000, 5.400000), 4326)),
-  ('La Valette-du-Var', ST_SetSRID(ST_MakePoint(43.133331, 5.98333), 4326))
+  ('La Valette-du-Var', ST_SetSRID(ST_MakePoint(43.133331, 5.98333), 4326)),
   ('Bordeaux', ST_SetSRID(ST_MakePoint(44.8378, 0.5792), 4326)),
   ('Toulouse', ST_SetSRID(ST_MakePoint(43.6047, 1.4442), 4326)),
   ('Strasbourg', ST_SetSRID(ST_MakePoint( 48.5734, 7.7521),4326)),
