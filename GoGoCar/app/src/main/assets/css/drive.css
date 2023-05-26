@@ -23,6 +23,19 @@ ul {
     margin 0.2s ease-out 0.3s;
 }
 
+#vehicles_list .info {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+    gap: 5px;
+}
+
+#vehicles_list .info i {
+    display: flex;
+    align-items: center;
+    padding: 2px;
+}
+
 .vehicle_container:active {
     background-color: var(--primary-color);
 }
