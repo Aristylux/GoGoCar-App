@@ -72,6 +72,14 @@ public class RSA {
         return ciphertext;
     }
 
+    public long[] encrypt(byte[] plainText) {
+        long[] ciphertext = new long[plainText.length];
+        for (int i = 0; i < plainText.length; i++) {
+            ciphertext[i] = modExp((int) plainText[i], this.modulePublicKey.e, this.modulePublicKey.N);
+        }
+        return ciphertext;
+    }
+
     /**
      * Method to decrypt a message using RSA
      * @param ciphertext array of long

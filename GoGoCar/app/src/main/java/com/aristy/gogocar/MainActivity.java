@@ -59,7 +59,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.aristy.gogocar.AES.AES;
 import com.aristy.gogocar.AES.AESCommon;
 
 import java.sql.Connection;

@@ -1,6 +1,7 @@
 package com.aristy.gogocar.AES;
 
 import static com.aristy.gogocar.CodesTAG.TAG_AES;
+import static com.aristy.gogocar.CodesTAG.TAG_BT_COM;
 
 import android.util.Log;
 
@@ -157,6 +158,7 @@ public class AESCommon {
         Log.d(TAG_AES, "AESTest: " + aesKey.toString());
         Log.d(TAG_AES, "AESTest: " + aesKey.toPrint());
         Log.d(TAG_AES, "AESTest: " + Arrays.toString(aesKey.getKey()));
+        Log.d(TAG_BT_COM, "AESTest: " + Arrays.toString(aesKey.toUnsignedBytes()));
 
         byte[] text = {0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6f, 0x00, 0x00, 0x00, 0x00, 0x00};
 

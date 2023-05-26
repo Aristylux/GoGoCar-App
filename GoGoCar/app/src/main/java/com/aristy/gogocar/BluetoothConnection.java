@@ -213,16 +213,27 @@ public class BluetoothConnection extends Thread {
             Log.d(TAG_BT_COM, "messageReceived: aes key: " + aesKey.toString());
             Log.d(TAG_BT_COM, "messageReceived: aes key: " + aesKey.toPrint());
             Log.d(TAG_BT_COM, "messageReceived: aes key: " + Arrays.toString(aesKey.getKey()));
+            Log.d(TAG_BT_COM, "messageReceived: aes key: " + Arrays.toString(aesKey.toUnsignedBytes()));
 
             // Crypt
-            //long [] aesKey8cipher = rsa.encrypt();
+            long [] aesKeyCipher = rsa.encrypt(aesKey.getKey());
 
-            bluetoothCommunication.write(aesKey.getKey());
+            // Send
+            //bluetoothCommunication.write(aesKeyCipher);
+            this.waitForModulePublicKey = false;
         } else {
             Log.d(TAG_BT_CON, "messageReceived: decrypt message: " + message);
             // Decrypt the message
             String decryptedMessage = aes.aesDecrypt(message.getBytes(), aes.getAesKey());
             Log.d(TAG_BT_COM, "messageReceived: decryptedMessage: " + decryptedMessage);
+
+            String mes = "�tMsL�4:\\u00143�����a��X6ﭾ�\\u0011\\\"\\u001Ds�8�T�p";
+            byte[] bytes = new byte[32];
+            for (int i = 0; i < bytes.length ; i++){
+                bytes[i] = Character.toString(mes.charAt(i)).getBytes()[0];
+            }
+            Log.d(TAG_BT_COM, "messageReceived: bytes: " + Arrays.toString(bytes));
+            Log.d(TAG_BT_COM, "messageReceived: bytes: " + Arrays.toString(bytes));
         }
 
         String type;

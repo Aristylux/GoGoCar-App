@@ -35,4 +35,12 @@ public class AESKey {
         return sb.toString();
     }
 
+    public byte[] toUnsignedBytes(){
+        byte [] unsigned = new byte[key.length];
+        for (int i = 0; i < key.length; i++) {
+            unsigned[i] = (byte) (key[i] & 0xFF);
+        }
+        return unsigned;
+    }
+
 }
