@@ -173,7 +173,7 @@ function requestDriveCallback(allowedToDrive){
         container_selected.switch_selected.checked = false;
         console.log("Error callback type: " + allowedToDrive);
         if (typeof allowedToDrive == "string") allowedToDrive = parseInt(allowedToDrive);
-
+        if(androidConnected()) Android.errorDrive();
         switch (allowedToDrive) {
             case DRIVING_REQUEST_PERMISSION_ERROR:
             case DRIVING_REQUEST_BLUETOOTH_DISABLED:

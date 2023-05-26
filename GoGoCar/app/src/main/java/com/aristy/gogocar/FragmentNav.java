@@ -36,8 +36,8 @@ public class FragmentNav extends Fragment {
     private static final String ARG_LINK = "webLink";
 
     // the fragment parameters name for execute javascript function on web
-    public final static String ARG_FUNCTION_NAME = "func_name";
-    public final static String ARG_FUNCTION_PARAMS = "func_param";
+    private final static String ARG_FUNCTION_NAME = "func_name";
+    private final static String ARG_FUNCTION_PARAMS = "func_param";
 
     private UserPreferences userPreferences;
     private Handler[] handlers;
@@ -165,7 +165,11 @@ public class FragmentNav extends Fragment {
         return args;
     }
 
-    public void sendDataToFragment(Bundle args){
+    /**
+     * Call this method to send to JS
+     * @param args function & data
+     */
+    public void sendDataToWeb(Bundle args){
         String functionName = args.getString(ARG_FUNCTION_NAME);
         String params = args.getString(ARG_FUNCTION_PARAMS);
         if (web != null)
@@ -173,5 +177,4 @@ public class FragmentNav extends Fragment {
         else
             Log.e("GoGoCar_Fragments", "putArguments: error, web = null");
     }
-
 }

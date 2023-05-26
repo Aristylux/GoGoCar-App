@@ -215,6 +215,15 @@ public class WIMainScreen extends WICommon {
     }
 
     /**
+     * When the communication bt is incorrect<br>
+     * <i>Call in</i>: <code>home.js</code><br>
+     */
+    @JavascriptInterface
+    public void errorDrive(){
+        navigationHandler.obtainMessage(SET_DRIVING, false).sendToTarget();
+    }
+
+    /**
      * When the user want to remove his trip<br>
      * <i>Call in</i>: <code>home_popup_cancel.js</code><br>
      * @param vehicleID vehicle id

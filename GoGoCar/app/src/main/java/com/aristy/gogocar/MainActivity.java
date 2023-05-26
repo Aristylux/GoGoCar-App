@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices FINISHED");
                 // If a connection is not in progress, we don't find the car, prevent user.
                 if (!bluetoothConnection.isConnecting())
-                    fragmentNav.sendDataToFragment(putArguments(DRIVING_REQUEST, DRIVING_REQUEST_CAR_NOT_FOUND));
+                    fragmentNav.sendDataToWeb(putArguments(DRIVING_REQUEST, DRIVING_REQUEST_CAR_NOT_FOUND));
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 Log.d(TAG_BT, "onReceive: scanning bluetooth devices STARTED");
             } else if (BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)){
@@ -272,23 +272,23 @@ public class MainActivity extends AppCompatActivity {
                 case BT_STATE_CONNECTED:                    //Send pairing success and connection established
                     Log.v(TAG_BT, "BT_STATE_CONNECTED");
                     bluetoothConnection.connectionEstablished();
-                    fragmentNav.sendDataToFragment(putArguments(DRIVING_REQUEST, TRUE));
+                    fragmentNav.sendDataToWeb(putArguments(DRIVING_REQUEST, TRUE));
                     break;
                 case BT_STATE_CONNECTION_FAILED:
                     Log.v(TAG_BT, "BT_STATE_CONNECTION_FAILED");
                     bluetoothConnection.connectionFailed();
-                    fragmentNav.sendDataToFragment(putArguments(DRIVING_REQUEST, DRIVING_CONNECTION_FAILED));
+                    fragmentNav.sendDataToWeb(putArguments(DRIVING_REQUEST, DRIVING_CONNECTION_FAILED));
                     break;
                 case BT_STATE_MESSAGE_RECEIVED:
                     Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
                     Log.d(TAG_BT, "handleMessage: received: " + message.obj);
                     ReceiverCAN dataCan = bluetoothConnection.messageReceived(message.obj.toString());
-                    if (dataCan.isResulted()) fragmentNav.sendDataToFragment(putArguments(dataCan.getMethod(), dataCan.getData()));
+                    if (dataCan.isResulted()) fragmentNav.sendDataToWeb(putArguments(dataCan.getMethod(), dataCan.getData()));
                     break;
                 case BT_STATE_DISCONNECTED:
                     Log.v(TAG_BT, "BT_STATE_DISCONNECTED");
                     bluetoothConnection.connectionFinished();
-                    fragmentNav.sendDataToFragment(putArguments(DRIVING_REQUEST, DRIVING_CONNECTION_DISCONNECTED));
+                    fragmentNav.sendDataToWeb(putArguments(DRIVING_REQUEST, DRIVING_CONNECTION_DISCONNECTED));
                     break;
                 case BT_STATE_DISCONNECTING:
                     Log.v(TAG_BT, "BT_STATE_DISCONNECTING");
@@ -297,11 +297,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case BT_REQUEST_STATE:
                     if (bluetoothConnection == null || bluetoothConnection.getBluetoothSocket() == null) {
-                        fragmentNav.sendDataToFragment(putArguments("setSwitchState", FALSE));
+                        fragmentNav.sendDataToWeb(putArguments("setSwitchState", FALSE));
                         break;
                     }
                     boolean connected = bluetoothConnection.getBluetoothSocket().isConnected();
-                    fragmentNav.sendDataToFragment(putArguments("setSwitchState", String.valueOf(connected)));
+                    fragmentNav.sendDataToWeb(putArguments("setSwitchState", String.valueOf(connected)));
                     break;
             }
             return true;
