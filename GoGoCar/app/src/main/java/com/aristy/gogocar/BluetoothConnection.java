@@ -111,13 +111,15 @@ public class BluetoothConnection extends Thread {
         rsa = new RSA();
         rsa.generateRSAKeys();
 
+        Log.d(TAG_RSA, "connectionEstablished: E:" + rsa.getRsaKeys());
+
         long expo = rsa.getRsaKeys().publicKey.e;
         long mod =  rsa.getRsaKeys().publicKey.N;
 
-        Log.d(TAG_RSA, "connectionEstablished: E:" + expo + "N:" + mod);
-        Log.d(TAG_RSA, "connectionEstablished: E:" + Byte.valueOf(String.valueOf(expo)) + "N:" + Byte.valueOf(String.valueOf(mod)));
+        Log.d(TAG_RSA, "connectionEstablished: E:" + expo + " N:" + mod);
+        Log.d(TAG_RSA, "connectionEstablished: E:" + Arrays.toString(String.valueOf(expo).getBytes()) + " N:" + Arrays.toString(String.valueOf(mod).getBytes()));
         bluetoothCommunication.write(String.valueOf(expo).getBytes());
-
+/*
         byte[] publicKeyBytes = rsa.getBytePublicKey();
 
         Log.d(TAG_RSA, "connectionEstablished: 16: " + RSA.printBytes(publicKeyBytes));
@@ -126,11 +128,11 @@ public class BluetoothConnection extends Thread {
 
         bluetoothCommunication.write(by);
         Log.d(TAG_BT, "connectionEstablished: " + Arrays.toString(by));
-
+*/
         this.waitForModulePublicKey = true;
 
 
-
+/*
         // Test send
         String s = "Salut man";
         String jamer = "$deb:1";
@@ -144,6 +146,8 @@ public class BluetoothConnection extends Thread {
                 // Handle the interrupted exception if necessary
             }
         }
+
+ */
     }
 
     /**

@@ -55,7 +55,8 @@ public class RSA {
         // ≡ 1 (mod φ(N)).
         long d = modInverse(e, phi);
 
-        rsaKeys = new RSAKeys(N, e, d, publicKeyToBytes());
+        rsaKeys = new RSAKeys(N, e, d);
+        rsaKeys.setBytesPublicKey(publicKeyToBytes());
     }
 
     /**
