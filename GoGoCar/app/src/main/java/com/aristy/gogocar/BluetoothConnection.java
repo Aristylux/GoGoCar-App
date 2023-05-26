@@ -121,11 +121,12 @@ public class BluetoothConnection extends Thread {
 
         String data = expo + "|" + mod;
 
+        // TODO : MAke a table of 20 bytes
         for (int i = 0; i < 2; i++) {
             try {
                 bluetoothCommunication.write(data.getBytes());
                 Log.d(TAG_RSA, "connectionEstablished: data:'" + data + "'");
-                Thread.sleep(300); // Wait for 1 second (1000 milliseconds)
+                Thread.sleep(100); // Wait for 1 second (1000 milliseconds)
             } catch (InterruptedException e) {
                 // Handle the interrupted exception if necessary
             }
