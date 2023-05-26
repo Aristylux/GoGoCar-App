@@ -263,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
                 case BT_REQUEST_ENABLE:
                     // Create intent
                     Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    enableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 30);
                     activityResult.launch(enableIntent);    // Launch activity to get result
                     break;
                 case BT_STATE_CONNECTED:                    //Send pairing success and connection established

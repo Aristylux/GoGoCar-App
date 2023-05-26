@@ -118,6 +118,17 @@ public class BluetoothConnection extends Thread {
 
         Log.d(TAG_RSA, "connectionEstablished: E:" + expo + " N:" + mod);
         Log.d(TAG_RSA, "connectionEstablished: E:" + Arrays.toString(String.valueOf(expo).getBytes()) + " N:" + Arrays.toString(String.valueOf(mod).getBytes()));
+
+        for (int i = 0; i < 10; i++) {
+            try {
+                bluetoothCommunication.write(String.valueOf(expo).getBytes());
+                Log.d(TAG_RSA, "connectionEstablished: E:" + expo + " N:" + mod);
+                Thread.sleep(1000); // Wait for 1 second (1000 milliseconds)
+            } catch (InterruptedException e) {
+                // Handle the interrupted exception if necessary
+            }
+        }
+
         bluetoothCommunication.write(String.valueOf(expo).getBytes());
 /*
         byte[] publicKeyBytes = rsa.getBytePublicKey();
