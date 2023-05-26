@@ -10,60 +10,7 @@
 
         <link rel="stylesheet" href="../css/screen_header.css"/>
 
-        <style>
-
-            section {
-                position: fixed;
-                width: 100vw;
-                height: 92vh;
-                justify-content: center;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .button {
-                width: 200px;
-                height: 200px;
-                border-radius: 15px;
-                border-radius: 20px;
-                box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15), -6px -6px 10px -1px rgba(238, 238, 238, 0.7);
-                margin: 50px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-            #line {
-                display: flex;
-                flex-direction: row;
-                gap: 10px;
-                justify-content: center;
-                align-content: center;
-                align-items: center;
-                margin: 5px;
-            }
-
-            #line hr {
-                width: 100%;
-                height: 0px;
-                margin-right: auto;
-                margin-left: auto;
-                margin-top: 5px;
-                margin-bottom: 5px;
-                border-width: 1px;
-                border-color: #c2c2c2;
-                border-radius: 1px;
-            }
-
-            #line span {
-                color: #c2c2c2;
-                font-size: 1em;
-            }
-            
-
-        </style>
-
+        <link rel="stylesheet" href="../css/vehicles_add_menu.css"/>
     </head>
     <body>
         <div id="screen_header">
@@ -95,36 +42,6 @@
         <script src="../js/androidInterface.js"></script>
         <script src="../js/panels.js"></script>
 
-        <script>
-
-            const but_module = document.getElementById('have_module_buuton');
-            const but_no_module = document.getElementById('not_have_module_button');
-
-            var click_m = 0, click_no_m = 0; // disable multi click
-
-            but_module.addEventListener('click', () => {
-                console.log("open 'vehicle_add_menu_module.html'");
-                // Open new window for add new vehicle
-                if (++click_m === 1){
-                    if(androidConnected()) Android.openSlideTest("vehicles", "add");
-                    setTimeout(function() {
-                        click_m = 0;
-                    }, 500);
-                }
-            });
-
-            but_no_module.addEventListener('click', () => {
-                console.log("open 'vehicle_add_menu_no_module.html'");
-                // Open new window for ask a module
-                if (++click_no_m === 1){
-                    if(androidConnected()) Android.openSlideTest("vehicles", "ask");
-                    setTimeout(function() {
-                        click_no_m = 0;
-                    }, 500);
-                }  
-            });
-
-        </script>
-
+        <script src="../js/vehicles_add_menu.js"></script>
     </body>
 </html>
