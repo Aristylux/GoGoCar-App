@@ -1,5 +1,7 @@
 package com.aristy.gogocar.AES;
 
+import androidx.annotation.NonNull;
+
 public class AESKey {
 
     private byte[] key;
@@ -16,10 +18,19 @@ public class AESKey {
         return  key.length;
     }
 
-    public String print(){
+    @NonNull
+    public String toString(){
         StringBuilder sb = new StringBuilder("AES key: ");
         for (byte b : this.key) {
             sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
+    public String toPrint(){
+        StringBuilder sb = new StringBuilder("AES key: ");
+        for (byte b : this.key) {
+            sb.append(String.format("%02x ", b));
         }
         return sb.toString();
     }

@@ -5,6 +5,7 @@ import static com.aristy.gogocar.CodesTAG.TAG_AES;
 import android.util.Log;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class AESCommon {
 
@@ -151,8 +152,11 @@ public class AESCommon {
     public static void AESTest(){
         Log.d(TAG_AES, "AESTest: AES");
         AES aes = new AES();
-        AESKey aesKey = aes.generateAESKey(KEY_256_BITS);
-        Log.d(TAG_AES, "AESTest: " + aesKey.print());
+        aes.generateAESKey(KEY_256_BITS);
+        AESKey aesKey = aes.getAesKey();
+        Log.d(TAG_AES, "AESTest: " + aesKey.toString());
+        Log.d(TAG_AES, "AESTest: " + aesKey.toPrint());
+        Log.d(TAG_AES, "AESTest: " + Arrays.toString(aesKey.getKey()));
 
         byte[] text = {0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6f, 0x00, 0x00, 0x00, 0x00, 0x00};
 

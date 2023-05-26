@@ -9,19 +9,25 @@ import java.util.Random;
 
 public class AES {
 
+    private AESKey aesKey;
+
     public AES(){
         generateSboxInv();
     }
 
     // --- Key function ---
 
-    public AESKey generateAESKey(int keySize) {
+    public void generateAESKey(int keySize) {
         AESKey key = new AESKey(keySize);
         Random rand = new Random();
         for (int i = 0; i < keySize; i++) {
             key.getKey()[i] = (byte) rand.nextInt(256);
         }
-        return key;
+        this.aesKey = key;
+    }
+
+    public AESKey getAesKey(){
+        return this.aesKey;
     }
 
     // --- Encrypt functions ---

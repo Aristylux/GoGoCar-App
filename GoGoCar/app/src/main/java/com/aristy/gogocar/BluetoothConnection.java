@@ -15,9 +15,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.aristy.gogocar.AES.AES;
+import com.aristy.gogocar.AES.AESCommon;
+import com.aristy.gogocar.AES.AESKey;
 import com.aristy.gogocar.RSA.PublicKey;
 import com.aristy.gogocar.RSA.RSA;
-import com.aristy.gogocar.RSA.RSAKeys;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -33,9 +35,11 @@ public class BluetoothConnection extends Thread {
 
     private boolean isConnecting;
 
+    private BluetoothCommunication bluetoothCommunication;
 
     private RSA rsa;
     private boolean waitForModulePublicKey;
+    private AES aes;
   
     /**
      * Constructor, set default, prepare to be connected
@@ -105,7 +109,7 @@ public class BluetoothConnection extends Thread {
      * Start bluetooth communication
      */
     public void connectionEstablished(){
-        BluetoothCommunication bluetoothCommunication = new BluetoothCommunication(BluetoothConnection.this, handler);
+        bluetoothCommunication = new BluetoothCommunication(BluetoothConnection.this, handler);
         bluetoothCommunication.start();
 
         rsa = new RSA();
@@ -119,9 +123,21 @@ public class BluetoothConnection extends Thread {
         Log.d(TAG_RSA, "connectionEstablished: E:" + expo + " N:" + mod);
         Log.d(TAG_RSA, "connectionEstablished: E:" + Arrays.toString(String.valueOf(expo).getBytes()) + " N:" + Arrays.toString(String.valueOf(mod).getBytes()));
 
-        String data = expo + "|" + mod;
 
-        // TODO : MAke a table of 20 bytes
+        StringBuilder stringBuilder = new StringBuilder(String.valueOf(expo));
+        while (stringBuilder.length() < 10) {
+            stringBuilder.insert(0, '$');
+        }
+        String expoStr = stringBuilder.toString();
+
+        stringBuilder = new StringBuilder(String.valueOf(mod));
+        while (stringBuilder.length() < 10) {
+            stringBuilder.insert(0, '$');
+        }
+        String modStr = stringBuilder.toString();
+
+        String data = expoStr + "|" + modStr + "\n";
+
         for (int i = 0; i < 2; i++) {
             try {
                 bluetoothCommunication.write(data.getBytes());
@@ -186,15 +202,27 @@ public class BluetoothConnection extends Thread {
         if (this.waitForModulePublicKey){
             Log.d(TAG_BT_CON, "messageReceived: module public key: '" + message + "'");
             // Set module public key
-            //rsa.setModulePublicKey(rsa.parsePublicKey(message));
             PublicKey publicKey = rsa.parsePublicKey(message);
+            rsa.setModulePublicKey(publicKey);
             Log.d(TAG_BT_COM, "messageReceived: Public key: " + publicKey.toString());
+
             // Generate AES Key
+            aes = new AES();
+            aes.generateAESKey(AESCommon.KEY_256_BITS);
+            AESKey aesKey = aes.getAesKey();
+            Log.d(TAG_BT_COM, "messageReceived: aes key: " + aesKey.toString());
+            Log.d(TAG_BT_COM, "messageReceived: aes key: " + aesKey.toPrint());
+            Log.d(TAG_BT_COM, "messageReceived: aes key: " + Arrays.toString(aesKey.getKey()));
 
             // Crypt
+            //long [] aesKey8cipher = rsa.encrypt();
+
+            bluetoothCommunication.write(aesKey.getKey());
         } else {
             Log.d(TAG_BT_CON, "messageReceived: decrypt message: " + message);
             // Decrypt the message
+            String decryptedMessage = aes.aesDecrypt(message.getBytes(), aes.getAesKey());
+            Log.d(TAG_BT_COM, "messageReceived: decryptedMessage: " + decryptedMessage);
         }
 
         String type;
