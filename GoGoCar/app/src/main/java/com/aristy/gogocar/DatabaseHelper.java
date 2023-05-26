@@ -136,12 +136,23 @@ public class DatabaseHelper {
      * @return error or not
      */
     private boolean isConnectionError(String funcName){
-        if (connection == null /*|| connection.isClosed()*/) {
+
+        if (connection == null){
             // Failure. do not add anything to the list
             Log.e(TAG_Database, funcName + ": connect is null");
             return true;
-        } else {
-            return false;
+        }
+
+        try {
+            if (connection.isClosed()) {
+                Log.e(TAG_Database, "RESTART Connection");
+                ThreadManager.getInstance().setConnection();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
