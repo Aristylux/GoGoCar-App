@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="qrcode.min.js"></script>
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +12,6 @@
 </head>
 <body>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="qrcode.min.js"></script>
         <section>
         <label>Entrez un texte ou un lien :</label>
         <input type="text" id="qr_input">
@@ -30,7 +30,7 @@
     
     
     <script type="text/javascript">
-        import { jsPDF } from "jspdf";
+        //import { jsPDF } from "jspdf";
        
         var qr_liste = [];
     
@@ -76,9 +76,9 @@
 
         
         function generatePdf(){
-            
+            const { jsPDF } = window.jspdf; //ici j'importe jspdf de la librairie jspdf.js et j'utilise window car j'utilise le chargement dans la page web
             // Créer une instance de jsPDF
-            //const { jsPDF } = require("jspdf");
+            //const { jsPDF } = require("jspdf"); //ici j'importe un fichier javascript comme s'il était dans un module, sans le créer 
             const doc = new   jsPDF();
             
             // Sélectionner tous les éléments contenant les images QR code
@@ -97,7 +97,8 @@
                 if (index !== 0) {
                     doc.addPage(); // Ajouter une nouvelle page pour chaque image QR code sauf la première
                 }
-                doc.addImage(imageData, 'JPEG', 10, 10, imgWidth, imgHeight);
+                doc.addImage(imageData, 'JPEG', 5, 5, 200, 200);
+
             });
             
             // Enregistrer le fichier PDF

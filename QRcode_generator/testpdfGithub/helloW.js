@@ -5,7 +5,8 @@
   
   // Appel de la fonction pour afficher "Hello, World!"
   //afficherHelloWorld();
-  import { jsPDF } from "jspdf";
+  //import { jsPDF } from "jspdf";
+  const { jsPDF } = window.jspdf;
 
   // Default export is a4 paper, portrait, using millimeters for units
   const doc = new jsPDF();
