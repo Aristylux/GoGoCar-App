@@ -130,10 +130,8 @@ function setVehicleBooked(_table_vehicle){
 function setSwitchState(state){
     if(state === "true"){
         container_selected.switch_selected.checked = true;
-        //openForDrive();
     } else {
         container_selected.switch_selected.checked = false;
-        //closeForStop();
     }
 }
 

@@ -279,16 +279,8 @@ public class MainActivity extends AppCompatActivity {
                 case BT_STATE_MESSAGE_RECEIVED:
                     Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
                     Log.d(TAG_BT, "handleMessage: received: " + message.obj);
-                    // TODO (test)
-
-                    //bluetoothConnection.messageReceived(message.obj.toString());
-                    //sendDataToFragment(bluetoothConnection.getMessageFunction(), bluetoothConnection.getMessageParams());
-
-                    // -> bluetoothConnection.messageReceived((String) message.obj);
-
                     ReceiverCAN dataCan = bluetoothConnection.messageReceived(message.obj.toString());
                     if (dataCan.isResulted()) fragmentNav.sendDataToFragment(putArguments(dataCan.getMethod(), dataCan.getData()));
-
                     break;
                 case BT_STATE_DISCONNECTED:
                     Log.v(TAG_BT, "BT_STATE_DISCONNECTED");
@@ -298,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
                 case BT_STATE_DISCONNECTING:
                     Log.v(TAG_BT, "BT_STATE_DISCONNECTING");
                     bluetoothConnection.closeConnection();
+                    Log.d(TAG_BT, "handleMessage: Journey finished");
                     break;
                 case BT_REQUEST_STATE:
                     if (bluetoothConnection == null || bluetoothConnection.getBluetoothSocket() == null) {
