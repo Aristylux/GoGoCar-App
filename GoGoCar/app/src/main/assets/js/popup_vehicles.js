@@ -16,12 +16,13 @@ function openPopupBook(vehicle) {
     openPopup(popup);
 }
 
-popup_vehicle_button_close.addEventListener("click", (event) => {
+popup_vehicle_button_close.addEventListener("click", () => {
+    if (androidConnected()) Android.setModal(false);
     closePopup(popup);
-    //vehicleDelete("true"); // debug PC
 });
 
 popup_vehicle_button_remove.addEventListener("click", function () {
+    if (androidConnected()) Android.setModal(false);
     closePopup(popup);
     if (androidConnected()) Android.requestRemoveVehicle(vehicle_selected.id);
 });
@@ -33,11 +34,21 @@ function vehicleDelete(success) {
         const vehicles_container_info = document.querySelectorAll(".info");
         vehicles_container_info.forEach((Element) => {
             if (Element.innerText === vehicle_selected.licencePlate) {
-                //Element.parentElement.parentElement.style.display = "none";
                 Element.parentElement.parentElement.classList.add(
                     "vehicle_container--hidden"
                 );
+                // Remove li from ul
+                setTimeout(() => {
+                    Element.parentElement.parentElement.parentElement.removeChild(Element.parentElement.parentElement);
+                }, 500);
             }
         });
+        // Add no vehicle background if list equal to 0 
+        if (vehicles_container_info.length - 2 == 0){
+            // After remove animation, show no vehicle logo
+            setTimeout(() => {
+                document.getElementById("no_vh_logo").classList.add('logo-visible');
+            }, 500);
+        }
     }
 }

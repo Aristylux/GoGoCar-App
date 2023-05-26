@@ -37,7 +37,9 @@ signIn.addEventListener("click", function () {
     container.classList.remove("active");
 });
 
-// -----------
+/* ------------------------------- *
+ *              Login              *
+ * ------------------------------- */
 
 const loginForm = document.getElementById("login_form");
 const loginSubmitButton = document.getElementById("but_login");
@@ -71,7 +73,9 @@ function errorAuthenticationLogin() {
     loginElementEmail.parentNode.classList.add("error");
 }
 
-// ---------------
+/* ------------------------------- *
+ *            Register             *
+ * ------------------------------- */
 
 const NAME_ERROR_CODE = 1,
     EMAIL_ERROR_CODE = 2,
@@ -100,7 +104,8 @@ const error_messages = {
 const EMAIL_SUCCESS_CODE = 1,
     PHONE_SUCCESS_CODE = 2;
 
-let email_correct = false,
+let name_correct = false,
+    email_correct = false,
     phone_correct = false;
 
 const registerForm = document.getElementById("register_form");
@@ -110,8 +115,7 @@ const registerElementName = registerForm.elements["register_name"];
 const registerElementEmail = registerForm.elements["register_email"];
 const registerElementPhone = registerForm.elements["register_phonenumber"];
 const registerElementPassword = registerForm.elements["register_password"];
-const registerElementPasswordConf =
-    registerForm.elements["register_password_confirmation"];
+const registerElementPasswordConf = registerForm.elements["register_password_confirmation"];
 
 // For register: during typing
 // verify password are the same
@@ -122,9 +126,7 @@ for (let i = 0; i < registerForm.elements.length; i++) {
         } else {
             if (
                 registerElementPassword.value.indexOf(
-                    registerElementPasswordConf.value
-                ) != 0
-            ) {
+                    registerElementPasswordConf.value) != 0) {
                 errorAuthenticationRegistration(PASSWORD_ERROR_CODE);
             } else {
                 registerForm.elements[i].parentNode.classList.remove("error");
@@ -134,12 +136,34 @@ for (let i = 0; i < registerForm.elements.length; i++) {
 }
 
 // When user leave name input
-// delete if exist last ' '
+// Format and check names
+registerElementName.addEventListener('change', function () {
+    console.log("name change");
+
+    let name = registerElementName.value;
+    let formattedName = formatName(name);
+    registerElementName.value = formattedName;
+
+    if(checkNames(formattedName)) name_correct = true;
+    else errorAuthenticationRegistration(NAME_ERROR_CODE);
+});
+
+// delete if exist white spaces (space, tabs or new lines)
+// Add first letter to upper case
+function formatName(name){
+    let trimmedName = name.trim();
+
+    let names = trimmedName.split(" ");
+	for (var i = 0; i < names.length; i++)
+        names[i] = names[i].charAt(0).toUpperCase() + names[i].slice(1);
+
+	return names.join(" ");
+}
 
 // When user leave email input
 // Verify mail adress doesn't exist into our database (ask Android)
 // Request email (if email already exist: error)
-registerElementEmail.addEventListener("change", function () {
+registerElementEmail.addEventListener('change', function () {
     console.log("email change");
 
     const emailRegex =
@@ -161,7 +185,7 @@ registerElementEmail.addEventListener("change", function () {
 // When user leave phonenumber input
 // Verify phonenumber doesn't exist into our database (ask Android)
 // Request phonenumber (if phonenumber already exist: error)
-registerElementPhone.addEventListener("change", function () {
+registerElementPhone.addEventListener('change', function () {
     console.log("phone number change");
     const phone = registerElementPhone.value;
     // Format 06 XX XX XX XX
@@ -245,7 +269,7 @@ registerSubmitButton.addEventListener("click", function () {
         password_c = registerElementPasswordConf.value;
 
     // If name contain 2word (first name and last name)
-    if (!checkNames(name) || name == "") {
+    if (!name_correct || name == "") {
         register_success = false;
         errorAuthenticationRegistration(NAME_ERROR_CODE);
     }
@@ -288,10 +312,12 @@ function checkNames(fullName) {
     return true;
 }
 
+// [ANDROID CALLBACK]
 // Error callback
 function errorAuthenticationRegistration(cause) {
     // When function called by Android (cause is a string, not a number)
     if (typeof cause == "string") cause = parseInt(cause);
+    else console.log("from web");
 
     console.info("Register failed: " + cause);
     let selectElement;

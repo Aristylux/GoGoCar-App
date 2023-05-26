@@ -1,7 +1,10 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
+import static com.aristy.gogocar.CodesTAG.TAG_BT_COM;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_CON;
+import static com.aristy.gogocar.CodesTAG.TAG_RSA;
+import static com.aristy.gogocar.CodesTAG.TAG_CAN;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
 
@@ -12,8 +15,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.aristy.gogocar.AES.AES;
+import com.aristy.gogocar.AES.AESCommon;
+import com.aristy.gogocar.AES.AESKey;
+import com.aristy.gogocar.RSA.PublicKey;
+import com.aristy.gogocar.RSA.RSA;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class BluetoothConnection extends Thread {
@@ -24,15 +35,18 @@ public class BluetoothConnection extends Thread {
 
     private boolean isConnecting;
 
-    private String message;
-    private String function;
+    private BluetoothCommunication bluetoothCommunication;
 
-
+    private RSA rsa;
+    private boolean waitForModulePublicKey;
+    private AES aes;
+  
     /**
      * Constructor, set default, prepare to be connected
      */
     public BluetoothConnection (){
         this.isConnecting = false;
+        this.waitForModulePublicKey = false;
     }
 
     /**
@@ -52,6 +66,10 @@ public class BluetoothConnection extends Thread {
         }
     }
 
+    /**
+     * Get bluetooth socket
+     * @return bluetooth socket
+     */
     public BluetoothSocket getBluetoothSocket(){
         return bluetoothSocket;
     }
@@ -91,12 +109,80 @@ public class BluetoothConnection extends Thread {
      * Start bluetooth communication
      */
     public void connectionEstablished(){
-        BluetoothCommunication bluetoothCommunication = new BluetoothCommunication(BluetoothConnection.this, handler);
+        bluetoothCommunication = new BluetoothCommunication(BluetoothConnection.this, handler);
         bluetoothCommunication.start();
 
-        //sendToBluetooth("$P\n");//inform paired succeed to module
+        rsa = new RSA();
+        rsa.generateRSAKeys();
+
+        Log.d(TAG_RSA, "connectionEstablished: E:" + rsa.getRsaKeys());
+
+        long expo = rsa.getRsaKeys().publicKey.e;
+        long mod =  rsa.getRsaKeys().publicKey.N;
+
+        Log.d(TAG_RSA, "connectionEstablished: E:" + expo + " N:" + mod);
+        Log.d(TAG_RSA, "connectionEstablished: E:" + Arrays.toString(String.valueOf(expo).getBytes()) + " N:" + Arrays.toString(String.valueOf(mod).getBytes()));
+
+
+        StringBuilder stringBuilder = new StringBuilder(String.valueOf(expo));
+        while (stringBuilder.length() < 10) {
+            stringBuilder.insert(0, '$');
+        }
+        String expoStr = stringBuilder.toString();
+
+        stringBuilder = new StringBuilder(String.valueOf(mod));
+        while (stringBuilder.length() < 10) {
+            stringBuilder.insert(0, '$');
+        }
+        String modStr = stringBuilder.toString();
+
+        String data = expoStr + "|" + modStr + "\n";
+
+        for (int i = 0; i < 2; i++) {
+            try {
+                bluetoothCommunication.write(data.getBytes());
+                Log.d(TAG_RSA, "connectionEstablished: data:'" + data + "'");
+                Thread.sleep(100); // Wait for 1 second (1000 milliseconds)
+            } catch (InterruptedException e) {
+                // Handle the interrupted exception if necessary
+            }
+        }
+
+/*
+        byte[] publicKeyBytes = rsa.getBytePublicKey();
+
+        Log.d(TAG_RSA, "connectionEstablished: 16: " + RSA.printBytes(publicKeyBytes));
+
+        byte [] by = RSA.convertTo8ByteArray(publicKeyBytes);
+
+        bluetoothCommunication.write(by);
+        Log.d(TAG_BT, "connectionEstablished: " + Arrays.toString(by));
+*/
+        this.waitForModulePublicKey = true;
+        Log.wtf(TAG_BT_COM, "connectionEstablished: READY TO RECEIVE PUBIC KEY");
+
+
+/*
+        // Test send
+        String s = "Salut man";
+        String jamer = "$deb:1";
+
+        for (int i = 0; i < 100; i++) {
+            try {
+                bluetoothCommunication.write(jamer.getBytes(StandardCharsets.UTF_8));
+                Log.d(TAG_BT_CON, "connectionEstablished: write: " + jamer + " - " + Arrays.toString(jamer.getBytes(StandardCharsets.UTF_8)));
+                Thread.sleep(1000); // Wait for 1 second (1000 milliseconds)
+            } catch (InterruptedException e) {
+                // Handle the interrupted exception if necessary
+            }
+        }
+
+ */
     }
 
+    /**
+     * Connection failed
+     */
     public void connectionFailed(){
         Log.e(TAG_BT_CON, "connectionFailed: ");
     }
@@ -109,25 +195,61 @@ public class BluetoothConnection extends Thread {
      * Find the best function to result
      * @param message message to extract
      */
-    public void messageReceived(String message){
-        // TODO
-        // Message management
 
-        // Extract code
+    public ReceiverCAN messageReceived(String message){
+        Log.d(TAG_BT_COM, "run: " + Arrays.toString(message.getBytes(StandardCharsets.UTF_8)));
 
-        // Extract message
-        this.message = message;
+        if (this.waitForModulePublicKey){
+            Log.d(TAG_BT_CON, "messageReceived: module public key: '" + message + "'");
+            // Set module public key
+            PublicKey publicKey = rsa.parsePublicKey(message);
+            rsa.setModulePublicKey(publicKey);
+            Log.d(TAG_BT_COM, "messageReceived: Public key: " + publicKey.toString());
 
-        // Action
-        this.function = "functionTest";
-    }
+            // Generate AES Key
+            aes = new AES();
+            aes.generateAESKey(AESCommon.KEY_256_BITS);
+            AESKey aesKey = aes.getAesKey();
+            Log.d(TAG_BT_COM, "messageReceived: aes key: " + aesKey.toString());
+            Log.d(TAG_BT_COM, "messageReceived: aes key: " + aesKey.toPrint());
+            Log.d(TAG_BT_COM, "messageReceived: aes key: " + Arrays.toString(aesKey.getKey()));
+            Log.d(TAG_BT_COM, "messageReceived: aes key: " + Arrays.toString(aesKey.toUnsignedBytes()));
 
-    public String getMessageFunction(){
-        return this.function;
-    }
+            // Crypt
+            long [] aesKeyCipher = rsa.encrypt(aesKey.getKey());
 
-    public String getMessageParams(){
-        return this.message;
+            // Send
+            //bluetoothCommunication.write(aesKeyCipher);
+            this.waitForModulePublicKey = false;
+        } else {
+            Log.d(TAG_BT_CON, "messageReceived: decrypt message: " + message);
+            // Decrypt the message
+            String decryptedMessage = aes.aesDecrypt(message.getBytes(), aes.getAesKey());
+            Log.d(TAG_BT_COM, "messageReceived: decryptedMessage: " + decryptedMessage);
+
+            String mes = "�tMsL�4:\\u00143�����a��X6ﭾ�\\u0011\\\"\\u001Ds�8�T�p";
+            byte[] bytes = new byte[32];
+            for (int i = 0; i < bytes.length ; i++){
+                bytes[i] = Character.toString(mes.charAt(i)).getBytes()[0];
+            }
+            Log.d(TAG_BT_COM, "messageReceived: bytes: " + Arrays.toString(bytes));
+            Log.d(TAG_BT_COM, "messageReceived: bytes: " + Arrays.toString(bytes));
+        }
+
+        String type;
+        String data;
+
+        // Message : "&type:data\n"
+        if (message.startsWith("$") && message.contains(":")) {
+            int colonIndex = message.indexOf(":");
+
+            type = message.substring(1, colonIndex);
+            data = message.substring(colonIndex + 1);
+            return CAN.transformMessage(type, data);
+        } else {
+            Log.e(TAG_CAN, "messageReceived: data invalid. message: '" + message + "'");
+            return new ReceiverCAN();
+        }
     }
 
     /**

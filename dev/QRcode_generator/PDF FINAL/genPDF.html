@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="jspdf.umd.min.js"></script>
+    <script src="qrcode.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de QRcodes</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <section>
+        <label>Entrez un texte ou un lien :</label>
+        <input type="text" id="qr_input">
+        <button onclick="ajouterElement(document.getElementById('qr_input').value)">Ajouter</button>
+    </section>
+
+    <section>
+        <h2>Liste</h2>
+        <ul id="qr_liste"></ul>
+        <button onclick="setTimeout(genererTableau, 500)">Générer</button>
+        <button id="generate-pdf">Générer PDF</button>
+    </section>
+
+    <section>
+        <h2>QR Codes</h2>
+        <div id="qr_tableau"></div>
+    </section> 
+
+    <script type="text/javascript" src="fonctions.js"></script>
+
+</body>
+</html>
+

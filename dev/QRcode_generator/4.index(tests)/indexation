@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Générateur de QRcodes</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <section>
+
+        <label>Entrez un texte ou un lien :</label>
+
+        <input type="text" id="qr_input">
+
+        <button onclick="ajouterElement(document.getElementById('qr_input').value)">Ajouter</button>
+
+    </section>
+
+    <section>
+
+        <h2>Liste</h2>
+
+        <ul id="qr_liste"></ul>
+
+        <button onclick="genererTableau()">Générer</button>
+
+    </section>
+
+    <section>
+
+        <h2>QR Codes</h2>
+
+        <div id="qr_tableau"></div>
+
+    </section>
+
+    <script src="qrcode.min.js"></script>
+
+    <script type="text/javascript">
+
+        var qr_liste = [];
+
+
+
+    function ajouterElement(value) {
+
+            var qr_liste_ul = document.getElementById("qr_liste");
+
+            var qr_liste_li = document.createElement("li");
+
+            qr_liste_li.textContent = value;
+
+            qr_liste_ul.appendChild(qr_liste_li);
+
+            qr_liste.push(value);
+
+    }
+
+
+        ajouterElement("Text 1");
+
+        ajouterElement("Text 2");
+
+
+
+        function addQRCodeToTable(i) {
+
+    var qr_tableau_div = document.getElementById("qr_tableau");
+
+    var tbody = qr_tableau_div.querySelector("tbody");
+
+
+
+
+    // Create elements for the row
+
+    var row = document.createElement("tr");
+
+    var td1 = document.createElement("td");
+
+    var td2 = document.createElement("td");
+
+    var tdElement = document.createElement("td");
+
+
+
+    // Create div for the QR code and append to the tdElement
+
+    var qr_code_div = document.createElement("div");
+
+    tdElement.appendChild(qr_code_div);
+
+
+
+
+    // Set content for the other cells
+
+    td1.textContent = (i+1);
+
+    td2.textContent = qr_liste[i];
+
+
+
+
+    // Append cells to the row
+
+    row.appendChild(td1);
+
+    row.appendChild(tdElement);
+
+    row.appendChild(td2);
+
+
+
+
+    // Append row to the tbody
+
+    tbody.appendChild(row);
+
+
+
+
+    // Generate QR code after the div is appended to the DOM
+
+    new QRCode(qr_code_div, qr_liste[i]);
+
+}
+
+
+
+
+    function genererTableau() {
+
+            var qr_tableau_div = document.getElementById("qr_tableau");
+
+            qr_tableau_div.innerHTML = "<table><thead><tr><th>#</th><th>Code QR</th><th>Texte</th></tr></thead><tbody></tbody></table>";
+
+            for (var i = 0; i < qr_liste.length; i++) {
+
+                addQRCodeToTable(i);
+
+             }
+
+         }
+
+ </script>
+
+</body>
+
+</html>

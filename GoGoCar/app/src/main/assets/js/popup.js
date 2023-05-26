@@ -27,7 +27,6 @@ let popup = document.getElementById("popup");
 modal.addEventListener("click", function (event) {
     let clicked = false;
     let targetClickedElement = event.target;
-    let i = 0;
     do {
         if (targetClickedElement == popup) {
             //console.log("clicked inside");
@@ -37,20 +36,24 @@ modal.addEventListener("click", function (event) {
     } while (targetClickedElement);
     if (clicked == false) {
         //console.log("clicked ouside");
+        if (androidConnected()) Android.setModal(false);
         closePopup(popup);
     }
 });
 
 function openPopup(_popup) {
-    //console.log("open");
+    if (androidConnected()) Android.setModal(true);
+    document.body.style.overflow = 'hidden';
     modal.style.visibility = "visible";
     modal.classList.add("open-modal");
     _popup.classList.add("open-popup");
 }
 
 function closePopup(_popup) {
+    document.body.style.overflow = 'auto';
     modal.classList.remove("open-modal");
-    _popup.classList.remove("open-popup");
+    if (_popup) _popup.classList.remove("open-popup");
+    else popup.classList.remove("open-popup");
     setTimeout(function () {
         modal.style.visibility = "hidden";
     }, 350);

@@ -1,68 +1,103 @@
+// Global Variables
+
+var vehicles = [];
+var index_vh = 0;
+var click_add = 0, click_edit = 0;
+
+const EL_LI = 0, 
+    EL_TRASH_ICON = 1, 
+    EL_EDIT_ICON = 2;
+
+const addVehicleButton = document.getElementById("add_vehicle_button");
+addVehicleButton.addEventListener('click', () => {
+    // Open new window for add new vehicle
+    if (++click_add === 1)
+        if(androidConnected()) Android.openSlider("vehicles", "add_menu");
+});
+
 // Request database
 if (androidConnected()) Android.requestUserVehicles();
 // For debug on PC
-/*
+
 else{
-    var vehicles = JSON.parse('[{"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},{"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}]');
+    let vh_test = [
+        {"id":7,"name":"Renault Clio","licencePlate":"FR-456-RY","address":"12 rue du Pain","idOwner":6,"isAvailable":true,"isBooked":false,"idUser":0},
+        {"id":8,"name":"Porsche 911","licencePlate":"TR-456-FH","address":"976 Avenue Jean","idOwner":6,"isAvailable":false,"isBooked":false,"idUser":0}
+    ]
+    var vehicles = vh_test;//JSON.parse('[]');
     console.log(vehicles.length);
 
-    if (vehicles.length == 0){
-        document.getElementById("no_vehicles").style.display = 'flex';
-    } else {
-        vehicles.forEach((vehicle) => {
-            addElement(vehicle);
-        });
+    vehicles.forEach((vehicle) => {
+        //document.getElementById("no_vh_logo").classList.add('logo-visible');
+        setTimeout(() => {
+            let elements = addElement(vehicle, index_vh++);
+            vehicles.push(vehicle);
 
-        const vehicles_container = document.querySelectorAll(".fi-sr-trash");
-        vehicles_container.forEach(function (container, index) {
-            container.addEventListener("click", (event) => {
-                // Open popup 'book'
-                openPopupBook(vehicles[index]);
+            elements[EL_TRASH_ICON].addEventListener('click', () => {
+                console.log(JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
+                // Open popup
+                openPopupBook(vehicles[parseInt(elements[EL_LI].id.substring(3))]);
             });
-        });
+    
+            elements[EL_EDIT_ICON].addEventListener('click', () => {
+                console.log(JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
+            });
+        }, 1000);
+        
+    });
+}
+
+// [ANDROID CALLBACK](requestUserVehicles)
+function setResult(resultEmpty) {
+    // If result empty -> Show 'no vehicle' message
+    if (resultEmpty === "true") {
+        document.getElementById("no_vh_logo").classList.add('logo-visible');
     }
 }
-*/
 
+// [ANDROID CALLBACK](requestUserVehicles) Add vehicle
+function cbVehicleAddVehicle(_vehicle){
+    let vehicle = JSON.parse(_vehicle.replace(/\$/g, "'"));
+    let elements = addElement(vehicle, index_vh++);
+    vehicles.push(vehicle);
 
-// [ANDROID CALLBACK] Retrive databases from android (result)
-function setDatabase(_table_vehicle) {
-    var vehicles = JSON.parse(_table_vehicle);
+    elements[EL_TRASH_ICON].addEventListener('click', () => {
+        // Open popup
+        openPopupBook(vehicles[parseInt(elements[EL_LI].id.substring(3))]);
+    });
 
-    console.log(vehicles.length);
+    elements[EL_EDIT_ICON].addEventListener('click', () => {
+        // Open window edit
+        console.log(JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]));
 
-    if (vehicles.length == 0){
-        document.getElementById("no_vehicles").style.display = 'flex';
-    } else {
-        vehicles.forEach((vehicle) => {
-            addElement(vehicle);
-        });
+        if (++click_edit === 1)
+            if (androidConnected()) Android.openSlider("vehicles", "edit", JSON.stringify(vehicles[parseInt(elements[EL_LI].id.substring(3))]).replace(/\'/g, "$"));
+    });
+}
 
-        const vehicles_container_trash = document.querySelectorAll(".fi-sr-trash");
-        vehicles_container_trash.forEach(function (container, index) {
-            container.addEventListener('click', (event) => {
-                // Open popup
-                openPopupBook(vehicles[index]);
-            });
-        });
+// [ANDROID] Reset database for update
+function resetDatabase(){
+    vehicles = [];
+    index_vh = 0;
+    click_add = 0;
+    click_edit = 0;
 
-        const vehicles_container_edit = document.querySelectorAll(".fi-sr-pencil");
-        vehicles_container_edit.forEach(function (container, index) {
-            container.addEventListener('click', (event) => {
-                // Open window edit
-                console.log(index);
-                console.log(JSON.stringify(vehicles[index]));
-                if (androidConnected()) Android.requestOpenEditVehicle(JSON.stringify(vehicles[index]));
-            });
-        });
+    var ul = document.getElementById("vehicles_list"); 
+
+    // loop through all the li elements in reverse order
+    let liElements = ul.getElementsByTagName("li");
+    for (let i = liElements.length - 1; i >= 0; i--) {
+        ul.removeChild(liElements[i]); // remove the li element from the ul element
     }
+    if (androidConnected()) Android.requestUserVehicles();
 }
 
 // Add element to ul list
-function addElement(vehicle) {
+function addElement(vehicle, index) {
     // Create Container
     let li = document.createElement("li");
     li.classList.add("vehicle_container");
+    li.id = "vh_" + index;
 
     // Container Left
     let con_left = document.createElement("div");
@@ -133,6 +168,8 @@ function addElement(vehicle) {
 
     const ul = document.getElementById("vehicles_list");
     ul.appendChild(li);
+
+    return [li, remove_icon, edit_icon];
 }
 
 /**
@@ -149,11 +186,3 @@ function determineState(vehicle){
     } else
         return ["state--unavailable", "Unavailable"];
 }
-
-
-const addVehicleButton = document.getElementById("add_vehicle_button");
-addVehicleButton.addEventListener("click", (event) => {
-    // Open new window for add new vehicle
-    console.log("add vehicle");
-    if (androidConnected()) Android.requestOpenAddVehicle();
-});

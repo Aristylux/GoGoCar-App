@@ -4,8 +4,6 @@
         <link rel="stylesheet" href="../css/main_theme.css" />
 
         <link rel="stylesheet" href="../ico/uicons-regular-rounded/css/uicons-regular-rounded.css" />
-        <link rel="stylesheet" href="../ico/uicons-solid-rounded/css/uicons-solid-rounded.css" />
-        <link rel="stylesheet" href="../css/style_navigation_bar.css"/>
 
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
         <link rel="stylesheet" href="../css/style_button.css"/>
@@ -25,7 +23,7 @@
             <div class="back"></div>
             <div id="welcome">
                 <h2>Welcome home!</h2>
-                <h3 id="user_name">Full name</div>
+                <h3 id="user_name">Full name</h3>
             </div>
 
             <div class="box-nav" id="box_nav_drive">
@@ -45,40 +43,30 @@
                 </div>
                 <i class="fi fi-rr-angle-small-right box-ico go"></i>
             </div>
+
+            <svg version="1.1">
+                <defs>
+                    <linearGradient id="gradient1">
+                        <stop offset="0%" stop-color="#e91e63" />
+                        <stop offset="100%" stop-color="#673ab7" />
+                    </linearGradient>
+                </defs>
+
+                <defs>
+                    <linearGradient id="gradient2">
+                        <stop offset="0%" stop-color="#e9a41e" />
+                        <stop offset="100%" stop-color="#1e63e9" />
+                    </linearGradient>
+                </defs>
+
+                <defs>
+                    <linearGradient id="linear1">
+                        <stop offset="0%" stop-color="#1ee93e" />
+                    </linearGradient>
+                </defs>
+            </svg>
             
             <ul id="journey_list"></ul>
-            
-            <!--
-            <div class="journey-container">
-                <ul>
-                    <li>
-                        <h2>Your trip with Isen's car</h2>
-                    </li>
-                    <li class="info">
-                        <i class="fi fi-rr-map-marker"></i>
-                        <span>23 Avenue du Champs de Mars</span>
-                    </li>
-                    <li class="info">
-                        <i class="fi fi-rr-rectangle-barcode"></i>
-                        <span>Licence plate:</span>
-                        <span class="lp">TR-524-ZY</span>
-                    </li>
-                </ul>
-                <div class="drive_vehicle">
-                    <h3>Ready to drive?</h3>             
-                    <div class="switch_container">
-                        <label class="switch">
-                            <input id="switch" type="checkbox" class="switch_input">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="buttons">
-                    <button class="bt_cancel border-button">Cancel</button>
-                </div>
-            </div>
-            -->
-
         </section>
 
         <!-- Popup message for cancel a reservation -->
@@ -95,30 +83,9 @@
                 </div>
             </div>
         </div>
-        
-
-        <nav id="navigation" class="nav">
-            <a id="nav_home" href="#" class="nav__link nav__link__ripple nav__link--active">
-                <i id="ico_home" class="nav__icon fi fi-sr-home"></i>
-                <span class="nav__text">Home</span>
-            </a>
-            <a id="nav_drive" href="#" class="nav__link nav__link__ripple">
-                <i id="ico_drive" class="nav__icon fi fi-rr-search"></i>
-                <span class="nav__text">Drive</span>
-            </a>
-            <a id="nav_vehicles" href="#" class="nav__link nav__link__ripple">
-                <i id="ico_vehicles" class="nav__icon fi fi-rr-car"></i>
-                <span class="nav__text">Vehicles</span>
-            </a>
-            <a id="nav_settings" href="#" class="nav__link nav__link__ripple">
-                <i id="ico_settings" class="nav__icon fi fi-rr-settings"></i>
-                <span class="nav__text">Settings</span>
-            </a>
-        </nav>
 
         <script src="../js/androidInterface.js"></script>
         <script src="../js/home.js"></script>
-        <script src="../js/nav.js"></script>
 
         <script src="../js/popup.js"></script>
         <script src="../js/popup_home_cancel.js"></script>

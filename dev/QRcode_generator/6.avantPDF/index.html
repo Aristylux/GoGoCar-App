@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de QRcode</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section>
+        <label>Entrez un texte ou un lien.</label>
+        <input type="text" class="qr_texte" onchange="generateur()">
+        <div class="qr_code"></div>
+    </section>
+
+    <!--code javascript-->
+    <script src="qrcode.min.js"></script>
+    <script type="text/javascript">
+        var qr_texte=document.querySelector(".qr_texte");
+        
+        function generateur(){
+            var qrcode = document.querySelector(".qr_code");
+            qrcode.style.display="flex";
+            qrcode.innerHTML="";
+            new QRCode(qrcode, qr_texte.value);
+            qr_texte.value="";
+        }
+//Ce code fonctionne mais pour une seule valeur, on va essayer de faire 
+//une liste de qr code pour une liste de valeur (index5) puis de génerer
+//un pdf contenant cette liste de qr codes.
+    </script>
+</body>
+</html>

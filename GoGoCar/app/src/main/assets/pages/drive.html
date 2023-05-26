@@ -5,7 +5,6 @@
 
         <link rel="stylesheet" href="../ico/uicons-regular-rounded/css/uicons-regular-rounded.css" />
         <link rel="stylesheet" href="../ico/uicons-solid-rounded/css/uicons-solid-rounded.css" />
-        <link rel="stylesheet" href="../css/style_navigation_bar.css"/>
 
         <link rel="stylesheet" href="../css/stylesheet_frags.css" />
         <link rel="stylesheet" href="../css/style_button.css" />
@@ -14,13 +13,36 @@
         <link rel="stylesheet" href="../css/modal.css" />
 
         <link rel="stylesheet" href="../css/drive.css" />
+        <link rel="stylesheet" href="../css/drive_search.css" />
     </head>
     <body>
         <section id="page-content">
             <h1>Drive</h1>
 
-            <!-- Best final : use google maps -->
-            <!-- For the moment : -->
+            <div id="search-container">
+                <form id="search-bar" role="search">
+                    <input
+                        type="text"
+                        id="text_input"
+                        name="q"
+                        placeholder="Search..."
+                    />
+                    <span id="search-clear">
+                        <i class="fi fi-rr-cross-small icon"></i>
+                    </span> 
+                    <span id="distance">10km</span>
+                </form>
+                <div id="distance-container" class="container">
+                    <ul>
+                        <li>2.5km</li>
+                        <li>5km</li>
+                        <li>10km</li>
+                    </ul>
+                </div>
+                <ul id="cityList" class="list"></ul>
+            </div>
+
+            <!-- Best final : use google maps, For the moment :-->
             <ul id="vehicles_list"></ul>
 
         </section>
@@ -41,29 +63,10 @@
             </div>
         </div>
 
-        <nav id="navigation" class="nav">
-            <a id="nav_home" href="#" class="nav__link nav__link__ripple">
-                <i id="ico_home" class="nav__icon fi fi-rr-home"></i>
-                <span class="nav__text">Home</span>
-            </a>
-            <a id="nav_drive" href="#" class="nav__link nav__link__ripple nav__link--active">
-                <i id="ico_drive" class="nav__icon fi fi-sr-search"></i>
-                <span class="nav__text">Drive</span>
-            </a>
-            <a id="nav_vehicles" href="#" class="nav__link nav__link__ripple">
-                <i id="ico_vehicles" class="nav__icon fi fi-rr-car"></i>
-                <span class="nav__text">Vehicles</span>
-            </a>
-            <a id="nav_settings" href="#" class="nav__link nav__link__ripple">
-                <i id="ico_settings" class="nav__icon fi fi-rr-settings"></i>
-                <span class="nav__text">Settings</span>
-            </a>
-        </nav>
-
         <script src="../js/androidInterface.js"></script>
         <script src="../js/popup.js"></script>
         <script src="../js/drive.js"></script>
         <script src="../js/popup_drive.js"></script>
-        <script src="../js/nav.js"></script>
+        <script src="../js/drive_search.js"></script>
     </body>
 </html>
