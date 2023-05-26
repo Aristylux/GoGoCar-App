@@ -118,18 +118,19 @@ public class BluetoothConnection extends Thread {
 
         Log.d(TAG_RSA, "connectionEstablished: E:" + expo + " N:" + mod);
         Log.d(TAG_RSA, "connectionEstablished: E:" + Arrays.toString(String.valueOf(expo).getBytes()) + " N:" + Arrays.toString(String.valueOf(mod).getBytes()));
-/*
-        for (int i = 0; i < 10; i++) {
+
+        String data = expo + "|" + mod;
+
+        for (int i = 0; i < 2; i++) {
             try {
-                bluetoothCommunication.write(String.valueOf(expo).getBytes());
-                Log.d(TAG_RSA, "connectionEstablished: E:" + expo + " N:" + mod);
-                Thread.sleep(1000); // Wait for 1 second (1000 milliseconds)
+                bluetoothCommunication.write(data.getBytes());
+                Log.d(TAG_RSA, "connectionEstablished: data:'" + data + "'");
+                Thread.sleep(300); // Wait for 1 second (1000 milliseconds)
             } catch (InterruptedException e) {
                 // Handle the interrupted exception if necessary
             }
-        */
-        String data = expo + "|" + mod;
-        bluetoothCommunication.write(data.getBytes());
+        }
+
 /*
         byte[] publicKeyBytes = rsa.getBytePublicKey();
 
@@ -141,6 +142,7 @@ public class BluetoothConnection extends Thread {
         Log.d(TAG_BT, "connectionEstablished: " + Arrays.toString(by));
 */
         this.waitForModulePublicKey = true;
+        Log.wtf(TAG_BT_COM, "connectionEstablished: READY TO RECEIVE PUBIC KEY");
 
 
 /*
@@ -181,9 +183,14 @@ public class BluetoothConnection extends Thread {
         Log.d(TAG_BT_COM, "run: " + Arrays.toString(message.getBytes(StandardCharsets.UTF_8)));
 
         if (this.waitForModulePublicKey){
-            Log.d(TAG_BT_CON, "messageReceived: module public key: " + message);
+            Log.d(TAG_BT_CON, "messageReceived: module public key: '" + message + "'");
             // Set module public key
             //rsa.setModulePublicKey(rsa.parsePublicKey(message));
+            PublicKey publicKey = rsa.parsePublicKey(message);
+            Log.d(TAG_BT_COM, "messageReceived: Public key: " + publicKey.toString());
+            // Generate AES Key
+
+            // Crypt
         } else {
             Log.d(TAG_BT_CON, "messageReceived: decrypt message: " + message);
             // Decrypt the message

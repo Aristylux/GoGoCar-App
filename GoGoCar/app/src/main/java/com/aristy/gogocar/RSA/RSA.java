@@ -160,6 +160,7 @@ public class RSA {
         Log.d(TAG_RSA, "formatToHex: " + hexString + " : " + hexString.length());
 
         StringBuilder formattedString = new StringBuilder();
+        hexString = hexString.replaceAll("\\s", "");
 
         if (hexString.length() % 2 == 0) {
             for (int i = 0; i < hexString.length(); i += 2) {
