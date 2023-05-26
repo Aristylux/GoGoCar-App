@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+    <ul id="listid">
+        <li>Exemple 1</li>
+    </ul>
+    
+    <section id="lesQR">
+        <label>entrer un element de liste</label>
+        <input type="text" class="text" onchange="ajoutListe()">
+        <div class="liste"></div>
+    </section>
+
+    <button onclick="generateur()">QRcode</button>
+
+    <script>
+        var text=document.querySelector(".text");
+        var listid=document.getElementById("listid");
+
+        var qr_texte=document.querySelector(".text");
+
+        function ajoutListe(){
+
+            var newListItem=document.createElement("li");
+            newListItem.innerText=text.value;
+            listid.appendChild(newListItem); 
+        }
+
+        function generateur(){
+            
+            var lesQR=document.getElementById("lesQR");
+            var longueur=listid.children.length;
+            for(var i=0;i<longueur;i++){
+
+                var newQRItem=document.createElement("div");
+
+                lesQR.appendChild(newQRItem);
+                newQRItem.style.display="flex";
+                newQRItem.innerHTML="";
+                new QRCode(newQRItem, qr_texte.value);
+                qr_texte.value="";
+            }
+        }
+
+
+    </script>
+
+</html>
+
+
+
