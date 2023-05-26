@@ -2,6 +2,7 @@ const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const result = document.getElementById("result");
 
+
 const codeReader = new ZXing.BrowserQRCodeReader();
 
 function startCamera() {
