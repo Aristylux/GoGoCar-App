@@ -22,6 +22,7 @@ public class BluetoothCommunication extends Thread {
     private final Handler handler;
 
     private StringBuilder message = new StringBuilder();
+    private byte[] bytesTest = new byte[0];
 
     /**
      * Initialise new bluetooth communication
@@ -54,17 +55,33 @@ public class BluetoothCommunication extends Thread {
 
                 // Get Message
                 String tempMessage = new String(buffer,0, bytes);
-                //Log.d(TAG_BT_COM, "run: " + bytes + " | " + Arrays.toString(buffer));
-
+                Log.d(TAG_BT_COM, "run: " + bytes + " | " + Arrays.toString(buffer));
+                byte [] tempByte = new byte[bytes];
+                tempByte = buffer;
                 //$VA:data\n
 
                 // Format message
-                for (int i = 0; i < tempMessage.length(); i++){
+                for (int i = 0; i < bytes; i++){
+                    /*
                     if(tempMessage.charAt(i) == '\n') {
                         handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, message).sendToTarget();
                         message = new StringBuilder();
+                        //messageT = new byte[0];
                     } else {
                         message.append(tempMessage.charAt(i));
+                    }*/
+                    if (tempByte[i] == 13){
+                        handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, bytesTest).sendToTarget();
+                        bytesTest = new byte[0];
+                    } else if (tempByte[i] != 10) {
+                        // Create a new array with increased size to accommodate the additional byte
+                        byte[] newBytesTest = new byte[bytesTest.length + 1];
+                        // Copy the existing bytes to the new array
+                        System.arraycopy(bytesTest, 0, newBytesTest, 0, bytesTest.length);
+                        // Append the new byte at the end of the new array
+                        newBytesTest[bytesTest.length] = tempByte[i];
+                        // Update the bytesTest reference to point to the new array
+                        bytesTest = newBytesTest;
                     }
                 }
             } catch (IOException exception) {

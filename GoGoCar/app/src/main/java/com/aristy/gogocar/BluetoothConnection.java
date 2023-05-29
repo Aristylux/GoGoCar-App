@@ -23,7 +23,6 @@ import com.aristy.gogocar.RSA.RSA;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -39,6 +38,7 @@ public class BluetoothConnection extends Thread {
 
     private RSA rsa;
     private boolean waitForModulePublicKey;
+    private boolean waitForModuleAESKey;
     private AES aes;
   
     /**
@@ -141,7 +141,7 @@ public class BluetoothConnection extends Thread {
         for (int i = 0; i < 2; i++) {
             try {
                 bluetoothCommunication.write(data.getBytes());
-                Log.d(TAG_RSA, "connectionEstablished: data:'" + data + "'");
+                Log.d(TAG_RSA, "connectionEstablished: data:'" + data.replace("\n", "") + "'");
                 Thread.sleep(100); // Wait for 1 second (1000 milliseconds)
             } catch (InterruptedException e) {
                 // Handle the interrupted exception if necessary
@@ -158,26 +158,9 @@ public class BluetoothConnection extends Thread {
         bluetoothCommunication.write(by);
         Log.d(TAG_BT, "connectionEstablished: " + Arrays.toString(by));
 */
-        this.waitForModulePublicKey = true;
+        this.waitForModulePublicKey = /*true*/ false;
+        this.waitForModuleAESKey = true;
         Log.wtf(TAG_BT_COM, "connectionEstablished: READY TO RECEIVE PUBIC KEY");
-
-
-/*
-        // Test send
-        String s = "Salut man";
-        String jamer = "$deb:1";
-
-        for (int i = 0; i < 100; i++) {
-            try {
-                bluetoothCommunication.write(jamer.getBytes(StandardCharsets.UTF_8));
-                Log.d(TAG_BT_CON, "connectionEstablished: write: " + jamer + " - " + Arrays.toString(jamer.getBytes(StandardCharsets.UTF_8)));
-                Thread.sleep(1000); // Wait for 1 second (1000 milliseconds)
-            } catch (InterruptedException e) {
-                // Handle the interrupted exception if necessary
-            }
-        }
-
- */
     }
 
     /**
@@ -196,9 +179,10 @@ public class BluetoothConnection extends Thread {
      * @param message message to extract
      */
 
-    public ReceiverCAN messageReceived(String message){
-        Log.d(TAG_BT_COM, "run: " + Arrays.toString(message.getBytes(StandardCharsets.UTF_8)));
-
+    public ReceiverCAN messageReceived(byte[] message){
+        Log.d(TAG_BT_COM, "run: " + Arrays.toString(message));
+        String decryptedMessage = null;
+/*
         if (this.waitForModulePublicKey){
             Log.d(TAG_BT_CON, "messageReceived: module public key: '" + message + "'");
             // Set module public key
@@ -221,33 +205,49 @@ public class BluetoothConnection extends Thread {
             // Send
             //bluetoothCommunication.write(aesKeyCipher);
             this.waitForModulePublicKey = false;
-        } else {
-            Log.d(TAG_BT_CON, "messageReceived: decrypt message: " + message);
-            // Decrypt the message
-            String decryptedMessage = aes.aesDecrypt(message.getBytes(), aes.getAesKey());
-            Log.d(TAG_BT_COM, "messageReceived: decryptedMessage: " + decryptedMessage);
+        } else */if (this.waitForModuleAESKey){
+            aes = new AES();
+            Log.d(TAG_BT_CON, "messageReceived: aes message: '" + aes.printBytes(message) + "' len: " + message.length);
 
-            String mes = "�tMsL�4:\\u00143�����a��X6ﭾ�\\u0011\\\"\\u001Ds�8�T�p";
-            byte[] bytes = new byte[32];
-            for (int i = 0; i < bytes.length ; i++){
-                bytes[i] = Character.toString(mes.charAt(i)).getBytes()[0];
+            // decrypt aes key
+            byte[] aesKey = rsa.decrypt(message);
+
+            aes.setAesKey(aesKey);
+            Log.d(TAG_BT_COM, "messageReceived: bytes: " + aes.getAesKey());
+
+            byte [] cipher = aes.aesEncrypt("goodmorning", aes.getAesKey());
+
+            try {
+                Log.d(TAG_BT_COM, "messageReceived: aes message goodmorning: " + Arrays.toString(cipher));
+                bluetoothCommunication.write(cipher);
+                Thread.sleep(1000); // Wait for 1 second (1000 milliseconds)
+            } catch (InterruptedException e) {
+                // Handle the interrupted exception if necessary
             }
-            Log.d(TAG_BT_COM, "messageReceived: bytes: " + Arrays.toString(bytes));
-            Log.d(TAG_BT_COM, "messageReceived: bytes: " + Arrays.toString(bytes));
+
+            this.waitForModuleAESKey = false;
+        } else {
+            Log.d(TAG_BT_CON, "messageReceived: decrypt message: '" + aes.printBytes(message) + "' len: " + message.length);
+
+            // Decrypt the message
+            decryptedMessage = aes.aesDecrypt(message, aes.getAesKey());
+            Log.d(TAG_BT_COM, "messageReceived: decryptedMessage: " + decryptedMessage);
         }
+
+        if (decryptedMessage == null) return new ReceiverCAN();
 
         String type;
         String data;
 
         // Message : "&type:data\n"
-        if (message.startsWith("$") && message.contains(":")) {
-            int colonIndex = message.indexOf(":");
+        if (decryptedMessage.startsWith("$") && decryptedMessage.contains(":")) {
+            int colonIndex = decryptedMessage.indexOf(":");
 
-            type = message.substring(1, colonIndex);
-            data = message.substring(colonIndex + 1);
+            type = decryptedMessage.substring(1, colonIndex);
+            data = decryptedMessage.substring(colonIndex + 1);
             return CAN.transformMessage(type, data);
         } else {
-            Log.e(TAG_CAN, "messageReceived: data invalid. message: '" + message + "'");
+            Log.e(TAG_CAN, "messageReceived: data invalid. message: '" + aes.printBytes(message) + "'");
             return new ReceiverCAN();
         }
     }

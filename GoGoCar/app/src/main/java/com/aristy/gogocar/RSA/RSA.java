@@ -99,6 +99,21 @@ public class RSA {
         return plaintext.toString();
     }
 
+    /**
+     * Method to decrypt a message using RSA
+     * @param ciphertext array of bytes
+     * @return text
+     */
+    public byte[] decrypt(byte[] ciphertext) {
+        byte[] plaintext = new byte[ciphertext.length];
+        for (int i = 0; i < ciphertext.length; i++) {
+            int value = ciphertext[i] & 0xFF; // Convert signed byte to unsigned int value
+            int decryptedValue = (int) modExp(value, this.rsaKeys.privateKey.d, this.rsaKeys.privateKey.N);
+            plaintext[i] = (byte) decryptedValue;
+        }
+        return plaintext;
+    }
+
     // ---- ----
 
 
@@ -245,7 +260,7 @@ public class RSA {
         long p;
         do {
             // Generate a random number between 10000 and 19999
-            p = (long) (Math.random() * 10000) + 10000;
+            p = (long) (Math.random() * 10) + 10;
         } while (!isPrime(p));
         return p;
     }

@@ -34,6 +34,44 @@ public class AES {
         return this.aesKey;
     }
 
+    public void setAesKey(byte [] key){
+        this.aesKey = new AESKey(KEY_256_BITS);
+        aesKey.setKey(key);
+    }
+
+    /**
+     * Parse a message of 32 chars
+     * @param key key in string
+     */
+    public void parseAESKey(String key){
+        byte[] bytes = new byte[32];
+        for (int i = 0; i < bytes.length ; i++){
+            bytes[i] = Character.toString(key.charAt(i)).getBytes()[0];
+        }
+        this.aesKey = new AESKey(KEY_256_BITS);
+        this.aesKey.setKey(bytes);
+    }
+
+    public byte[] parseBytes(String message){
+        byte[] bytes = new byte[16];
+        int len = bytes.length;
+        if (message.length() < bytes.length) len = message.length();
+
+        for (int i = 0; i < len ; i++){
+            bytes[i] = Character.toString(message.charAt(i)).getBytes()[0];
+        }
+        return bytes;
+    }
+
+    public String printBytes(byte[] bytes){
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
+
     // --- Encrypt functions ---
 
     /**

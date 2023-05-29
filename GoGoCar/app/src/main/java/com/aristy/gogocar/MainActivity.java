@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
                 case BT_REQUEST_ENABLE:
                     // Create intent
                     Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    enableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 30);
+                    enableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 10);
                     activityResult.launch(enableIntent);    // Launch activity to get result
                     break;
                 case BT_STATE_CONNECTED:                    //Send pairing success and connection established
@@ -282,7 +282,8 @@ public class MainActivity extends AppCompatActivity {
                 case BT_STATE_MESSAGE_RECEIVED:
                     Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
                     Log.d(TAG_BT, "handleMessage: received: " + message.obj);
-                    ReceiverCAN dataCan = bluetoothConnection.messageReceived(message.obj.toString());
+                    //ReceiverCAN dataCan = bluetoothConnection.messageReceived(message.obj.toString());
+                    ReceiverCAN dataCan = bluetoothConnection.messageReceived((byte[]) message.obj);
                     if (dataCan.isResulted()) fragmentNav.sendDataToWeb(putArguments(dataCan.getMethod(), dataCan.getData()));
                     break;
                 case BT_STATE_DISCONNECTED:

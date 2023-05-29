@@ -14,6 +14,10 @@ public class AESKey {
         return key;
     }
 
+    public void setKey(byte [] key){
+        this.key = key;
+    }
+
     public int getSize(){
         return  key.length;
     }
