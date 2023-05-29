@@ -1,0 +1,69 @@
+<mxfile host="Electron" modified="2023-05-28T23:22:50.216Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.2.8 Chrome/112.0.5615.165 Electron/24.2.0 Safari/537.36" etag="N7pludOzen4RJB7kLQ4q" version="21.2.8" type="device" pages="2">
+  <diagram name="Actual Configuration" id="XX2gpp9xaDS_hJp5H0Qm">
+    <mxGraphModel dx="139" dy="1679" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="9cEns8t53r3UuYNDhZgM-1" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.rect;fillColor2=none;strokeWidth=1;size=5;indent=4;fillStyle=solid;fontColor=#e3f4ff;fillColor=#98DCF4;gradientColor=#44BDFF;gradientDirection=east;top=1;right=1;topLeftStyle=rounded;topRightStyle=rounded;bottomRightStyle=rounded;absoluteCornerSize=1;fillOpacity=100;bottomLeftStyle=rounded;strokeColor=none;points=[[0,0.5,0,0,0],[0.5,0,0,0,0],[0.5,1,0,0,0],[1,0.5,0,0,0]];" vertex="1" parent="1">
+          <mxGeometry x="1000" y="-520" width="120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="9cEns8t53r3UuYNDhZgM-2" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.rect;fillColor2=none;strokeWidth=1;size=5;indent=4;fillStyle=solid;fontColor=#e3f4ff;fillColor=#98DCF4;gradientColor=#44BDFF;gradientDirection=east;top=1;right=1;topLeftStyle=rounded;topRightStyle=rounded;bottomRightStyle=rounded;absoluteCornerSize=1;fillOpacity=100;bottomLeftStyle=rounded;strokeColor=none;points=[[0,0.5,0,0,0],[0.5,0,0,0,0],[0.5,1,0,0,0],[1,0.5,0,0,0]];" vertex="1" parent="1">
+          <mxGeometry x="1400" y="-520" width="120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="9cEns8t53r3UuYNDhZgM-3" value="&lt;h1 style=&quot;&quot;&gt;&lt;font face=&quot;Roboto&quot; color=&quot;#063d76&quot;&gt;App&lt;/font&gt;&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="-440" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="9cEns8t53r3UuYNDhZgM-4" value="&lt;h1 style=&quot;&quot;&gt;&lt;font face=&quot;Roboto&quot; color=&quot;#063d76&quot;&gt;Database&lt;/font&gt;&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="-440" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="9cEns8t53r3UuYNDhZgM-6" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;fillColor=#4874EC;gradientColor=#1D4AAA;strokeColor=none;gradientDirection=east;" edge="1" parent="1">
+          <mxGeometry width="100" height="100" relative="1" as="geometry">
+            <mxPoint x="1160" y="-420" as="sourcePoint" />
+            <mxPoint x="1360" y="-420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="mNQ1W5y77uUYc4jlO4pT" name="Secure configuration">
+    <mxGraphModel dx="1195" dy="1549" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="UFZrDAUd5lz2Xq4rmP7v-1" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.rect;fillColor2=none;strokeWidth=1;size=5;indent=4;fillStyle=solid;fontColor=#e3f4ff;fillColor=#98DCF4;gradientColor=#44BDFF;gradientDirection=east;top=1;right=1;topLeftStyle=rounded;topRightStyle=rounded;bottomRightStyle=rounded;absoluteCornerSize=1;fillOpacity=100;bottomLeftStyle=rounded;strokeColor=none;points=[[0,0.5,0,0,0],[0.5,0,0,0,0],[0.5,1,0,0,0],[1,0.5,0,0,0]];" vertex="1" parent="1">
+          <mxGeometry x="40" y="-520" width="120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="UFZrDAUd5lz2Xq4rmP7v-2" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.rect;fillColor2=none;strokeWidth=1;size=5;indent=4;fillStyle=solid;fontColor=#e3f4ff;fillColor=#98DCF4;gradientColor=#44BDFF;gradientDirection=east;top=1;right=1;topLeftStyle=rounded;topRightStyle=rounded;bottomRightStyle=rounded;absoluteCornerSize=1;fillOpacity=100;bottomLeftStyle=rounded;strokeColor=none;points=[[0,0.5,0,0,0],[0.5,0,0,0,0],[0.5,1,0,0,0],[1,0.5,0,0,0]];" vertex="1" parent="1">
+          <mxGeometry x="360" y="-520" width="120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="UFZrDAUd5lz2Xq4rmP7v-3" value="&lt;h1 style=&quot;&quot;&gt;&lt;font face=&quot;Roboto&quot; color=&quot;#063d76&quot;&gt;App&lt;/font&gt;&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="50" y="-440" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="UFZrDAUd5lz2Xq4rmP7v-4" value="&lt;h1 style=&quot;&quot;&gt;&lt;font face=&quot;Roboto&quot; color=&quot;#063d76&quot;&gt;Server API Rest&lt;/font&gt;&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="370" y="-440" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="UFZrDAUd5lz2Xq4rmP7v-5" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;fillColor=#4874EC;gradientColor=#1D4AAA;strokeColor=none;gradientDirection=east;" edge="1" parent="1">
+          <mxGeometry width="100" height="100" relative="1" as="geometry">
+            <mxPoint x="200" y="-420" as="sourcePoint" />
+            <mxPoint x="320" y="-420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UFZrDAUd5lz2Xq4rmP7v-7" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.rect;fillColor2=none;strokeWidth=1;size=5;indent=4;fillStyle=solid;fontColor=#e3f4ff;fillColor=#98DCF4;gradientColor=#44BDFF;gradientDirection=east;top=1;right=1;topLeftStyle=rounded;topRightStyle=rounded;bottomRightStyle=rounded;absoluteCornerSize=1;fillOpacity=100;bottomLeftStyle=rounded;strokeColor=none;points=[[0,0.5,0,0,0],[0.5,0,0,0,0],[0.5,1,0,0,0],[1,0.5,0,0,0]];" vertex="1" parent="1">
+          <mxGeometry x="680" y="-520" width="120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="UFZrDAUd5lz2Xq4rmP7v-8" value="&lt;h1 style=&quot;&quot;&gt;&lt;font face=&quot;Roboto&quot; color=&quot;#063d76&quot;&gt;Database&lt;/font&gt;&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="690" y="-440" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="UFZrDAUd5lz2Xq4rmP7v-9" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;fillColor=#4874EC;gradientColor=#1D4AAA;strokeColor=none;gradientDirection=east;" edge="1" parent="1">
+          <mxGeometry width="100" height="100" relative="1" as="geometry">
+            <mxPoint x="520" y="-420.42" as="sourcePoint" />
+            <mxPoint x="640" y="-420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UFZrDAUd5lz2Xq4rmP7v-10" value="&lt;h1 style=&quot;&quot;&gt;&lt;font face=&quot;Roboto&quot; color=&quot;#063d76&quot;&gt;SQL Request securised&lt;/font&gt;&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="530" y="-510" width="100" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
