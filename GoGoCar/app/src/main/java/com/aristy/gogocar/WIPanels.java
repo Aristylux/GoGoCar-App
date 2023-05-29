@@ -17,6 +17,9 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
+import com.aristy.gogocar.Database.DBModelModule;
+import com.aristy.gogocar.Database.DBModelVehicle;
+
 public class WIPanels extends WICommon {
 
     UserPreferences userPreferences;

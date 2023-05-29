@@ -10,6 +10,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.aristy.gogocar.Database.DBModelUser;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

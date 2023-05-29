@@ -1,5 +1,9 @@
 package com.aristy.gogocar;
 
+import com.aristy.gogocar.Database.DBModelModule;
+import com.aristy.gogocar.Database.DBModelUser;
+import com.aristy.gogocar.Database.DBModelVehicle;
+
 import java.util.List;
 
 public interface ThreadResultCallback {

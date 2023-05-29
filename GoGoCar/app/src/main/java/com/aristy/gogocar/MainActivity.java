@@ -5,7 +5,7 @@ import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
-import static com.aristy.gogocar.ConnectionHelper.connectionValid;
+import static com.aristy.gogocar.Database.ConnectionHelper.connectionValid;
 import static com.aristy.gogocar.FragmentNav.putArguments;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_ENABLE;
 import static com.aristy.gogocar.HandlerCodes.BT_REQUEST_STATE;

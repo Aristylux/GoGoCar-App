@@ -34,6 +34,8 @@ import android.webkit.WebView;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
+import com.aristy.gogocar.Database.DBModelUser;
+import com.aristy.gogocar.Database.DBModelVehicle;
 import com.aristy.gogocar.WICommon.Pages.Drive;
 import com.aristy.gogocar.WICommon.Pages.Vehicle;
 

@@ -1,4 +1,4 @@
-package com.aristy.gogocar;
+package com.aristy.gogocar.Database;
 
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.Security.ADMIN_NAME;
@@ -30,7 +30,7 @@ public class ConnectionHelper{
 
     private Connection connection;
 
-    protected ConnectionHelper() {
+    public ConnectionHelper() {
         this.connection = null;
     }
 

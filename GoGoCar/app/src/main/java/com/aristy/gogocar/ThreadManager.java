@@ -1,17 +1,23 @@
 package com.aristy.gogocar;
 
 import static com.aristy.gogocar.CodesTAG.TAG_THREAD;
-import static com.aristy.gogocar.DatabaseHelper.ADD_USER_QUERY;
-import static com.aristy.gogocar.DatabaseHelper.ADD_VEHICLE_QUERY;
-import static com.aristy.gogocar.DatabaseHelper.DELETE_USER_QUERY;
-import static com.aristy.gogocar.DatabaseHelper.DELETE_VEHICLE_QUERY;
-import static com.aristy.gogocar.DatabaseHelper.SET_VEHICLE_BOOKED_QUERY;
-import static com.aristy.gogocar.DatabaseHelper.UPDATE_VEHICLE_ADDRESS_QUERY;
-import static com.aristy.gogocar.DatabaseHelper.UPDATE_VEHICLE_QUERY;
+import static com.aristy.gogocar.Database.Queries.ADD_USER_QUERY;
+import static com.aristy.gogocar.Database.Queries.ADD_VEHICLE_QUERY;
+import static com.aristy.gogocar.Database.Queries.DELETE_USER_QUERY;
+import static com.aristy.gogocar.Database.Queries.DELETE_VEHICLE_QUERY;
+import static com.aristy.gogocar.Database.Queries.SET_VEHICLE_BOOKED_QUERY;
+import static com.aristy.gogocar.Database.Queries.UPDATE_VEHICLE_ADDRESS_QUERY;
+import static com.aristy.gogocar.Database.Queries.UPDATE_VEHICLE_QUERY;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+
+import com.aristy.gogocar.Database.ConnectionHelper;
+import com.aristy.gogocar.Database.DBModelModule;
+import com.aristy.gogocar.Database.DBModelUser;
+import com.aristy.gogocar.Database.DBModelVehicle;
+import com.aristy.gogocar.Database.DatabaseHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -15,6 +15,8 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
+import com.aristy.gogocar.Database.DBModelUser;
+
 /**
  * Web Interface for Authentication screen
  */
