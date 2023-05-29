@@ -1,5 +1,7 @@
 package com.aristy.gogocar;
 
+import static com.aristy.gogocar.AES.AES.printBytes;
+import static com.aristy.gogocar.CAN.DISABLE_SCRAMBLER;
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_COM;
 import static com.aristy.gogocar.CodesTAG.TAG_BT_CON;
@@ -180,55 +182,17 @@ public class BluetoothConnection extends Thread {
      */
 
     public ReceiverCAN messageReceived(byte[] message){
-        Log.d(TAG_BT_COM, "run: " + Arrays.toString(message));
+        Log.d(TAG_BT_CON, "messageReceived: message: '" + printBytes(message) + "' len: " + message.length);
         String decryptedMessage = null;
-/*
+
         if (this.waitForModulePublicKey){
-            Log.d(TAG_BT_CON, "messageReceived: module public key: '" + message + "'");
-            // Set module public key
-            PublicKey publicKey = rsa.parsePublicKey(message);
-            rsa.setModulePublicKey(publicKey);
-            Log.d(TAG_BT_COM, "messageReceived: Public key: " + publicKey.toString());
-
-            // Generate AES Key
-            aes = new AES();
-            aes.generateAESKey(AESCommon.KEY_256_BITS);
-            AESKey aesKey = aes.getAesKey();
-            Log.d(TAG_BT_COM, "messageReceived: aes key: " + aesKey.toString());
-            Log.d(TAG_BT_COM, "messageReceived: aes key: " + aesKey.toPrint());
-            Log.d(TAG_BT_COM, "messageReceived: aes key: " + Arrays.toString(aesKey.getKey()));
-            Log.d(TAG_BT_COM, "messageReceived: aes key: " + Arrays.toString(aesKey.toUnsignedBytes()));
-
-            // Crypt
-            long [] aesKeyCipher = rsa.encrypt(aesKey.getKey());
+            long[] aesKeyCipher = generateDoubleKey(message);
 
             // Send
             //bluetoothCommunication.write(aesKeyCipher);
-            this.waitForModulePublicKey = false;
-        } else */if (this.waitForModuleAESKey){
-            aes = new AES();
-            Log.d(TAG_BT_CON, "messageReceived: aes message: '" + aes.printBytes(message) + "' len: " + message.length);
-
-            // decrypt aes key
-            byte[] aesKey = rsa.decrypt(message);
-
-            aes.setAesKey(aesKey);
-            Log.d(TAG_BT_COM, "messageReceived: bytes: " + aes.getAesKey());
-
-            byte [] cipher = aes.aesEncrypt("goodmorning", aes.getAesKey());
-
-            try {
-                Log.d(TAG_BT_COM, "messageReceived: aes message goodmorning: " + Arrays.toString(cipher));
-                bluetoothCommunication.write(cipher);
-                Thread.sleep(1000); // Wait for 1 second (1000 milliseconds)
-            } catch (InterruptedException e) {
-                // Handle the interrupted exception if necessary
-            }
-
-            this.waitForModuleAESKey = false;
+        } else if (this.waitForModuleAESKey){
+            generateSimpleKey(message);
         } else {
-            Log.d(TAG_BT_CON, "messageReceived: decrypt message: '" + aes.printBytes(message) + "' len: " + message.length);
-
             // Decrypt the message
             decryptedMessage = aes.aesDecrypt(message, aes.getAesKey());
             Log.d(TAG_BT_COM, "messageReceived: decryptedMessage: " + decryptedMessage);
@@ -236,20 +200,68 @@ public class BluetoothConnection extends Thread {
 
         if (decryptedMessage == null) return new ReceiverCAN();
 
-        String type;
-        String data;
-
         // Message : "&type:data\n"
         if (decryptedMessage.startsWith("$") && decryptedMessage.contains(":")) {
             int colonIndex = decryptedMessage.indexOf(":");
 
-            type = decryptedMessage.substring(1, colonIndex);
-            data = decryptedMessage.substring(colonIndex + 1);
+            String type = decryptedMessage.substring(1, colonIndex);
+            String data = decryptedMessage.substring(colonIndex + 1);
             return CAN.transformMessage(type, data);
         } else {
-            Log.e(TAG_CAN, "messageReceived: data invalid. message: '" + aes.printBytes(message) + "'");
+            Log.e(TAG_CAN, "messageReceived: data invalid. message: '" + printBytes(message) + "'");
             return new ReceiverCAN();
         }
+    }
+
+    /**
+     * Use when communication with double key is enabled
+     * @param publicKeyByte public key from the module
+     * @return aes key encrypted
+     */
+    private long[] generateDoubleKey(byte[] publicKeyByte){
+        // Set module public key
+        PublicKey publicKey = rsa.parsePublicKey(publicKeyByte);
+        rsa.setModulePublicKey(publicKey);
+        Log.d(TAG_BT_COM, "generateDoubleKey: Public key: " + publicKey.toString());
+
+        // Generate AES Key
+        aes = new AES();
+        aes.generateAESKey(AESCommon.KEY_256_BITS);
+        AESKey aesKey = aes.getAesKey();
+        Log.d(TAG_BT_COM, "generateDoubleKey: aes key: " + aesKey.toString());
+        Log.d(TAG_BT_COM, "generateDoubleKey: aes key: " + aesKey.toPrint());
+        Log.d(TAG_BT_COM, "generateDoubleKey: aes key: " + Arrays.toString(aesKey.getKey()));
+        Log.d(TAG_BT_COM, "generateDoubleKey: aes key: " + Arrays.toString(aesKey.toUnsignedBytes()));
+
+        // Crypt
+        long [] aesKeyCipher = rsa.encrypt(aesKey.getKey());
+        this.waitForModulePublicKey = false;
+        return aesKeyCipher;
+    }
+
+    /**
+     * Use when the communication with simple key is enabled
+     * @param aesKeyCipher aes key from module (encrypted with the  public key)
+     */
+    private void generateSimpleKey(byte[] aesKeyCipher){
+        // decrypt aes key
+        aes = new AES();
+        byte[] aesKey = rsa.decrypt(aesKeyCipher);
+        aes.setAesKey(aesKey);
+        Log.d(TAG_BT_COM, "generateSimpleKey: aes key: " + aes.getAesKey());
+
+        // Cr
+        byte [] cipher = aes.aesEncrypt(DISABLE_SCRAMBLER, aes.getAesKey());
+        // Delay for tests
+        try {
+            Log.d(TAG_BT_COM, "generateSimpleKey: aes message: " + Arrays.toString(cipher));
+            bluetoothCommunication.write(cipher);
+            Thread.sleep(1000); // Wait for 1 second (1000 milliseconds)
+        } catch (InterruptedException e) {
+            // Handle the interrupted exception if necessary
+        }
+
+        this.waitForModuleAESKey = false;
     }
 
     /**

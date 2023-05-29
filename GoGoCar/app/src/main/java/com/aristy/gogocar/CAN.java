@@ -12,6 +12,7 @@ import android.util.Log;
 
 public class CAN {
 
+    /* Module to App */
     private static final String CODE_ENGINE_COOLANT = "t_li";
     private static final String CODE_SPEED = "vit_";
     private static final String CODE_TIME_ENGINE = "t_st";
@@ -23,7 +24,16 @@ public class CAN {
     private static final String CODE_FUEL_CONSUMPTION = "cons";
     private static final String CODE_ENGINE_WATER = "t_wt";
 
+    /* App to module */
+    public static final String DISABLE_SCRAMBLER = "$de_b:0";
+    //public static final String STOP_COMMUNICATION = "$coms:0";
 
+    /**
+     * convert message to a object
+     * @param type code type
+     * @param data data
+     * @return transformed data
+     */
     public static ReceiverCAN transformMessage(String type, String data){
         ReceiverCAN can = new ReceiverCAN();
         can.setData(data);

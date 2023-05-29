@@ -21,8 +21,8 @@ public class BluetoothCommunication extends Thread {
     private BluetoothSocket bluetoothSocket;
     private final Handler handler;
 
-    private StringBuilder message = new StringBuilder();
-    private byte[] bytesTest = new byte[0];
+    //private StringBuilder message = new StringBuilder();
+    private byte[] bytesArr = new byte[0];
 
     /**
      * Initialise new bluetooth communication
@@ -56,8 +56,6 @@ public class BluetoothCommunication extends Thread {
                 // Get Message
                 String tempMessage = new String(buffer,0, bytes);
                 Log.d(TAG_BT_COM, "run: " + bytes + " | " + Arrays.toString(buffer));
-                byte [] tempByte = new byte[bytes];
-                tempByte = buffer;
                 //$VA:data\n
 
                 // Format message
@@ -70,18 +68,20 @@ public class BluetoothCommunication extends Thread {
                     } else {
                         message.append(tempMessage.charAt(i));
                     }*/
-                    if (tempByte[i] == 13){
-                        handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, bytesTest).sendToTarget();
-                        bytesTest = new byte[0];
-                    } else if (tempByte[i] != 10) {
+                    if (buffer[i] == 13){
+                        // Send message
+                        handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, bytesArr).sendToTarget();
+                        // Clear array
+                        bytesArr = new byte[0];
+                    } else if (buffer[i] != 10) {
                         // Create a new array with increased size to accommodate the additional byte
-                        byte[] newBytesTest = new byte[bytesTest.length + 1];
+                        byte[] newBytesTest = new byte[bytesArr.length + 1];
                         // Copy the existing bytes to the new array
-                        System.arraycopy(bytesTest, 0, newBytesTest, 0, bytesTest.length);
+                        System.arraycopy(bytesArr, 0, newBytesTest, 0, bytesArr.length);
                         // Append the new byte at the end of the new array
-                        newBytesTest[bytesTest.length] = tempByte[i];
+                        newBytesTest[bytesArr.length] = buffer[i];
                         // Update the bytesTest reference to point to the new array
-                        bytesTest = newBytesTest;
+                        bytesArr = newBytesTest;
                     }
                 }
             } catch (IOException exception) {

@@ -63,7 +63,12 @@ public class AES {
         return bytes;
     }
 
-    public String printBytes(byte[] bytes){
+    /**
+     * print an array of bytes
+     * @param bytes array
+     * @return string to print : ('XXXXXXX...')
+     */
+    public static String printBytes(byte[] bytes){
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
             sb.append(String.format("%02x", b));

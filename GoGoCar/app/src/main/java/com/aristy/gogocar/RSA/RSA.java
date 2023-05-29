@@ -119,22 +119,41 @@ public class RSA {
 
     /**
      * Parse a string text to public key
-     * @param publicKeyString public key in hexa string
+     * @param publicKeyString public key in hexa string ('XXXXXXXX...')
      * @return public key object
      */
     public PublicKey parsePublicKey(String publicKeyString) {
         byte[] bytes = parseToBytes(formatToHex(publicKeyString));
-        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+        return parsePublicKey(bytes, "string");
+    }
+
+    /**
+     * Parse a array of bytes to a public key
+     * @param publicKeyBytes array of bytes
+     * @return public key object
+     */
+    public PublicKey parsePublicKey(byte[] publicKeyBytes) {
+        return parsePublicKey(publicKeyBytes, "array");
+    }
+
+    /**
+     * Parse a array of bytes to a public key
+     * @param publicKeyBytes array of bytes
+     * @param err error type to print
+     * @return public key object
+     */
+    private PublicKey parsePublicKey(byte[] publicKeyBytes, String err){
+        ByteBuffer buffer = ByteBuffer.wrap(publicKeyBytes);
 
         PublicKey publicKey = new PublicKey();
-        if (bytes.length == 16) {
+        if (publicKeyBytes.length == 16) {
             publicKey.N = buffer.getLong();
             publicKey.e = buffer.getLong();
-        } else if (bytes.length == 8) {
+        } else if (publicKeyBytes.length == 8) {
             publicKey.N = buffer.getInt();
             publicKey.e = buffer.getInt();
         } else {
-            Log.e(TAG_RSA, "parsePublicKey: Invalid input string");
+            Log.e(TAG_RSA, "parsePublicKey: Invalid input " + err);
         }
         return publicKey;
     }
