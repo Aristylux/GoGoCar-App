@@ -116,7 +116,6 @@ public class RSA {
 
     // ---- ----
 
-
     /**
      * Parse a string text to public key
      * @param publicKeyString public key in hexa string ('XXXXXXXX...')
@@ -267,6 +266,21 @@ public class RSA {
             destPos += (subArrayLength*2);
         }
         return modified;
+    }
+
+    public static String formatForTransmission(PublicKey publicKey, char separator, int maxLen){
+        int len = maxLen / 2;
+        String expoStr = fill('$', len, publicKey.e);
+        String modStr = fill('$', len, publicKey.N);
+        return expoStr + separator + modStr + "\n";
+    }
+
+    private static String fill(char fillIn, int len, long number){
+        StringBuilder stringBuilder = new StringBuilder(String.valueOf(number));
+        while (stringBuilder.length() < len) {
+            stringBuilder.insert(0, fillIn);
+        }
+        return stringBuilder.toString();
     }
 
     // ---- ----

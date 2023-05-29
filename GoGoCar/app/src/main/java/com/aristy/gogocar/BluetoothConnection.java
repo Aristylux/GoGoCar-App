@@ -9,6 +9,8 @@ import static com.aristy.gogocar.CodesTAG.TAG_RSA;
 import static com.aristy.gogocar.CodesTAG.TAG_CAN;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTED;
 import static com.aristy.gogocar.HandlerCodes.BT_STATE_CONNECTION_FAILED;
+import static com.aristy.gogocar.RSA.RSA.formatForTransmission;
+import static com.aristy.gogocar.RSA.RSA.parseToBytes;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
@@ -125,21 +127,9 @@ public class BluetoothConnection extends Thread {
         Log.d(TAG_RSA, "connectionEstablished: E:" + expo + " N:" + mod);
         Log.d(TAG_RSA, "connectionEstablished: E:" + Arrays.toString(String.valueOf(expo).getBytes()) + " N:" + Arrays.toString(String.valueOf(mod).getBytes()));
 
+        String data = formatForTransmission(rsa.getRsaKeys().publicKey, '|', 20);
 
-        StringBuilder stringBuilder = new StringBuilder(String.valueOf(expo));
-        while (stringBuilder.length() < 10) {
-            stringBuilder.insert(0, '$');
-        }
-        String expoStr = stringBuilder.toString();
-
-        stringBuilder = new StringBuilder(String.valueOf(mod));
-        while (stringBuilder.length() < 10) {
-            stringBuilder.insert(0, '$');
-        }
-        String modStr = stringBuilder.toString();
-
-        String data = expoStr + "|" + modStr + "\n";
-
+        // For tests
         for (int i = 0; i < 2; i++) {
             try {
                 bluetoothCommunication.write(data.getBytes());
@@ -150,19 +140,9 @@ public class BluetoothConnection extends Thread {
             }
         }
 
-/*
-        byte[] publicKeyBytes = rsa.getBytePublicKey();
-
-        Log.d(TAG_RSA, "connectionEstablished: 16: " + RSA.printBytes(publicKeyBytes));
-
-        byte [] by = RSA.convertTo8ByteArray(publicKeyBytes);
-
-        bluetoothCommunication.write(by);
-        Log.d(TAG_BT, "connectionEstablished: " + Arrays.toString(by));
-*/
-        this.waitForModulePublicKey = /*true*/ false;
-        this.waitForModuleAESKey = true;
-        Log.wtf(TAG_BT_COM, "connectionEstablished: READY TO RECEIVE PUBIC KEY");
+        this.waitForModulePublicKey = false;    // Deactivation double key
+        this.waitForModuleAESKey = true;        // Use of Simple key
+        Log.v(TAG_BT_COM, "connectionEstablished: READY TO RECEIVE PUBIC KEY");
     }
 
     /**
@@ -180,16 +160,14 @@ public class BluetoothConnection extends Thread {
      * Find the best function to result
      * @param message message to extract
      */
-
     public ReceiverCAN messageReceived(byte[] message){
         Log.d(TAG_BT_CON, "messageReceived: message: '" + printBytes(message) + "' len: " + message.length);
         String decryptedMessage = null;
 
         if (this.waitForModulePublicKey){
             long[] aesKeyCipher = generateDoubleKey(message);
-
             // Send
-            //bluetoothCommunication.write(aesKeyCipher);
+            bluetoothCommunication.write(parseToBytes(aesKeyCipher));
         } else if (this.waitForModuleAESKey){
             generateSimpleKey(message);
         } else {
@@ -233,7 +211,7 @@ public class BluetoothConnection extends Thread {
         Log.d(TAG_BT_COM, "generateDoubleKey: aes key: " + Arrays.toString(aesKey.getKey()));
         Log.d(TAG_BT_COM, "generateDoubleKey: aes key: " + Arrays.toString(aesKey.toUnsignedBytes()));
 
-        // Crypt
+        // Encrypt
         long [] aesKeyCipher = rsa.encrypt(aesKey.getKey());
         this.waitForModulePublicKey = false;
         return aesKeyCipher;
@@ -244,13 +222,13 @@ public class BluetoothConnection extends Thread {
      * @param aesKeyCipher aes key from module (encrypted with the  public key)
      */
     private void generateSimpleKey(byte[] aesKeyCipher){
-        // decrypt aes key
+        // Decrypt aes key
         aes = new AES();
         byte[] aesKey = rsa.decrypt(aesKeyCipher);
         aes.setAesKey(aesKey);
         Log.d(TAG_BT_COM, "generateSimpleKey: aes key: " + aes.getAesKey());
 
-        // Cr
+        // Encrypt new message
         byte [] cipher = aes.aesEncrypt(DISABLE_SCRAMBLER, aes.getAesKey());
         // Delay for tests
         try {
