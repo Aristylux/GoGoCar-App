@@ -1,16 +1,16 @@
-package com.aristy.gogocar;
+package com.aristy.gogocar.WebInterfaces;
 
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.CLOSE_SLIDER;
 import static com.aristy.gogocar.HandlerCodes.OPEN_QRCODE_ACTIVITY;
 import static com.aristy.gogocar.HandlerCodes.OPEN_SLIDER;
-import static com.aristy.gogocar.WICommon.Pages.JS.SET_USER_INFO;
-import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.ADD_VEHICLE;
-import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.SET_QRCODE_VALUE;
-import static com.aristy.gogocar.WICommon.Pages.VehicleAdd.JS.SET_VEHICLE;
-import static com.aristy.gogocar.WICommon.Pages.VehicleEdit.JS.EDIT_VEHICLE;
-import static com.aristy.gogocar.WICommon.Pages.pathPage;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.JS.SET_USER_INFO;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.VehicleAdd.JS.ADD_VEHICLE;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.VehicleAdd.JS.SET_QRCODE_VALUE;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.VehicleAdd.JS.SET_VEHICLE;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.VehicleEdit.JS.EDIT_VEHICLE;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.pathPage;
 
 import android.os.Handler;
 import android.util.Log;
@@ -19,6 +19,9 @@ import android.webkit.WebView;
 
 import com.aristy.gogocar.Database.DBModelModule;
 import com.aristy.gogocar.Database.DBModelVehicle;
+import com.aristy.gogocar.ThreadManager;
+import com.aristy.gogocar.ThreadResultCallback;
+import com.aristy.gogocar.UserPreferences;
 
 public class WIPanels extends WICommon {
 

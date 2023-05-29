@@ -1,13 +1,15 @@
-package com.aristy.gogocar;
+package com.aristy.gogocar.WebInterfaces;
 
 import static com.aristy.gogocar.HandlerCodes.REMOVE_MODAL;
 import static com.aristy.gogocar.HandlerCodes.SET_PAGE;
-import static com.aristy.gogocar.WICommon.Pages.JS.CHANGE_PAGE;
-import static com.aristy.gogocar.WICommon.Pages.JS.SET_MODAL;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.JS.CHANGE_PAGE;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.JS.SET_MODAL;
 
 import android.os.Handler;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+
+import com.aristy.gogocar.ThreadManager;
 
 /**
  * Web Interface for Navigation screen

@@ -21,7 +21,7 @@ public class PermissionHelper {
     // Permissions
     public static final String ACCESS_COARSE_LOCATION_PERMISSION = Manifest.permission.ACCESS_COARSE_LOCATION;
 
-    static public boolean checkPermission(Activity activity, String permission, int requestCode){
+    public static boolean checkPermission(Activity activity, String permission, int requestCode){
         // Checking if permission is not granted
         if (ContextCompat.checkSelfPermission(activity.getBaseContext(), permission) == PackageManager.PERMISSION_DENIED){
             Log.d(TAG_BT, "checkPermission: ask permission: " + permission);
@@ -33,7 +33,7 @@ public class PermissionHelper {
         }
     }
 
-    static public boolean checkPermission(Activity activity){
+    public static boolean checkPermission(Activity activity){
         // Checking if permission is not granted
 
         if ((ContextCompat.checkSelfPermission(activity.getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
@@ -53,18 +53,18 @@ public class PermissionHelper {
      * @return true if bluetooth is enabled <br>
      * false if disabled or error
      */
-    static boolean isBluetoothEnabled(){
+    public static boolean isBluetoothEnabled(){
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null)
             return false;
         return bluetoothAdapter.isEnabled();
     }
 
-    static boolean isCoarseLocationPermissionGranted(Context context){
+    public static boolean isCoarseLocationPermissionGranted(Context context){
         return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED;
     }
 
-    static void askCoarseLocationPermission(Activity activity){
+    public static void askCoarseLocationPermission(Activity activity){
         ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_ACCESS_COARSE_LOCATION);
     }
 
@@ -82,7 +82,7 @@ public class PermissionHelper {
      * @return true if location is enabled <br>
      * false if disabled
      */
-    static boolean isLocationEnabled(Context context){
+    public static boolean isLocationEnabled(Context context){
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }

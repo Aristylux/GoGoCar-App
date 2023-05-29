@@ -9,7 +9,7 @@ public class HexColor {
 
     String color;
 
-    HexColor(String color){
+    public HexColor(String color){
         this.color = color;
     }
 

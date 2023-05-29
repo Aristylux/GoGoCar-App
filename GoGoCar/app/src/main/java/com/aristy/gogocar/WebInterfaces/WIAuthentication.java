@@ -1,13 +1,13 @@
-package com.aristy.gogocar;
+package com.aristy.gogocar.WebInterfaces;
 
 import static com.aristy.gogocar.CodesTAG.TAG_Auth;
 import static com.aristy.gogocar.HandlerCodes.GOTO_HOME_FRAGMENT;
 import static com.aristy.gogocar.HandlerCodes.STATUS_BAR_COLOR;
 import static com.aristy.gogocar.SHAHash.generateSalt;
 import static com.aristy.gogocar.SHAHash.hashPassword;
-import static com.aristy.gogocar.WICommon.Pages.Login.JS.ERROR_AUTH_LOGIN;
-import static com.aristy.gogocar.WICommon.Pages.Login.JS.ERROR_AUTH_REGIS;
-import static com.aristy.gogocar.WICommon.Pages.Login.JS.SUCCESS;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.Login.JS.ERROR_AUTH_LOGIN;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.Login.JS.ERROR_AUTH_REGIS;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.Login.JS.SUCCESS;
 
 import android.content.Context;
 import android.os.Handler;
@@ -16,6 +16,10 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
 import com.aristy.gogocar.Database.DBModelUser;
+import com.aristy.gogocar.HexColor;
+import com.aristy.gogocar.ThreadManager;
+import com.aristy.gogocar.ThreadResultCallback;
+import com.aristy.gogocar.UserPreferences;
 
 /**
  * Web Interface for Authentication screen

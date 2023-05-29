@@ -1,6 +1,6 @@
 package com.aristy.gogocar;
 
-import static com.aristy.gogocar.WICommon.Pages.Login.LOGIN;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.Login.LOGIN;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+
+import com.aristy.gogocar.WebInterfaces.WIAuthentication;
 
 /**
  * A simple {@link Fragment} subclass.

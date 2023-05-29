@@ -1,4 +1,4 @@
-package com.aristy.gogocar;
+package com.aristy.gogocar.WebInterfaces;
 
 import static com.aristy.gogocar.CodesTAG.TAG_Web;
 import static com.aristy.gogocar.HandlerCodes.BLUETOOTH_HANDLER_POS;
@@ -15,16 +15,16 @@ import static com.aristy.gogocar.HandlerCodes.SET_PAGE_FROM_HOME;
 import static com.aristy.gogocar.PermissionHelper.checkPermission;
 import static com.aristy.gogocar.PermissionHelper.isBluetoothEnabled;
 import static com.aristy.gogocar.PermissionHelper.isLocationEnabled;
-import static com.aristy.gogocar.WICommon.Boolean.TRUE;
-import static com.aristy.gogocar.WICommon.Pages.Home.JS.DELETE_JOURNEY;
-import static com.aristy.gogocar.WICommon.Pages.Home.JS.DRIVING_REQUEST;
-import static com.aristy.gogocar.WICommon.Pages.Home.JS.SET_USER_NAME;
-import static com.aristy.gogocar.WICommon.Pages.Home.JS.SET_VEHICLE_BOOKED;
-import static com.aristy.gogocar.WICommon.Pages.JS.CLOSE_POPUP;
-import static com.aristy.gogocar.WICommon.Pages.JS.RESET_DATA;
-import static com.aristy.gogocar.WICommon.Pages.Vehicle.JS.DELETE_VEHICLE;
-import static com.aristy.gogocar.WICommon.Pages.Vehicle.JS.SET_RESULT;
-import static com.aristy.gogocar.WICommon.Pages.pathPage;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Boolean.TRUE;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.Home.JS.DELETE_JOURNEY;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.Home.JS.DRIVING_REQUEST;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.Home.JS.SET_USER_NAME;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.Home.JS.SET_VEHICLE_BOOKED;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.JS.CLOSE_POPUP;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.JS.RESET_DATA;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.Vehicle.JS.DELETE_VEHICLE;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.Vehicle.JS.SET_RESULT;
+import static com.aristy.gogocar.WebInterfaces.WICommon.Pages.pathPage;
 
 import android.app.Activity;
 import android.content.Context;
@@ -36,8 +36,11 @@ import android.widget.Toast;
 
 import com.aristy.gogocar.Database.DBModelUser;
 import com.aristy.gogocar.Database.DBModelVehicle;
-import com.aristy.gogocar.WICommon.Pages.Drive;
-import com.aristy.gogocar.WICommon.Pages.Vehicle;
+import com.aristy.gogocar.ThreadManager;
+import com.aristy.gogocar.ThreadResultCallback;
+import com.aristy.gogocar.UserPreferences;
+import com.aristy.gogocar.WebInterfaces.WICommon.Pages.Drive;
+import com.aristy.gogocar.WebInterfaces.WICommon.Pages.Vehicle;
 
 import java.util.Arrays;
 import java.util.List;
