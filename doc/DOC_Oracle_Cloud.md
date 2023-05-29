@@ -1,17 +1,12 @@
-This tutorial is for
+This tutorial is for : use postgresql in oracle cloud server.
 
-using postgresql in oracle cloud server.
-
+# Orale
 
 Connect to our public server:
 
 ```bash
 client@user:~$ ssh -i <private-key> <username>@<public_ip_address>
 ```
-
-
-
-# Orale
 
 Connect to the server:
 
