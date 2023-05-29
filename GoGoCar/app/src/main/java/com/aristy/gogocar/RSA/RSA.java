@@ -62,7 +62,7 @@ public class RSA {
     /**
      * Encrypt text (ciphertext = (plaintext ^ e) mod N)
      * @param plainText text
-     * @return array of long
+     * @return array of long (ciphertext)
      */
     public long[] encrypt(String plainText) {
         long[] ciphertext = new long[plainText.length()];
@@ -72,6 +72,11 @@ public class RSA {
         return ciphertext;
     }
 
+    /**
+     * Encrypt text,
+     * @param plainText in bytes
+     * @return array of long (ciphertext)
+     */
     public long[] encrypt(byte[] plainText) {
         long[] ciphertext = new long[plainText.length];
         for (int i = 0; i < plainText.length; i++) {

@@ -17,6 +17,10 @@ public class AES {
 
     // --- Key function ---
 
+    /**
+     * Generate AES key, with random number
+     * @param keySize 128, 192 or 256
+     */
     public void generateAESKey(int keySize) {
         AESKey key = new AESKey(keySize);
         Random rand = new Random();

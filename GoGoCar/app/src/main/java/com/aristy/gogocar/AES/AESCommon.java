@@ -8,6 +8,9 @@ import android.util.Log;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+/**
+ * Common methods, and constants for AES.
+ */
 public class AESCommon {
 
     public static final int BLOCK_SIZE_128_BITS = 16;
