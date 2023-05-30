@@ -57,7 +57,9 @@ else {
             }
             // Open Popup: Are you sure?
             console.log("open");
-            openPopupCancelJourney(vehicles[index]);
+            //openPopupCancelJourney(vehicles[index]);
+            vehicle_selected = vehicles[index]
+            journeyDelete("true");
         });
     });
 }

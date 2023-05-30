@@ -24,7 +24,14 @@ li {
     grid-template-rows: 1fr auto;
 
     transition: 0.5s;
+    height: auto;
     opacity: 1;
+}
+
+.journey-container--hidden {
+    opacity: 0;
+    /*display: none;*/
+    height: 0;
 }
 
 .container {
@@ -233,11 +240,6 @@ svg {
     100% {
         opacity: 1;
     }
-}
-
-.journey-container--hidden {
-    opacity: 0;
-    display: none;
 }
 
 .info {

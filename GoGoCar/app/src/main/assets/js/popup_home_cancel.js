@@ -35,9 +35,14 @@ function journeyDelete(success) {
         vehicles_container_info.forEach((Element) => {
             if (Element.innerText === vehicle_selected.licencePlate) {
                 console.log(Element);
-                Element.parentElement.parentElement.parentElement.classList.add(
+                const container = Element.parentElement.parentElement.parentElement.parentElement
+                container.style.height = (container.scrollHeight - 10) + "px";
+                container.classList.add(
                     "journey-container--hidden"
                 );
+                setTimeout(() => {
+                    container.style.height = "0px";
+                }, 250);
             }
         });
     }
