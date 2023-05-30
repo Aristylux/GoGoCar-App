@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         setWindowVersion(MainActivity.this, getWindow());
 
         // -----
-        AESCommon.AESTest();
+        //AESCommon.AESTest();
 
         // Get bluetooth adapter
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case BT_STATE_MESSAGE_RECEIVED:
                     Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
-                    Log.d(TAG_BT, "handleMessage: received: " + message.obj);
+                    //Log.d(TAG_BT, "handleMessage: received: " + message.obj);
                     //ReceiverCAN dataCan = bluetoothConnection.messageReceived(message.obj.toString());
                     ReceiverCAN dataCan = bluetoothConnection.messageReceived((byte[]) message.obj);
                     if (dataCan.isResulted()) fragmentNav.sendDataToWeb(putArguments(dataCan.getMethod(), dataCan.getData()));

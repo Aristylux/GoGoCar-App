@@ -27,6 +27,7 @@ import com.aristy.gogocar.RSA.RSA;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -43,6 +44,7 @@ public class BluetoothConnection extends Thread {
     private RSA rsa;
     private boolean waitForModulePublicKey;
     private boolean waitForModuleAESKey;
+    private boolean waitForData;
     private AES aes;
   
     /**
@@ -51,6 +53,7 @@ public class BluetoothConnection extends Thread {
     public BluetoothConnection (){
         this.isConnecting = false;
         this.waitForModulePublicKey = false;
+        this.waitForData = false;
     }
 
     /**
@@ -141,7 +144,8 @@ public class BluetoothConnection extends Thread {
         }
 
         this.waitForModulePublicKey = false;    // Deactivation double key
-        this.waitForModuleAESKey = true;        // Use of Simple key
+        this.waitForModuleAESKey = false;        // Use of Simple key
+        this.waitForData = true;
         Log.v(TAG_BT_COM, "connectionEstablished: READY TO RECEIVE PUBIC KEY");
     }
 
@@ -170,6 +174,10 @@ public class BluetoothConnection extends Thread {
             bluetoothCommunication.write(parseToBytes(aesKeyCipher));
         } else if (this.waitForModuleAESKey){
             generateSimpleKey(message);
+        } else if (waitForData) {
+            // Convert byte array to String
+            decryptedMessage = new String(message, StandardCharsets.UTF_8) ;
+            Log.d(TAG_BT_COM, "messageReceived: String message: " + decryptedMessage);
         } else {
             // Decrypt the message
             decryptedMessage = aes.aesDecrypt(message, aes.getAesKey());
@@ -180,13 +188,14 @@ public class BluetoothConnection extends Thread {
 
         // Message : "&type:data\n"
         if (decryptedMessage.startsWith("$") && decryptedMessage.contains(":")) {
-            int colonIndex = decryptedMessage.indexOf(":");
+            String formatMessage = decryptedMessage.replace(" ", "");
+            int colonIndex = formatMessage.indexOf(":");
 
-            String type = decryptedMessage.substring(1, colonIndex);
-            String data = decryptedMessage.substring(colonIndex + 1);
+            String type = formatMessage.substring(1, colonIndex);
+            String data = formatMessage.substring(colonIndex + 1);
             return CAN.transformMessage(type, data);
         } else {
-            Log.e(TAG_CAN, "messageReceived: data invalid. message: '" + printBytes(message) + "'");
+            Log.e(TAG_CAN, "messageReceived: data invalid. message: '" + printBytes(message) + "' - '" + new String(message, StandardCharsets.UTF_8) + "'");
             return new ReceiverCAN();
         }
     }

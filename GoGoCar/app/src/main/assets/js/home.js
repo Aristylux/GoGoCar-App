@@ -36,6 +36,9 @@ else {
                 container_selected.switch_selected = switch_input;               
                 openForDrive();
                 container_selected.is_driving = true;
+
+                updateEngineWater('30')
+
             } else {
                 console.log("Not checked");
                 // User finish to drive
@@ -406,17 +409,17 @@ function createOnRoadContainer() {
     let row1 = document.createElement('div');
     row1.setAttribute("class", 'row');
   
-    row1.appendChild(createParameterElement('Vehicle Speed', '56km/h', 'grad-one'));
-    row1.appendChild(createParameterElement('Fuel Level', '70%', 'grad-one'));
-    row1.appendChild(createParameterElement('Fuel Consumption', '3L/h', 'grad-one'));
+    row1.appendChild(createParameterElement("Vehicle Speed", '?km/h', "grad-one"));
+    row1.appendChild(createParameterElement("Fuel Level", '?%', "grad-one"));
+    row1.appendChild(createParameterElement("Fuel Consumption", '?L/h', "grad-one"));
     onRoadContainer.appendChild(row1);
   
     let row2 = document.createElement('div');
     row2.setAttribute("class", 'row');
   
-    row2.appendChild(createParameterElement('Engine Coolant', '90°C', 'grad-one'));
-    row2.appendChild(createParameterElement('Engine Water', '90°C', 'grad-one'));
-    row2.appendChild(createParameterElement('Engine Oil', '90°C', 'grad-one'));
+    row2.appendChild(createParameterElement("Engine Coolant", "?°C", "grad-one"));
+    row2.appendChild(createParameterElement("Engine Water", "?°C", "grad-one"));
+    row2.appendChild(createParameterElement("Engine Oil", '?°C', "grad-one"));
     onRoadContainer.appendChild(row2);
   
     return onRoadContainer;

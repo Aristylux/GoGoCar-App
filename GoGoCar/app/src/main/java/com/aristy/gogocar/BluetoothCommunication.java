@@ -55,7 +55,7 @@ public class BluetoothCommunication extends Thread {
 
                 // Get Message
                 String tempMessage = new String(buffer,0, bytes);
-                Log.d(TAG_BT_COM, "run: " + bytes + " | " + Arrays.toString(buffer));
+                //Log.d(TAG_BT_COM, "run: " + bytes + " | " + Arrays.toString(buffer));
                 //$VA:data\n
 
                 // Format message
