@@ -137,7 +137,7 @@ public class BluetoothConnection extends Thread {
             try {
                 bluetoothCommunication.write(data.getBytes());
                 Log.d(TAG_RSA, "connectionEstablished: data:'" + data.replace("\n", "") + "'");
-                Thread.sleep(100); // Wait for 1 second (1000 milliseconds)
+                Thread.sleep(1000); // Wait for 1 second (1000 milliseconds)
             } catch (InterruptedException e) {
                 // Handle the interrupted exception if necessary
             }
@@ -165,7 +165,7 @@ public class BluetoothConnection extends Thread {
      * @param message message to extract
      */
     public ReceiverCAN messageReceived(byte[] message){
-        Log.d(TAG_BT_CON, "messageReceived: message: '" + printBytes(message) + "' len: " + message.length);
+        Log.d(TAG_BT_CON, "messageReceived: message: " + Arrays.toString(message) + " '" + printBytes(message) + "' len: " + message.length);
         String decryptedMessage = null;
 
         if (this.waitForModulePublicKey){
@@ -176,7 +176,7 @@ public class BluetoothConnection extends Thread {
             generateSimpleKey(message);
         } else if (waitForData) {
             // Convert byte array to String
-            decryptedMessage = new String(message, StandardCharsets.UTF_8) ;
+            decryptedMessage = new String(message, StandardCharsets.UTF_8);
             Log.d(TAG_BT_COM, "messageReceived: String message: " + decryptedMessage);
         } else {
             // Decrypt the message

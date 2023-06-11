@@ -11,6 +11,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class BluetoothCommunication extends Thread {
@@ -69,8 +70,13 @@ public class BluetoothCommunication extends Thread {
                         message.append(tempMessage.charAt(i));
                     }*/
                     if (buffer[i] == 13){
-                        // Send message
-                        handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, bytesArr).sendToTarget();
+                        if (bytesArr[0] == 63){
+                            // Print prompt bluetooth
+                            Log.d("BT_DEBUG", "-> " + new String(bytesArr, StandardCharsets.UTF_8).substring(1));
+                        } else {
+                            // Send message
+                            handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, bytesArr).sendToTarget();
+                        }
                         // Clear array
                         bytesArr = new byte[0];
                     } else if (buffer[i] != 10) {
