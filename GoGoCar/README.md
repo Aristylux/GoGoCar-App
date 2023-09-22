@@ -9,6 +9,6 @@ Expectation:
 
 https://elfsight.com/blog/2020/02/best-alternatives-to-google-maps-api/
 
-![Comparaison](../img/table_compare_mapsAPI.png)
+![Comparaison](../doc/img/table_compare_mapsAPI.png)
 
 https://developers.google.com/maps/documentation/javascript/cloud-setup#console_1

@@ -1,172 +1,74 @@
 # GoGoCar-App
 
-Android Application for GoGoCar
+GoGoCar-App is the repository for the Android App called GoGoCar.
 
-[Description GoGoCar](./GoGoCar)
+This repository is a part of `mi carro es tu carro` project.
 
-[HTML Code](./GoGoCar/app/src/main/assets/)
+All project repositories:
 
-# Table of Content
+* [GoGoCar-App](https://github.com/Aristylux/GoGoCar-App) (This one)
+* [GoGoCar-STM32](https://github.com/Aristylux/GoGoCar-STM32)
 
-- [GoGoCar-App](#gogocar-app)
-- [Table of Content](#table-of-content)
-- [Documentation](#documentation)
-  - [SQL](#sql)
-  - [Local](#local)
-- [Dev](#dev)
-  - [Tests check](#tests-check)
-    - [Authentification (Login)](#authentification-login)
-    - [Home](#home)
-    - [Drive](#drive)
-    - [Vehicles](#vehicles)
-  - [Dev apps](#dev-apps)
-    - [App 1](#app-1)
-    - [App 2](#app-2)
-    - [App 3](#app-3)
-    - [App 4](#app-4)
-    - [App 5](#app-5)
-    - [App 6](#app-6)
-    - [App 7](#app-7)
-    - [App 8](#app-8)
-    - [Communication](#communication)
+# The project
+
+`Mi carro es tu carro` project is a master's project developed by 20 engineering students from ISEN in the 2nd year of the engineering cycle.
 
 
-# Documentation
+The startup "Go Go Car" wants to set up a personal vehicle loan service between individuals.
+The loan service will be based on a smartphone application that will allow users to make their vehicles available and to book the vehicles of other users. Each vehicle will be equipped with a box to control the start of the vehicle and track driver behavior in real time and record the number of kilometers traveled, engine RPM and speed for example.
 
-## SQL
+**Note:** This is not a B to C solution (Business-to-Consumer), nor a Carpooling solution.
 
-[JDBC Postgres](https://jdbc.postgresql.org/documentation)
+### **Full requirements can be viewed [here](./doc/REQ-GGC-EMB-M1-2022-23-001.pdf).**
 
-## Local
+## Teams
 
-[Documentation Oracle Cloud Tutorial](./doc/DOC_Oracle_Cloud.md)
+We were divided into 6 different groups, called Work Package (WP):
 
-[Documentation SQL Queries](./doc/DOC_SQL.md)
+* WP1: Data collection
+* WP2: Car immobilizer systeme
+* WP3: Tracker
+* WP4: User experience
+* WP5: Wireless communications
+* WP6: Project Managment
 
-[Documentation Docker](./doc/DOC_Docker.md)
+# The Work Package 4
 
-[Documentation Archive code](./doc/DOC_Code_Archive.md)
+Our group was composed of 4 people with different tasks:
+* QR code generator
+* Dataset
+* App & database
+* Box
 
+I developed the App and the database structure.
 
-# Dev
+This repository includes:
 
-## Tests check
+* The Android app, GoGoCar available [here](./GoGoCar/),
+* The app of the QR code generator [here](./dev/QRcode_generator/),
+* The app of development [here](./dev/),
+* The documentation [here](./doc/).
 
-### Authentification (Login)
-
-| From           | Action            | Result              |       Pass?        |
-| :------------- | :---------------- | :------------------ | :----------------: |
-| ***Login***    | login             | Move to ***Home***  | :heavy_check_mark: |
-| ***Login***    | register          | Move to ***Home***  | :heavy_check_mark: |
-| ***Settings*** | Log out           | Move to ***Login*** | :heavy_check_mark: |
-| ***Settings*** | Delete my account | Move to ***Login*** | :heavy_check_mark: |
-
-### Home
-
-| From       | Action         | Result                 |       Pass?        |
-| :--------- | :------------- | :--------------------- | :----------------: |
-| ***Home*** | go to drive    | Move to ***Drive***    | :heavy_check_mark: |
-| ***Home*** | go to Vehicles | Move to ***Vehicles*** | :heavy_check_mark: |
-| ***Home*** | Cancel journey | Remove vehicle         | :heavy_check_mark: |
-
-### Drive
-
-| From        | Action             | Result             |       Pass?        |
-| :---------- | :----------------- | :----------------- | :----------------: |
-| ***Drive*** | Click on a vehicle | Open popup booking | :heavy_check_mark: |
+The design (HTML and CSS) is available [here](./GoGoCar/app/src/main/assets/).
 
 
-### Vehicles
+# Security notes
 
-| From                | Action          | Result                     |       Pass?        |
-| :------------------ | :-------------- | :------------------------- | :----------------: |
-| ***Vehicles***      | Click on Edit   | Move to ***Vehicle Edit*** | :heavy_check_mark: |
-| ***Vehicles***      | Click on Add    | Move to ***Vehicle Add***  | :heavy_check_mark: |
-| ***Vehicles Edit*** | Click on Exit   | Move to ***Vehicles***     | :heavy_check_mark: |
-| ***Vehicles Edit*** | Click on Return | Move to ***Vehicles***     | :heavy_check_mark: |
-| ***Vehicles Edit*** | Click on Save   | Move to ***Vehicles***     | :heavy_check_mark: |
-| ***Vehicles Add***  | Click on Return | Move to ***Vehicles***     | :heavy_check_mark: |
-| ***Vehicles Add***  | Click on Add    | Move to ***Vehicles***     | :heavy_check_mark: |
+The following points are the reasons why the application is not secure and has serious security vulnerabilities.
 
-## Dev apps
+### Rest API:
 
-App 1, 2, 3, 4 and 5 are app test for bluetooth 
+I didn't have enough time to develop a REST API for this application.
 
-| Name |   Spec    |        List        |        Scan        |     Connection     |        Send        |      Recieve       |
-| :--- | :-------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
-| App1 | Bluetooth | :heavy_check_mark: |        :x:         | :heavy_check_mark: |        :x:         | :heavy_check_mark: |
-| App2 | Bluetooth | :heavy_check_mark: |        :x:         | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
-| App3 | Bluetooth | :heavy_check_mark: |        :x:         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| App4 | Bluetooth |        :x:         | :heavy_check_mark: |        :x:         |        :x:         |        :x:         |
-| App5 | Bluetooth |        :x:         | :heavy_check_mark: | :heavy_check_mark: |        :x:         |        :x:         |
+Requests are made directly in the application instead of using a REST API. That is to say that SQL queries are written in variables.
 
-App 6, 7 and 8 are app test for structure app
+This is a big security flaw, because a malicious individual can recover the application executable (.apk) and decompile, then decode and reconstruct a query directly on the database.
 
-| Name |     Spec      |
-| :--- | :-----------: |
-| App6 |    Slider     |
-| App7 | Home Fragment |
-| App8 |    Slider     |
 
-### App 1
+### Structure of the app:
 
-* List bluetooth devices
-* Connect to bluetooth
-* Displays the data received by the smartphone
+To avoid using XML, I use `WebView` with html, css and js for the visual of the app.
 
-[Description App1](./dev/App1)
+The Problem is that to communicate between JAVA and WebView, I use Javascript.
 
-[Code Java App1](./dev/App1/app/src/main/java/com/example/app1/)
-
-### App 2
-
-* List bluetooth devices
-* Connect to bluetooth
-* Send data with a button.
-
-[Code Java App2](./dev/App2/app/src/main/java/com/example/app2/)
-
-### App 3
-
-* List bluetooth devices
-* Connect to bluetooth
-* Displays the data received by the smartphone
-* Send data with a button **in user box**.
-
-App3 ~= App2 + App1
-
-[Code Java App3](./dev/App3/app/src/main/java/com/example/app3/)
-
-### App 4
-
-* Scan bluetooth devices in search
-
-[Code Java App4](./dev/App4/app/src/main/java/com/aristy/app4/)
-
-### App 5
-
-* Scan bluetooth devices in search
-* Connect to the selected device
-
-[Code Java App5](./dev/App5/app/src/main/java/com/aristy/app5)
-
-### App 6
-
-* Try to implement Slidr lib for fragment
-* ***Doesn't work***
-
-### App 7
-
-* Try to implement viewPager2
-* ***Doesn't work***
-
-### App 8
-
-* Try to implement Slidr lib for activity
-* (work)
-
-### Communication
-
-Detail the RSA and AES encryption
-
-Used for bluetooth communication
+It is also a big security problem since we can inject javascript.
