@@ -72,3 +72,17 @@ To avoid using XML, I use `WebView` with html, css and js for the visual of the 
 The Problem is that to communicate between JAVA and WebView, I use Javascript.
 
 It is also a big security problem since we can inject javascript.
+
+# Captures
+
+## Main screens
+
+![Main Screens](./doc/screen/screens.png)
+
+## Add / Edit a car
+
+![Main Screens](./doc/screen/add_edit_vehicle.png)
+
+## Login, Registers / during driving
+
+![Main Screens](./doc/screen/login_driving.png)
