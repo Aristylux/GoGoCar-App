@@ -52,6 +52,7 @@ public class DatabaseHelper {
             // If almost 1 row is affected, return true
             return rowAffected != 0;
         } catch (SQLException exception) {
+            Log.e(TAG_Database, "query: " + preparedQuery);
             Log.e(TAG_Database, "executeQuery: ", exception);
             exception.printStackTrace();
             return false;

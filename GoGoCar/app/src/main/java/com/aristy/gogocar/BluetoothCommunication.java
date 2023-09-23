@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class BluetoothCommunication extends Thread {
+
     private InputStream inputStream = null;
     private OutputStream outputStream = null;
 
@@ -24,6 +24,15 @@ public class BluetoothCommunication extends Thread {
 
     //private StringBuilder message = new StringBuilder();
     private byte[] bytesArr = new byte[0];
+
+    // Get from database
+    private static final String hashMacAddressModule1 = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
+    private static final String hashMacAddressModule2 = "29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4";
+
+    public static String getMacAddressModule(){
+        return hashMacAddressModule2;
+    }
+
 
     /**
      * Initialise new bluetooth communication
@@ -55,20 +64,12 @@ public class BluetoothCommunication extends Thread {
                 bytes = inputStream.read(buffer);
 
                 // Get Message
-                String tempMessage = new String(buffer,0, bytes);
+                //String tempMessage = new String(buffer,0, bytes);
                 //Log.d(TAG_BT_COM, "run: " + bytes + " | " + Arrays.toString(buffer));
                 //$VA:data\n
 
                 // Format message
                 for (int i = 0; i < bytes; i++){
-                    /*
-                    if(tempMessage.charAt(i) == '\n') {
-                        handler.obtainMessage(BT_STATE_MESSAGE_RECEIVED, message).sendToTarget();
-                        message = new StringBuilder();
-                        //messageT = new byte[0];
-                    } else {
-                        message.append(tempMessage.charAt(i));
-                    }*/
                     if (buffer[i] == 13){
                         if (bytesArr[0] == 63){
                             // Print prompt bluetooth

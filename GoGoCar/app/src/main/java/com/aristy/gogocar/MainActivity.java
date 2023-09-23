@@ -2,6 +2,7 @@ package com.aristy.gogocar;
 
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_LEFT;
 import static com.aristy.gogocar.Animation.ANIMATE_SLIDE_RIGHT;
+import static com.aristy.gogocar.BluetoothCommunication.getMacAddressModule;
 import static com.aristy.gogocar.CodesTAG.TAG_BT;
 import static com.aristy.gogocar.CodesTAG.TAG_Database;
 import static com.aristy.gogocar.CodesTAG.TAG_SPLASH;
@@ -59,8 +60,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.aristy.gogocar.AES.AESCommon;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -89,13 +88,14 @@ public class MainActivity extends AppCompatActivity {
 
         boolean isLogged = intent.getBooleanExtra("IS_USER_LOGGED", false);
         userPreferences = intent.getParcelableExtra("USER");
+        userPreferences.setUserName("ISEN");
         Log.d(TAG_SPLASH, "onCreate: isLogged=" + isLogged);
         Log.d(TAG_SPLASH, "onCreate: user " + userPreferences.toString());
         // ----
 
         // If the user is not logged
         Fragment selectedFragment;
-        if(!isLogged)
+        if(isLogged)
             selectedFragment = FragmentLogin.newInstance(userPreferences, fragmentHandler);
         else {
             fragmentNav = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
@@ -187,11 +187,6 @@ public class MainActivity extends AppCompatActivity {
     // ---- BLUETOOTH ----
     String lastMacAddress = null;
 
-    // Get into database
-    //String hashMacAddressModule = "e0c6a87b46d582b0d5b5ca19cc5b0ba3d9e3ed79d113ebff9248b2f8ce5affdc52a044bd4dc8c1d70ffdf08256d7b68beff3a4ae6ae2582ad201cf8f4c6d47a9";
-    // Eliphete
-    String hashMacAddressModule = "29c063acbefc433fa96073ae50cec2d8f31748775a69ef0881c4af55bc86481e42f624407111d9a81acef775844f1532f7f30fcf88e4e6c2511598852dabcca4";
-
     private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
         @SuppressLint("MissingPermission")
         @Override
@@ -200,6 +195,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                if (device == null) return;
 
                 // If the name is null, this is not a good device
                 if (device.getName() == null) return;
@@ -219,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                 String hash = hashPassword(macAddress, DOMAIN);
 
                 // Actual device has the same mac address than our module for that car
-                if (hash.equals(hashMacAddressModule)){
+                if (hash.equals(getMacAddressModule())){
                     Log.d(TAG_BT, "onReceive: openConnection.");
                     bluetoothConnection.isConnecting(true);
 
@@ -242,7 +239,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)){
                 Log.d(TAG_BT, "onReceive: ACTION_PAIRING_REQUEST");
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                device.setPin(getPinKey().getBytes());
+                if (device != null)
+                    device.setPin(getPinKey().getBytes());
             }
         }
     };
@@ -282,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
                 case BT_STATE_MESSAGE_RECEIVED:
                     Log.v(TAG_BT, "BT_STATE_MESSAGE_RECEIVED");
                     //Log.d(TAG_BT, "handleMessage: received: " + message.obj);
-                    //ReceiverCAN dataCan = bluetoothConnection.messageReceived(message.obj.toString());
                     ReceiverCAN dataCan = bluetoothConnection.messageReceived((byte[]) message.obj);
                     if (dataCan.isResulted()) fragmentNav.sendDataToWeb(putArguments(dataCan.getMethod(), dataCan.getData()));
                     break;
