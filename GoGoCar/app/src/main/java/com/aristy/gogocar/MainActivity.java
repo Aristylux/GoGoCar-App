@@ -88,14 +88,14 @@ public class MainActivity extends AppCompatActivity {
 
         boolean isLogged = intent.getBooleanExtra("IS_USER_LOGGED", false);
         userPreferences = intent.getParcelableExtra("USER");
-        userPreferences.setUserName("ISEN");
+        //userPreferences.setUserName("ISEN");
         Log.d(TAG_SPLASH, "onCreate: isLogged=" + isLogged);
         Log.d(TAG_SPLASH, "onCreate: user " + userPreferences.toString());
         // ----
 
         // If the user is not logged
         Fragment selectedFragment;
-        if(isLogged)
+        if(!isLogged)
             selectedFragment = FragmentLogin.newInstance(userPreferences, fragmentHandler);
         else {
             fragmentNav = FragmentNav.newInstance(userPreferences, fragmentHandler, bluetoothHandler, HOME);
