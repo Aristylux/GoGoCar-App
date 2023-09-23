@@ -83,6 +83,6 @@ It is also a big security problem since we can inject javascript.
 
 ![Main Screens](./doc/screen/add_edit_vehicle.png)
 
-## Login, Registers / during driving
+## Login, Registers / while driving
 
 ![Main Screens](./doc/screen/login_driving.png)
